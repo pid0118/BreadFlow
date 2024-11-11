@@ -15,13 +15,14 @@
 - DB 공승원 :
 
 ### ⚙️개발환경
-- SpringBoot
-- Spring security
-- 
-- 
-- 
-- 
-- 
+
+
+- FRONT : HTML / CSS / JS / AJAX / BOOTSTRAP / 
+- BACK : SpringBoot 3.2.11 / Spring Security / Java21 / Mybatis 3.0.0 / Lombok / Maven /
+- IDE : Eclipse / Visual Studio Code / ORACLE Sqldeveloper
+- DATABASE :  Oracle
+- 배포 :
+
 
 
 ### 📌 주요 기능
