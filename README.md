@@ -15,7 +15,11 @@
 - DB 공승원 :
 
 ### ⚙️개발환경
-
+| 헤더1 | 헤더2 | 헤더3 |
+| --- | --- | --- |
+| 행1 열1 | 행1 열2 | 행1 열3 |
+| 행2 열1 | 행2 열2 | 행2 열3 |
+| 행3 열1 | 행3 열2 | 행3 열3 |
 
 - FRONT : HTML / CSS / JS / AJAX / BOOTSTRAP / 
 - BACK : SpringBoot 3.2.11 / Spring Security / Java21 / Mybatis 3.0.0 / Lombok / Maven /
