@@ -15,11 +15,7 @@
 - DB 공승원 :
 
 ### ⚙️개발환경
-| 헤더1 | 헤더2 | 헤더3 |
-| --- | --- | --- |
-| 행1 열1 | 행1 열2 | 행1 열3 |
-| 행2 열1 | 행2 열2 | 행2 열3 |
-| 행3 열1 | 행3 열2 | 행3 열3 |
+
 
 - FRONT : HTML / CSS / JS / AJAX / BOOTSTRAP / 
 - BACK : SpringBoot 3.2.11 / Spring Security / Java21 / Mybatis 3.0.0 / Lombok / Maven /
@@ -27,6 +23,28 @@
 - DATABASE :  Oracle
 - 배포 :
 
+<table>
+  <tr>
+    <td>
+      <img src="https://img.icons8.com/?size=100&id=13679&format=png&color=000000">
+    </td>
+    <td>
+      <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
+    </td>
+    <td>
+      <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
+    </td>
+  </tr>
+  <tr>
+    <td>
+     Java21
+    </td>
+    <td>
+      SpringBoot<br>3.2.11
+    </td>
+  </tr>
+  
+</table>
 
 
 ### 📌 주요 기능
