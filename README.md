@@ -32,7 +32,7 @@
       <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
     </td>
     <td>
-      <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
+      
     </td>
   </tr>
   <tr>
@@ -48,3 +48,4 @@
 
 
 ### 📌 주요 기능
+
