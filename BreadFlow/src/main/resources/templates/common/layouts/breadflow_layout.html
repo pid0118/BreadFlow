@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="~{common/configs/breadflow_config :: BootstrapConfig}"></th:block>
+<title></title>
+</head>
+<body>
+	<header th:replace="~{common/fragments/breadflow_fragment :: HeaderFrag}"></header>
+	<nav th:replace="~{common/fragments/breadflow_fragment :: NavFrag}"></nav>
+	<main layout:fragment="Content"></main>
+	<footer th:replace="~{common/fragments/breadflow_fragment :: FooterFrag}"></footer>
+</body>
+</html>
