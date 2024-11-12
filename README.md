@@ -23,7 +23,7 @@
 - DATABASE :  Oracle
 - 배포 : AWS
 
-BACK
+BACK / IDE / 배포
 =========
 <table>
   <tr>
