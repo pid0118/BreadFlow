@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+
+<div class="container">
+	<div class="parentArea">
+		<div class="insertButtons">
+			<button>담당자 계정 생성</button>
+			<button>사원 계정 생성</button>
+		</div>
+		<div class="searchArea">
+			<form>
+				<select name="condition" id="cond">
+					<option value="name">이름</option>
+					<option value="role">권한</option>
+					<option value="comname">회사명</option>
+				</select>
+			</form>
+		</div>
+
+		<div>
+			<!-- 테이블이 들어갈 자리 -->
+		</div>
+
+	</div>
+	<hr>
+	<div class="childArea">
+		<div class="row">
+			<div class="col-md-6 col-sm-12">
+				<div class="form-group">
+					<label>고유번호</label> <input type="text" class="form-control">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-12">
+				<div class="form-group">
+					<label>사업자등록번호</label> <input type="text" class="form-control">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
