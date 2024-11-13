@@ -13,7 +13,7 @@
 	<artifactId>BreadFlow</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BreadFlow</name>
-	<description>Demo project for Spring Boot</description>
+	<description>BreadFlow Web Program</description>
 	<url />
 	<licenses>
 		<license />
