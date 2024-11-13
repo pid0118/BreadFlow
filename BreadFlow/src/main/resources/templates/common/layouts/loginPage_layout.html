@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="~{common/configs/breadflow_config :: BootstrapConfig}"></th:block>
+<title></title>
+</head>
+<body>
+	<header th:replace="~{common/fragments/breadflow_fragment :: HeaderFrag}"></header>
+	<div class="main-container">
+		<div class="xs-pd-20-10 pd-ltr-20">
+			<div class="title pb-20">
+				<main layout:fragment="Content">
+				</main>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="~{common/fragments/breadflow_fragment :: FooterFrag}"></footer>
+</body>
+</html>
