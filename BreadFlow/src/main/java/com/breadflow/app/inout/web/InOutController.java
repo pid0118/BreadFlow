@@ -19,48 +19,25 @@ import lombok.RequiredArgsConstructor;
 public class InOutController {
 	private final InOutService inOutService;
 	
-//	@GetMapping("instoreList")
-//	public String instoreList(Model model) {
-//		List<InstoreVO> list = inOutService.instoreList();
-//		model.addAttribute("instores", list);
-//		return "inout/list";
-//	}
-//	
-//	@GetMapping("outstoreList")
-//	public String outstoreList(Model model) {
-//		List<OutstoreVO> list = inOutService.outstoreList();
-//		model.addAttribute("outstores", list);
-//		return "inout/list";
-//	}
-	
 	// 입고/출고 내역
     @GetMapping("inOutList")
     public String inOutList(Model model) {
         return "inout/list"; // 초기 페이지 로드
     }
     
-    // 입고 내역을 반환 (AJAX)
+    // 입고 내역 반환 (AJAX)
     @GetMapping("inout/instores")
     @ResponseBody
     public List<InstoreVO> getInstoreList() {
         return inOutService.instoreList();
     }
-
-    // 출고 내역을 반환 (AJAX)
+    
+    // 출고 내역 반환 (AJAX)
     @GetMapping("inout/outstores")
     @ResponseBody
     public List<OutstoreVO> getOutstoreList() {
         return inOutService.outstoreList();
     }
-	
-//	@GetMapping("inOutList")
-//	public String inOutList(Model model) {
-//		List<InstoreVO> inList = inOutService.instoreList();
-//		List<OutstoreVO> outList = inOutService.outstoreList();
-//		model.addAttribute("instores", inList);
-//		model.addAttribute("outstores", outList);
-//		return "inout/list";
-//	}
 	
 	@GetMapping("instoreInfo")
 	public String instoreInfo(InstoreVO instoreVO, Model model) {
