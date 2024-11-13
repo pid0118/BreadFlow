@@ -30,3 +30,4 @@ settings/
 bin/
 test/
 .md
+.project
