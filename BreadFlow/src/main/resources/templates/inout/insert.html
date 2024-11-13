@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/breadflow_layout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title>입출고 등록</title>
+</head>
+<body>
+	<form name="insertForm" th:action="@{/}">
+		<h2>입출고 등록</h2>
+		<div>
+			<label class="form-label" for="">거래처</label>
+			<input class="form-control" type="text" id="" name="">
+		</div>
+		<div>
+			<label class="form-label" for="">거래구분</label>
+			<input class="form-control" type="text" id="" name="">
+		</div>
+		<div>
+			<label class="form-label" for="">가맹점</label>
+			<input class="form-control" type="text" id="" name="">
+			<button>검색</button>
+		</div>
+		<div>
+			<label class="form-label" for="">출고일자</label>
+			<input class="form-control" type="text" id="" name="">
+		</div>
+		<div>
+			<table>
+				
+			</table>
+		</div>
+		<div>
+			<button>등록</button>
+			<button>취소</button>
+			<button>거래 명세서 발행</button>
+		</div>
+	</form>
+	<script>
+		
+	</script>
+</body>
+</html>
