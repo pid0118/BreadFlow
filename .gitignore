@@ -31,3 +31,4 @@ bin/
 test/
 .md
 .project
+.gitignore
