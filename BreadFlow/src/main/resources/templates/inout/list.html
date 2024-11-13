@@ -151,14 +151,14 @@
 			data.forEach(function(item) {
 				var row = "<tr>";
 				if (type === 'instore') {
-					row += "<td>" + item.instoreDate + "</td>";
+					row += "<td class=\"table-plus\" \"date\">" + item.instoreDate + "</td>";
 					row += "<td>" + item.itemDiv + "</td>";
 					row += "<td>" + item.instoreQuantity + "</td>";
 					row += "<td>" + item.standard + "/" + item.unit + "</td>";
 					row += "<td>" + item.outstoreCompany + "</td>";
 					row += "<td>" + item.companyName + "</td>";
 				} else if (type === 'outstore') {
-					row += "<td>" + item.outstoreDate + "</td>";
+					row += "<td class=\"table-plus\" \"date\">" + item.outstoreDate + "</td>";
 					row += "<td>" + item.itemDiv + "</td>";
 					row += "<td>" + item.outstoreQuantity + "</td>";
 					row += "<td>" + item.standard + "/" + item.unit + "</td>";
@@ -181,10 +181,19 @@
 				}
 			}
 		}
-
+		
 		// 기간 검색
 		function filterData(startDate, endDate) {
-			
+			var sdChange = startDate.toLocaleDateString();
+			var edChange = endDate.toLocaleDateString();
+			for (var i = 0; i < rows.length; i++) {
+				var rowDate = rows[i].querySelector(".date").toLocaleDateString();
+				if (rowDate <= sdChange || rowDate >= edChange) {
+					rows[i].style.display = "";
+				} else {
+					rows[i].style.display = "none";
+				}
+			}
 		}
 	</script>
 </body>
