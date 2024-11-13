@@ -26,32 +26,32 @@ public class InOutController {
     }
     
     // 입고 내역 반환 (AJAX)
-    @GetMapping("inout/instores")
+    @GetMapping("inOut/instores")
     @ResponseBody
     public List<InstoreVO> getInstoreList() {
         return inOutService.instoreList();
     }
     
     // 출고 내역 반환 (AJAX)
-    @GetMapping("inout/outstores")
+    @GetMapping("inOut/outstores")
     @ResponseBody
     public List<OutstoreVO> getOutstoreList() {
         return inOutService.outstoreList();
     }
 	
-	@GetMapping("instoreInfo")
-	public String instoreInfo(InstoreVO instoreVO, Model model) {
-		InstoreVO findVO = inOutService.instoreInfo(instoreVO);
-		model.addAttribute("instore", findVO);
-		return "inout/info";
-	}
-	
-	@GetMapping("outstoreInfo")
-	public String outstoreInfo(OutstoreVO outstoreVO, Model model) {
-		OutstoreVO findVO = inOutService.outstoreInfo(outstoreVO);
-		model.addAttribute("outstore", findVO);
-		return "inout/info";
-	}
+//	@GetMapping("instoreInfo")
+//	public String instoreInfo(InstoreVO instoreVO, Model model) {
+//		InstoreVO findVO = inOutService.instoreInfo(instoreVO);
+//		model.addAttribute("instore", findVO);
+//		return "inout/info";
+//	}
+//	
+//	@GetMapping("outstoreInfo")
+//	public String outstoreInfo(OutstoreVO outstoreVO, Model model) {
+//		OutstoreVO findVO = inOutService.outstoreInfo(outstoreVO);
+//		model.addAttribute("outstore", findVO);
+//		return "inout/info";
+//	}
 	
 	@GetMapping("insertIn")	
 	public String insertIn() {
