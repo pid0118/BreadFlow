@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title>제품목록</title>
+</head>
+<body>
+	<h2>제품목록</h2>
+	<div class="col-md-4 col-sm-12">
+		<div class="form-group">
+			<select class="selectpicker form-control" data-size="5"
+				data-style="btn-outline-secondary" multiple data-max-options="3">
+				<optgroup label="Condiments">
+					<option>Mustard</option>
+					<option>Ketchup</option>
+					<option>Relish</option>
+				</optgroup>
+				<optgroup label="Breads">
+					<option>Plain</option>
+					<option>Steamed</option>
+					<option>Toasted</option>
+				</optgroup>
+			</select>
+		</div>
+	</div>
+	<div class="col-md-4 col-sm-12">
+		<div class="form-group">
+			<select class="selectpicker form-control" data-size="5"
+				data-style="btn-outline-secondary" multiple data-max-options="3">
+				<optgroup label="Condiments">
+					<option>Mustard</option>
+					<option>Ketchup</option>
+					<option>Relish</option>
+				</optgroup>
+				<optgroup label="Breads">
+					<option>Plain</option>
+					<option>Steamed</option>
+					<option>Toasted</option>
+				</optgroup>
+			</select>
+		</div>
+	</div>
+
+
+
+	<button type="submit" class="btn btn-primary">등록</button>
+	<button type="submit" class="btn btn-info">수정</button>
+	<div class="pb-20">
+		<table class="data-table table stripe hover nowrap">
+			<thead>
+				<tr>
+					<th class="table-plus">제품코드</th>
+					<th class="datatable-nosort">제품명</th>
+					<th class="datatable-nosort">소비기한</th>
+					<th class="datatable-nosort">매입가</th>
+					<th class="datatable-nosort">판매가</th>
+					<th class="datatable-nosort">규격</th>
+					<th class="dt-body-center sorting_disabled" rowspan="1" colspan="1"
+						aria-lable="">
+						<div class="dt-checkbox">
+							<input type="checkbox" name="select_all" value="1"
+								id="example-select-all"> <span class="dt-checkbox-lable">
+							</span>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info, sts : ${products}">
+					<tr>
+						<td>[[${info.productCode}]]</td>
+						<td>[[${info.productName}]]</td>
+						<td>[[${info.expirationDeadline}]]</td>
+						<td>[[${info.purchasePrice}]]</td>
+						<td>[[${info.salePrice}]]</td>
+						<td>[[${info.standard}]]</td>
+						<td class="dt-checkbox" tabindex="0">
+							<div class="dt-checkbox">
+								<input type="checkbox" name="id[]" value> <span
+									class="dt-checkbox-lable"></span>
+							</div>
+						</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+</body>
+</html>

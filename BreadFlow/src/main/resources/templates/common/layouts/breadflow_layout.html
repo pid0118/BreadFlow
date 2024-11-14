@@ -9,7 +9,14 @@
 <body>
 	<header th:replace="~{common/fragments/breadflow_fragment :: HeaderFrag}"></header>
 	<nav th:replace="~{common/fragments/breadflow_fragment :: NavFrag}"></nav>
-	<main layout:fragment="Content"></main>
+	<div class="main-container">
+		<div class="xs-pd-20-10 pd-ltr-20">
+			<div class="title pb-20">
+				<main layout:fragment="Content">
+				</main>
+			</div>
+		</div>
+	</div>
 	<footer th:replace="~{common/fragments/breadflow_fragment :: FooterFrag}"></footer>
 </body>
 </html>

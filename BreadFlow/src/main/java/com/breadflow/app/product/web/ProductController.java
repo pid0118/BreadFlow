@@ -8,21 +8,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.breadflow.app.inout.service.InOutService;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class ProductController {
-	@Autowired
-	private ProductService productService;
-	
+	private final ProductService productService;
+	     
 	// 전체조회
-	@GetMapping("productListAll")
+	@GetMapping("productListAll")                           
 	public String productListAll(Model model) {
 		List<ProductVO> list = productService.getListAll();
 		
 		model.addAttribute("products", list);
-		return "product/productListAll";
+		return "product/prodctListAll";
 	}
 	
 	// 단건조회
@@ -36,13 +39,13 @@ public class ProductController {
 	}
 	
 	// 제품등록 - 페이지
-	@GetMapping("productInsert")
+	@GetMapping("product/Insert")
 	public String productInsertForm() {
 		return "product/productInsert";
 	}
 	
 	// 제품등록 - 처리
-	@PostMapping("productInsert")
+	@PostMapping("product/Insert")
 	public String productInsertProcess(ProductVO productVO) {
 		return "redirect:/productListAll";
 	}

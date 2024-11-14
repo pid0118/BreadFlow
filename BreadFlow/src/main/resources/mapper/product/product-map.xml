@@ -3,14 +3,14 @@
 <mapper namespace="com.breadflow.app.product.mapper.ProductMapper">
 	<!-- 제품 전체조회 -->
 	<select id="selectAllProductList" resultType="ProductVO">
-		SELECT productCode,
-			   productName,
-			   expirationDeadline,
-			   priductPrice,
-			   salePrice,
-			   unit,
+		SELECT product_code,
+			   product_name,
+			   expiration_deadline,
+			   purchase_price,
+			   sale_price,
+			   standard
 		FROM product
-		ORDER BY productCode ASC
+		ORDER BY product_code ASC
 	</select>
 	
 	<!-- 제품 상세조회 -->
