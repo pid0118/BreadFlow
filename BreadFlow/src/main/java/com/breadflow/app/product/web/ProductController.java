@@ -44,7 +44,7 @@ public class ProductController {
 	// 제품등록 - 처리
 	@PostMapping("productInsert")
 	public String productInsertProcess(ProductVO productVO) {
-		return "product/productListAll";
+		return "redirect:/productListAll";
 	}
 	
 	
