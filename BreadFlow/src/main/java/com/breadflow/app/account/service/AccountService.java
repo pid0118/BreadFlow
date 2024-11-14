@@ -8,4 +8,6 @@ public interface AccountService {
 
 	// 회사(company) 단건 등록
 	public int insertCompany(AccountVO accountVO);
+
+	public int insertMember(AccountVO accountVO);
 }

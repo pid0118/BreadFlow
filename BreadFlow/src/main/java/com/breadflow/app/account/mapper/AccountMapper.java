@@ -10,4 +10,6 @@ public interface AccountMapper {
 	public List<AccountVO> selectAccountList();
 
 	public int insertCompany(AccountVO accountVO);
+
+	public int insertMember(AccountVO accountVO);
 }

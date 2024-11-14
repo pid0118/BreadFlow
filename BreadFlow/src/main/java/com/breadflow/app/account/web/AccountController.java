@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.account.service.AccountService;
 import com.breadflow.app.account.service.AccountVO;
@@ -33,9 +34,11 @@ public class AccountController {
 	
 	// 담당자 member 및 company 삽입 AJAX
 	@PostMapping("insertAccount.do")
+	@ResponseBody
 	public int mngAccountInsert(AccountVO accountVO) {
 		int result = accountService.insertCompany(accountVO);
-		System.out.println("[AccountController.java] inserAccount - result: " + result);
-		return result;
+		int result2 = accountService.insertMember(accountVO);
+		System.out.println("[AccountController.java] inserAccount - result2: " + result2);
+		return result + result2;
 	}
 }

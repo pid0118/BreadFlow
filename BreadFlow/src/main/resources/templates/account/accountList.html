@@ -49,12 +49,11 @@
 								<th>회사명</th>
 								<th class="datatable-nosort">기타사항</th>
 								<th>고유번호</th>
-								<!-- TODO 여기서부터 히든처리 할것 -->
-								<th>사업자등록번호</th>
-								<th>연락처</th>
-								<th>지역</th>
-								<th>주소</th>
-								<th>계약일자</th>
+								<th hidden="hidden">사업자등록번호</th>
+								<th hidden="hidden">연락처</th>
+								<th hidden="hidden">지역</th>
+								<th hidden="hidden">주소</th>
+								<th hidden="hidden">계약일자</th>
 
 							</tr>
 						</thead>
@@ -68,12 +67,11 @@
 									<td id="parentComName">[[ ${acc.companyName} ]]</td>
 									<td id="parentOther">[[ ${acc.other} ]]</td>
 									<td id="parentMemNo">[[ ${acc.memberNo} ]]</td>
-									<!-- TODO 여기서부터 히든처리 할것 -->
-									<td id="parentBrn">[[ ${acc.brn} ]]</td>
-									<td id="parentTel">[[ ${acc.tel} ]]</td>
-									<td id="parentRegion">[[ ${acc.region} ]]</td>									
-									<td id="parentComAddr">[[ ${acc.companyAddress} ]]</td>
-									<td id="parentContDt">[[ ${acc.contractDate} ]]</td>
+									<td id="parentBrn"  hidden="hidden">[[ ${acc.brn} ]]</td>
+									<td id="parentTel"  hidden="hidden">[[ ${acc.tel} ]]</td>
+									<td id="parentRegion"  hidden="hidden">[[ ${acc.region} ]]</td>									
+									<td id="parentComAddr"  hidden="hidden">[[ ${acc.companyAddress} ]]</td>
+									<td id="parentContDt"  hidden="hidden">[[ ${acc.contractDate} ]]</td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -89,37 +87,37 @@
 		<div class="updateAccounts" style="display: block;">
 			<form>
 				<div class="row">
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>고유번호</label> <input type="text" class="form-control"
 								id="updMemNo">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>사업자등록번호</label> <input type="text" class="form-control"
 								id="updBrn">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>이름</label> <input type="text" class="form-control"
 								id="updName">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>회사명</label> <input type="text" class="form-control"
 								id="updComName">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>연락처</label> <input type="text" class="form-control"
 								id="updTel">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>계약일자</label>
 							<!-- <input type="text" class="form-control" id="updContDt"> -->
@@ -127,19 +125,19 @@
 								id="updContDt">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>지역</label> <input type="text" class="form-control"
 								id="updRegion">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>주소</label> <input type="text" class="form-control"
 								id="updAddr">
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-12">
+					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>기타사항</label> <input type="text" class="form-control"
 								id="updOther">
@@ -174,22 +172,22 @@
 					<label>&nbsp;</label> <input type="button"
 						class="form-control btn btn-primary" value="번호검증">
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>이름</label> <input type="text" class="form-control" name="name">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>업체명</label> <input type="text" class="form-control" name="companyName">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>업체분류</label>
 						<select class="custom-select col-12" name="div">
@@ -201,7 +199,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>지역</label>
 						<select class="custom-select col-12" name="region">
@@ -212,22 +210,23 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>주소</label> <input type="text" class="form-control" name="companyAddress">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>계약일자</label>
 						<input class="form-control date-picker" type="text" name="contractDate">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>기타사항</label> <input type="text" class="form-control" name="other">
 					</div>
 				</div>
+				
 				<div class="updateButtons">
 					<button type="button" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
@@ -259,17 +258,19 @@
 	
 
 	// [박진석|24.11.14] 테이블의 행 클릭 시 상세정보 출력하는 코드
-	document.querySelector(".insertMngAccount").style.display = 'none';
-	document.querySelector(".updateAccounts").style.display = 'block';
 	
 	let accTblTrs = document.querySelectorAll(".accounts-table tr");
-
+	
+	
+	
 	for (let i = 1; i < accTblTrs.length; i++) {
 		accTblTrs[i].addEventListener("click", getTargetInfo);
-		console.log(accTblTrs[i]);
 	}
 
 	function getTargetInfo(e) {
+		document.querySelector(".insertMngAccount").style.display = 'none';
+		document.querySelector(".updateAccounts").style.display = 'block';
+		
 		let parentInfo = e.target.parentElement;
 		document.querySelector("#updMemNo").value = parentInfo.querySelector("#parentMemNo").innerText;
 		document.querySelector("#updBrn").value = parentInfo.querySelector("#parentBrn").innerText;
@@ -280,6 +281,7 @@
 		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
 		document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;
 		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
+		console.log("clicked!");
 	}
 	// 상세정보 출력 코드 끝
 

@@ -27,5 +27,11 @@ public class AccountServiceImpl implements AccountService {
 		int result = accountMapper.insertCompany(accountVO);
 		return result;
 	}
+
+	@Override
+	public int insertMember(AccountVO accountVO) {
+		int result = accountMapper.insertMember(accountVO);
+		return result;
+	}
 	
 }

@@ -12,6 +12,7 @@
 		        ,m.tel
 		        ,c.company_address
 		        ,m.contract_date
+		        ,c.region
 		        ,m.other
 		        
 		FROM member m JOIN company c
@@ -29,13 +30,37 @@
 		    ,brn
 		    ,region
 		) VALUES (
-		    'CP' || '00001'
+		    'CP' || '10006'
 		    , #{div}
 		    , #{companyName}
 		    , #{companyAddress}
 		    , #{companyTel}
 		    , #{brn}
 		    , #{region}
+		)
+	</insert>
+	
+	<insert id="insertMember" parameterType="AccountVO">
+		INSERT INTO member (
+		    member_no
+		    ,id
+		    ,password
+		    ,name
+		    ,tel
+		    ,other
+		    ,position
+		    ,company_no
+		    ,contract_date
+		) VALUES (
+		    'US' || '10006'
+		    ,'BB' || '10006'
+		    ,'0000'
+		    , #{name}
+		    , #{companyTel}
+		    , #{other}
+		    ,'담'
+		    , 'CP10005'
+		    , #{contractDate}
 		)
 	</insert>
 
