@@ -3,14 +3,29 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<style>
+.insertButtons {
+	
+}
+
+.searchs {
+	
+}
+
+.updateButtons button {
+	float: right;
+	margin-left: 10px;
+}
+</style>
 
 <div class="container">
 	<div class="parentArea">
 		<div class="insertButtons">
-			<button>담당자 계정 생성</button>
-			<button>사원 계정 생성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정 생성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
-		<div class="searchArea">
+		<div class="searchs">
 			<form>
 				<select name="condition" id="cond">
 					<option value="name">이름</option>
@@ -21,24 +36,288 @@
 		</div>
 
 		<div>
-			<!-- 테이블이 들어갈 자리 -->
+			<!-- 회원 테이블 시작 -->
+			<div class="card-box mb-30">
+				<div class="pb-20">
+					<table class="accounts-table table stripe hover nowrap">
+						<thead>
+							<tr>
+								<th class="table-plus datatable-nosort">순번</th>
+								<th>권한</th>
+								<th>아이디</th>
+								<th>이름</th>
+								<th>회사명</th>
+								<th class="datatable-nosort">기타사항</th>
+								<th>고유번호</th>
+								<!-- TODO 여기서부터 히든처리 할것 -->
+								<th>사업자등록번호</th>
+								<th>연락처</th>
+								<th>지역</th>
+								<th>주소</th>
+								<th>계약일자</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="acc, sts : ${accounts}">
+								<tr>
+									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
+									<td id="parentPosit">[[ ${acc.position} ]]</td>
+									<td id="parentId">[[ ${acc.id} ]]</td>
+									<td id="parentName">[[ ${acc.name} ]]</td>
+									<td id="parentComName">[[ ${acc.companyName} ]]</td>
+									<td id="parentOther">[[ ${acc.other} ]]</td>
+									<td id="parentMemNo">[[ ${acc.memberNo} ]]</td>
+									<!-- TODO 여기서부터 히든처리 할것 -->
+									<td id="parentBrn">[[ ${acc.brn} ]]</td>
+									<td id="parentTel">[[ ${acc.tel} ]]</td>
+									<td id="parentRegion">[[ ${acc.region} ]]</td>									
+									<td id="parentComAddr">[[ ${acc.companyAddress} ]]</td>
+									<td id="parentContDt">[[ ${acc.contractDate} ]]</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- 회원 테이블 끝 -->
 		</div>
 
 	</div>
 	<hr>
 	<div class="childArea">
-		<div class="row">
-			<div class="col-md-6 col-sm-12">
-				<div class="form-group">
-					<label>고유번호</label> <input type="text" class="form-control">
+		<div class="updateAccounts" style="display: block;">
+			<form>
+				<div class="row">
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>고유번호</label> <input type="text" class="form-control"
+								id="updMemNo">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>사업자등록번호</label> <input type="text" class="form-control"
+								id="updBrn">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>이름</label> <input type="text" class="form-control"
+								id="updName">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>회사명</label> <input type="text" class="form-control"
+								id="updComName">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>연락처</label> <input type="text" class="form-control"
+								id="updTel">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>계약일자</label>
+							<!-- <input type="text" class="form-control" id="updContDt"> -->
+							<input class="form-control date-picker" type="text"
+								id="updContDt">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>지역</label> <input type="text" class="form-control"
+								id="updRegion">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>주소</label> <input type="text" class="form-control"
+								id="updAddr">
+						</div>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="form-group">
+							<label>기타사항</label> <input type="text" class="form-control"
+								id="updOther">
+						</div>
+					</div>
+					<div class="updateButtons">
+						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">선택한
+							계정 삭제</button>
+						<button type="button" class="btn btn-primary btn-lg"
+							id="udtAccBtn">수정사항 저장</button>
+						<button type="button" class="btn btn-warning btn-lg" onclick="resetPassword()"
+							id="resetPwBtn">비밀번호 초기화</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="insertMngAccount" style="display: none;">
+			<form id="insertMngAccountFrm" method="post">
+			<div class="row">
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>고유번호</label> <input type="text" class="form-control" name="companyNo">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>사업자등록번호</label> <input type="text" class="form-control" name="brn">
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-12">
+					<label>&nbsp;</label> <input type="button"
+						class="form-control btn btn-primary" value="번호검증">
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>이름</label> <input type="text" class="form-control" name="name">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>업체명</label> <input type="text" class="form-control" name="companyName">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>업체분류</label>
+						<select class="custom-select col-12" name="div">
+							<option selected="selected" value="본">본사</option>
+							<option value="가">가맹점</option>
+							<option value="공">공급업체</option>
+							<option value="제">제조공장</option>
+							<option value="물">물류창고</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>지역</label>
+						<select class="custom-select col-12" name="region">
+							<option selected="selected" value="서울">서울</option>
+							<option value="대전">대전</option>
+							<option value="대구">대구</option>
+							<option value="부산">부산</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>주소</label> <input type="text" class="form-control" name="companyAddress">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>계약일자</label>
+						<input class="form-control date-picker" type="text" name="contractDate">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>기타사항</label> <input type="text" class="form-control" name="other">
+					</div>
+				</div>
+				<div class="updateButtons">
+					<button type="button" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
+					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
 				</div>
 			</div>
-			<div class="col-md-6 col-sm-12">
-				<div class="form-group">
-					<label>사업자등록번호</label> <input type="text" class="form-control">
-				</div>
-			</div>
+			</form>
 		</div>
 	</div>
-
 </div>
+
+<script>
+	// [박진석|24.11.14] 버튼들 이벤트 걸기
+	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);	// 담당자 계정 생성으로 폼 전환 버튼
+	
+	
+	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
+	
+	// 버튼 이벤트 끝
+	
+	
+	// [박진석|24.11.14] "담당자 계정 생성" 버튼 클릭 시 폼 전환하는 코드
+	function showMngInsertForm() {
+		document.querySelector(".insertMngAccount").style.display = 'block';
+		document.querySelector(".updateAccounts").style.display = 'none';
+	}
+	
+	
+	// 담당자 계정 생성 폼 전환 끝
+	
+
+	// [박진석|24.11.14] 테이블의 행 클릭 시 상세정보 출력하는 코드
+	document.querySelector(".insertMngAccount").style.display = 'none';
+	document.querySelector(".updateAccounts").style.display = 'block';
+	
+	let accTblTrs = document.querySelectorAll(".accounts-table tr");
+
+	for (let i = 1; i < accTblTrs.length; i++) {
+		accTblTrs[i].addEventListener("click", getTargetInfo);
+		console.log(accTblTrs[i]);
+	}
+
+	function getTargetInfo(e) {
+		let parentInfo = e.target.parentElement;
+		document.querySelector("#updMemNo").value = parentInfo.querySelector("#parentMemNo").innerText;
+		document.querySelector("#updBrn").value = parentInfo.querySelector("#parentBrn").innerText;
+		document.querySelector("#updName").value = parentInfo.querySelector("#parentName").innerText;
+		document.querySelector("#updComName").value = parentInfo.querySelector("#parentComName").innerText;
+		document.querySelector("#updTel").value = parentInfo.querySelector("#parentMemNo").innerText;
+		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
+		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
+		document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
+	}
+	// 상세정보 출력 코드 끝
+
+	// [박진석|24.11.14] 비밀번호 초기화하는 코드
+	function resetPassword() {
+		let memberNo = document.querySelector("#updMemNo").value;
+		
+		if (memberNo == "") {
+			alertNoSelected();
+		} else {
+			// 초기화 ajax
+		}
+		
+	}
+	
+	function alertNoSelected() {
+		alert("초기화할 행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
+	}
+	
+	// 비밀번호 초기화 끝
+	
+	
+	// [박진석|24.11.14] 담당자 계정 DB에 Insert하는 코드
+	function MngInsertAjax() {
+		console.log($('#insertMngAccountFrm').serialize());
+		
+		$.ajax({
+            url: "insertAccount.do",
+            type: "POST",
+            data: $('#insertMngAccountFrm').serialize(),
+            success: function(data){
+                alert("신규등록 성공!");
+                console.log(data);
+            },
+            error: function(){  alert("신규등록 error");  }
+        });
+	}
+	// 담당자 계정 DB Insert AJAX끝
+	
+	
+</script>
