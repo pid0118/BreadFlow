@@ -147,8 +147,10 @@
 			</table>
 		</div>
 	</div>
-	<!-- js -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+	<!-- js -->
 	<script src="../vendors/scripts/core.js"></script>
 	<script src="../vendors/scripts/script.min.js"></script>
 	<script src="../vendors/scripts/process.js"></script>
@@ -169,6 +171,16 @@
 	<script src="../vendors/scripts/datatable-setting.js"></script>
 </body>
 <script>
+			$(document).ready(function() {
+				$('.custom-select2').select2();
+				
+				$('.custom-select2').on('change', function() {
+					var selval = $(this).val();
+					console.log('값 : ' + selval);
+					console.log($(this).closest('.text-left').next().html());
+				});
+			});
+
 			document.body.addEventListener('click', function(event) {
 				console.log(event.target.parentElement);
 				if(event.target.children[0].classList.contains('select2-selection__rendered')){
