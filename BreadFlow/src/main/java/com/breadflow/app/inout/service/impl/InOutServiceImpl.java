@@ -27,15 +27,15 @@ public class InOutServiceImpl implements InOutService {
 		return inOutMapper.selectOutstoreList();
 	}
 
-	@Override
-	public InstoreVO instoreInfo(InstoreVO instoreVO) {
-		return inOutMapper.selectInstoreInfo(instoreVO);
-	}
-
-	@Override
-	public OutstoreVO outstoreInfo(OutstoreVO outstoreVO) {
-		return inOutMapper.selectOutstoreInfo(outstoreVO);
-	}
+//	@Override
+//	public InstoreVO instoreInfo(InstoreVO instoreVO) {
+//		return inOutMapper.selectInstoreInfo(instoreVO);
+//	}
+//
+//	@Override
+//	public OutstoreVO outstoreInfo(OutstoreVO outstoreVO) {
+//		return inOutMapper.selectOutstoreInfo(outstoreVO);
+//	}
 
 	@Override
 	public int instoreInsert(InstoreVO instoreVO) {
