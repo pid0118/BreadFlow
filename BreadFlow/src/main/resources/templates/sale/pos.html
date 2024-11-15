@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/breadflow_layout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style>
+	body {
+	    font-family: Arial, sans-serif;
+	    margin: 0;
+	    padding: 0;
+	    background-color: #f0f0f0;
+	}
+	
+	.container {
+	    display: flex;
+	    max-width: 1200px;
+	    height: 800px;
+	    margin: 0 auto;
+	    background-color: #fff;
+	    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+	}
+	
+	.left-panel {
+	    flex: 2;
+	    border-right: 1px solid #ddd;
+	}
+	
+	.right-panel {
+	    flex: 1;
+	    padding: 20px;
+	    margin:10px;
+	    background-color: #f9f9f9;
+	}
+	
+	header {
+	    display: flex;
+	    justify-content: space-between;
+	    padding: 10px;
+	    background-color: #4a4a4a;
+	    color: white;
+	}
+	
+	nav {
+	    display: flex;
+	    overflow-x: auto;
+	    background-color: #f0f0f0;
+	    padding: 10px 5px;
+	}
+	
+	.nav-button {
+	    border: none;
+	    background: none;
+	    padding: 5px 10px;
+	    margin: 0 5px;
+	    white-space: nowrap;
+	}
+	
+	.nav-button.active {
+	    font-weight: bold;
+	    border-bottom: 2px solid #000;
+	}
+	
+	.menu-grid {
+	    display: grid;
+	    grid-template-columns: repeat(4, 1fr);
+	    grid-template-rows: repeat(5, 1fr);
+	    gap: 10px;
+	    padding: 10px;
+	}
+	
+	.menu-item {
+	    background-color: #fff;
+	    border: 1px solid #ddd;
+	    height:82px;
+	    padding: 10px;
+	    text-align: center;
+	    cursor: pointer;
+	}
+	
+	.menu-item:hover {
+	    background-color: #f0f0f0;
+	}
+	
+	.item-name {
+	    font-weight: bold;
+	    margin-bottom: 5px;
+	}
+	
+	.item-price {
+	    color: #666;
+	}
+	
+	.hot { background-color: #ffebee; }
+	.ice { background-color: #e3f2fd; }
+	.caramel-frost { background-color: #e1f5fe; }
+	.black-bean { background-color: #e8f5e9; }
+	.green-tea { background-color: #f1f8e9; }
+	.grapefruit { background-color: #fff3e0; }
+	
+	.action-buttons {
+	    display: flex;
+	    justify-content: flex-end;
+	    padding: 10px;
+	    background-color: #f0f0f0;
+	}
+	
+	.action-button {
+	    border: none;
+	    background: none;
+	    margin: 0 5px;
+	}
+	
+	footer {
+	    background-color: #f0f0f0;
+	    padding: 10px;
+	}
+	
+	.footer-buttons {
+	    display: flex;
+	    justify-content: space-between;
+	    margin-bottom: 10px;
+	}
+	
+	.footer-buttons button {
+	    border: 1px solid #ddd;
+	    background-color: #fff;
+	    padding: 5px 10px;
+	}
+	
+	.footer-actions {
+	    display: flex;
+	    justify-content: space-between;
+	    margin-bottom: 10px;
+	}
+	
+	.prev-button, .next-button {
+	    border: 1px solid #ddd;
+	    background-color: #fff;
+	    padding: 5px 10px;
+	}
+	
+	.submit-button {
+	    background-color: #4a4a4a;
+	    color: white;
+	    border: none;
+	    padding: 5px 15px;
+	}
+	
+	.total {
+	    text-align: right;
+	    font-weight: bold;
+	}
+	
+	#selected-items {
+	    margin-top: 20px;
+	}
+	
+	.selected-item {
+	    display: flex;
+	    justify-content: space-between;
+	    align-items: center;
+	    margin-bottom: 10px;
+	    padding: 10px;
+	    background-color: #fff;
+	    border: 1px solid #ddd;
+	}
+	
+	.item-controls {
+	    display: flex;
+	    align-items: center;
+	}
+	
+	.item-controls button {
+	    margin: 0 5px;
+	    padding: 5px 10px;
+	    background-color: #f0f0f0;
+	    border: 1px solid #ddd;
+	    cursor: pointer;
+	}
+	
+	.total-price {
+	    margin-top: 20px;
+	    font-weight: bold;
+	    font-size: 1.2em;
+	}
+</style>
+</head>
+<body>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <header>
+                <div class="header-left">3월 2일 (목) 오후 6:41</div>
+                <div class="header-right"></div>
+            </header>
+            <nav>
+                <button class="nav-button active">즐겨찾는 메뉴</button>
+                <button class="nav-button">에스프레소</button>
+                <button class="nav-button">스무디</button>
+                <button class="nav-button">허브티</button>
+                <button class="nav-button">베이커리</button>
+            </nav>
+            <div class="menu-grid">
+                <div class="menu-item hot" data-name="HOT 아메리카노" data-price="4000" data-code="g0001">
+                    <div class="item-name">HOT 아메리카노</div>
+                    <div class="item-price">4,000</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-button">◀</button>
+                <button class="action-button">▶</button>
+                <span class="item-count">0개</span>
+                <button class="action-button">🖨️</button>
+                <button class="action-button">🗑️</button>
+                <button class="action-button">⭐</button>
+                <button class="action-button">▲</button>
+                <button class="action-button">▼</button>
+            </div>
+            <footer>
+                <div class="footer-buttons">
+                    <button>상품가</button>
+                    <button>수량</button>
+                    <button>할인</button>
+                    <button>부가세(0)</button>
+                    <button>봉사료</button>
+                </div>
+                <div class="footer-actions">
+                    <button class="prev-button">◀</button>
+                    <button class="next-button">▶</button>
+                    <button class="submit-button">상세등록</button>
+                </div>
+                <div class="total">0원 결제</div>
+            </footer>
+        </div>
+        <div class="right-panel">
+            <h2>선택된 메뉴</h2>
+						<ul id="selected-items" class="list-group mb-3">
+						</ul>
+
+            <div class="total-price">총 금액: <span id="total-price">0</span>원</div>
+            <button class="submit-button">주문</button>
+        </div>
+    </div>
+    <script>
+			let selectedMenu =[];
+    		let item = document.querySelector(".menu-grid");
+			let selectItem = document.querySelector("#selected-items");
+    	
+			item.addEventListener("click", () =>{
+				if(event.target.closest(".menu-item")){
+					const element = event.target.closest(".menu-item");
+					let name = element.dataset.name;
+					let price = parseInt(element.dataset.price);
+					// 배열에 값이 있는지 체크
+					selectedMenu.push({name,price});
+					// 있으면 수량을 1씩 증가
+					//if(selectedMenu[])
+					// 없으면 배열에 추가
+
+					// 배열전체를 다시 그리기
+					arrayPrint();
+				}
+			});
+
+			function arrayPrint(){
+				for(i in selectedMenu){
+					let node=`	<li class="list-group-item d-flex justify-content-between lh-sm">
+									<div>
+										<h6 class="my-0">${selectedMenu[i].name}</h6>
+										<small class="text-body-secondary"></small>
+									</div>
+									<span class="text-body-secondary">${selectedMenu[i].price}</span>
+								</li>`
+					selectItem.insertAdjacentHTML("afterbegin", node);
+				}
+			}
+    </script>
+</body>
+</html>

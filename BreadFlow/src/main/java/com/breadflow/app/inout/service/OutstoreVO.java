@@ -21,4 +21,6 @@ public class OutstoreVO {
 	private String unit;
 	private String outstoreCompany;
 	private String instoreCompany;
+	
+	private String itemDiv;
 }
