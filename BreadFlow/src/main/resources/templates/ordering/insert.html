@@ -29,37 +29,28 @@
 							</div>
 							<div class="modal-body">
 								<div class="row">
-									<div class="col-md-3 text-left">
+									<div class="col-md-6 text-left">
 										<div class="form-group">
 											<label>품목 종류</label> <select
-												class="custom-select2 form-control" multiple="multiple"
-												style="width: 100%;">
-												<optgroup label="품목 종류">
-													<option value="원재료">원재료</option>
-													<option value="부재료">부재료</option>
-													<option value="완제품">완제품</option>
-													<option value="생산품">생산품</option>
-												</optgroup>
+												class="custom-select2 form-control first"
+												multiple="multiple" style="width: 100%;">
 											</select>
 										</div>
 									</div>
-									<div class="col-md-3 text-left">
+									<div class="col-md-6 text-left">
 										<div class="form-group">
 											<label>세부 종류</label> <select
 												class="custom-select2 form-control second"
 												multiple="multiple" style="width: 100%;">
-												<optgroup label="원재료">
-													<option value="AK">분말류</option>
-													<option value="HI">유제품</option>
-													<option value="CA">당류</option>
-												</optgroup>
 											</select>
 										</div>
 									</div>
-									<div class="col-md-4 col-sm-4">
+								</div>
+								<div class="row">
+									<div class="col-md-9 col-sm-12">
 										<input type="text" class="form-control" placeholder="품목명">
 									</div>
-									<div class="col-md-2 col-sm-4 ">
+									<div class="col-md-3 col-sm-12">
 										<button type="button" class="btn btn-primary">검색</button>
 									</div>
 								</div>
@@ -89,11 +80,26 @@
 											<td>EA/BOX</td>
 											<td>5000</td>
 										</tr>
+										<tr>
+											<td>
+												<div class="custom-control custom-checkbox mb-5">
+													<input type="checkbox" class="custom-control-input"
+														id="customCheck2"> <label
+														class="custom-control-label" for="customCheck2"></label>
+												</div>
+											</td>
+											<td>IX0000</td>
+											<td>강력 밀가루</td>
+											<td>1KG</td>
+											<td>EA/BOX</td>
+											<td>5000</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary">추가</button>
+								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal"
+									aria-hidden="true">추가</button>
 							</div>
 						</div>
 					</div>
@@ -109,6 +115,7 @@
 						<th>품목명</th>
 						<th>단위</th>
 						<th>규격</th>
+						<th>금액</th>
 						<th>수량</th>
 						<td>총 금액</td>
 					</tr>
@@ -119,6 +126,7 @@
 						<td>밀가루</td>
 						<td>1KG</td>
 						<td>EA/BOX</td>
+						<td>5,000</td>
 						<td>
 							<div class="col-4">
 								<input type="number" class="form-control" value="100" min="1">
@@ -131,6 +139,7 @@
 						<td>밀가루</td>
 						<td>1KG</td>
 						<td>EA/BOX</td>
+						<td>5,000</td>
 						<td>
 							<div class="col-4">
 								<input type="number" class="form-control" value="200" min="1">
@@ -138,11 +147,11 @@
 						</td>
 						<td>50,000</td>
 					</tr>
-					<tr>
+					<!-- <tr>
 						<td colspan="4" style="text-align: center;">합계</td>
 						<td>300</td>
 						<td>100,000</td>
-					</tr>
+					</tr> -->
 				</tbody>
 			</table>
 		</div>
@@ -169,48 +178,56 @@
 	<script src="../plugins/datatables/js/vfs_fonts.js"></script>
 	<!-- Datatable Setting js -->
 	<script src="../vendors/scripts/datatable-setting.js"></script>
-</body>
-<script>
-			$(document).ready(function() {
-				$('.custom-select2').select2();
-				
-				$('.custom-select2').on('change', function() {
-					var selval = $(this).val();
-					console.log('값 : ' + selval);
-					console.log($(this).closest('.text-left').next().html());
-				});
+	<script>
+		$(document).ready(function() {
+			$('.custom-select2').select2();
+			
+			$('.custom-select2').on('change', function() {
+				let selval = $(this).val();
+				let changeOpt = $('.custom-select2').val();
+				let changeVal = changeOpt[changeOpt.length - 1];
 			});
-
-			document.body.addEventListener('click', function(event) {
-				console.log(event.target.parentElement);
-				if(event.target.children[0].classList.contains('select2-selection__rendered')){
-					let major = document.querySelectorAll('.custom-select2')[0].options;
-					
-					for(let opt of major){
-						if(opt.selected == true){
-							console.log(opt.innerHTML);
-							document.querySelectorAll('.custom-select2.form-control.second optgroup').forEach(first => {
-								if(first.getAttribute('label') != opt.innerHTML) {
-									document.querySelector('.custom-select2.form-control.second')
-									.insertAdjacentHTML('beforeend', `<optgroup label="${opt.innerHTML}">
-																		<option>test</option>
-																	  </optgroup>`)
-								}
-							})
-						}
-					}
+		});
+		
+		fetch("../category/list")
+		.then(result => result.json())
+		.then(datas => {
+			let major = datas[0];
+			let element = '';
+			for(let data in datas){
+				if(major == datas[data].major){
+					element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+				} else {
+					element += '</optgroup>';
+					$('.custom-select2.second').append(element);
+					element = `<optgroup label="${datas[data].major}">
+						<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+					major = datas[data].major;	
 				}
-				if(event.target.classList.contains('select2-selection__choice__remove')){
-					document.querySelectorAll('.custom-select2.form-control.second optgroup').forEach(optgroup => {
-						if(optgroup.getAttribute('label') == event.target.parentElement.innerText.substring(1)){
-							optgroup.remove();
-						}
-					})
-					document.querySelector('.custom-select2.form-control.second').lastChild.remove();
+			}
+			element += '</optgroup>';
+			$('.custom-select2.second').append(element);
+			
+		})
+		.catch(err => console.log());
+		
+		
+		itemAdd.addEventListener('click', function() {
+			let checktd = document.querySelectorAll('table .custom-checkbox input');
+			checktd.forEach(td => {
+				if(td.checked == true){
+					let datas = td.closest('tr').querySelectorAll('td');
+					let element = '<tr>';
+					for(let i=1; i<datas.length; i++){
+						console.log(datas[i].innerText);
+						element += `<td>${datas[i].innerText}</td>`;
+					} 
+					element += '<td><div class="col-4"><input type="number" class="form-control" min="1"></div></td><td></td></tr>';
+					$('.datatable tbody').append(element);
 				}
 			})
+		})
 		
-	
 	</script>
 </body>
 </html>
