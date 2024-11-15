@@ -15,20 +15,20 @@
 	
 	<!-- 제품 상세조회 -->
 	<select id="selectProduct" parameterType="ProductVO" resultType="ProductVO">
-		SELECT productCode,
-			   productName,
-			   expirationDeadline,
-			   priductPrice,
-			   salePrice,
-			   safeStockQuantity,
+		SELECT product_code,
+			   product_name,
+			   expiration_deadline,
+			   priduct_price,
+			   sale_price,
+			   safe_stock_quantity,
 			   proplace,
-			   productImage,
+			   product_image,
 			   major,
 			   sub,
 			   unit,
 			   standard
 		FROM  product
-		WHERE productCode = #{productCode}
+		WHERE product_code = #{productCode}
 	</select>
 	
 	<!-- 제품 등록 -->
@@ -37,10 +37,27 @@
 	</insert>
 
 	<!-- 제품정보 수정 -->
-	
-	
+	<update id="updateProduct" parameterType="ProductVO">
+		UPDATE product
+		SET	   <if test="productName != null!">product_name = #{productName}</if>
+			   <if test="expriationDeadline != null!">expiration_deadline = #{expriationDeadline}</if>
+			   <if test="productPrice != null!">priduct_price = #{productPrice}</if>
+			   <if test="salePrice != null!">sale_price = #{salePrice}</if>
+			   <if test="safeStockQuantity != null!">safe_stock_quantity = #{safeStockQuantity}</if>
+			   <if test="proplace != null!">proplace = #{proplace}</if>
+			   <if test="product_image != null!">product_image = #{product_image}</if>
+			   <if test="major != null!">major = #{major}</if>
+			   <if test="sub != null!">sub = #{sub}</if>
+			   <if test="unit != null!">unit = #{unit}</if>
+			   <if test="standard != null!">standard = #{standard}</if>
+		WHERE product_code = #{productCode}
+			   
+	</update>
 	
 	<!-- 제품 삭제 -->
-	
+	<delete id="deleteProduct" parameterType="ProductVO">
+		DELETE FROM product
+		Where product_code = #{productCode}
+	</delete>
 	
 </mapper>
