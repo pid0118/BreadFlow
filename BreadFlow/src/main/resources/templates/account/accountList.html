@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<style>
+.insertButtons {
+	
+}
+
+.searchs {
+	
+}
+
+.updateButtons button {
+	float: right;
+	margin-left: 10px;
+}
+</style>
+
+<div class="container">
+	<div class="parentArea">
+		<div class="insertButtons">
+			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정 생성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
+		</div>
+		<div class="searchs">
+			<form>
+				<select name="condition" id="cond">
+					<option value="name">이름</option>
+					<option value="role">권한</option>
+					<option value="comname">회사명</option>
+				</select>
+			</form>
+		</div>
+
+		<div>
+			<!-- 회원 테이블 시작 -->
+			<div class="card-box mb-30">
+				<div class="pb-20">
+					<table class="accounts-table table stripe hover nowrap">
+						<thead>
+							<tr>
+								<th class="table-plus datatable-nosort">순번</th>
+								<th>권한</th>
+								<th>아이디</th>
+								<th>이름</th>
+								<th>회사명</th>
+								<th class="datatable-nosort">기타사항</th>
+								<th hidden="hidden">고유번호</th>
+								<th hidden="hidden">사업자등록번호</th>
+								<th hidden="hidden">연락처</th>
+								<th hidden="hidden">지역</th>
+								<th hidden="hidden">주소</th>
+								<th hidden="hidden">계약일자</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="acc, sts : ${accounts}">
+								<tr>
+									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
+									<td id="parentPosit">[[ ${acc.position} ]]</td>
+									<td id="parentId">[[ ${acc.id} ]]</td>
+									<td id="parentName">[[ ${acc.name} ]]</td>
+									<td id="parentComName">[[ ${acc.companyName} ]]</td>
+									<td id="parentOther">[[ ${acc.other} ]]</td>
+									<td id="parentMemNo" hidden="hidden">[[ ${acc.memberNo} ]]</td>
+									<td id="parentBrn"  hidden="hidden">[[ ${acc.brn} ]]</td>
+									<td id="parentTel"  hidden="hidden">[[ ${acc.tel} ]]</td>
+									<td id="parentRegion"  hidden="hidden">[[ ${acc.region} ]]</td>									
+									<td id="parentComAddr"  hidden="hidden">[[ ${acc.companyAddress} ]]</td>
+									<td id="parentContDt"  hidden="hidden">[[ ${acc.contractDate} ]]</td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- 회원 테이블 끝 -->
+		</div>
+
+	</div>
+	<hr>
+	<div class="childArea">
+		<div class="updateAccounts" style="display: block;">
+			<form id="updateAccountFrm" method="post">
+				<div class="row">
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>고유번호</label> <input type="text" class="form-control"
+								id="updMemNo" name="companyNo" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>사업자등록번호</label> <input type="text" class="form-control"
+								id="updBrn" name="brn" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>이름</label> <input type="text" class="form-control"
+								id="updName" name="name" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>업체명</label> <input type="text" class="form-control"
+								id="updComName" name="companyName"  readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>연락처</label> <input type="text" class="form-control"
+								id="updTel" name="companyTel" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>계약일자</label>
+							<!-- <input type="text" class="form-control" id="updContDt"> -->
+							<input class="form-control date-picker" type="text"
+								id="updContDt" name="contractDate" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>지역</label>
+							<select class="custom-select col-12" id="updRegion" name="region">
+								<option value="서울">서울</option>
+								<option value="대전">대전</option>
+								<option value="대구">대구</option>
+								<option value="부산">부산</option>
+						</select>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>주소</label> <input type="text" class="form-control"
+								id="updAddr" name="companyAddress" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>기타사항</label> <input type="text" class="form-control"
+								id="updOther" name="other" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">	<!-- TODO : 히든처리 하기 -->
+						<div class="form-group">
+							<label>아이디</label> <input type="text" class="form-control"
+								id="updId" name="id" >
+						</div>
+					</div>
+					<div class="updateButtons">
+						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">선택한
+							계정 삭제</button>
+						<button type="button" class="btn btn-primary btn-lg"
+							id="udtAccBtn">수정사항 저장</button>
+						<button type="button" class="btn btn-warning btn-lg"
+							id="resetPwBtn">비밀번호 초기화</button>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="insertMngAccount" style="display: none;">
+			<form id="insertMngAccountFrm" method="post">
+			<div class="row">
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>고유번호</label> <input type="text" class="form-control" name="companyNo">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>사업자등록번호</label> <input type="text" class="form-control" name="brn">
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-12">
+					<label>&nbsp;</label> <input type="button" id="brnConfirmBtn"
+						class="form-control btn btn-primary" value="번호검증">
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>이름</label> <input type="text" class="form-control" name="name">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>업체명</label> <input type="text" class="form-control" name="companyName">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>업체분류</label>
+						<select class="custom-select col-12" name="div">
+							<option selected="selected" value="본">본사</option>
+							<option value="가">가맹점</option>
+							<option value="공">공급업체</option>
+							<option value="제">제조공장</option>
+							<option value="물">물류창고</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>지역</label>
+						<select class="custom-select col-12" name="region">
+							<option selected="selected" value="서울">서울</option>
+							<option value="대전">대전</option>
+							<option value="대구">대구</option>
+							<option value="부산">부산</option>
+						</select>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>주소</label> <input type="text" class="form-control" name="companyAddress">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>계약일자</label>
+						<input class="form-control date-picker" type="text" name="contractDate">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>기타사항</label> <input type="text" class="form-control" name="other">
+					</div>
+				</div>
+				
+				<div class="updateButtons">
+					<button type="button" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
+					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	// [박진석|24.11.14] 버튼들 이벤트 걸기
+	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);	// 담당자 계정 생성으로 폼 전환 버튼
+	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
+	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);
+	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
+	// 버튼 이벤트 끝
+	
+	
+	// [박진석|24.11.14] "담당자 계정 생성" 버튼 클릭 시 폼 전환하는 코드
+	function showMngInsertForm() {
+		document.querySelector(".insertMngAccount").style.display = 'block';
+		document.querySelector(".updateAccounts").style.display = 'none';
+	}
+	// 담당자 계정 생성 폼 전환 끝
+	
+
+	// [박진석|24.11.14] 테이블의 행 클릭 시 상세정보 출력하는 코드
+	let accTblTrs = document.querySelectorAll(".accounts-table tr");
+	
+	
+	
+	for (let i = 1; i < accTblTrs.length; i++) {
+		accTblTrs[i].addEventListener("click", getTargetInfo);
+	}
+
+	function getTargetInfo(e) {
+		document.querySelector(".insertMngAccount").style.display = 'none';
+		document.querySelector(".updateAccounts").style.display = 'block';
+		
+		let parentInfo = e.target.parentElement;
+		document.querySelector("#updMemNo").value = parentInfo.querySelector("#parentMemNo").innerText;
+		document.querySelector("#updBrn").value = parentInfo.querySelector("#parentBrn").innerText;
+		document.querySelector("#updName").value = parentInfo.querySelector("#parentName").innerText;
+		document.querySelector("#updComName").value = parentInfo.querySelector("#parentComName").innerText;
+		document.querySelector("#updTel").value = parentInfo.querySelector("#parentMemNo").innerText;
+		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
+		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
+		
+		let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);
+		
+		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
+		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
+	}
+	// 상세정보 출력 코드 끝
+
+	// [박진석|24.11.14] 비밀번호 초기화하는 코드
+	function resetPwAjax() {
+		let id = document.querySelector("#updId").value;
+		console.log(id);
+		
+		if (id == "") {
+			alertNoSelected();
+		} else {
+			$.ajax({
+	            url: "ResetAccountPw.do",
+	            type: "POST",
+	            data: { 'id': id },
+	            success: function(data){
+	                alert("비밀번호 초기화 이게되네");
+	                console.log(data);
+	            },
+	            error: function(){  alert("비밀번호 초기화 실패");  }
+	        });
+		}
+		
+	}
+	
+	function alertNoSelected() {
+		alert("초기화할 행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
+	}
+	
+	// 비밀번호 초기화 끝
+	
+	
+	// [박진석|24.11.14] 담당자 계정 DB에 Insert하는 코드
+	function MngInsertAjax() {
+		$.ajax({
+            url: "insertAccount.do",
+            type: "POST",
+            data: $('#insertMngAccountFrm').serialize(),
+            success: function(data){
+                alert("신규등록 성공!");
+                location.reload(true);
+            },
+            error: function(){  alert("신규등록 error");  }
+        });
+	}
+	// 담당자 계정 DB Insert AJAX끝
+	
+	
+	// [박진석|24.11.15] 사업자등록번호 검증하는 코드
+	function confirmBrn () {
+		let brn = document.querySelector("#insertMngAccountFrm input[name^='brn']").value;
+		let key = "b2j0lOuzAsVNBkrqXjLU6xECwJ87j8bnhK5PGRAyYn9wab1F0Zo15c5o1%2Fr4Q4TEqcmF9n0Qc0ftrr59Bax%2Big%3D%3D"
+		
+		if(!brn) {
+			alert("사업자등록번호를 입력해주세요");
+			return false;
+		}
+		
+		var data = {
+				b_no: [brn],
+		}
+		
+		$.ajax({
+			  url: "https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=" + key,
+			  type: "POST",
+			  data: JSON.stringify(data),
+			  dataType: "JSON",
+			  contentType: "application/json",
+			  accept: "application/json",
+			  success: function(result) {
+			      let code = result.data[0].b_stt_cd
+			      if(code == '01') {
+			    	  alert("정상적인 번호입니다.");
+			      } else if(code == '02' || code == '03') {
+			    	  alert("휴업 또는 폐업된 번호입니다.")
+			      } else {
+			    	  alert("잘못된 번호입니다.")
+			      }
+			  },
+			  error: function(result) {
+			      console.log(result.responseText);
+			  }
+			});
+	}
+	// 검증코드 끝
+	
+	
+	
+	// [박진석|241115] 날짜 변환 함수
+	function formatKoreanDate(dateString) {
+	    // 정규표현식을 이용해 연도, 월, 일을 추출
+	    const datePattern = /([A-Za-z]{3})\s([A-Za-z]{3})\s(\d{1,2})\s\d{2}:\d{2}:\d{2}\s[A-Z]{3}\s(\d{4})/;
+	    const match = dateString.match(datePattern);
+	
+	    if (match) {
+	        // 월 문자열을 숫자로 변환하기 위해 월 이름 배열 선언
+	        const months = {
+	            Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
+	            Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
+	        };
+	
+	        // 추출한 값 할당
+	        const month = months[match[2]];  // 두 번째 그룹이 월
+	        const day = parseInt(match[3], 10);  // 세 번째 그룹이 일
+	        const year = parseInt(match[4], 10); // 네 번째 그룹이 연도
+	
+	        // 원하는 포맷으로 반환
+	        return `${year}년 ${month}월 ${day}일`;
+	    } else {
+	        // 포맷이 잘못된 경우 에러 메시지 반환
+	        return "올바르지 않은 날짜 형식입니다.";
+	    }
+	}
+	// 날짜 변환함수 끝
+
+
+	
+</script>
