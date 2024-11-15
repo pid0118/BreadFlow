@@ -48,4 +48,104 @@
 		            ON o.instore_no = i.instore_no
 		ORDER BY	o.outstore_no
 	</select>
+	<select id="selectOrderListForInsert" resultType="OrderListVO">
+		SELECT      o.ordering_date
+		            , od.ordering_ingredient
+		            , od.ordering_product
+		            , od.quantity
+		            , od.standard
+		            , od.unit
+		            , os.outstore_quantity
+		            , i.item_div
+		FROM        ordering o JOIN ordering_detail od
+		            ON o.ordering_code = od.ordering_code
+		            JOIN instore i
+		            ON od.ordering_detail_code = i.ordering_detail_code
+		            JOIN outstore os
+		            ON i.instore_no = os.outstore_no
+		WHERE       od.outstore_company = #{outstoreCompany}
+		ORDER BY   o.ordering_date
+	</select>
+	<select id="selectInstoreListForInsert" resultType="InstoreVO">
+		SELECT		i.instore_no
+		            , i.instore_date
+		            , i.item_div
+		            , i.item_code
+		            , i.instore_quantity
+		            , i.outstore_quantity
+		            , i.stock_quantity
+		            , i.facilities_div_no
+		            , i.lot_no
+		            , i.instore_manager
+		            , i.ordering_detail_code
+		            , i.instore_div
+		            , i.instore_div_no
+		            , i.expiration_deadline
+		            , od.standard
+		            , od.unit
+		            , od.outstore_company
+		            , od.ordering_product
+		            , m.member_no
+		            , c.company_name
+		FROM		ordering_detail od JOIN instore i
+		            ON od.ordering_detail_code = i.ordering_detail_code
+		            JOIN member m
+		            ON m.member_no = i.instore_manager
+		            JOIN company c
+		            ON m.member_no = c.company_no
+		WHERE		c.company_name = #{companyName}
+		ORDER BY	i.instore_date
+	</select>
+	<insert id="insertInstoreInfo" parameterType="InstoreVO">
+		INSERT INTO instore (instore_no
+		                    , instore_date
+		                    , item_div
+		                    , item_code
+		                    , instore_quantity
+		                    , outstore_quantity
+		                    , stock_quantity
+		                    , facilities_div_no
+		                    , lot_no
+		                    , instore_manager
+		                    , ordering_detail_code
+		                    , instore_div
+		                    , instore_div_no
+		                    , expiration_deadline)
+		VALUES      ('IN-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('instore','instore_no') FROM dual)
+		            , sysdate
+		            , #{itemDiv}
+		            , #{itemCode}
+		            , #{instoreQuantity}
+		            , #{outstoreQuantity}
+		            , #{stockQuantity}
+		            , #{facilitiesDivNo}
+		            , LEFT(#{itemDiv}, 2) || '-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('instore','lot_no') FROM dual)
+		            , #{instoreManager}
+		            , #{orderingDetailCode}
+		            , #{instoreDiv}
+		            , #{instoreDivNo}
+		            , #{expirationDeadline})
+	</insert>
+	<insert id="insertOutstoreInfo" parameterType="OutstoreVO">
+		INSERT INTO outstore (outstore_no
+		                     , outstore_date
+		                     , outstore_quantity
+		                     , outstore_manager
+		                     , orders_detail_no
+		                     , instore_no
+		                     , sales_no)
+		VALUES      ('OU-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('outstore','outstore_no') FROM dual)
+		            , sysdate
+		            , #{outstoreQuantity}
+		            , #{outstoreManager}
+		            , #{ordersDetailNo}
+		            , #{instoreNo}
+		            , #{salesNo})
+	</insert>
+	<select id="selectItemList" resultType="ItemListVO">
+		SELECT      i.ingredient_name
+		            , p.product_name
+		FROM        ingredient i JOIN product p
+		            ON 1 = 1
+	</select>
 </mapper>

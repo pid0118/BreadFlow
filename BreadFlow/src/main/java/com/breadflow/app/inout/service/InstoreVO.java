@@ -28,6 +28,7 @@ public class InstoreVO {
 	private String standard;
 	private String unit;
 	private String outstoreCompany;
+	private String orderingProduct;
 
 	private String memberNo;
 	
