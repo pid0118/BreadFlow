@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.account.mapper.AccountMapper">
+	<!-- 전체조회 -->
+	<select id="selectAccountList" resultType="AccountVO">
+		SELECT 	m.position
+        		,m.id
+				,m.member_no
+		        ,c.brn
+		        ,m.name
+		        ,c.company_name
+		        ,m.tel
+		        ,c.company_address
+		        ,m.contract_date
+		        ,c.region
+		        ,m.other
+		        
+		FROM member m JOIN company c
+		        ON m.company_no = c.company_no
+	</select>
+
+	<insert id="insertCompany" parameterType="AccountVO">
+	<selectKey resultType="string" keyProperty="companyNo" order="BEFORE">
+		SELECT 'CP' || LPAD(SUBSTR(MAX(company_no), 3) +1, 5, '0') FROM company
+	</selectKey>
+	
+		INSERT INTO company
+		(
+		    company_no
+		    ,div
+		    ,company_name
+		    ,company_address
+		    ,company_tel
+		    ,brn
+		    ,region
+		) VALUES (
+		    #{companyNo}
+		    , #{div}
+		    , #{companyName}
+		    , #{companyAddress}
+		    , #{companyTel}
+		    , #{brn}
+		    , #{region}
+		)
+	</insert>
+	
+	<insert id="insertMember" parameterType="AccountVO">
+	
+		INSERT INTO member (
+		    member_no
+		    ,id
+		    ,password
+		    ,name
+		    ,tel
+		    ,other
+		    ,position
+		    ,company_no
+		    ,contract_date
+		) VALUES (
+		    #{companyNo}
+		    , (SELECT 'BB' || LPAD(NVL(SUBSTR(MAX(id), 3),0)+1, 5, '0') FROM member)
+		    ,'0000'
+		    , #{name}
+		    , #{companyTel}
+		    , #{other}
+		    ,'담'
+		    , #{companyNo}
+		    , #{contractDate}
+		)
+	</insert>
+	
+	<update id="updatePwMember" parameterType="String">
+		UPDATE 	member
+		SET 	password = '0000'
+		WHERE 	id = #{id}
+	</update>
+
+</mapper>
