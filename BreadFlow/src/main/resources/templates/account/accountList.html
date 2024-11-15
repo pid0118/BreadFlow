@@ -263,9 +263,19 @@
 						<label>업체명</label> <input type="text" class="form-control" name="companyName">
 					</div>
 				</div>
+				<div class="col-md-4 col-sm-12">	<!-- TODO 나중에 HIdden 할것 -->
+					<div class="form-group">
+						<label>업체코드</label> <input type="text" class="form-control" name="companyNo">
+					</div>
+				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+						<label>연락처</label> <input type="text" class="form-control" name="tel">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12" hidden="hidden">
+					<div class="form-group">
+						<label>직책(사원)</label> <input type="text" class="form-control" value="b2" name="position">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12" hidden="hidden">
@@ -331,6 +341,7 @@
 	document.querySelector("#employeeInsertBtn").addEventListener("click", showEmployeeInsertForm);		// 직원 계정 생성으로 폼 전환 버튼
 	
 	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
+	document.querySelector("#insertEmployeeBtn").addEventListener("click", employeeInsertAjax);
 	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);
 	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);
 	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
@@ -460,6 +471,26 @@
 	}
 	// 담당자 계정 DB Insert AJAX끝
 	// =======================================================
+		
+	
+		
+	// =======================================================
+	// 사원 계정 DB INSERT AJAX
+	function employeeInsertAjax() {
+		$.ajax({
+            url: "insertEmployeeAccount.do",
+            type: "POST",
+            data: $('#insertMngAccountFrm').serialize(),
+            success: function(data){
+                alert("사원 신규등록 성공!");
+                location.reload(true);
+            },
+            error: function(){  alert("사원 신규등록 error");  }
+        });
+	}	
+	
+	// 일반 계정 INSERT AJAX 끝
+	// ======================================================
 		
 		
 

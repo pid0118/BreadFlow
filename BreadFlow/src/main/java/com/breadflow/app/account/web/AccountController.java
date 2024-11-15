@@ -47,6 +47,7 @@ public class AccountController {
 		System.out.println("[AccountController.java] passwordResetUpdate - id: " + accountVO.getId());
 		int result = accountService.updatePwMember(accountVO.getId());
 		return result;
+		
 	}
 	
 	@PostMapping("updateAccount.do")
@@ -57,5 +58,12 @@ public class AccountController {
 			
 		}*/
 		return 0;
+	}
+	
+	@PostMapping("insertEmployeeAccount.do")
+	@ResponseBody
+	public int employeeAccountInsert(AccountVO accountVO) {
+		int result = accountService.insertMember(accountVO);
+		return result;
 	}
 }
