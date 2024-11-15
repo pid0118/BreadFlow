@@ -1,3 +1,4 @@
+
 package com.breadflow.app.inout.service;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class InstoreVO {
 	private String standard;
 	private String unit;
 	private String outstoreCompany;
+	private String orderingProduct;
 
 	private String memberNo;
 	

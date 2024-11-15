@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+
+<th:block th:fragment="CoFilterModalFrag">
+	<div class="modal fade" id="coFilterModal" tabindex="-1" aria-labelledby="coFilterModalLabel" aria-hidden="true">
+  		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<h5 class="modal-title" id="coFilterModalLabel">업체 선택</h5>
+        			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      			</div>
+      			<div class="modal-body">
+      				<div class="card-box mb-30">
+						<div class="pd-20 input-group mb-3">
+							<input class="form-control" type="text" id="searchKeyword" placeholder="업체명을 검색하세요">
+							<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+						</div>
+						<div class="pd-20">
+							<table class="data-table table hover multiple-select-row nowrap">
+								<thead>
+									<tr>
+										<th class="table-plus">업체구분</th>
+										<th class="datatable-nosort">업체명</th>
+										<th class="datatable-nosort">업체주소</th>
+									</tr>
+								</thead>
+								<tbody id="companyTableBody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        			<button type="button" class="btn btn-primary" id="selectCompanyBtn">선택하기</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+	
+	<form id="companySelectionForm" action="inOutList" method="GET">
+	    <input type="hidden" id="selectedCompanyName" name="companyName" />
+	</form>
+	<form id="companySelectionFormInsert" action="inOutInsert" method="GET">
+	    <input type="hidden" id="selectedCompanyNameInsert" name="companyName" />
+	</form>
+
+	<script>
+		$(document).ready(function() {
+			
+        loadCompanyList();
+
+	    $("#searchBtn").click(function() {
+	        var searchKeyword = $("#searchKeyword").val().toLowerCase();
+	        filterCompanyTable(searchKeyword);
+	    });
+
+	    $("#searchKeyword").on('input', function() {
+	        var searchKeyword = $(this).val().toLowerCase();
+	        filterCompanyTable(searchKeyword);
+	    });
+	    
+	    var selectedCompany = null;
+	    
+	    $("#companyTableBody").on('click', 'tr', function() {
+			$("#companyTableBody tr").removeClass('selected');
+			$(this).addClass('selected');
+			var selectedCompanyName = $(this).find("td:nth-child(2)").text();
+			$("#selectedCompanyName").val(selectedCompanyName); 
+			$("#selectedCompanyNameInsert").val(selectedCompanyName);
+			selectedCompany = selectedCompanyName;
+		});
+
+	    function filterCompanyTable(keyword) {
+	        $("#companyTableBody tr").each(function() {
+	            var rowText = $(this).text().toLowerCase();
+	            if (rowText.includes(keyword)) {
+	                $(this).show();
+	            } else {
+	                $(this).hide();
+	            }
+	        });
+	    }
+	    
+	    function loadCompanyList() {
+            $.ajax({
+                url : '/modal/companyList',
+                method : 'GET',
+                success : function(data) {
+                    updateTable(data);
+                },
+                error : function() {
+                    alert("업체 내역을 불러오는 데 실패했습니다.");
+                }
+            });
+        }
+	    
+	    function updateTable(data) {
+            var tbody = $("#companyTableBody");
+            tbody.empty();
+            data.forEach(function(item) {
+                var row = "<tr>";
+                    row += "<td class='table-plus'>" + item.div + "</td>";
+                    row += "<td>" + item.companyName + "</td>";
+                    row += "<td>" + item.companyAddress + "</td>";
+                	row += "</tr>";
+                tbody.append(row);
+            });
+        }
+
+	    $("#selectCompanyBtn").click(function() {
+	        if (selectedCompany) {
+	            console.log(companyName);
+	            $("#companySelectionForm").submit();
+	            $("#companySelectionFormInsert").submit();
+	            $("#coFilterModal").modal('hide');
+	        } else {
+	            alert("회사를 선택하세요.");
+	        }
+	    });
+	});
+	</script>
+</th:block>
+
+</html>
