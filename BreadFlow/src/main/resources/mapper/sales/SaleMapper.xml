@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.sale.mapper.SaleMapper">
+	<select id="selectToSale" resultType="com.breadflow.app.sale.service.SaleVO">
+		SELECT 
+		    co.region,
+		    sa.company_name,
+		    co.brn,
+		    mem.name,
+		    mem.contract_date,
+		    SUM(sa.day_sales) AS total,
+		    mem.other
+		FROM member mem
+		JOIN company co ON mem.company_no = co.company_no
+		JOIN sales sa ON co.company_name = sa.company_name
+		GROUP BY 
+		    co.region,
+		    sa.company_name,
+		    co.brn,
+		    mem.name,
+		    mem.contract_date,
+		    mem.other
+		ORDER BY total
+	</select>
+
+</mapper>
