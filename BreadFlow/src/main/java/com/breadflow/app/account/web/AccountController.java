@@ -48,4 +48,14 @@ public class AccountController {
 		int result = accountService.updatePwMember(accountVO.getId());
 		return result;
 	}
+	
+	@PostMapping("updateAccount.do")
+	@ResponseBody
+	public int accountUpdate(AccountVO accountVO) {
+		/*if(accountVO.getPosition() == "b1") {
+			int result = accountService.mngUpdateCompany(accountVO);
+			
+		}*/
+		return 0;
+	}
 }

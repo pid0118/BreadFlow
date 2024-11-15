@@ -63,16 +63,19 @@
 		    , #{name}
 		    , #{companyTel}
 		    , #{other}
-		    ,'담'
+		    ,'b1'
 		    , #{companyNo}
 		    , #{contractDate}
 		)
 	</insert>
 	
+	<!-- 비밀번호 초기화 -->
 	<update id="updatePwMember" parameterType="String">
 		UPDATE 	member
 		SET 	password = '0000'
 		WHERE 	id = #{id}
 	</update>
+	
+	<!-- 전체 갱신 -->
 
 </mapper>
