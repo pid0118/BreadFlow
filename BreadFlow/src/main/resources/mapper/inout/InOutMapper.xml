@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.inout.mapper.InOutMapper">
+	<select id="selectInstoreList" resultType="InstoreVO">
+		SELECT		i.instore_no
+		            , i.instore_date
+		            , i.item_div
+		            , i.item_code
+		            , i.instore_quantity
+		            , i.outstore_quantity
+		            , i.stock_quantity
+		            , i.facilities_div_no
+		            , i.lot_no
+		            , i.instore_manager
+		            , i.ordering_detail_code
+		            , i.instore_div
+		            , i.instore_div_no
+		            , i.expiration_deadline
+		            , od.standard
+		            , od.unit
+		            , od.outstore_company
+		            , m.member_no
+		            , c.company_name
+		FROM		ordering_detail od JOIN instore i
+		            ON od.ordering_detail_code = i.ordering_detail_code
+		            JOIN member m
+		            ON m.member_no = i.instore_manager
+		            JOIN company c
+		            ON m.member_no = c.company_no
+		ORDER BY	i.instore_no
+	</select>
+	<select id="selectOutstoreList" resultType="OutstoreVO">
+		SELECT		o.outstore_no
+		            , o.outstore_date
+		            , o.outstore_quantity
+		            , o.outstore_manager
+		            , o.orders_detail_no
+		            , o.instore_no
+		            , o.sales_no
+		            , od.standard
+		            , od.unit
+		            , od.outstore_company
+		            , od.instore_company
+		            , i.item_div
+		FROM		orders_detail od JOIN outstore o
+		            ON od.orders_detail_no = o.orders_detail_no
+		            JOIN instore i
+		            ON o.instore_no = i.instore_no
+		ORDER BY	o.outstore_no
+	</select>
+</mapper>
