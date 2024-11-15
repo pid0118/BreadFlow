@@ -10,4 +10,6 @@ public interface AccountService {
 	public int insertCompany(AccountVO accountVO);
 
 	public int insertMember(AccountVO accountVO);
+
+	public int updatePwMember(String id);
 }

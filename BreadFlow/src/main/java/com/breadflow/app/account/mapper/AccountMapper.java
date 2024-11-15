@@ -9,7 +9,12 @@ public interface AccountMapper {
 	// 전체조회
 	public List<AccountVO> selectAccountList();
 
+	// 회사(company) 단건 입력
 	public int insertCompany(AccountVO accountVO);
 
+	// 회원(member) 단건 입력
 	public int insertMember(AccountVO accountVO);
+
+	// 특정 회원의 비밀번호 초기화
+	public int updatePwMember(String id);
 }

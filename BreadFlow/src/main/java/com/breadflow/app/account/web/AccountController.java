@@ -38,7 +38,14 @@ public class AccountController {
 	public int mngAccountInsert(AccountVO accountVO) {
 		int result = accountService.insertCompany(accountVO);
 		int result2 = accountService.insertMember(accountVO);
-		System.out.println("[AccountController.java] inserAccount - result2: " + result2);
-		return result + result2;
+		return result;
+	}
+	
+	@PostMapping("ResetAccountPw.do")
+	@ResponseBody
+	public int passwordResetUpdate(AccountVO accountVO) {
+		System.out.println("[AccountController.java] passwordResetUpdate - id: " + accountVO.getId());
+		int result = accountService.updatePwMember(accountVO.getId());
+		return result;
 	}
 }

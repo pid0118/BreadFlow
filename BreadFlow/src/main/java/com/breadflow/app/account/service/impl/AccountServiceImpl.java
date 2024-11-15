@@ -33,5 +33,11 @@ public class AccountServiceImpl implements AccountService {
 		int result = accountMapper.insertMember(accountVO);
 		return result;
 	}
+
+	@Override
+	public int updatePwMember(String id) {
+		int result = accountMapper.updatePwMember(id);
+		return 0;
+	}
 	
 }

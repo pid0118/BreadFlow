@@ -20,6 +20,10 @@
 	</select>
 
 	<insert id="insertCompany" parameterType="AccountVO">
+	<selectKey resultType="string" keyProperty="companyNo" order="BEFORE">
+		SELECT 'CP' || LPAD(SUBSTR(MAX(company_no), 3) +1, 5, '0') FROM company
+	</selectKey>
+	
 		INSERT INTO company
 		(
 		    company_no
@@ -30,7 +34,7 @@
 		    ,brn
 		    ,region
 		) VALUES (
-		    'CP' || '10006'
+		    #{companyNo}
 		    , #{div}
 		    , #{companyName}
 		    , #{companyAddress}
@@ -41,6 +45,7 @@
 	</insert>
 	
 	<insert id="insertMember" parameterType="AccountVO">
+	
 		INSERT INTO member (
 		    member_no
 		    ,id
@@ -52,16 +57,22 @@
 		    ,company_no
 		    ,contract_date
 		) VALUES (
-		    'US' || '10006'
-		    ,'BB' || '10006'
+		    #{companyNo}
+		    , (SELECT 'BB' || LPAD(NVL(SUBSTR(MAX(id), 3),0)+1, 5, '0') FROM member)
 		    ,'0000'
 		    , #{name}
 		    , #{companyTel}
 		    , #{other}
 		    ,'담'
-		    , 'CP10005'
+		    , #{companyNo}
 		    , #{contractDate}
 		)
 	</insert>
+	
+	<update id="updatePwMember" parameterType="String">
+		UPDATE 	member
+		SET 	password = '0000'
+		WHERE 	id = #{id}
+	</update>
 
 </mapper>
