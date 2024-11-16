@@ -272,7 +272,7 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>연락처</label> <input type="text" class="form-control" name="tel">
+						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12" hidden="hidden">
@@ -332,8 +332,9 @@
 	
 	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
 	document.querySelector("#insertEmployeeBtn").addEventListener("click", employeeInsertAjax);
-	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);
-	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);
+	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);						// "비밀번호 초기화"
+	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
+	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
 	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
 	// 버튼 이벤트 끝
 	// =======================================================
@@ -341,7 +342,7 @@
 		
 		
 	// =======================================================
-	// 데이터 테이블 선언
+	// [박진석|24.11.16] 데이터 테이블 선언
 	$(document).ready( function () {
 	    $('#accounts').DataTable({
 	    	pageLength: 5,
@@ -364,8 +365,6 @@
             }
 	    });
 	} );
-	
-	
 	// Datatable 선언 끝
 	// =======================================================
 		
@@ -413,10 +412,10 @@
 		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
 		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
 		
-		//document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
+		document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
 		
-		let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
-		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);
+		/*let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);*/
 		
 		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
@@ -446,7 +445,6 @@
 	            error: function(){  alert("비밀번호 초기화 실패");  }
 	        });
 		}
-		
 	}
 	
 	function alertNoSelected() {
@@ -497,11 +495,8 @@
 	
 		
 	// =======================================================
-	// 사원 계정 DB INSERT AJAX
+	// [박진석|24.11.15] 사원 계정 DB INSERT AJAX
 	function employeeInsertAjax() {
-		console.log("$('#insertEmpAccountFrm').serialize()");
-		console.log($('#insertEmpAccountFrm').serialize());
-		
 		$.ajax({
             url: "insertEmployeeAccount.do",
             type: "POST",
@@ -516,6 +511,31 @@
 	
 	// 일반 계정 INSERT AJAX 끝
 	// ======================================================
+		
+		
+		
+	// =======================================================
+	// [박진석|24.11.16] 계정 DB DELETE AJAX
+	
+	
+	function accountDeleteAjax() {
+		let no = document.querySelector("#updMemNo").value;
+		console.log(no);
+		
+		$.ajax({
+            url: "deleteAccount.do",
+            type: "POST",
+            data:  { 'memberNo': no },
+            success: function(data){
+                alert("사원 제거 성공. 크킄...");
+                location.reload(true);
+            },
+            error: function(){  alert("사원 제거 실패");  }
+        });
+	}	
+	
+	// 계정 DELETE AJAX 끝
+	// ======================================================		
 		
 		
 

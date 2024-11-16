@@ -41,9 +41,10 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public int insertEmpMember(AccountVO accountVO) {
-		int result = accountMapper.insertEmpMember(accountVO);
+	public int deleteMember(String no) {
+		int result = accountMapper.deleteMember(no);
 		return result;
 	}
+
 	
 }

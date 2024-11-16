@@ -68,4 +68,12 @@ public class AccountController {
 		int result = accountService.insertMember(accountVO);
 		return result;
 	}
+	
+	@PostMapping("deleteAccount.do")
+	@ResponseBody
+	public int accountDelete(AccountVO accountVO) {
+		System.out.println("[AccountController.java] passwordResetUpdate - no: " + accountVO);
+		int result = accountService.deleteMember(accountVO.getMemberNo());
+		return result;
+	}
 }

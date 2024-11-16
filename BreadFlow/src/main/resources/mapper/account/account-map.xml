@@ -83,6 +83,9 @@
 		WHERE 	id = #{id}
 	</update>
 	
-	<!-- 전체 갱신 -->
+	<delete id="deleteMember" parameterType="String">
+		DELETE FROM member
+		WHERE member_no = #{no}
+	</delete>
 
 </mapper>

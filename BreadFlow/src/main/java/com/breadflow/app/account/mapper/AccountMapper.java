@@ -20,4 +20,6 @@ public interface AccountMapper {
 
 	// 회원(member) 단건 입력(사원인 경우)
 	public int insertEmpMember(AccountVO accountVO);
+
+	public int deleteMember(String no);
 }
