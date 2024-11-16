@@ -12,4 +12,6 @@ public interface AccountService {
 	public int insertMember(AccountVO accountVO);
 
 	public int updatePwMember(String id);
+
+	public int insertEmpMember(AccountVO accountVO);
 }

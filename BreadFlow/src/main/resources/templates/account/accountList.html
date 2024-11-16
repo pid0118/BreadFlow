@@ -4,9 +4,14 @@
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+
+
 <style>
 .insertButtons {
-	
+	padding-bottom: 10px;
 }
 
 .searchs {
@@ -25,21 +30,13 @@
 			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정 생성</button>
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
-		<div class="searchs">
-			<form>
-				<select name="condition" id="cond">
-					<option value="name">이름</option>
-					<option value="role">권한</option>
-					<option value="comname">회사명</option>
-				</select>
-			</form>
-		</div>
-
 		<div>
+		
+		
 			<!-- 회원 테이블 시작 -->
 			<div class="card-box mb-30">
 				<div class="pb-20">
-					<table class="accounts-table table stripe hover nowrap">
+					<table id="accounts" class="accounts-table table stripe hover nowrap">
 						<thead>
 							<tr>
 								<th class="table-plus datatable-nosort">순번</th>
@@ -237,6 +234,11 @@
 						<label>기타사항</label> <input type="text" class="form-control" name="other">
 					</div>
 				</div>
+				<div class="col-md-4 col-sm-12" hidden="hidden">	<!-- hidden할것 -->
+					<div class="form-group">
+						<label>직책(담당자)</label> <input type="text" class="form-control" value="b1" name="position">
+					</div>
+				</div>
 				
 				<div class="updateButtons">
 					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
@@ -251,7 +253,7 @@
 		
 		<!-- "사원 계정 생성" 폼 시작 -->
 		<div class="insertEmployeeAccount" style="display: block;">	<!-- 기본 none -->
-			<form id="insertMngAccountFrm" method="post">
+			<form id="insertEmpAccountFrm" method="post">
 			<div class="row">
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
@@ -260,7 +262,7 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체명</label> <input type="text" class="form-control" name="companyName">
+						<label>업체명</label> <input type="text" class="form-control" name="companyName">	<!-- member insert에 이건 필요 X -->
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">	<!-- TODO 나중에 HIdden 할것 -->
@@ -276,18 +278,6 @@
 				<div class="col-md-4 col-sm-12" hidden="hidden">
 					<div class="form-group">
 						<label>직책(사원)</label> <input type="text" class="form-control" value="b2" name="position">
-					</div>
-				</div>
-				<div class="col-md-4 col-sm-12" hidden="hidden">
-					<div class="form-group">
-						<label>업체분류</label>
-						<select class="custom-select col-12" name="div">
-							<option selected="selected" value="a1">본사</option>
-							<option value="a2">공급업체</option>
-							<option value="a3">제조공장</option>
-							<option value="a4">물류창고</option>
-							<option value="a5">가맹점</option>
-						</select>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -348,6 +338,38 @@
 	// 버튼 이벤트 끝
 	// =======================================================
 	
+		
+		
+	// =======================================================
+	// 데이터 테이블 선언
+	$(document).ready( function () {
+	    $('#accounts').DataTable({
+	    	pageLength: 5,
+	    	paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            language: {
+                lengthMenu: "_MENU_ 개씩 보기",
+                zeroRecords: "데이터가 없습니다.",
+                info: "총 _TOTAL_개의 데이터 중 _START_ - _END_",
+                infoEmpty: "데이터가 없습니다.",
+                search: "검색:",
+                paginate: {
+                    first: "처음",
+                    last: "마지막",
+                    next: "다음",
+                    previous: "이전"
+                }
+            }
+	    });
+	} );
+	
+	
+	// Datatable 선언 끝
+	// =======================================================
+		
+		
 		
 	// =======================================================
 	// [박진석|24.11.14] "... 계정 생성" 버튼 클릭 시 폼 전환하는 코드
@@ -477,10 +499,13 @@
 	// =======================================================
 	// 사원 계정 DB INSERT AJAX
 	function employeeInsertAjax() {
+		console.log("$('#insertEmpAccountFrm').serialize()");
+		console.log($('#insertEmpAccountFrm').serialize());
+		
 		$.ajax({
             url: "insertEmployeeAccount.do",
             type: "POST",
-            data: $('#insertMngAccountFrm').serialize(),
+            data: $('#insertEmpAccountFrm').serialize(),
             success: function(data){
                 alert("사원 신규등록 성공!");
                 location.reload(true);

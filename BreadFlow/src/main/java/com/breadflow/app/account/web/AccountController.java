@@ -60,9 +60,11 @@ public class AccountController {
 		return 0;
 	}
 	
+	// 사원 신규등록 AJAX
 	@PostMapping("insertEmployeeAccount.do")
 	@ResponseBody
 	public int employeeAccountInsert(AccountVO accountVO) {
+		System.out.println("[AccountController.java] passwordResetUpdate - accountVO: " + accountVO);
 		int result = accountService.insertMember(accountVO);
 		return result;
 	}
