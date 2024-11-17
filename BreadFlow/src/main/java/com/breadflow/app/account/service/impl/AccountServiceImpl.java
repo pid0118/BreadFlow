@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public int updatePwMember(String id) {
 		int result = accountMapper.updatePwMember(id);
-		return 0;
+		return result;
 	}
 
 	@Override

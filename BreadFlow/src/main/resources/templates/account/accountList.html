@@ -7,9 +7,17 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
+<!-- Sweet Alert 사용하기 위한 script, css -->
+<script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
+<script src="/src/main/resources/static/plugins/sweetalert2/sweet-alert.init.js"></script>
+<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" />
 
 
 <style>
+.required {
+	color: red;
+}
+
 .insertButtons {
 	padding-bottom: 10px;
 }
@@ -82,7 +90,7 @@
 	<hr>
 	<div class="childArea">
 		<!-- 기본 상세보기 폼 시작 -->
-		<div class="updateAccounts" style="display: none;">	<!-- 기본 block -->
+		<div class="updateAccounts" style="display: block;">	<!-- 기본 block -->
 			<form id="updateAccountFrm" method="post">
 				<div class="row">
 					<div class="col-md-4 col-sm-12">
@@ -173,7 +181,8 @@
 			<div class="row">
 				<div class="col-md-3 col-sm-12">
 					<div class="form-group">
-						<label>사업자등록번호</label> <input type="text" class="form-control" name="brn">
+						<label>사업자등록번호</label>
+						<input type="text" class="form-control" name="brn">
 					</div>
 				</div>
 				<div class="col-md-1 col-sm-12">
@@ -182,22 +191,25 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>이름</label> <input type="text" class="form-control" name="name">
+						<label>이름</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="name">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체명</label> <input type="text" class="form-control" name="companyName">
+						<label>업체명</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyName">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+						<label>연락처</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyTel">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체분류</label>
+						<label>업체분류</label><b class="required"> *</b>
 						<select class="custom-select col-12" name="div">
 							<option selected="selected" value="a1">본사</option>
 							<option value="a2">공급업체</option>
@@ -209,7 +221,7 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>지역</label>
+						<label>지역</label><b class="required"> *</b>
 						<select class="custom-select col-12" name="region">
 							<option selected="selected" value="서울">서울</option>
 							<option value="대전">대전</option>
@@ -252,22 +264,25 @@
 		
 		
 		<!-- "사원 계정 생성" 폼 시작 -->
-		<div class="insertEmployeeAccount" style="display: block;">	<!-- 기본 none -->
+		<div class="insertEmployeeAccount" style="display: none;">	<!-- 기본 none -->
 			<form id="insertEmpAccountFrm" method="post">
 			<div class="row">
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>이름</label> <input type="text" class="form-control" name="name">
+						<label>이름</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="name">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체명</label> <input type="text" class="form-control" name="companyName">	<!-- member insert에 이건 필요 X -->
+						<label>업체명</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyName">	<!-- member insert에 이건 필요 X -->
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">	<!-- TODO 나중에 HIdden 할것 -->
 					<div class="form-group">
-						<label>업체코드</label> <input type="text" class="form-control" name="companyNo">
+						<label>업체코드</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyNo">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -288,12 +303,14 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>비밀번호</label> <input type="password" class="form-control" name="password">
+						<label>비밀번호</label><b class="required"> *</b>
+						<input type="password" class="form-control" name="password">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>비밀번호 확인</label> <input type="password" class="form-control">
+						<label>비밀번호 확인</label><b class="required"> *</b>
+						<input type="password" class="form-control">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -317,7 +334,7 @@
 	//=======================================================
 	// [박진석|24.11.15] 필요한 변수들 선언
 	// == 회원가입 시 검증값들
-	let isbrnconfirm = false;	//  
+	let isBrnConfirm = false;	//  
 	
 	
 	// 변수 선언 끝	
@@ -429,7 +446,6 @@
 	// [박진석|24.11.14] 비밀번호 초기화하는 코드
 	function resetPwAjax() {
 		let id = document.querySelector("#updId").value;
-		console.log(id);
 		
 		if (id == "") {
 			alertNoSelected();
@@ -440,6 +456,7 @@
 	            data: { 'id': id },
 	            success: function(data){
 	                alert("비밀번호 초기화 이게되네");
+	                //swal("비밀번호 초기화가 완료되었습니다.","초기화된 비밀번호는 '0000' 입니다.", {icon: "success"});
 	                console.log(data);
 	            },
 	            error: function(){  alert("비밀번호 초기화 실패");  }
@@ -448,7 +465,7 @@
 	}
 	
 	function alertNoSelected() {
-		alert("초기화할 행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
+		alert("행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
 	}
 	
 	// 비밀번호 초기화 끝
@@ -476,8 +493,8 @@
 		
 		
 	// =======================================================	
-	// [박진석|24.11.14] 담당자 계정 DB에 Insert하는 코드
-	function MngInsertAjax() {
+	// [박진석|24.11.14] 담당자 계정 생성했을 때 DB에 Insert하는 코드
+	function MngInsertAjax() {		
 		$.ajax({
             url: "insertAccount.do",
             type: "POST",
@@ -516,24 +533,23 @@
 		
 	// =======================================================
 	// [박진석|24.11.16] 계정 DB DELETE AJAX
-	
-	
 	function accountDeleteAjax() {
 		let no = document.querySelector("#updMemNo").value;
-		console.log(no);
-		
-		$.ajax({
-            url: "deleteAccount.do",
-            type: "POST",
-            data:  { 'memberNo': no },
-            success: function(data){
-                alert("사원 제거 성공. 크킄...");
-                location.reload(true);
-            },
-            error: function(){  alert("사원 제거 실패");  }
-        });
+		if (no == "") {
+			alertNoSelected();
+		} else {
+			$.ajax({
+	            url: "deleteAccount.do",
+	            type: "POST",
+	            data:  { 'memberNo': no },
+	            success: function(data){
+	                alert("사원 제거 성공.");
+	                location.reload(true);
+	            },
+	            error: function(){  alert("사원 제거 실패");  }
+	        });
+		}
 	}	
-	
 	// 계정 DELETE AJAX 끝
 	// ======================================================		
 		
@@ -551,7 +567,7 @@
 		}
 		
 		var data = {
-				b_no: [brn],
+			b_no: [brn],
 		}
 		
 		$.ajax({
@@ -565,11 +581,13 @@
 			      let code = result.data[0].b_stt_cd
 			      if(code == '01') {
 			    	  alert("정상적인 번호입니다.");
-			    	  isbrnconfirm = true;
+			    	  isBrnConfirm = true;
 			      } else if(code == '02' || code == '03') {
-			    	  alert("휴업 또는 폐업된 번호입니다.")
+			    	  alert("휴업 또는 폐업된 번호입니다.");
+			    	  isBrnConfirm = false;
 			      } else {
-			    	  alert("잘못된 번호입니다.")
+			    	  alert("잘못된 번호입니다.");
+			    	  isBrnConfirm = false;
 			      }
 			  },
 			  error: function(result) {
@@ -583,7 +601,7 @@
 	
 		
 	// =======================================================	
-	// [박진석|241115] 날짜 변환 함수
+	// [박진석|241115] 날짜 변환 함수 (미사용)
 	function formatKoreanDate(dateString) {
 	    // 정규표현식을 이용해 연도, 월, 일을 추출
 	    const datePattern = /([A-Za-z]{3})\s([A-Za-z]{3})\s(\d{1,2})\s\d{2}:\d{2}:\d{2}\s[A-Z]{3}\s(\d{4})/;
@@ -611,5 +629,6 @@
 	// 날짜 변환함수 끝
 	// =======================================================
 
-	
 </script>
+
+
