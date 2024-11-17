@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/breadflow_layout}"
-	  layout:fragment="Content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/breadflow_layout}"
+      layout:fragment="Content">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>제품 수정/등록</title>
-      <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 수정/등록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
         .content-area {
-            min-height: calc(100vh - 60px); /* Adjust based on header height */
+            min-height: calc(100vh - 60px);
             background-color: #f8f9fa;
             padding: 20px;
         }
@@ -50,17 +51,11 @@
             font-size: 0.875rem;
         }
 
-        .tab-button {
-            padding: 4px 16px;
-            font-size: 0.875rem;
-        }
-
         .action-buttons {
             padding: 4px 16px;
             font-size: 0.875rem;
         }
     </style>
-
 </head>
 <body>
     <div class="content-area">
@@ -80,7 +75,7 @@
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">제품코드</label>
-                                <input type="text" class="form-control form-control-sm">
+                                <input type="text" class="form-control form-control-sm" id="productCode" readonly>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">제품명</label>
@@ -125,55 +120,77 @@
 
                     <div class="col-md-6">
                         <label class="form-label">대분류</label>
-                        <select class="form-select form-select-sm">
+                        <select class="form-select form-select-sm" id="mainCategory">
                             <option selected>선택하세요</option>
-                            <option>식품</option>
-                            <option>의류</option>
-                            <option>전자제품</option>
+                            <option value="생산품">생산품</option>
+                            <option value="완제품">완제품</option>
                         </select>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label">소분류</label>
-                        <select class="form-select form-select-sm">
+                        <select class="form-select form-select-sm" id="subCategory">
                             <option selected>선택하세요</option>
-                            <option>과일</option>
-                            <option>채소</option>
-                            <option>육류</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="text-end mt-4">
                     <button type="submit" class="btn btn-primary action-buttons">등록</button>
-                    <button type="button" class="btn btn-secondary action-buttons">취소</button>
+                    <button type="button" class="btn btn-secondary action-buttons" id="cancelBtn">취소</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('imagePreview').addEventListener('click', function() {
-            document.getElementById('productImage').click();
-        });
+        $(document).ready(function() {
+            // 제품코드 자동 생성 (IB000011)
+            const lastProductCode = 'IB000010';
+            const nextNumber = parseInt(lastProductCode.slice(2)) + 1;
+            const newProductCode = 'IB' + String(nextNumber).padStart(6, '0');
+            $('#productCode').val(newProductCode);
 
-        document.getElementById('productImage').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    const imagePreview = document.getElementById('imagePreview');
-                    imagePreview.innerHTML = '';
-                    imagePreview.appendChild(img);
+            // 이미지 업로드 처리
+            $('#imagePreview').click(function() {
+                $('#productImage').click();
+            });
+
+            $('#productImage').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = $('<img>').attr('src', e.target.result);
+                        $('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
+            });
+
+            // 카테고리 변경 처리
+            const subCategories = {
+                '생산품': ['브레드', '샌드위치', '케이크', '쿠키', '생지'],
+                '완제품': ['커피/음료', '포장지', '박스', '기타', '식기류', '데코레이션']
+            };
+
+            $('#mainCategory').change(function() {
+                const mainCategory = $(this).val();
+                const $subCategory = $('#subCategory');
+                $subCategory.empty().append('<option selected>선택하세요</option>');
+                
+                if (subCategories[mainCategory]) {
+                    subCategories[mainCategory].forEach(function(category) {
+                        $subCategory.append($('<option></option>').val(category).text(category));
+                    });
+                }
+            });
+
+            // 취소 버튼 처리
+            $('#cancelBtn').click(function() {
+                window.location.href = '/productListAll';
+            });
         });
     </script>
-</body>
-</html>
 </body>
 </html>

@@ -18,7 +18,7 @@
 		SELECT product_code,
 			   product_name,
 			   expiration_deadline,
-			   priduct_price,
+			   purchase_price,
 			   sale_price,
 			   safe_stock_quantity,
 			   proplace,
@@ -33,7 +33,38 @@
 	
 	<!-- 제품 등록 -->
 	<insert id="insertProduct" parameterType="ProductVO">
-		
+				<selectKey resultType="string" keyProperty="productCode" order="BEFORE">
+		SELECT 'IB' || LPAD(SUBSTR(MAX(product_code), 3) +1, 6, '0') FROM product
+		</selectKey>
+	
+		INSERT INTO company
+		(
+		    product_code,
+			product_name,
+			expiration_deadline,
+			purchase_price,
+			sale_price,
+			safe_stock_quantity,
+			proplace,
+			product_image,
+			major,
+			sub,
+			unit,
+			standard
+		) VALUES (
+		      #{productCode}
+		    , #{productName}
+		    , #{expirationDeadline}
+		    , #{purchasePrice}
+		    , #{salePrice}
+		    , #{safeStockQuantity}
+		    , #{proplace}
+		    , #{productImage}
+		    , #{major}
+		    , #{sub}
+		    , #{unit}
+		    , #{standard}
+		)
 	</insert>
 <!-- 22 -->
 	<!-- 제품정보 수정 -->
