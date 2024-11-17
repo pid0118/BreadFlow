@@ -35,7 +35,7 @@
 	<insert id="insertProduct" parameterType="ProductVO">
 		
 	</insert>
-
+<!-- 22 -->
 	<!-- 제품정보 수정 -->
 	<update id="updateProduct" parameterType="ProductVO">
 		UPDATE product
