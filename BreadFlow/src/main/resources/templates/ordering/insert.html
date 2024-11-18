@@ -29,17 +29,9 @@
 							</div>
 							<div class="modal-body">
 								<div class="row">
-									<div class="col-md-6 text-left">
+									<div class="col-md-12 sm-12 text-left">
 										<div class="form-group">
 											<label>품목 종류</label> <select
-												class="custom-select2 form-control first"
-												multiple="multiple" style="width: 100%;">
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6 text-left">
-										<div class="form-group">
-											<label>세부 종류</label> <select
 												class="custom-select2 form-control second"
 												multiple="multiple" style="width: 100%;">
 											</select>
@@ -48,10 +40,10 @@
 								</div>
 								<div class="row">
 									<div class="col-md-9 col-sm-12">
-										<input type="text" class="form-control" placeholder="품목명">
+										<input type="text" class="form-control" id="iname" placeholder="품목명">
 									</div>
 									<div class="col-md-3 col-sm-12">
-										<button type="button" class="btn btn-primary">검색</button>
+										<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
 									</div>
 								</div>
 								<table class="table">
@@ -65,35 +57,7 @@
 											<th>가격</th>
 										</tr>
 									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="custom-control custom-checkbox mb-5">
-													<input type="checkbox" class="custom-control-input"
-														id="customCheck1"> <label
-														class="custom-control-label" for="customCheck1"></label>
-												</div>
-											</td>
-											<td>IX0000</td>
-											<td>강력 밀가루</td>
-											<td>1KG</td>
-											<td>EA/BOX</td>
-											<td>5000</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="custom-control custom-checkbox mb-5">
-													<input type="checkbox" class="custom-control-input"
-														id="customCheck2"> <label
-														class="custom-control-label" for="customCheck2"></label>
-												</div>
-											</td>
-											<td>IX0000</td>
-											<td>강력 밀가루</td>
-											<td>1KG</td>
-											<td>EA/BOX</td>
-											<td>5000</td>
-										</tr>
+									<tbody>	
 									</tbody>
 								</table>
 							</div>
@@ -121,37 +85,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>IX060600</td>
-						<td>밀가루</td>
-						<td>1KG</td>
-						<td>EA/BOX</td>
-						<td>5,000</td>
-						<td>
-							<div class="col-4">
-								<input type="number" class="form-control" value="100" min="1">
-							</div>
-						</td>
-						<td>50,000</td>
-					</tr>
-					<tr>
-						<td>IX060600</td>
-						<td>밀가루</td>
-						<td>1KG</td>
-						<td>EA/BOX</td>
-						<td>5,000</td>
-						<td>
-							<div class="col-4">
-								<input type="number" class="form-control" value="200" min="1">
-							</div>
-						</td>
-						<td>50,000</td>
-					</tr>
-					<!-- <tr>
-						<td colspan="4" style="text-align: center;">합계</td>
-						<td>300</td>
-						<td>100,000</td>
-					</tr> -->
+					
 				</tbody>
 			</table>
 		</div>
@@ -159,29 +93,22 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
-	<!-- js -->
-	<script src="../vendors/scripts/core.js"></script>
-	<script src="../vendors/scripts/script.min.js"></script>
-	<script src="../vendors/scripts/process.js"></script>
-	<script src="../vendors/scripts/layout-settings.js"></script>
-	<script src="../plugins/datatables/js/jquery.dataTables.min.js"></script>
-	<script src="../plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
-	<script src="../plugins/datatables/js/dataTables.responsive.min.js"></script>
-	<script src="../plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 	<!-- buttons for Export datatable -->
-	<script src="../plugins/datatables/js/dataTables.buttons.min.js"></script>
-	<script src="../plugins/datatables/js/buttons.bootstrap4.min.js"></script>
+	<!-- <script src="../plugins/datatables/js/dataTables.buttons.min.js"></script> -->
+	<!-- <script src="../plugins/datatables/js/buttons.bootstrap4.min.js"></script>
 	<script src="../plugins/datatables/js/buttons.print.min.js"></script>
 	<script src="../plugins/datatables/js/buttons.html5.min.js"></script>
-	<script src="../plugins/datatables/js/buttons.flash.min.js"></script>
+	<script src="../plugins/datatables/js/buttons.flash.min.js"></script> -->
 	<script src="../plugins/datatables/js/pdfmake.min.js"></script>
 	<script src="../plugins/datatables/js/vfs_fonts.js"></script>
 	<!-- Datatable Setting js -->
 	<script src="../vendors/scripts/datatable-setting.js"></script>
 	<script>
 		$(document).ready(function() {
+			// 옵션값 초기화
 			$('.custom-select2').select2();
 			
+			// select에 change 이벤트 적용
 			$('.custom-select2').on('change', function() {
 				let selval = $(this).val();
 				let changeOpt = $('.custom-select2').val();
@@ -189,6 +116,7 @@
 			});
 		});
 		
+		// 품목 종류 카테고리 생성
 		fetch("../category/list")
 		.then(result => result.json())
 		.then(datas => {
@@ -211,22 +139,127 @@
 		})
 		.catch(err => console.log());
 		
-		
+		// 품목 추가 (발주 신청 테이블)
 		itemAdd.addEventListener('click', function() {
 			let checktd = document.querySelectorAll('table .custom-checkbox input');
+			let checkbool = false;
+			let checktable = true;
+			let element = '';
 			checktd.forEach(td => {
 				if(td.checked == true){
+					checkbool = true;
+					checktable = true;
+					element += '<tr>';
 					let datas = td.closest('tr').querySelectorAll('td');
-					let element = '<tr>';
-					for(let i=1; i<datas.length; i++){
-						console.log(datas[i].innerText);
-						element += `<td>${datas[i].innerText}</td>`;
-					} 
-					element += '<td><div class="col-4"><input type="number" class="form-control" min="1"></div></td><td></td></tr>';
-					$('.datatable tbody').append(element);
+					document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
+						if(ele.innerText == datas[1].innerText){
+							checktable = false;
+						}
+					})
+					
+					if(checktable == true){
+						for(let i=1; i<datas.length; i++){
+							element += `<td>${datas[i].innerText}</td>`;
+						} 
+						element += '<td><div class="col-4"><input type="number" class="form-control" min="1"></div></td><td></td></tr>';	
+					}
+					
 				}
 			})
+			if(checktable == false || checkbool == false){
+				event.stopPropagation();
+				if(checktable == false){
+					alert("중복된 품목이 있습니다.");	
+				} else {
+					alert("품목을 선택해주세요!");
+				}
+			} else {
+				$('.datatable tbody').append(element);
+				$('.datatable tbody tr#total').remove();
+				$('.datatable tbody').append(`<tr id="total">
+						<td colspan="5" style="text-align: center;">합계</td>
+						<td></td>
+						<td></td>
+					</tr>`);
+			}
 		})
+		
+		// 품목 검색
+		itemSearch.addEventListener('click', function() {
+			let val = $('.custom-select2.second').val();
+			let searchOpt = $('.custom-select2.second')[0];
+			let ingredients = [];
+			let products = [];
+
+			for(let opt of searchOpt) {
+				if(val.indexOf(opt.value) != -1){
+					if(opt.dataset.name.substring(1) == '재료'){
+						ingredients.push(val[val.indexOf(opt.value)]);
+					} else {
+						products.push(val[val.indexOf(opt.value)]);
+					}
+				}
+			}
+			
+			// 검색 조건이 아무것도 없을 때 
+			if(val.length == 0 && iname.value == '' || val.length == 0) {
+				alert("검색 조건이 없습니다.");
+			} 
+			else {
+				fetch('../search/item', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					$('.modal-body table tbody tr').remove();
+					data.forEach(td => {
+						$('.modal-body table tbody').append(`<tr>
+								<td>
+								<div class="custom-control custom-checkbox mb-5">
+									<input type="checkbox" class="custom-control-input"
+										id="customCheck${td.itemCode}"> <label
+										class="custom-control-label" for="customCheck${td.itemCode}"></label>
+								</div>
+							</td>
+							<td>${td.itemCode}</td>
+							<td>${td.itemName}</td>
+							<td>${td.unit}</td>
+							<td>${td.standard}</td>
+							<td>${td.purchasePrice}</td>
+						</tr>`)
+					})
+				})
+				.catch(err => console.log(err));
+			}
+		})
+		
+		// 각 품목 총 금액, 합계 계산
+		document.querySelector('.datatable').addEventListener('change', function() {
+			if(event.target.tagName == 'INPUT'){
+				let datatd = event.target.closest('td');
+				let price = datatd.previousElementSibling.innerText;
+				datatd.nextElementSibling.innerText = price * event.target.value;
+				let priceTotal = 0;
+				let amountTotal = 0;
+				document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
+					amountTotal += Number(data.value.replace(',', ''));
+				})
+				document.querySelectorAll('.datatable tbody td:nth-child(7)').forEach(data => {
+					priceTotal += Number(data.innerText.replace(',', ''));
+				})
+				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
+				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
+			}
+		})
+		
 		
 	</script>
 </body>

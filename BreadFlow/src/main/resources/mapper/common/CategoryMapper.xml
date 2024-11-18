@@ -8,4 +8,34 @@
 		FROM   category	
 	</select>
 	
+	<select id="selectItems" resultType="SearchItemVO" parameterType="SearchOptionVO">
+		<if test="products.size() != 0">
+		SELECT product_code AS "item_code", product_name AS "item_name", amount||FIND_CD(unit) AS "unit", standard, purchase_price
+		FROM product
+		WHERE sub IN (
+		<foreach collection="products" item="item" separator=",">
+			#{item}
+		</foreach>
+		)
+		<if test="name != null">
+		AND product_name LIKE '%' || #{name} || '%'
+		</if>
+		</if>
+		<if test="products.size() != 0 and ingredients.size() != 0">
+			UNION
+		</if>
+		<if test="ingredients.size() != 0">
+		SELECT ingredient_code AS "item_code", ingredient_name AS "item_name", amount||FIND_CD(unit) AS "unit", standard, purchase_price
+		FROM ingredient
+		WHERE sub IN (
+		<foreach collection="ingredients" item="item" separator=",">
+			#{item}
+		</foreach>
+		)
+		<if test="name != null">
+		AND ingredient_name LIKE '%' || #{name} || '%'
+		</if>
+		</if>
+	</select>
+	
 </mapper>
