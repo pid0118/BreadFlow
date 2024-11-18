@@ -2,6 +2,8 @@ package com.breadflow.app.account.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -23,6 +25,9 @@ public class AccountVO {
 	private String	tel;					// 연락처
 	private String	other;					// 기타사항
 	private String	position;				// 직책
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date	contractDate;			// 계약일자
+	
+
 	
 }

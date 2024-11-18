@@ -10,6 +10,7 @@
 		        ,m.name
 		        ,c.company_name
 		        ,m.tel
+		        ,m.company_no
 		        ,c.company_address
 		        ,m.contract_date
 		        ,c.region
@@ -83,9 +84,45 @@
 		WHERE 	id = #{id}
 	</update>
 	
+	<!-- member_no 기준으로 사원 단건 삭제 -->
 	<delete id="deleteMember" parameterType="String">
 		DELETE FROM member
 		WHERE member_no = #{no}
 	</delete>
+	
+	<!-- 회사코드 기준으로 모든 사원 및 담당자 삭제 -->
+	<delete id="deleteMembersWhereCompany" parameterType="String">
+		DELETE FROM member
+		WHERE company_no = #{companyNo}
+	</delete>
+	
+	<!-- 업체 삭제 -->
+	<delete id="deleteCompany" parameterType="String">
+		DELETE FROM company
+		WHERE company_no = #{companyNo}
+	</delete>
+	
+	<!-- 회원 수정 -->
+	<update id="updateEmpMember" parameterType="AccountVO">
+		UPDATE 	member
+		SET		name = #{name}
+				,tel = #{companyTel}
+				,other = #{other}
+		WHERE	member_no = #{companyNo}
+	</update>
+	
+	<update id="updateCompanyTel" parameterType="AccountVO">
+		UPDATE 	company
+		SET		company_tel = #{companyTel}
+		WHERE	company_no = #{memberNo}
+	</update>
+	
+	<!-- 아이디 체크 -->
+	<select id="checkIdPw" parameterType="AccountVO">
+		SELECT id, name, FIND_CD(position)
+		FROM member
+		WHERE id = #{id}
+		  AND password = #{password}
+	</select>
 
 </mapper>

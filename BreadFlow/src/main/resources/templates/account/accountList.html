@@ -8,9 +8,9 @@
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
 <!-- Sweet Alert 사용하기 위한 script, css -->
-<script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
+<!-- <script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
 <script src="/src/main/resources/static/plugins/sweetalert2/sweet-alert.init.js"></script>
-<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" />
+<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" /> -->
 
 
 <style>
@@ -22,10 +22,6 @@
 	padding-bottom: 10px;
 }
 
-.searchs {
-	
-}
-
 .updateButtons button {
 	float: right;
 	margin-left: 10px;
@@ -35,7 +31,7 @@
 <div class="container">
 	<div class="parentArea">
 		<div class="insertButtons">
-			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정 생성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정(업체) 생성</button>
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
 		<div>
@@ -59,6 +55,7 @@
 								<th hidden="hidden">지역</th>
 								<th hidden="hidden">주소</th>
 								<th hidden="hidden">계약일자</th>
+								<th hidden="hidden">업체고유번호</th>
 
 							</tr>
 						</thead>
@@ -77,6 +74,7 @@
 									<td id="parentRegion"  hidden="hidden">[[ ${acc.region} ]]</td>									
 									<td id="parentComAddr"  hidden="hidden">[[ ${acc.companyAddress} ]]</td>
 									<td id="parentContDt"  hidden="hidden">[[ ${acc.contractDate} ]]</td>
+									<td id="parentComNo" hidden="hidden">[[ ${acc.companyNo}]] </td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -120,6 +118,18 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
+							<label>지역</label>
+							<input type="text" class="form-control" id="updRegion" name="region" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>주소</label> <input type="text" class="form-control"
+								id="updAddr" name="companyAddress" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
 							<label>이름</label> <input type="text" class="form-control"
 								id="updName" name="name" >
 						</div>
@@ -129,25 +139,7 @@
 							<label>연락처</label> <input type="text" class="form-control"
 								id="updTel" name="companyTel" >
 						</div>
-					</div>
-					
-					<div class="col-md-4 col-sm-12">
-						<div class="form-group">
-							<label>지역</label>
-							<select class="custom-select col-12" id="updRegion" name="region">
-								<option value="서울">서울</option>
-								<option value="대전">대전</option>
-								<option value="대구">대구</option>
-								<option value="부산">부산</option>
-						</select>
-						</div>
-					</div>
-					<div class="col-md-4 col-sm-12">
-						<div class="form-group">
-							<label>주소</label> <input type="text" class="form-control"
-								id="updAddr" name="companyAddress" >
-						</div>
-					</div>
+					</div>					
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>기타사항</label> <input type="text" class="form-control"
@@ -157,12 +149,24 @@
 					<div class="col-md-4 col-sm-12" hidden="hidden">
 						<div class="form-group">
 							<label>아이디</label> <input type="text" class="form-control"
-								id="updId" name="id" >
+								id="updId" name="id">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>직책</label> <input type="text" class="form-control"
+								id="updPosition" name="position">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>회사코드</label> <input type="text" class="form-control"
+								id="updCompanyNo" name="memberNo">
 						</div>
 					</div>
 					<div class="updateButtons">
 						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">선택한
-							계정 삭제</button>
+							계정/업체 삭제</button>
 						<button type="button" class="btn btn-primary btn-lg"
 							id="udtAccBtn">수정사항 저장</button>
 						<button type="button" class="btn btn-warning btn-lg"
@@ -332,17 +336,6 @@
 
 <script>
 	//=======================================================
-	// [박진석|24.11.15] 필요한 변수들 선언
-	// == 회원가입 시 검증값들
-	let isBrnConfirm = false;	//  
-	
-	
-	// 변수 선언 끝	
-	//=======================================================
-		
-		
-
-	//=======================================================
 	// [박진석|24.11.14] 버튼들 이벤트 걸기
 	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);		// 담당자 계정 생성으로 폼 전환 버튼
 	document.querySelector("#employeeInsertBtn").addEventListener("click", showEmployeeInsertForm);		// 직원 계정 생성으로 폼 전환 버튼
@@ -421,6 +414,7 @@
 		document.querySelector(".updateAccounts").style.display = 'block';
 		
 		let parentInfo = e.target.parentElement;
+		
 		document.querySelector("#updMemNo").value = parentInfo.querySelector("#parentMemNo").innerText;
 		document.querySelector("#updBrn").value = parentInfo.querySelector("#parentBrn").innerText;
 		document.querySelector("#updName").value = parentInfo.querySelector("#parentName").innerText;
@@ -429,13 +423,15 @@
 		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
 		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
 		
-		document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
+		//document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
 		
-		/*let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
-		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);*/
+		let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);
 		
 		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
+		document.querySelector("#updPosition").value = parentInfo.querySelector("#parentPosit").innerText;
+		document.querySelector("#updCompanyNo").value = parentInfo.querySelector("#parentComNo").innerText;
 	}
 	// 상세정보 출력 코드 끝
 	// =======================================================
@@ -466,8 +462,7 @@
 	
 	function alertNoSelected() {
 		alert("행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
-	}
-	
+	}	
 	// 비밀번호 초기화 끝
 	// =======================================================
 	
@@ -476,16 +471,27 @@
 	// =======================================================
 	// [박진석|24.11.15] updateForm 수정하는 AJAX
 	function AccountUpdateAjax() {
-		$.ajax({
-            url: "updateAccount.do",
-            type: "POST",
-            data: $('#insertMngAccountFrm').serialize(),
-            success: function(data){
-                alert("수정 이게되네");
-                location.reload(true);
-            },
-            error: function(){  alert("수정 이건안되네");  }
-        });
+		let id = document.querySelector("#updId").value;
+		console.log(id);
+		
+		if (id == "") {
+			alertNoSelected();
+		} else {
+			if(confirm("수정하시겠습니까?")) {
+				$.ajax({
+		            url: "updateAccount.do",
+		            type: "POST",
+		            data: $('#updateAccountFrm').serialize(),
+		            success: function(data){
+		                alert("수정 이게되네");
+		                location.reload(true);
+		            },
+		            error: function(){  alert("수정 이건안되네");  }
+		        });
+			} else {
+				alert("취소하였습니다.")
+			}
+		}
 	}
 	// update AJAX 끝
 	// =======================================================
@@ -494,17 +500,21 @@
 		
 	// =======================================================	
 	// [박진석|24.11.14] 담당자 계정 생성했을 때 DB에 Insert하는 코드
-	function MngInsertAjax() {		
-		$.ajax({
-            url: "insertAccount.do",
-            type: "POST",
-            data: $('#insertMngAccountFrm').serialize(),
-            success: function(data){
-                alert("신규등록 성공!");
-                location.reload(true);
-            },
-            error: function(){  alert("신규등록 error");  }
-        });
+	function MngInsertAjax() {
+		if(confirm("등록하시겠습니까?")) {
+			$.ajax({
+	            url: "insertAccount.do",
+	            type: "POST",
+	            data: $('#insertMngAccountFrm').serialize(),
+	            success: function(data){
+	                alert("신규등록 성공!");
+	                location.reload(true);
+	            },
+	            error: function(){  alert("신규등록 error");  }
+	        });
+		} else {
+			alert("취소하였습니다.")
+		}
 	}
 	// 담당자 계정 DB Insert AJAX끝
 	// =======================================================
@@ -514,18 +524,21 @@
 	// =======================================================
 	// [박진석|24.11.15] 사원 계정 DB INSERT AJAX
 	function employeeInsertAjax() {
-		$.ajax({
-            url: "insertEmployeeAccount.do",
-            type: "POST",
-            data: $('#insertEmpAccountFrm').serialize(),
-            success: function(data){
-                alert("사원 신규등록 성공!");
-                location.reload(true);
-            },
-            error: function(){  alert("사원 신규등록 error");  }
-        });
+		if(confirm("등록하시겠습니까?")) {
+			$.ajax({
+	            url: "insertEmployeeAccount.do",
+	            type: "POST",
+	            data: $('#insertEmpAccountFrm').serialize(),
+	            success: function(data){
+	                alert("사원 신규등록 성공!");
+	                location.reload(true);
+	            },
+	            error: function(){  alert("사원 신규등록 error");  }
+	        });
+		} else {
+			alert("취소하였습니다.")
+		}
 	}	
-	
 	// 일반 계정 INSERT AJAX 끝
 	// ======================================================
 		
@@ -534,20 +547,33 @@
 	// =======================================================
 	// [박진석|24.11.16] 계정 DB DELETE AJAX
 	function accountDeleteAjax() {
-		let no = document.querySelector("#updMemNo").value;
-		if (no == "") {
+		let id = document.querySelector("#updId").value;
+		
+		if (id == "") {
 			alertNoSelected();
 		} else {
-			$.ajax({
-	            url: "deleteAccount.do",
-	            type: "POST",
-	            data:  { 'memberNo': no },
-	            success: function(data){
-	                alert("사원 제거 성공.");
-	                location.reload(true);
-	            },
-	            error: function(){  alert("사원 제거 실패");  }
-	        });
+			if(confirm("담당자 계정을 삭제하는 경우 업체정보와 하위 사원의 정보가 함께 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				let no = document.querySelector("#updMemNo").value;
+				let compNo = document.querySelector("#updCompanyNo").value;
+				let posit = document.querySelector("#updPosition").value;
+				
+				if (no == "") {
+					alertNoSelected();
+				} else {
+					$.ajax({
+			            url: "deleteAccount.do",
+			            type: "POST",
+			            data:  { 'memberNo': no , 'companyNo': compNo, 'position': posit},
+			            success: function(data){
+			                alert("삭제 성공하였습니다.");
+			                location.reload(true);
+			            },
+			            error: function(){  alert("삭제에 실패하였습니다.");  }
+			        });
+				}
+			} else {
+				alert("취소하였습니다. ");
+			}
 		}
 	}	
 	// 계정 DELETE AJAX 끝
@@ -620,7 +646,7 @@
 	        const year = parseInt(match[4], 10); // 네 번째 그룹이 연도
 	
 	        // 원하는 포맷으로 반환
-	        return `${year}년 ${month}월 ${day}일`;
+	        return `${year}-${month}-${day}`;
 	    } else {
 	        // 포맷이 잘못된 경우 에러 메시지 반환
 	        return "올바르지 않은 날짜 형식입니다.";

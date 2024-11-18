@@ -14,4 +14,14 @@ public interface AccountService {
 	public int updatePwMember(String id);
 
 	public int deleteMember(String no);
+
+	public int deleteMemberWhereCompany(String companyNo);
+
+	public int deleteCompany(String companyNo);
+
+	public int UpdateEmpMember(AccountVO accountVO);
+
+	public int UpdateCompanyTel(AccountVO accountVO);
+
+	public AccountVO chkIdPw(AccountVO accountVO);
 }

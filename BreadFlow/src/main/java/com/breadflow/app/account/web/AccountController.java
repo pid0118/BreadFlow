@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.breadflow.app.account.service.AccountService;
 import com.breadflow.app.account.service.AccountVO;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AccountController {
 	
@@ -22,6 +25,29 @@ public class AccountController {
 	@GetMapping("index")
 	public String index() {
 		return "test/logout";
+	}
+	
+	// 로그인 검사
+	@PostMapping("loginCheck.do")
+	@ResponseBody
+	public int loginCheck(AccountVO accountVO) {
+		System.out.println("id: " + accountVO.getId());
+		System.out.println("pw: " + accountVO.getPassword());
+		AccountVO acVO = accountService.chkIdPw(accountVO);
+		
+		if(acVO == null) {	// 로그인 실패
+			return 0;
+		}
+		/*
+		HttpSession session;
+		HttpServletRequest req = null;
+		
+		session = req.getSession();
+		session.setAttribute("id", acVO.getId());
+		session.setAttribute("name", acVO.getName());
+		*/
+		
+		return 1;		// 로그인 성공
 	}
 	
 	// 계정 조회 페이지
@@ -38,7 +64,7 @@ public class AccountController {
 	public int mngAccountInsert(AccountVO accountVO) {
 		int result = accountService.insertCompany(accountVO);
 		int result2 = accountService.insertMember(accountVO);
-		return result;
+		return result + result2;
 	}
 	
 	@PostMapping("ResetAccountPw.do")
@@ -53,18 +79,24 @@ public class AccountController {
 	@PostMapping("updateAccount.do")
 	@ResponseBody
 	public int accountUpdate(AccountVO accountVO) {
-		/*if(accountVO.getPosition() == "b1") {
-			int result = accountService.mngUpdateCompany(accountVO);
-			
-		}*/
-		return 0;
+		System.out.println("\n" + accountVO + "\n");
+		String position = accountVO.getPosition();
+		System.out.println(position);
+		int result = 0;
+		
+		if (position.equals("담당자")) {
+			result = accountService.UpdateCompanyTel(accountVO);
+			result = accountService.UpdateEmpMember(accountVO);
+		} else {
+			result = accountService.UpdateEmpMember(accountVO);		// 사원일 경우(연락처가 member만 update됨)
+		}
+		return result;
 	}
 	
 	// 사원 신규등록 AJAX
 	@PostMapping("insertEmployeeAccount.do")
 	@ResponseBody
 	public int employeeAccountInsert(AccountVO accountVO) {
-		System.out.println("[AccountController.java] passwordResetUpdate - accountVO: " + accountVO);
 		int result = accountService.insertMember(accountVO);
 		return result;
 	}
@@ -72,8 +104,16 @@ public class AccountController {
 	@PostMapping("deleteAccount.do")
 	@ResponseBody
 	public int accountDelete(AccountVO accountVO) {
-		System.out.println("[AccountController.java] passwordResetUpdate - no: " + accountVO);
-		int result = accountService.deleteMember(accountVO.getMemberNo());
+		String position = accountVO.getPosition();
+		int result = 0;
+		
+		if(position.equals("담당자")) {						// 담당자일 경우 하위 사원을 모두 삭제하고 업체를 삭제
+			result = accountService.deleteMemberWhereCompany(accountVO.getCompanyNo());
+			result = accountService.deleteCompany(accountVO.getCompanyNo());
+		} else {											// 사원일 경우 자기 자신만 삭제
+			result = accountService.deleteMember(accountVO.getMemberNo());
+		}
+		
 		return result;
 	}
 }

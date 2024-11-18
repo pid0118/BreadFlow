@@ -46,5 +46,35 @@ public class AccountServiceImpl implements AccountService {
 		return result;
 	}
 
+	@Override
+	public int deleteMemberWhereCompany(String companyNo) {
+		int result = accountMapper.deleteMembersWhereCompany(companyNo);
+		return result;
+	}
+
+	@Override
+	public int deleteCompany(String companyNo) {
+		int result = accountMapper.deleteCompany(companyNo);
+		return result;
+	}
+
+	@Override
+	public int UpdateEmpMember(AccountVO accountVO) {
+		int result = accountMapper.updateEmpMember(accountVO);
+		return result;
+	}
+
+	@Override
+	public int UpdateCompanyTel(AccountVO accountVO) {
+		int result = accountMapper.updateCompanyTel(accountVO);
+		return result;
+	}
+
+	@Override
+	public AccountVO chkIdPw(AccountVO accountVO) {
+		AccountVO result = accountMapper.checkIdPw(accountVO);
+		return result;
+	}
+
 	
 }
