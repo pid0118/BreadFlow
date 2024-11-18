@@ -6,8 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.common.service.CategoryVO;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
@@ -21,20 +25,26 @@ public class ProductController {
 	// 전체조회
 	@GetMapping("productListAll")                           
 	public String productListAll(Model model) {
+		// 제품 리스트
 		List<ProductVO> list = productService.getListAll();
 		
+		// 카테고리
+		List<CategoryVO> category = productService.getCategory();
+		
 		model.addAttribute("products", list);
+		model.addAttribute("category", category);
+		
 		return "product/prodctListAll";
 	}
 	
 	// 단건조회
-	@GetMapping("productInfo")
-	public String productInfo(ProductVO prductVO, Model model) {
+	@ResponseBody
+	@GetMapping("productListAll/{productCode}")
+	public ProductVO productInfo(@PathVariable String productCode, Model model) {
 		
-		ProductVO findVO = productService.getInfo(prductVO);
+		ProductVO productVO = productService.getInfo(productCode);
 		
-		model.addAttribute("product", findVO);
-		return "product/productInfo";
+		return productVO;
 	}
 	
 	// 제품등록 - 페이지

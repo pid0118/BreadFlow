@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.breadflow.app.product.mapper.ProductMapper;
+import com.breadflow.app.common.service.CategoryVO;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
@@ -23,8 +24,8 @@ public class ProductServiceImpl implements ProductService {
 
 	// 제품 단건조회
 	@Override
-	public ProductVO getInfo(ProductVO productVO) {
-		return productMapper.selectProduct(productVO);
+	public ProductVO getInfo(String productCode) {
+		return productMapper.selectProduct(productCode);
 	}
 	
 	// 제품 등록
@@ -43,6 +44,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int deleteProduct(ProductVO productVO) {
 		return productMapper.deleteProduct(productVO);
+	}
+
+	// 카테고리 가져오기
+	@Override
+	public List<CategoryVO> getCategory() {
+		// TODO Auto-generated method stub
+		return productMapper.selectCategory();
 	}
 	
 }

@@ -2,6 +2,7 @@ package com.breadflow.app.product.mapper;
 
 import java.util.List;
 
+import com.breadflow.app.common.service.CategoryVO;
 import com.breadflow.app.product.service.ProductVO;
 
 public interface ProductMapper {
@@ -9,7 +10,7 @@ public interface ProductMapper {
 	public List<ProductVO> selectAllProductList();
 		
 	// 단건조회 - 조건 : 
-	public ProductVO selectProduct(ProductVO productVO);
+	public ProductVO selectProduct(String productCode);
 		
 	// 등록  
 	public void insertProduct(ProductVO productVO);
@@ -19,4 +20,7 @@ public interface ProductMapper {
 		
 	// 삭제
 	public int deleteProduct(ProductVO productVO);
+	
+	// 카테고리 가져오기
+	public List<CategoryVO> selectCategory();
 }

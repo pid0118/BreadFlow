@@ -51,34 +51,21 @@
     <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
         <div class="col-md-3">
             <div class="form-group">
-                <select class="selectpicker form-control form-control-sm" data-size="5"
+                <select id="categorylist"
+                	class="selectpicker form-control form-control-sm" data-size="5"
                     data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
-                    <optgroup label="카태고리">
-                        <option>완제품</option>
-                        <option>생산품</option>
-                    </optgroup>
+                    <th:block th:each="cate : ${category}">
+                    	<option onclick="categoryClick" th:value="${cate.major}" th:utext="${cate.major}"></option>
+                    </th:block>
                 </select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <select class="selectpicker form-control form-control-sm" data-size="5"
+                <select id="subList"
+                	class="selectpicker form-control form-control-sm" data-size="5"
                     data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
-                    <optgroup label="완제품">
-                        <option>커피/음료</option>
-                        <option>포장지</option>
-                        <option>박스</option>
-                        <option>기타</option>
-                        <option>식기류</option>
-                        <option>데코레이션</option>
-                    </optgroup>
-                    <optgroup label="생산품">
-                        <option>브레드</option>
-                        <option>샌드위치</option>
-                        <option>케이크</option>
-                        <option>쿠키</option>
-                        <option>생지</option>
-                    </optgroup>
+                    
                 </select>
             </div>
         </div>
@@ -86,7 +73,7 @@
     <div class="d-flex justify-content-end gap-2 mb-3">
         <div class="search-container">
             <input type="text" name="keyword" class="search-input" placeholder="제품코드 또는 제품명 검색">
-            <button class="search-button" type="submit">검색</button>
+            <button class="search-button" type="submit" onclick="">검색</button>
         </div>
     </div>
     <div class="d-flex justify-content-end gap-2 mb-3">
@@ -245,7 +232,13 @@
         
         		
         		
-        
+        function categoryClick() {
+        	var category = $("#categoryList option;selected").val();
+        	console.log(category);
+        	
+        	// ajax 들어가야함
+        	
+        }	
         		
     </script>
 </body>
