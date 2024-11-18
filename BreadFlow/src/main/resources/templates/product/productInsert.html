@@ -145,12 +145,16 @@
 
     <script>
         $(document).ready(function() {
+        	
+        	// 현재 존재하는 제품코드번호를 조회해서 등록할때 자동으로 현제번호 +1이 되도록 설정 및 제품코드 입력불가
+        	
             // 제품코드 자동 생성 (IB000011)
             const lastProductCode = 'IB000010';
             const nextNumber = parseInt(lastProductCode.slice(2)) + 1;
             const newProductCode = 'IB' + String(nextNumber).padStart(6, '0');
             $('#productCode').val(newProductCode);
-
+			
+            
             // 이미지 업로드 처리
             $('#imagePreview').click(function() {
                 $('#productImage').click();
@@ -191,6 +195,8 @@
                 window.location.href = '/productListAll';
             });
         });
+        
+        // 등록 버튼클릭시 데이터 DB 에 입력하기까지 END
     </script>
 </body>
 </html>
