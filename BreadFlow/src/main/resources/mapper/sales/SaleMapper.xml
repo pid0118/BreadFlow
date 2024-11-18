@@ -22,5 +22,20 @@
 		    mem.other
 		ORDER BY total
 	</select>
-
+	
+	<select id="ProductList" resultType="ProductVO">
+		SELECT product_code,
+			   product_name,
+			   sale_price
+		FROM product
+		WHERE sub != '생지'
+		ORDER BY product_code ASC
+	</select>
+	
+	<select id="ProductInfo" resultType="ProductVO" parameterType="ProductVO">
+		SELECT product_name
+		      ,sale_price
+		FROM product
+		WHERE sub = #{sub}
+	</select>
 </mapper>

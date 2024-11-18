@@ -1,282 +1,406 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/breadflow_layout}"
-	  layout:fragment="Content">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <title></title>
 <style>
-	body {
-	    font-family: Arial, sans-serif;
-	    margin: 0;
-	    padding: 0;
-	    background-color: #f0f0f0;
-	}
-	
-	.container {
-	    display: flex;
-	    max-width: 1200px;
-	    height: 800px;
-	    margin: 0 auto;
-	    background-color: #fff;
-	    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-	}
-	
-	.left-panel {
-	    flex: 2;
-	    border-right: 1px solid #ddd;
-	}
-	
-	.right-panel {
-	    flex: 1;
-	    padding: 20px;
-	    margin:10px;
-	    background-color: #f9f9f9;
-	}
-	
-	header {
-	    display: flex;
-	    justify-content: space-between;
-	    padding: 10px;
-	    background-color: #4a4a4a;
-	    color: white;
-	}
-	
-	nav {
-	    display: flex;
-	    overflow-x: auto;
-	    background-color: #f0f0f0;
-	    padding: 10px 5px;
-	}
-	
-	.nav-button {
-	    border: none;
-	    background: none;
-	    padding: 5px 10px;
-	    margin: 0 5px;
-	    white-space: nowrap;
-	}
-	
-	.nav-button.active {
-	    font-weight: bold;
-	    border-bottom: 2px solid #000;
-	}
-	
-	.menu-grid {
-	    display: grid;
-	    grid-template-columns: repeat(4, 1fr);
-	    grid-template-rows: repeat(5, 1fr);
-	    gap: 10px;
-	    padding: 10px;
-	}
-	
-	.menu-item {
-	    background-color: #fff;
-	    border: 1px solid #ddd;
-	    height:82px;
-	    padding: 10px;
-	    text-align: center;
-	    cursor: pointer;
-	}
-	
-	.menu-item:hover {
-	    background-color: #f0f0f0;
-	}
-	
-	.item-name {
-	    font-weight: bold;
-	    margin-bottom: 5px;
-	}
-	
-	.item-price {
-	    color: #666;
-	}
-	
-	.hot { background-color: #ffebee; }
-	.ice { background-color: #e3f2fd; }
-	.caramel-frost { background-color: #e1f5fe; }
-	.black-bean { background-color: #e8f5e9; }
-	.green-tea { background-color: #f1f8e9; }
-	.grapefruit { background-color: #fff3e0; }
-	
-	.action-buttons {
-	    display: flex;
-	    justify-content: flex-end;
-	    padding: 10px;
-	    background-color: #f0f0f0;
-	}
-	
-	.action-button {
-	    border: none;
-	    background: none;
-	    margin: 0 5px;
-	}
-	
-	footer {
-	    background-color: #f0f0f0;
-	    padding: 10px;
-	}
-	
-	.footer-buttons {
-	    display: flex;
-	    justify-content: space-between;
-	    margin-bottom: 10px;
-	}
-	
-	.footer-buttons button {
-	    border: 1px solid #ddd;
-	    background-color: #fff;
-	    padding: 5px 10px;
-	}
-	
-	.footer-actions {
-	    display: flex;
-	    justify-content: space-between;
-	    margin-bottom: 10px;
-	}
-	
-	.prev-button, .next-button {
-	    border: 1px solid #ddd;
-	    background-color: #fff;
-	    padding: 5px 10px;
-	}
-	
-	.submit-button {
-	    background-color: #4a4a4a;
-	    color: white;
-	    border: none;
-	    padding: 5px 15px;
-	}
-	
-	.total {
-	    text-align: right;
-	    font-weight: bold;
-	}
-	
-	#selected-items {
-	    margin-top: 20px;
-	}
-	
-	.selected-item {
-	    display: flex;
-	    justify-content: space-between;
-	    align-items: center;
-	    margin-bottom: 10px;
-	    padding: 10px;
-	    background-color: #fff;
-	    border: 1px solid #ddd;
-	}
-	
-	.item-controls {
-	    display: flex;
-	    align-items: center;
-	}
-	
-	.item-controls button {
-	    margin: 0 5px;
-	    padding: 5px 10px;
-	    background-color: #f0f0f0;
-	    border: 1px solid #ddd;
-	    cursor: pointer;
-	}
-	
-	.total-price {
-	    margin-top: 20px;
-	    font-weight: bold;
-	    font-size: 1.2em;
-	}
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f0f0f0;
+}
+
+.container {
+	display: flex;
+	max-width: 1200px;
+	height: 800px;
+	margin: 0 auto;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.left-panel {
+	flex: 2;
+	border-right: 1px solid #ddd;
+}
+
+.right-panel {
+	flex: 1;
+	padding: 20px;
+	margin: 10px;
+	background-color: #f9f9f9;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px;
+	background-color: #4a4a4a;
+	color: white;
+}
+
+nav {
+	display: flex;
+	overflow-x: auto;
+	background-color: #f0f0f0;
+	padding: 10px 5px;
+}
+
+.nav-button {
+	border: none;
+	background: none;
+	padding: 5px 10px;
+	margin: 0 5px;
+	white-space: nowrap;
+}
+
+.nav-button.active {
+	font-weight: bold;
+	border-bottom: 2px solid #000;
+}
+
+.menu-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	gap: 10px;
+	padding: 10px;
+}
+
+.menu-item {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	height: 82px;
+	padding: 10px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.menu-item:hover {
+	background-color: #f0f0f0;
+}
+
+.item-name {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.item-price {
+	color: #666;
+}
+
+.hot {
+	background-color: #ffebee;
+}
+
+.ice {
+	background-color: #e3f2fd;
+}
+
+.caramel-frost {
+	background-color: #e1f5fe;
+}
+
+.black-bean {
+	background-color: #e8f5e9;
+}
+
+.green-tea {
+	background-color: #f1f8e9;
+}
+
+.grapefruit {
+	background-color: #fff3e0;
+}
+
+.action-buttons {
+	display: flex;
+	justify-content: flex-end;
+	padding: 10px;
+	background-color: #f0f0f0;
+}
+
+.action-button {
+	border: none;
+	background: none;
+	margin: 0 5px;
+}
+
+footer {
+	background-color: #f0f0f0;
+	height: 130px;
+	padding: 10px;
+}
+
+.footer-buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.footer-buttons button {
+	border: 1px solid #ddd;
+	background-color: #fff;
+	padding: 5px 10px;
+	float: left;
+}
+
+.footer-actions {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.prev-button, .next-button {
+	border: 1px solid #ddd;
+	background-color: #fff;
+	padding: 5px 10px;
+}
+
+.submit-button {
+	background-color: #4a4a4a;
+	color: white;
+	border: none;
+	padding: 5px 15px;
+}
+
+.total {
+	text-align: right;
+	font-weight: bold;
+}
+
+#selected-items {
+	margin-top: 20px;
+	overflow-y: auto;
+	height: 600px;
+}
+
+.selected-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+}
+
+.item-controls {
+	display: flex;
+	align-items: center;
+}
+
+.item-controls button {
+	margin: 0 5px;
+	padding: 5px 10px;
+	background-color: #f0f0f0;
+	border: 1px solid #ddd;
+	cursor: pointer;
+}
+
+.total-price {
+	margin-top: 20px;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.details-button {
+	background-color: #f1f1f1;
+	color: black;
+}
+
+.button-container {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 10px;
+	width: 100%;
+}
+
 </style>
 </head>
 <body>
-<body>
-    <div class="container">
-        <div class="left-panel">
-            <header>
-                <div class="header-left">3월 2일 (목) 오후 6:41</div>
-                <div class="header-right"></div>
-            </header>
-            <nav>
-                <button class="nav-button active">즐겨찾는 메뉴</button>
-                <button class="nav-button">에스프레소</button>
-                <button class="nav-button">스무디</button>
-                <button class="nav-button">허브티</button>
-                <button class="nav-button">베이커리</button>
-            </nav>
-            <div class="menu-grid">
-                <div class="menu-item hot" data-name="HOT 아메리카노" data-price="4000" data-code="g0001">
-                    <div class="item-name">HOT 아메리카노</div>
-                    <div class="item-price">4,000</div>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <button class="action-button">◀</button>
-                <button class="action-button">▶</button>
-                <span class="item-count">0개</span>
-                <button class="action-button">🖨️</button>
-                <button class="action-button">🗑️</button>
-                <button class="action-button">⭐</button>
-                <button class="action-button">▲</button>
-                <button class="action-button">▼</button>
-            </div>
-            <footer>
-                <div class="footer-buttons">
-                    <button>상품가</button>
-                    <button>수량</button>
-                    <button>할인</button>
-                    <button>부가세(0)</button>
-                    <button>봉사료</button>
-                </div>
-                <div class="footer-actions">
-                    <button class="prev-button">◀</button>
-                    <button class="next-button">▶</button>
-                    <button class="submit-button">상세등록</button>
-                </div>
-                <div class="total">0원 결제</div>
-            </footer>
-        </div>
-        <div class="right-panel">
-            <h2>선택된 메뉴</h2>
-						<ul id="selected-items" class="list-group mb-3">
-						</ul>
+	<div class="container">
+		<div class="left-panel">
+			<header>
+				<span th:text="${#dates.format(#dates.createNow(), 'MM월 dd일 (EEE) a hh:mm')}"></span>
+				<div class="header-right"></div>
+			</header>
+			<nav class="menu-type">
+				<button class="nav-button active" data-category="전체메뉴">전체메뉴</button>
+				<button class="nav-button" data-category="브레드">빵</button>
+				<button class="nav-button" data-category="쿠키">쿠키</button>
+				<button class="nav-button" data-category="샌드위치">샌드위치</button>
+				<button class="nav-button" data-category="커피&음료">커피&음료</button>
+				<button class="nav-button" data-category="기타">기타</button>
+			</nav>
+			<div class="menu-grid">
+				<div class="menu-item hot" th:each="list : ${product}"
+					th:data-name="${list.productName}"
+					th:data-price="${list.salePrice}"
+					th:data-code="${list.productCode}">
+					<div class="item-name">[[ ${list.productName} ]]</div>
+					<div class="item-price">[[ ${list.salePrice} ]]</div>
+				</div>
+			</div>
+			<div class="action-buttons">
+				<span class="item-count">0개</span>
 
-            <div class="total-price">총 금액: <span id="total-price">0</span>원</div>
-            <button class="submit-button">주문</button>
-        </div>
-    </div>
-    <script>
-			let selectedMenu =[];
-    		let item = document.querySelector(".menu-grid");
-			let selectItem = document.querySelector("#selected-items");
-    	
-			item.addEventListener("click", () =>{
-				if(event.target.closest(".menu-item")){
+			</div>
+			<footer>
+				<div class="footer-actions">
+					<div class="total"></div>
+					<button class="action-button">◀</button>
+					<button class="action-button">▶</button>
+					<button class="submit-button">마감 정산</button>
+				</div>
+			</footer>
+		</div>
+		<div class="right-panel">
+			<h2>선택된 메뉴</h2>
+			<ul id="selected-items" class="list-group mb-3">
+			</ul>
+
+			<div class="total-price">
+				총 금액: <span id="total-price">0</span>원
+			</div>
+			<div class="button-container">
+				<button class="submit-button">주문</button>
+				<button class="details-button">상세내역</button>
+			</div>
+		</div>
+	</div>
+	<script>
+		let selectedMenu = []; // 메뉴를 담을 배열
+		let itemGrid = document.querySelector(".menu-grid");
+		let selectItemList = document.querySelector("#selected-items");
+		let totalPriceElem = document.querySelector(".total-price");
+		let itemCountElem = document.querySelector('.item-count');
+		let disItemCnt = 0; // 현재 보여지는 아이템 갯수
+		loadMenu('전체메뉴');
+		
+		document.addEventListener('DOMContentLoaded', function(){
+			itemGrid.addEventListener("click", (event) => {
+				if(event.target.closest(".menu-item")) {
 					const element = event.target.closest(".menu-item");
 					let name = element.dataset.name;
 					let price = parseInt(element.dataset.price);
-					// 배열에 값이 있는지 체크
-					selectedMenu.push({name,price});
-					// 있으면 수량을 1씩 증가
-					//if(selectedMenu[])
-					// 없으면 배열에 추가
-
-					// 배열전체를 다시 그리기
-					arrayPrint();
+		
+					// 해당 메뉴가 이미 배열에 있는지 체크
+					let existingItem = selectedMenu.find(item => item.name === name);
+	
+					if(existingItem) {
+						// 이미 있으면 수량 증가
+						existingItem.count++;
+					} 
+					else {
+						// 없으면 새로운 항목 추가
+						selectedMenu.push({name, price, count: 1});
+		            }
+		
+		            // 배열 전체를 다시 그리기
+		            arrayPrint();
 				}
 			});
+		});
 
-			function arrayPrint(){
-				for(i in selectedMenu){
-					let node=`	<li class="list-group-item d-flex justify-content-between lh-sm">
-									<div>
-										<h6 class="my-0">${selectedMenu[i].name}</h6>
-										<small class="text-body-secondary"></small>
-									</div>
-									<span class="text-body-secondary">${selectedMenu[i].price}</span>
-								</li>`
-					selectItem.insertAdjacentHTML("afterbegin", node);
-				}
+		function arrayPrint() {
+			// 리스트를 비우고
+	        selectItemList.innerHTML = '';
+        	let totalPrice = 0;
+
+			// 9개씩 표시
+			let itemsShow = selectedMenu.slice(0, disItemCnt + 9);
+
+			itemsShow.forEach((item,idx) => {
+				// 숫자 3자리마자 쉼표
+				let priceCom = (item.price * item.count).toLocaleString();
+				
+				// 항목을 HTML로 변환
+	          	let node = `<li class="list-group-item d-flex justify-content-between lh-sm">
+	                      <div style="width:100px">
+	                        <h6 class="my-0">${item.name}</h6>
+	                        <small class="text-body-secondary">수량: ${item.count} EA</small>
+	                      </div>
+	                      <span class="text-body-secondary">${priceCom}</span>              
+	                      <button class="btn btn-danger btn-sm ms-2 delete-button" data-idx="${idx}">삭제</button>
+	                      </li>`;
+	          	selectItemList.insertAdjacentHTML("beforeend", node);
+	          	totalPrice += item.price * item.count;
+        	});
+
+	        // 총 금액 업데이트
+	        totalPriceElem.textContent = `총 금액: ${totalPrice.toLocaleString()}원`;
+	        itemCountElem.textContent = `${selectedMenu.length}개`;
+	
+			// 9개 이상이면 증가
+			if(selectedMenu.length >= disItemCnt + 9){
+				disItemCnt += 9;
 			}
+		
+
+			//삭제 이벤트
+			let deleteBnt = selectItemList.querySelectorAll('.delete-button');
+			deleteBnt.forEach((button) => {
+				button.addEventListener('click', function(){
+					let idx = button.getAttribute('data-idx');
+					deleteItem(idx);
+				});
+			});
+		}
+
+		//항목 삭제 함수
+		function deleteItem(idx){
+			selectedMenu.splice(idx, 1);
+			arrayPrint();
+		}
+		
+		// AJAX
+
+		document.addEventListener('DOMContentLoaded', function(){
+
+			// 카테고리 버튼 클릭 시 메뉴를 AJAX로 로드
+			const buttons = document.querySelectorAll('.nav-button');
+			buttons.forEach(button => {
+				button.addEventListener('click', function() {
+					// 버튼 클릭 시 해당 카테고리로 메뉴 업데이트
+					buttons.forEach(b => b.classList.remove('active'));
+					button.classList.add('active');
+					
+					const category = button.getAttribute('data-category');
+					loadMenu(category);  // 메뉴를 로드하는 함수 호출
+				});
+			});
+		});
+		
+		// 메뉴를 AJAX로 로드하는 함수
+		function loadMenu(category) {
+			let url = category ? '/pos/menu' : `/pos/menu?category=${category}`;
+			  
+			
+			fetch(url)  // 카테고리를 서버로 전달하여 해당 메뉴를 요청
+				.then(response => response.json())
+				.then(data => {
+					// 메뉴 그리드 업데이트
+					itemGrid.innerHTML = '';
+					data.forEach(item => {
+						let exitItem = itemGrid.querySelector(`.menu-item[data-code="${item.productCode}"]`);
+						let node = `<div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}">
+											<div class="item-name">${item.productName}</div>
+											<div class="item-price">${item.salePrice}</div>
+										</div>`;
+						itemGrid.insertAdjacentHTML('beforeend', node);  // 새로운 메뉴 항목을 추가
+					});
+				})
+				.catch(error => {
+					console.error("AJAX 요청 실패:", error);  // 에러 처리
+				});
+		}
+		
+
     </script>
 </body>
 </html>
