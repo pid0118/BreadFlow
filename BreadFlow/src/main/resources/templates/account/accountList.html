@@ -26,6 +26,12 @@
 	float: right;
 	margin-left: 10px;
 }
+
+.form-control.date-picker[readonly] {
+    background-color: #ffffff;
+}
+
+
 </style>
 
 <div class="container">
@@ -242,7 +248,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>계약일자</label>
-						<input class="form-control date-picker" type="text" name="contractDate">
+						<input class="form-control date-picker" type="text" name="contractDate" readonly>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -257,7 +263,7 @@
 				</div>
 				
 				<div class="updateButtons">
-					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
+					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn" onclick="brnChk = 0;">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
 				</div>
 			</div>
@@ -302,7 +308,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>계약일자</label>
-						<input class="form-control date-picker" type="text" name="contractDate">
+						<input class="form-control date-picker" type="text" name="contractDate" readonly>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -314,7 +320,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>비밀번호 확인</label><b class="required"> *</b>
-						<input type="password" class="form-control">
+						<input type="password" class="form-control" id="pwConfirm">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -336,12 +342,21 @@
 
 <script>
 	//=======================================================
+	// [박진석|24.11.18] 필요한 변수들 생성
+	let brnChk = 0;		// 사업자등록번호 검증. 0 -> 번호 없음 | 1 -> 번호 유효하지 않음 | 2 -> 번호 유효함
+	
+	// 변수 끝
+	//=======================================================
+	
+	
+
+	//=======================================================
 	// [박진석|24.11.14] 버튼들 이벤트 걸기
 	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);		// 담당자 계정 생성으로 폼 전환 버튼
 	document.querySelector("#employeeInsertBtn").addEventListener("click", showEmployeeInsertForm);		// 직원 계정 생성으로 폼 전환 버튼
 	
-	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
-	document.querySelector("#insertEmployeeBtn").addEventListener("click", employeeInsertAjax);
+	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);					// 담당자 계정 생성
+	document.querySelector("#insertEmployeeBtn").addEventListener("click", employeeInsertAjax);			// 직원 계정 생성
 	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);						// "비밀번호 초기화"
 	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
 	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
@@ -387,6 +402,7 @@
 		document.querySelector(".updateAccounts").style.display = 'none';
 		document.querySelector(".insertEmployeeAccount").style.display = 'none';
 		document.querySelector("#resetMngBtn").click();
+		let brnChk = 0;
 	}
 	
 	function showEmployeeInsertForm() {
@@ -394,6 +410,7 @@
 		document.querySelector(".updateAccounts").style.display = 'none';
 		document.querySelector(".insertEmployeeAccount").style.display = 'block';
 		document.querySelector("#resetEmployeeBtn").click();
+		let brnChk = 0;
 	}
 	// 계정 생성 폼 전환 끝
 	// =======================================================
@@ -412,6 +429,7 @@
 		document.querySelector(".insertMngAccount").style.display = 'none';			// 자세히 보기 폼만 활성화
 		document.querySelector(".insertEmployeeAccount").style.display = 'none';
 		document.querySelector(".updateAccounts").style.display = 'block';
+		let brnChk = 0;
 		
 		let parentInfo = e.target.parentElement;
 		
@@ -501,6 +519,20 @@
 	// =======================================================	
 	// [박진석|24.11.14] 담당자 계정 생성했을 때 DB에 Insert하는 코드
 	function MngInsertAjax() {
+		let nameVal = document.querySelector("#insertMngAccountFrm input[name^='name']");
+		let comNmVal = document.querySelector("#insertMngAccountFrm input[name^='companyName']");
+		let comTelVal = document.querySelector("#insertMngAccountFrm input[name^='companyTel']");
+		
+		if(nameVal.value == "" || comNmVal.value == "" || comTelVal.value == "") {
+			alert("필수값을 입력해주세요.");
+			return false;
+		}
+		
+		if(brnChk === 1) {
+			alert("사업자등록번호를 확인해주세요.")
+			return false;
+		}
+		
 		if(confirm("등록하시겠습니까?")) {
 			$.ajax({
 	            url: "insertAccount.do",
@@ -508,6 +540,7 @@
 	            data: $('#insertMngAccountFrm').serialize(),
 	            success: function(data){
 	                alert("신규등록 성공!");
+	                brnChk = 0;
 	                location.reload(true);
 	            },
 	            error: function(){  alert("신규등록 error");  }
@@ -524,6 +557,22 @@
 	// =======================================================
 	// [박진석|24.11.15] 사원 계정 DB INSERT AJAX
 	function employeeInsertAjax() {
+		
+		let nameVal = document.querySelector("#insertEmpAccountFrm input[name^='name']");
+		let comNmVal = document.querySelector("#insertEmpAccountFrm input[name^='companyName']");
+		let pwVal = document.querySelector("#insertEmpAccountFrm input[name^='password']");
+		let pwCnfrmVal = document.querySelector("#pwConfirm");
+		
+		if(pwVal.value != pwCnfrmVal.value) {
+			alert("비밀번호가 일치하지 않습니다.");
+			return false;
+		}
+		
+		if(nameVal.value == "" || comNmVal.value == "" || pwVal.value == "" || pwCnfrmVal.value == "") {
+			alert("필수값을 입력해주세요.");
+			return false;
+		}
+		
 		if(confirm("등록하시겠습니까?")) {
 			$.ajax({
 	            url: "insertEmployeeAccount.do",
@@ -607,13 +656,13 @@
 			      let code = result.data[0].b_stt_cd
 			      if(code == '01') {
 			    	  alert("정상적인 번호입니다.");
-			    	  isBrnConfirm = true;
+			    	  brnChk = 2;
 			      } else if(code == '02' || code == '03') {
 			    	  alert("휴업 또는 폐업된 번호입니다.");
-			    	  isBrnConfirm = false;
+			    	  brnChk = 1;
 			      } else {
 			    	  alert("잘못된 번호입니다.");
-			    	  isBrnConfirm = false;
+			    	  brnChk = 1;
 			      }
 			  },
 			  error: function(result) {
