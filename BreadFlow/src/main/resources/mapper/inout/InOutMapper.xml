@@ -2,50 +2,139 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.inout.mapper.InOutMapper">
 	<select id="selectInstoreList" resultType="InstoreVO">
-		SELECT		i.instore_no
-		            , i.instore_date
-		            , i.item_div
-		            , i.item_code
+		SELECT		i.instore_date
 		            , i.instore_quantity
-		            , i.outstore_quantity
-		            , i.stock_quantity
-		            , i.facilities_div_no
-		            , i.lot_no
-		            , i.instore_manager
-		            , i.ordering_detail_code
-		            , i.instore_div
-		            , i.instore_div_no
 		            , i.expiration_deadline
 		            , od.standard
 		            , od.unit
-		            , od.outstore_company
-		            , m.member_no
-		            , c.company_name
-		FROM		ordering_detail od JOIN instore i
-		            ON od.ordering_detail_code = i.ordering_detail_code
-		            JOIN member m
-		            ON m.member_no = i.instore_manager
-		            JOIN company c
-		            ON m.member_no = c.company_no
-		ORDER BY	i.instore_no
+		            , od.ordering_ingredient
+		            , od.ordering_product
+		            , ods.outstore_company
+		            , ods.instore_company
+		            , ing.ingredient_name
+		            , prd.product_name
+		FROM		instore i LEFT JOIN ordering_detail od
+					ON i.ordering_detail_code = od.ordering_detail_code
+					LEFT JOIN orders_detail ods
+					ON od.ordering_detail_code = ods.ordering_detail_code		
+					LEFT JOIN ingredient ing
+					ON od.ordering_ingredient = ing.ingredient_code
+					LEFT JOIN product prd
+					ON od.ordering_product = prd.product_code
+		ORDER BY	i.instore_no DESC
 	</select>
 	<select id="selectOutstoreList" resultType="OutstoreVO">
-		SELECT		o.outstore_no
-		            , o.outstore_date
+		SELECT		o.outstore_date
 		            , o.outstore_quantity
-		            , o.outstore_manager
-		            , o.orders_detail_no
-		            , o.instore_no
-		            , o.sales_no
+		            , ods.standard
+		            , ods.unit
+		            , ods.outstore_company
+		            , ods.instore_company
+		            , ods.orders_item
+		            , ing.ingredient_name
+		            , prd.product_name
+		FROM		outstore o JOIN orders_detail ods
+					ON o.orders_detail_no = ods.orders_detail_no
+					JOIN ordering_detail od
+					ON od.ordering_detail_code = ods.ordering_detail_code
+					JOIN ingredient ing
+					ON od.ordering_ingredient = ing.ingredient_code
+					JOIN product prd
+					ON od.ordering_product = prd.product_code
+		ORDER BY	o.outstore_no DESC
+	</select>
+	<select id="selectOrderListForInsert" resultType="OrderListVO">
+		SELECT      o.ordering_date
+		            , od.ordering_ingredient
+		            , od.ordering_product
+		            , od.quantity
 		            , od.standard
 		            , od.unit
-		            , od.outstore_company
-		            , od.instore_company
-		            , i.item_div
-		FROM		orders_detail od JOIN outstore o
-		            ON od.orders_detail_no = o.orders_detail_no
-		            JOIN instore i
-		            ON o.instore_no = i.instore_no
-		ORDER BY	o.outstore_no
+		            , od.ordering_detail_code
+		            , ing.ingredient_name
+		            , ing.expiration_deadline AS ing_expiration_deadline
+		            , prd.product_name
+		            , prd.expiration_deadline AS prd_expiration_deadline
+		FROM		ordering o JOIN ordering_detail od
+					ON o.ordering_code = od.ordering_code
+					LEFT JOIN orders_detail ods
+					ON ods.ordering_detail_code = od.ordering_detail_code
+					LEFT JOIN ingredient ing
+					ON od.ordering_ingredient = ing.ingredient_code
+					LEFT JOIN product prd
+					ON od.ordering_product = prd.product_code
+		ORDER BY   	o.ordering_date DESC
+	</select>
+	<select id="selectInstoreListForInsert" resultType="InstoreVO">
+		SELECT		i.instore_date
+					, i.instore_no
+		            , i.instore_manager
+		            , od.standard
+		            , od.unit
+		            , od.quantity
+		            , od.ordering_product
+		            , od.ordering_ingredient
+		            , ods.orders_detail_no
+		            , ing.ingredient_name
+		            , prd.product_name
+		FROM		instore i JOIN ordering_detail od
+					ON i.ordering_detail_code = od.ordering_detail_code
+					JOIN orders_detail ods
+					ON ods.ordering_detail_code = od.ordering_detail_code
+					JOIN ingredient ing
+					ON od.ordering_ingredient = ing.ingredient_code
+					JOIN product prd
+					ON od.ordering_product = prd.product_code
+		ORDER BY	i.instore_date DESC
+	</select>
+	<insert id="insertInstoreInfo" parameterType="InstoreVO">
+		INSERT INTO instore (instore_no
+		                    , instore_date
+		                    , item_div
+		                    , item_code
+		                    , instore_quantity
+		                    , outstore_quantity
+		                    , stock_quantity
+		                    , facilities_div_no
+		                    , lot_no
+		                    , instore_manager
+		                    , ordering_detail_code
+		                    , instore_div
+		                    , expiration_deadline)
+		VALUES      ('IN-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('instore','instore_no') FROM dual) FROM dual
+		            , #{instoreDate}
+		            , #{itemDiv}
+		            , 'NULL'
+		            , #{instoreQuantity}
+		            , #{outstoreQuantity}
+		            , #{stockQuantity}
+		            , 'CP00002'
+		            , LEFT(#{itemDiv}, 2) || '-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('instore','lot_no') FROM dual) FROM dual
+		            , #{instoreManager}
+		            , #{orderingDetailCode}
+		            , #{instoreDiv}
+		            , #{expirationDeadline})
+	</insert>
+	<insert id="insertOutstoreInfo" parameterType="OutstoreVO">
+		INSERT INTO outstore (outstore_no
+		                     , outstore_date
+		                     , outstore_quantity
+		                     , outstore_manager
+		                     , orders_detail_no
+		                     , instore_no
+		                     , sales_no)
+		VALUES      ('OU-' || TO_CHAR(sysdate, 'yyyyMMdd') || '-' || (SELECT GETSEQ('outstore','outstore_no') FROM dual) FROM dual
+		            , #{outstoreDate}
+		            , #{outstoreQuantity}
+		            , #{outstoreManager}
+		            , #{ordersDetailNo}
+		            , #{instoreNo}
+		            , #{salesNo})
+	</insert>
+	<select id="selectItemList" resultType="ItemListVO">
+		SELECT      i.ingredient_name
+		            , p.product_name
+		FROM        ingredient i JOIN product p
+		            ON 1 = 1
 	</select>
 </mapper>

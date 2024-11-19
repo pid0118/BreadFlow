@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.modal.mapper.ModalMapper">
+	<select id="selectCompanyList" resultType="CoFindVO">
+		SELECT      div
+		            , company_name
+		            , company_address
+		FROM        company
+		ORDER BY    company_name
+	</select>
+</mapper>
