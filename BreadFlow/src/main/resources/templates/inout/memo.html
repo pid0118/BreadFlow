@@ -457,6 +457,86 @@
 				});
 			});
 		});
+	    
+	    
+	    
+	    
+	    
+	    // 저장 버튼 클릭 시 처리
+        $("#submitBtn").click(function() {
+            // 선택된 행을 추출
+            var selectedRows = [];
+            $("#inOutTable tr.selected").each(function() {
+                var row = $(this);
+                var data = {
+                    date: row.find("td:nth-child(1)").text(),
+                    itemDiv: row.find("td:nth-child(2)").text(),
+                    product: row.find("td:nth-child(3)").text(),
+                    inQuantity: row.find("td:nth-child(4)").text(),
+                    outQuantity: row.find("td:nth-child(5)").text(),
+                    standard: row.find("td:nth-child(6)").text()
+                };
+                selectedRows.push(data);
+            });
+
+            // 폼 데이터
+            var formData = {
+                companyName: $("#companyInput").val(),
+                inOutDate: $("#inOutDate").val(),
+                rows: selectedRows,
+                itemType: $("input[name='options']:checked").val() // 'instore' 또는 'outstore'
+            };
+
+            // Ajax로 데이터 전송
+            var url = formData.itemType === 'instore' ? '/inOut/insertIn' : '/inOut/insertOut';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    alert("저장되었습니다!");
+                    $("#inOutInsertForm")[0].reset();
+                },
+                error: function() {
+                    alert("저장 실패!");
+                }
+            });
+        });
+
+        // 테이블에서 행 클릭 시 선택 처리
+        $("#inOutTable").on('click', 'tr', function() {
+            $(this).toggleClass('selected');
+        });
+    });
+	
+    
+    var row = "<tr>";
+    if (type === 'instore') {
+        row += "<td class='table-plus'>" + item.instoreDate + "</td>";
+        row += "<td>" + item.itemDiv + "</td>";
+        row += "<td>" + item.orderingProduct + "</td>";
+        row += "<td>" + item.instoreQuantity + "</td>";
+        row += "<td>" + item.outstoreQuantity + "</td>";
+        row += "<td>" + item.standard + "/" + item.unit + "</td>";
+        row += "<td style='display:none;'>" + item.instoreNo + "</td>";
+        row += "<td style='display:none;'>" + item.ordersDetailNo + "</td>";
+    } else if (type === 'order') {
+        row += "<td class='table-plus'>" + item.orderingDate + "</td>";
+        row += "<td>" + item.itemDiv + "</td>";
+        row += "<td>" + item.orderingProduct + "</td>";
+        row += "<td>" + item.quantity + "</td>";
+        row += "<td>" + item.outstoreQuantity + "</td>";
+        row += "<td>" + item.standard + "/" + item.unit + "</td>";
+        row += "<td style='display:none;'>" + item.orderingDetailCode + "</td>";
+        row += "<td style='display:none;'>" + "f1 or f2" + "</td>";
+        row += "<td style='display:none;'>" + item.expirationDeadline + "</td>";
+    }
+    row += "</tr>";
+    tbody.append(row);
 	</script>
 </body>
 </html>
+
+
+

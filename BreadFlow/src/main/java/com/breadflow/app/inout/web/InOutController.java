@@ -66,20 +66,24 @@ public class InOutController {
     // 입고/출고 등록
 	@GetMapping("inOutInsert")	
 	public String inOutInsert(Model model) {
+		List<ItemListVO> items = inOutService.itemList();
+		model.addAttribute("items", items);
 		return "inout/insert";
 	}
 	
 	// 입고 등록 반환 (AJAX)
 	@PostMapping("inOut/insertIn")
 	@ResponseBody
-	public int insertIn(@RequestBody InstoreVO instoreVO) {
+	public int insertIn(@RequestBody List<InstoreVO> instoreVO) {
+		System.out.println(instoreVO);
 		return inOutService.instoreInsert(instoreVO);
 	}
 	
 	// 출고 등록 반환 (AJAX)
 	@PostMapping("inOut/insertOut")
 	@ResponseBody
-	public int insertOut(@RequestBody OutstoreVO outstoreVO) {
+	public int insertOut(@RequestBody List<OutstoreVO> outstoreVO) {
+		System.out.println(outstoreVO);
 		return inOutService.outstoreInsert(outstoreVO);
 	}
 	

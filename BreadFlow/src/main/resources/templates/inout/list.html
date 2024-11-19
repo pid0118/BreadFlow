@@ -7,7 +7,6 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 내역</title>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -34,7 +33,7 @@
 			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목별</button>
 			<ul class="dropdown-menu" id="itemMenu">
 				<li th:each="item : ${items}">
-                    <a class="dropdown-item item">[[ ${item} ]]</a>
+                    <a class="dropdown-item item">[[ ${item.productName} ]]</a>
                 </li>
 			</ul>
   			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="yearlyBtn" data-bs-toggle="dropdown" aria-expanded="false">연도별</button>
@@ -58,7 +57,7 @@
 			<button type="button" class="btn btn-primary input-group-button" id="dateFilterBtn">검색</button>
 		</div>
 		<div class="pd-20">
-			<table class="data-table table stripe hover nowrap">
+			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
 				<thead>
 					<tr>
 						<th class="table-plus">거래일자</th>
@@ -73,6 +72,9 @@
 
 				</tbody>
 			</table>
+			<ul class="pagination">
+			
+			</ul>
 		</div>
 	</div>
 	
@@ -81,6 +83,22 @@
 
             // 기본 내역 출력 (입고)
             loadInstoreList();
+            
+            //initDataTable();
+            
+            /*function initDataTable() {
+    			if ($.fn.dataTable.isDataTable('#compTble')) {
+    	            $('#compTble').DataTable().destroy();
+    	        }
+    			
+    			$('#compTble').DataTable({
+    				paging: true,
+    		    	searching: true,
+    		    	ordering: true,
+    		    	info: true,
+    		    	select: true
+    		    });
+    		}*/
 
             // 입고 내역 버튼 클릭
             $("#instoreBtn").click(function() {
@@ -116,6 +134,13 @@
                 loadMonthlyList(month);
             });
             
+            // 품목별 필터 클릭
+            $(document).on('click', '.item', function() {
+                var item = $(this).text().trim();
+                $("#itemBtn").text(item);
+                loadItemList(item);
+            });
+            
             // 입력시 검색
             $("#searchKeyword").on('input', function() {
     	        var keyword = $(this).val().toLowerCase();
@@ -143,7 +168,7 @@
             });
 
         });
-
+        
         // 입고 내역 가져오기
         function loadInstoreList() {
             $.ajax({
@@ -151,6 +176,7 @@
                 method : 'GET',
                 success : function(data) {
                     updateTable(data, 'instore');
+                    //initDataTable();
                 },
                 error : function() {
                     alert("입고 내역을 불러오는 데 실패했습니다.");
@@ -165,6 +191,7 @@
                 method : 'GET',
                 success : function(data) {
                     updateTable(data, 'outstore');
+                    //initDataTable();
                 },
                 error : function() {
                     alert("출고 내역을 불러오는 데 실패했습니다.");
@@ -180,14 +207,22 @@
                 var row = "<tr>";
                 if (type === 'instore') {
                     row += "<td class='table-plus'>" + item.instoreDate + "</td>";
-                    row += "<td>" + item.itemDiv + "</td>";
+                    if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + item.productName + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
+	                }
                     row += "<td>" + item.instoreQuantity + "</td>";
                     row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
-                    row += "<td>" + item.companyName + "</td>";
+                    row += "<td>" + item.instoreCompany + "</td>";
                 } else if (type === 'outstore') {
                     row += "<td class='table-plus'>" + item.outstoreDate + "</td>";
-                    row += "<td>" + item.itemDiv + "</td>";
+                    if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + item.productName + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
+	                }
                     row += "<td>" + item.outstoreQuantity + "</td>";
                     row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
@@ -247,6 +282,18 @@
                 }
             });
         }
+        
+        // 품목 필터
+        function loadItemList(item) {
+        	$("#inOutTable tr").each(function() {
+        		var rowText = $(this).text().toLowerCase();
+        		if (rowText.includes(item)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
 
         // 검색
         function searchData(keyword) {
@@ -274,13 +321,6 @@
                 }
             });
         }
-        
-        // 업체명 파라미터 가져오기
-        $(document).ready(function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var companyName = urlParams.get('companyName');
-            $("#companyName").text(companyName);
-        });
     </script>
 </body>
 </html>

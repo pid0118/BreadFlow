@@ -7,7 +7,6 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 등록</title>
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -17,7 +16,7 @@
 		<form id="inOutInsertForm" name="inOutInsertForm">
 			<div>
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" id="companyInput" placeholder="OO 가맹점" readonly required>
+					<input class="form-control" type="text" id="companyInput" value="(주)보라보라" readonly>
 				</div>
 
 				<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
@@ -44,7 +43,7 @@
 					<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목별</button>
 					<ul class="dropdown-menu" id="itemMenu">
 						<li th:each="item : ${items}">
-                    		<a class="dropdown-item item">[[ ${item} ]]</a>
+                    		<a class="dropdown-item item">[[ ${item.productName} ]]</a>
                 		</li>
 					</ul>
 				</div>
@@ -69,7 +68,7 @@
 			<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
 		</div>
 		<div class="pd-20">
-			<table class="data-table table stripe hover multiple-select-row nowrap">
+			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
 				<thead>
 					<tr>
 						<th class="table-plus">발주일자</th>
@@ -81,7 +80,7 @@
 					</tr>
 				</thead>
 				<tbody id="inOutTable">
-
+					
 				</tbody>
 			</table>
 		</div>
@@ -94,24 +93,36 @@
 	
 	<script>
 		$(document).ready(function() {
-	
-	        // 기본 내역 출력 (입고)
-	        loadInstoreList();
-	        
+			
+			// 기본 내역 출력 (입고)
+	        loadOrderList();
+
 	        // 기본 날짜 출력 (입고/출고)
 	        loadTodayDate();
+	        
+	        //initDataTable();
+	        
+	        /*function initDataTable() {
+				if ($.fn.dataTable.isDataTable('#compTble')) {
+		            $('#compTble').DataTable().destroy();
+		        }
+				
+				$('#compTble').DataTable({
+					paging: true,
+			    	searching: true,
+			    	ordering: true,
+			    	info: true,
+			    	select: true
+			    });
+			}*/
 	
 	        // 입고 내역 버튼 클릭
 	        $("#instoreBtn").click(function() {
-	        	$("#submit").removeClass('outstore');
-	        	$("#submit").addClass('instore');
 	        	loadOrderList();
 	        });
 	
 	        // 출고 내역 버튼 클릭
 	        $("#outstoreBtn").click(function() {
-	        	$("#submit").removeClass('instore');
-	        	$("#submit").addClass('outstore');
 	            loadInstoreList();
 	        });
 	
@@ -125,6 +136,13 @@
 	            loadFinprdList();
 	        });
 	        
+	     	// 품목별 필터 클릭
+            $(document).on('click', '.item', function() {
+                var item = $(this).text().trim();
+                $("#itemBtn").text(item);
+                loadItemList(item);
+            });
+	        
 	     	// 입력시 검색
             $("#searchKeyword").on('input', function() {
     	        var keyword = $(this).val().toLowerCase();
@@ -136,108 +154,61 @@
                 var keyword = $("#searchKeyword").val().toLowerCase();
                 searchData(keyword);
             });
-	        
-	        // 입고/출고 등록 버튼 클릭
-            $("#submit").click(function() {
-	            if ($("#submit").hasClass('instore')) {
-	                insertIn();
-	            } else if ($("#submit").hasClass('outstore')) {
-	                insertOut();
-	            }
-	        });
-	        
-	        // 입고/출고 옵션 변경 시 입고/출고 등록 변경
-            $("input[name='options']").change(function() {
-				if ($("#instoreBtn").prop("checked")) {
-					$("#inOutInsertForm").attr("action", "/insertInstoreInfo");
-				} else {
-					$("#inOutInsertForm").attr("action", "/insertOutstoreInfo");
-				}
-			});
 
-			// 폼 제출 (AJAX로 처리)
-			$("#inOutInsertForm").submit(function(event) {
-				event.preventDefault();
-				var formData = {
-					companyName: $("#companyInput").val(),
-					inOutDate: $("#inOutDate").val(),
-					quantity: $("#quantity").val(),
-					standard: $("#standard").val(),
-					itemType: $("input[name='options']:checked").val(),
-				};
-
-				// AJAX 요청
-				$.ajax({
-					url: $(this).attr("action"),
-					type: "POST",
-					data: formData,
-					success: function(response) {
-						alert("등록 성공!");
-						$("#inOutInsertForm")[0].reset();
-					},
-					error: function(error) {
-						alert("등록에 실패했습니다.");
-					}
-				});
-			});
-			
-			// 테이블의 열 선택 시
-		    $("#inOutTable").on('click', 'tr', function() {
-		    	if($(this).hasClass('selected')) {
-		    		$(this).removeClass('selected');
-		    	}
-				$(this).addClass('selected');
-				var selectedRows = new Array();
-				$("#inOutTable tr").each(function() {
-	                var row = $(this);
-	                if (row.hasClass('selected')) {
-	                    selectedRows.push(row);
+	     	// 저장 버튼 클릭 시 처리
+	        $("#submitBtn").click(function() {
+	            // 선택된 행을 추출
+	            var selectedRows = [];
+	            $("#inOutTable tr.selected").each(function() {
+	            	if ($("input[name='options']:checked").text() === '입고') {
+	            		var row = $(this);
+		                var data = {
+		                    itemDiv: row.find("td:nth-child(2)").text(),
+		                    instoreQuantity: row.find("td:nth-child(5) input").value(),
+		                    outstoreQuantity: '0',
+		                    stockQuantity: '0',
+		                    facilitiesDivNo: '0',
+		                    orderingDetailCode: row.find("td:nth-child(7)").text(),
+		                    instoreDiv: row.find("td:nth-child(8)").text(),
+		                    expirationDeadline: row.find("td:nth-child(9)").text(),
+		                    instoreManager: $(".user-name").text(),
+	    	                instoreDate: $("#inOutDate").val(),
+	    	                itemType: $("input[name='options']:checked").text()
+		                };
+		                selectedRows.push(data);
+	                } else {
+	                	var row = $(this);
+		                var data = {
+		                    instoreNo: row.find("td:nth-child(1)").text(),
+		                    ordersDetailNo: row.find("td:nth-child(9)").text(),
+		                    outstoreQuantity: row.find("td:nth-child(6) input").value(),
+		                    salesNo: '0',
+		                    outstoreManager: $(".user-name").text(),
+	    	                outstoreDate: $("#inOutDate").val(),
+	    	                itemType: $("input[name='options']:checked").text()
+		                };
+		                selectedRows.push(data);
 	                }
 	            });
-				sendSelectedRows(selectedRows);
-			});
-	        
+
+	            // Ajax로 데이터 전송
+	            var url = selectedRows.itemType === '입고' ? '/inOut/insertIn' : '/inOut/insertOut';
+	            $.ajax({
+	                url: url,
+	                method: 'POST',
+	                data: JSON.stringify(selectedRows),
+	                contentType: 'application/json',
+	                success: function(response) {
+	                    alert("등록되었습니다.");
+	                },
+	                error: function() {
+	                    alert("등록하는 데 실패했습니다.");
+	                }
+	            });
+	        });
+			
 	    });
-		
-		// 선택한 열의 목록을 FORM으로 전송하는 함수
-	    function sendSelectedRows(selectedRows) {
-	    	
-	    }
-		
-		// 입고 등록
-		function insertIn() {
-			var form = $("#inOutInsert").serialize();
-			$.ajax({
-				url : '/inOut/insertIn',
-				method : 'POST',
-				data : form,
-				datatype : 'JSON',
-				success : function(data) {
-					alert("입고가 등록되었습니다.");
-				},
-				error : function() {
-					alert("입고를 등록하는 데 실패했습니다.")
-				}
-			});
-		}
-		
-		// 출고 등록
-		function insertOut() {
-			var form = $("#inOutInsert").serialize();
-			$.ajax({
-				url : '/inOut/insertOut',
-				method : 'POST',
-				data : form,
-				datatype : 'JSON',
-				success : function(data) {
-					alert("출고가 등록되었습니다.");
-				},
-				error : function() {
-					alert("출고를 등록하는 데 실패했습니다.")
-				}
-			});
-		}
-	
+
 	    // 입고 내역 가져오기
 	    function loadInstoreList() {
 	        $.ajax({
@@ -245,6 +216,7 @@
 	            method : 'GET',
 	            success : function(data) {
 	                updateTable(data, 'instore');
+	                //initDataTable();
 	            },
 	            error : function() {
 	                alert("입고 내역을 불러오는 데 실패했습니다.");
@@ -259,6 +231,7 @@
 	            method : 'GET',
 	            success : function(data) {
 	                updateTable(data, 'order');
+	                //initDataTable();
 	            },
 	            error : function() {
 	                alert("발주 내역을 불러오는 데 실패했습니다.");
@@ -284,18 +257,37 @@
 	            var row = "<tr>";
 	            if (type === 'instore') {
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
-	                row += "<td>" + item.itemDiv + "</td>";
-	                row += "<td>" + item.orderingProduct + "</td>";
-	                row += "<td>" + item.instoreQuantity + "</td>";
-	                row += "<td>" + item.outstoreQuantity + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + item.orderingProduct + "</td>";
+	                	row += "<td class='prd'>" + item.productName + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + item.orderingIngredient + "</td>";
+	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
+	                }
+	                row += "<td>" + item.quantity + "</td>";
+	                row += "<td>" + "<input class='form-control' type='text' placeholder='출고 수량을 입력하세요.'></input>" + "</td>";
 	                row += "<td>" + item.standard + "/" + item.unit + "</td>";
+	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
+	                row += "<td style='display:none;'>" + item.ordersDetailNo + "</td>";
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
-	                row += "<td>" + item.itemDiv + "</td>";
-	                row += "<td>" + item.orderingProduct + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + "G1" + "</td>";
+	                	row += "<td class='prd'>" + item.productName + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + "G2" + "</td>";
+	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
+	                }
 	                row += "<td>" + item.quantity + "</td>";
-	                row += "<td>" + item.outstoreQuantity + "</td>";
+	                row += "<td>" + "<input class='form-control' type='text' placeholder='입고 수량을 입력하세요.'></input>" + "</td>";
 	                row += "<td>" + item.standard + "/" + item.unit + "</td>";
+	                row += "<td style='display:none;'>" + item.orderingDetailCode + "</td>";
+	                row += "<td style='display:none;'>" + "재고 입고" + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td style='display:none;'>" + item.prdExpirationDeadline + "</td>";
+	                } else {
+	                	row += "<td style='display:none;'>" + item.ingExpirationDeadline + "</td>";
+	                }
 	            }
 	            row += "</tr>";
 	            tbody.append(row);
@@ -326,6 +318,18 @@
 	        });
 	    }
 	    
+	 	// 품목 필터
+        function loadItemList(item) {
+        	$("#inOutTable tr").each(function() {
+        		var rowText = $(this).text().toLowerCase();
+        		if (rowText.includes(item)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+	    
 	 	// 검색
         function searchData(keyword) {
             $("#inOutTable tr").each(function() {
@@ -337,13 +341,22 @@
                 }
             });
         }
-	    
-	 	// 업체명 파라미터 가져오기
-	    $(document).ready(function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var companyName = urlParams.get('companyName');
-            $("#companyName").text(companyName);
+
+        // 테이블에서 행 클릭 시 선택 처리
+        $("#inOutTable").on('click', 'tr', function() {
+            $(this).toggleClass('selected');
+            $(this).css("background-color", "black");
+            $(this).css("color", "white");
         });
+
+	    
+     	// 업체 검색 모달에서 선택
+        $("#selectCompanyBtn").click(function() {
+            var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+            $("#companyName").val(selectedCompanyName);
+            $('#coFilterModal').modal('hide');
+        });
+     	
 	</script>
 </body>
 </html>
