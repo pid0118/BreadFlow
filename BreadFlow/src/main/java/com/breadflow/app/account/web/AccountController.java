@@ -24,7 +24,17 @@ public class AccountController {
 	
 	@GetMapping("index")
 	public String index() {
-		return "test/logout";
+		return "account/index";
+	}
+	
+	@GetMapping("welcome")
+	public String welcome() {
+		return "account/welcome";
+	}
+	
+	@GetMapping("account")
+	public String accountinfo() {
+		return "account/accountinfo";
 	}
 	
 	// 로그인 검사
@@ -38,15 +48,17 @@ public class AccountController {
 		if(acVO == null) {	// 로그인 실패
 			return 0;
 		}
+		
+		
 		/*
-		HttpSession session;
-		HttpServletRequest req = null;
+		HttpServletRequest request = null;
+		HttpSession session = request.getSession();
 		
-		session = req.getSession();
-		session.setAttribute("id", acVO.getId());
-		session.setAttribute("name", acVO.getName());
+		session.setAttribute("id", acVO.getId());			// 아이디
+		session.setAttribute("name", acVO.getName());		// 이름
+		session.setAttribute("div", acVO.getPosition());	// 담당자/사원
+		session.setAttribute("div", acVO.getDiv());			// 권한
 		*/
-		
 		return 1;		// 로그인 성공
 	}
 	

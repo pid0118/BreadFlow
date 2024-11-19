@@ -283,12 +283,17 @@
 						<input type="text" class="form-control" name="name">
 					</div>
 				</div>
-				<div class="col-md-4 col-sm-12">
+				<div class="col-md-3 col-sm-12">
 					<div class="form-group">
 						<label>업체명</label><b class="required"> *</b>
 						<input type="text" class="form-control" name="companyName">	<!-- member insert에 이건 필요 X -->
 					</div>
 				</div>
+				<div class="col-md-1 col-sm-12">
+					<label>&nbsp;</label> <input type="button" id="comSerachBtn"
+						class="form-control btn btn-light" value="검색">
+				</div>
+				
 				<div class="col-md-4 col-sm-12">	<!-- TODO 나중에 HIdden 할것 -->
 					<div class="form-group">
 						<label>업체코드</label><b class="required"> *</b>
@@ -333,7 +338,7 @@
 					<button type="reset" class="btn btn-warning btn-lg" id="resetEmployeeBtn">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertEmployeeBtn">확인</button>
 				</div>
-			</div>
+			</div>      
 			</form>
 		</div>
 		<!-- "사원 계정 생성" 폼 끝 -->
@@ -361,6 +366,9 @@
 	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
 	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
 	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
+	
+	document.querySelector("#comSerachBtn").addEventListener("click", confirmBrn);						// "업체 검색"
+	
 	// 버튼 이벤트 끝
 	// =======================================================
 	
@@ -458,23 +466,28 @@
 		
 	// =======================================================	
 	// [박진석|24.11.14] 비밀번호 초기화하는 코드
-	function resetPwAjax() {
+	function resetPwAjax() {	
 		let id = document.querySelector("#updId").value;
 		
 		if (id == "") {
 			alertNoSelected();
 		} else {
-			$.ajax({
-	            url: "ResetAccountPw.do",
-	            type: "POST",
-	            data: { 'id': id },
-	            success: function(data){
-	                alert("비밀번호 초기화 이게되네");
-	                //swal("비밀번호 초기화가 완료되었습니다.","초기화된 비밀번호는 '0000' 입니다.", {icon: "success"});
-	                console.log(data);
-	            },
-	            error: function(){  alert("비밀번호 초기화 실패");  }
-	        });
+			
+			if(confirm("비밀번호를 초기화 하시겠습니까?")) {
+				$.ajax({
+		            url: "ResetAccountPw.do",
+		            type: "POST",
+		            data: { 'id': id },
+		            success: function(data){
+		                alert("비밀번호가 '0000'으로 초기화되었습니다.");
+		                //swal("비밀번호 초기화가 완료되었습니다.","초기화된 비밀번호는 '0000' 입니다.", {icon: "success"});
+		                console.log(data);
+		            },
+		            error: function(){  alert("비밀번호 초기화 실패");  }
+		        });
+			} else {
+				alert("취소하였습니다.")
+			}
 		}
 	}
 	
