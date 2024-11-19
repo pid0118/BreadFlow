@@ -259,17 +259,17 @@ var options4 = {
 	labels: ['Flu', 'Covid-19', 'Pheumoniae', 'Diabeties'],
 };
 
-var chart = new ApexCharts(document.querySelector("#activities-chart"), options);
-chart.render();
+//var chart = new ApexCharts(document.querySelector("#activities-chart"), options);
+//chart.render();
 
-var chart2 = new ApexCharts(document.querySelector("#appointment-chart"), options2);
-chart2.render();
+//var chart2 = new ApexCharts(document.querySelector("#appointment-chart"), options2);
+//chart2.render();
 
-var chart3 = new ApexCharts(document.querySelector("#surgery-chart"), options3);
-chart3.render();
+//var chart3 = new ApexCharts(document.querySelector("#surgery-chart"), options3);
+//chart3.render();
 
-var chart4 = new ApexCharts(document.querySelector("#diseases-chart"), options4);
-chart4.render();
+//var chart4 = new ApexCharts(document.querySelector("#diseases-chart"), options4);
+//chart4.render();
 
 // datatable init
 $('document').ready(function(){
@@ -277,7 +277,7 @@ $('document').ready(function(){
 		scrollCollapse: false,
 		autoWidth: false,
 		responsive: true,
-		searching: false,
+		searching: true,
 		bLengthChange: false,
 		bPaginate: true,
 		bInfo: false,
