@@ -9,4 +9,5 @@ import com.breadflow.app.common.service.SearchOptionVO;
 public interface CategoryMapper {
 	public List<CategoryVO> selectCategories();
 	public List<SearchItemVO> selectItems(SearchOptionVO option);
+	public int selectItemPaging(SearchOptionVO option);
 }

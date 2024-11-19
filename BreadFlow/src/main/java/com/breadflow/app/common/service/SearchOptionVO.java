@@ -9,4 +9,5 @@ public class SearchOptionVO {
 	private List<String> ingredients;
 	private List<String> products;
 	private String name;
+	private int page;
 }

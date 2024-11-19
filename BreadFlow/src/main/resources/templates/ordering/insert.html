@@ -10,13 +10,25 @@
 <body>
 	<div class="card-box mb-30">
 		<div class="row">
-			<div class="col-md-6 col-sm-12 pd-30">
+			<div class="col-md-3 col-sm-12 pd-30">
 				<h4 class="text-blue h4">발주 신청</h4>
 			</div>
-			<div class="col-md-6 col-sm-12 pd-30 text-right">
-				<button type="button" class="btn btn-primary btn-sm"
-					data-toggle="modal" data-target="#bd-example-modal-lg">품목
-					추가</button>
+			<div class="col-md-9 col-sm-12 pd-30 text-right">
+				<div class="row">
+					<div class="col-md-6 form-group">
+						<div class="row justify-content-end">
+							<label class="col-md-3">납기 희망 일자</label>
+							<input class="col-md-4 form-control date-picker" placeholder="Select Date" type="text">
+						</div>
+					</div>
+					<div class="col-md-6 form-group">
+						<button type="button" class="btn btn-primary"
+							data-toggle="modal" data-target="#bd-example-modal-lg">품목
+							추가</button>
+						<button type="submit" class="btn btn-primary" form="orderingInsert">발주 신청</button>
+					</div>
+					
+				</div>
 				<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
 					tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 					aria-hidden="true">
@@ -60,6 +72,18 @@
 									<tbody>	
 									</tbody>
 								</table>
+								<ul class="pagination justify-content-center">
+									<li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
+										<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">
+											<i class="ion-chevron-left"></i>
+										</a>
+									</li>
+									<li class="paginate_button page-item next" id="DataTables_Table_0_next">
+										<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" class="page-link">
+											<i class="ion-chevron-right"></i>
+										</a>
+									</li>
+								</ul>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal"
@@ -68,29 +92,32 @@
 						</div>
 					</div>
 				</div>
-				<button type="button" class="btn btn-primary btn-sm">발주 신청</button>
+				
 			</div>
 		</div>
-		<div class="pb-20">
-			<table class="datatable table nowrap">
-				<thead>
-					<tr>
-						<th>품목코드</th>
-						<th>품목명</th>
-						<th>단위</th>
-						<th>규격</th>
-						<th>금액</th>
-						<th>수량</th>
-						<td>총 금액</td>
-					</tr>
-				</thead>
-				<tbody>
-					
-				</tbody>
-			</table>
-		</div>
+		<form id="orderingInsert" action="" method="post">
+			<div class="pb-20">
+				<table class="datatable table nowrap" id="DataTables_Table_0">
+					<thead>
+						<tr>
+							<th>품목코드</th>
+							<th>품목명</th>
+							<th>단위</th>
+							<th>규격</th>
+							<th>금액</th>
+							<th>수량</th>
+							<th>총 금액</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+		</form>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 	<!-- buttons for Export datatable -->
@@ -104,22 +131,19 @@
 	<!-- Datatable Setting js -->
 	<script src="../vendors/scripts/datatable-setting.js"></script>
 	<script>
+	
 		$(document).ready(function() {
 			// 옵션값 초기화
 			$('.custom-select2').select2();
-			
-			// select에 change 이벤트 적용
-			$('.custom-select2').on('change', function() {
-				let selval = $(this).val();
-				let changeOpt = $('.custom-select2').val();
-				let changeVal = changeOpt[changeOpt.length - 1];
-			});
 		});
 		
 		// 품목 종류 카테고리 생성
 		fetch("../category/list")
 		.then(result => result.json())
-		.then(datas => {
+		.then(datas => makeCategory(datas))
+		.catch(err => console.log());
+		
+		function makeCategory(datas) {
 			let major = datas[0];
 			let element = '';
 			for(let data in datas){
@@ -135,15 +159,13 @@
 			}
 			element += '</optgroup>';
 			$('.custom-select2.second').append(element);
-			
-		})
-		.catch(err => console.log());
+		}
 		
 		// 품목 추가 (발주 신청 테이블)
 		itemAdd.addEventListener('click', function() {
 			let checktd = document.querySelectorAll('table .custom-checkbox input');
-			let checkbool = false;
-			let checktable = true;
+			let checkbool = false; // 체크박스 여부
+			let checktable = true; // 품목코드 중복 여부
 			let element = '';
 			checktd.forEach(td => {
 				if(td.checked == true){
@@ -184,12 +206,42 @@
 			}
 		})
 		
-		// 품목 검색
-		itemSearch.addEventListener('click', function() {
+		document.querySelector('.pagination.justify-content-center').addEventListener('click', function() {
+			let page;
+			if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
+				if(event.target.closest('li').classList.contains('next')){
+					page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
+				} else if(event.target.closest('li').classList.contains('previous')) {
+					page = Number(document.querySelector('.paginate_button.active').innerText) - 1;
+				} else {
+					page = event.target.innerText;
+				}
+				
+				document.querySelector('li.page-item.active').classList.remove('active');
+				itemClick(page);
+				document.querySelectorAll('#addcol').forEach(data => {
+					console.log(data.dataset.name);
+					if(data.dataset.name == page){
+						data.parentElement.classList.add('active');
+					}
+				})
+			}
+		})
+		
+		// 품목 검색 이벤트
+		itemSearch.addEventListener('click', itemClick);
+	
+		function itemClick(page) {
 			let val = $('.custom-select2.second').val();
 			let searchOpt = $('.custom-select2.second')[0];
 			let ingredients = [];
 			let products = [];
+			let pages = 1;
+			let lastPage;
+			
+			if(page != '[object PointerEvent]') {
+				pages = page;
+			}
 
 			for(let opt of searchOpt) {
 				if(val.indexOf(opt.value) != -1){
@@ -206,7 +258,7 @@
 				alert("검색 조건이 없습니다.");
 			} 
 			else {
-				fetch('../search/item', {
+				fetch('../search/itempage', {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -219,30 +271,78 @@
 				})
 				.then(response => response.json())
 				.then(data => {
-					$('.modal-body table tbody tr').remove();
-					data.forEach(td => {
-						$('.modal-body table tbody').append(`<tr>
-								<td>
-								<div class="custom-control custom-checkbox mb-5">
-									<input type="checkbox" class="custom-control-input"
-										id="customCheck${td.itemCode}"> <label
-										class="custom-control-label" for="customCheck${td.itemCode}"></label>
-								</div>
-							</td>
-							<td>${td.itemCode}</td>
-							<td>${td.itemName}</td>
-							<td>${td.unit}</td>
-							<td>${td.standard}</td>
-							<td>${td.purchasePrice}</td>
-						</tr>`)
-					})
+					$('.paginate_button.page-item#addcol').remove()
+					lastPage = Math.ceil(data / 5);
+					for(let i = 1; i <= lastPage; i++) {
+						if(i == 1){
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item active" id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);
+						} else {
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item " id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);	
+						}
+					}
+					if(pages == lastPage) {
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+						document.querySelector('li.page-item.next').classList.add("disabled");
+					} else if(pages == 1) {
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+						document.querySelector('li.page-item.previous').classList.add("disabled");
+					} else {
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+					}
+
 				})
 				.catch(err => console.log(err));
+				
+				
+				fetch('../search/item', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products,
+						'page': pages
+					})
+				})
+				.then(response => response.json())
+				.then(data => makeItems(data))
+				.catch(err => console.log(err));
 			}
-		})
+		}
 		
-		// 각 품목 총 금액, 합계 계산
-		document.querySelector('.datatable').addEventListener('change', function() {
+		// 품목 검색 테이블 생성
+		function makeItems(data) {
+			$('.modal-body table tbody tr').remove();
+			data.forEach(td => {
+				$('.modal-body table tbody').append(`<tr>
+						<td>
+						<div class="custom-control custom-checkbox mb-5">
+							<input type="checkbox" class="custom-control-input"
+								id="customCheck${td.itemCode}"> <label
+								class="custom-control-label" for="customCheck${td.itemCode}"></label>
+						</div>
+					</td>
+					<td>${td.itemCode}</td>
+					<td>${td.itemName}</td>
+					<td>${td.unit}</td>
+					<td>${td.standard}</td>
+					<td>${td.purchasePrice}</td>
+				</tr>`)
+			})
+		}
+		
+		// 각 품목 총 금액, 합계 계산 이벤트
+		document.querySelector('.datatable').addEventListener('change', itemSum)
+		
+		// 합계 계산 합수
+		function itemSum(event) {
 			if(event.target.tagName == 'INPUT'){
 				let datatd = event.target.closest('td');
 				let price = datatd.previousElementSibling.innerText;
@@ -257,9 +357,22 @@
 				})
 				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
 				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
-			}
-		})
+			}	
+		}
+
+		// 납기 희망 일자 - 현재 일자 포함 이전 비활성화
+		function disabledDate() {
+			let today = new Date();
+			let tomorrow = new Date(today.setDate(today.getDate() + 1));
+			$('.date-picker').datepicker({
+			  minDate: tomorrow
+			});
+		}
 		
+		// DOM 요소 완성후 실행
+		window.addEventListener("DOMContentLoaded", () => {
+			disabledDate();
+		})
 		
 	</script>
 </body>

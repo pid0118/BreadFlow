@@ -2,6 +2,7 @@ package com.breadflow.app.common.web;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,12 @@ public class CategoryController {
 	@ResponseBody
 	public List<SearchItemVO> itemList(@RequestBody SearchOptionVO option) {
 		return categoryService.getItems(option);
+	}
+	
+	@PostMapping("search/itempage")
+	@ResponseBody
+	public int itemPage(@RequestBody SearchOptionVO option) {
+		return categoryService.getItemPages(option);
 	}
 	
 }

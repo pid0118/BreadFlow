@@ -25,5 +25,10 @@ public class CategoryServiceImpl implements CategoryService{
 	public List<SearchItemVO> getItems(SearchOptionVO option) {
 		return categoryMapper.selectItems(option);
 	}
+
+	@Override
+	public int getItemPages(SearchOptionVO option) {
+		return categoryMapper.selectItemPaging(option);
+	}
 	
 }
