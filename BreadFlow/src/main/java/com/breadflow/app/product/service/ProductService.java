@@ -6,7 +6,7 @@ import com.breadflow.app.common.service.CategoryVO;
 
 public interface ProductService {
 	// 전체조회
-	public List<ProductVO> getListAll();
+	public List<ProductVO> getListAll(ProductVO productVO);
 	
 	// 단건조회
 	public ProductVO getInfo(String productCode);

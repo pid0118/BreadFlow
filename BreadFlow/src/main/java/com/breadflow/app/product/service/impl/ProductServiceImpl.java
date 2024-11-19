@@ -18,8 +18,8 @@ public class ProductServiceImpl implements ProductService {
 	
 	// 제품 전체조회
 	@Override
-	public List<ProductVO> getListAll() {
-		return productMapper.selectAllProductList();
+	public List<ProductVO> getListAll(ProductVO productVO) {
+		return productMapper.selectAllProductList(productVO);
 	}
 
 	// 제품 단건조회

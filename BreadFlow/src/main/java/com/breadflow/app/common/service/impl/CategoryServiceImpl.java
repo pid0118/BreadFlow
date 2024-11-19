@@ -18,5 +18,11 @@ public class CategoryServiceImpl implements CategoryService{
 	public List<CategoryVO> getCategories() {
 		return categoryMapper.selectCategories();
 	}
+
+	@Override
+	public List<CategoryVO> getCategoriesSub(String major) {
+		// TODO Auto-generated method stub
+		return categoryMapper.selectCategoriesSub(major);
+	}
 	
 }

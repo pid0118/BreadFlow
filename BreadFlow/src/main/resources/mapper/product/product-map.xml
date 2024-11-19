@@ -8,8 +8,18 @@
 			   expiration_deadline,
 			   purchase_price,
 			   sale_price,
-			   standard
+			   standard,
+			   major,
+			   sub
 		FROM product
+		<where>
+			<if test="subList != null and subList.size() > 0">	
+	    		<foreach item="item" index="index" collection="subList"
+	        	open="sub in (" separator="," close=")">
+	          	#{item}
+	    		</foreach>
+	    	</if>	
+  		</where>
 		ORDER BY product_code ASC
 	</select>
 	

@@ -8,4 +8,11 @@
 		FROM   category	
 	</select>
 	
+	<select id="selectCategoriesSub" resultType="CategoryVO">
+		SELECT major
+			   , sub
+		FROM   category	
+		WHERE major = #{major}
+	</select>
+	
 </mapper>

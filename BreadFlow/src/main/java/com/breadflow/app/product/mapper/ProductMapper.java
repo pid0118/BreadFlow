@@ -7,7 +7,7 @@ import com.breadflow.app.product.service.ProductVO;
 
 public interface ProductMapper {
 	// 전체조회
-	public List<ProductVO> selectAllProductList();
+	public List<ProductVO> selectAllProductList(ProductVO productVO);
 		
 	// 단건조회 - 조건 : 
 	public ProductVO selectProduct(String productCode);

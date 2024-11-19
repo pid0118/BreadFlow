@@ -24,9 +24,9 @@ public class ProductController {
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
-	public String productListAll(Model model) {
+	public String productListAll(ProductVO productVO, Model model) {
 		// 제품 리스트
-		List<ProductVO> list = productService.getListAll();
+		List<ProductVO> list = productService.getListAll(productVO);
 		
 		// 카테고리
 		List<CategoryVO> category = productService.getCategory();
@@ -36,6 +36,8 @@ public class ProductController {
 		
 		return "product/prodctListAll";
 	}
+	
+	
 	
 	// 단건조회
 	@ResponseBody
@@ -76,6 +78,8 @@ public class ProductController {
 	// 삭제처리
 	@DeleteMapping("product/Delete")
 	public String productDelete(ProductVO productVO) {
+		
+		
 		return "redirect:/productListAll";
 	}
 	
