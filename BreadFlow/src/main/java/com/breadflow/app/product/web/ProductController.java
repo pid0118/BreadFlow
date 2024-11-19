@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.common.service.CategoryVO;
@@ -51,14 +51,25 @@ public class ProductController {
 	
 	// 제품등록 - 페이지
 	@GetMapping("product/Insert")
-	public String productInsertForm() {
+	public String productInsertForm(Model model) {
+		
+		String productCode = productService.getProductCode();
+		List<CategoryVO> category = productService.getCategory();
+		
+		model.addAttribute("productCode", productCode);
+		model.addAttribute("category", category);
+		
 		return "product/productInsert";
 	}
 	
 	// 제품등록 - 처리
+	@ResponseBody
 	@PostMapping("product/Insert")
-	public String productInsertProcess(ProductVO productVO) {
-		return "redirect:/productListAll";
+	public int productInsertProcess(@RequestBody ProductVO productVO) {
+		
+		int result = productService.insertProduct(productVO);
+			
+		return result;
 	}
 	
 	//수정 페이지

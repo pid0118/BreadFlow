@@ -30,8 +30,8 @@ public class ProductServiceImpl implements ProductService {
 	
 	// 제품 등록
 	@Override
-	public void insertProduct(ProductVO productVO) {
-		productMapper.insertProduct(productVO);
+	public int insertProduct(ProductVO productVO) {
+		return productMapper.insertProduct(productVO);
 	}
 	
 	// 제품 수정
@@ -51,6 +51,12 @@ public class ProductServiceImpl implements ProductService {
 	public List<CategoryVO> getCategory() {
 		// TODO Auto-generated method stub
 		return productMapper.selectCategory();
+	}
+
+	@Override
+	public String getProductCode() {
+		// TODO Auto-generated method stub
+		return productMapper.selectProductCode();
 	}
 	
 }

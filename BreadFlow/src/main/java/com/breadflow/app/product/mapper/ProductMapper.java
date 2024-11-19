@@ -13,7 +13,7 @@ public interface ProductMapper {
 	public ProductVO selectProduct(String productCode);
 		
 	// 등록  
-	public void insertProduct(ProductVO productVO);
+	public int insertProduct(ProductVO productVO);
 		
 	// 수정
 	public int updateProduct(ProductVO productVO);
@@ -23,4 +23,7 @@ public interface ProductMapper {
 	
 	// 카테고리 가져오기
 	public List<CategoryVO> selectCategory();
+	
+	// ProductCode 가져오기
+	public String selectProductCode();
 }

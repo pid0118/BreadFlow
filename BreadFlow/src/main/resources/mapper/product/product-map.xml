@@ -41,13 +41,14 @@
 		WHERE product_code = #{productCode}
 	</select>
 	
+	<!-- 제품 코드 가져오기 -->
+	<select id="selectProductCode" resultType="string">
+		SELECT 'IB' || LPAD(SUBSTR(MAX(product_code), 3) +1, 5, '0') FROM product
+	</select>
+	
 	<!-- 제품 등록 -->
 	<insert id="insertProduct" parameterType="ProductVO">
-				<selectKey resultType="string" keyProperty="productCode" order="BEFORE">
-		SELECT 'IB' || LPAD(SUBSTR(MAX(product_code), 3) +1, 6, '0') FROM product
-		</selectKey>
-	
-		INSERT INTO company
+		INSERT INTO product
 		(
 		    product_code,
 			product_name,

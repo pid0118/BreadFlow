@@ -12,7 +12,7 @@ public interface ProductService {
 	public ProductVO getInfo(String productCode);
 	
 	// 등록
-	public void insertProduct(ProductVO productVO);
+	public int insertProduct(ProductVO productVO);
 	
 	// 수정
 	public int updateProduct(ProductVO productVO);
@@ -22,4 +22,7 @@ public interface ProductService {
 	
 	// 카테고리 목록 가져오기  e -> vo로 변경
 	public List<CategoryVO> getCategory(); 
+	
+	// ProductCode 가져오기
+	public String getProductCode();
 }
