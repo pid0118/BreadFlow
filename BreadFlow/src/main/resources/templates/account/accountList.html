@@ -382,10 +382,16 @@
 					</thead>
 				</table>
 			</div>
-			<div class="modal-footer">
-				<input >
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-				<button type="button" class="btn btn-primary">확인</button>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 업체명:</b>
+					<input id="selectedComNo" class="form-control" > <!-- hidden 처리할것 -->
+					<input id="selectedComNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" onclick="comModalConfirm()">확인</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -413,6 +419,7 @@
 	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
 	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
 	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);						// 사업자등록증 검증
+	document.querySelector("#comSerachBtn").addEventListener("click", companyListShow);						// 업체 검색 모달
 	
 	// 버튼 이벤트 끝
 	// =======================================================
@@ -527,16 +534,34 @@
 		
 	// =======================================================
 	// [박진석|24.11.19] 모달 테이블 행 클릭 시 input출력 및 선택
-	// TODO: 막힘!
-	let comsTblTrs = document.querySelectorAll("#companys tr");
+	// TODO: 하자
+	function companyListShow() {
+		let comsTblTrs = document.querySelectorAll("#companys tr");
 	
-	for(let i = 1; i < comsTblTrs.length; i++) {
-		comsTblTrs[i].addEventListener("click", getCompanyInfo);
+		for(let i = 1; i < comsTblTrs.length; i++) {
+			comsTblTrs[i].addEventListener("click", getCompanyInfo);
+		}
 	}
 	
 	function getCompanyInfo(e) {
-		console.log(e.target);
+		let comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+		let comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+		
+		document.querySelector("#selectedComNm").value = comNm
+		document.querySelector("#selectedComNo").value = comNo
 	}
+	
+	//document.querySelector("#comModalConfirm").addEventListener("click", comModalOk)
+	
+	function comModalConfirm() {
+		if(document.querySelector("#selectedComNm").value == "") {
+			alert("업체를 선택해주세요.")
+			return false;
+		}
+		
+		console.log("ddddd");
+	}
+	
 	// 행 클릭시 input 출력 선택 끝
 	// =======================================================		
 		
