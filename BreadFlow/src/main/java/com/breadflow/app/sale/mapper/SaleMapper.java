@@ -18,4 +18,7 @@ public interface SaleMapper {
 	// POS 카테고리 검색 조회
 	public List<ProductVO> ProductInfo(String category);
 	
+	// 주문 버튼 눌렀을시 insert
+	public int saleInsert();
+	
 }

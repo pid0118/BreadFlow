@@ -13,4 +13,5 @@ public interface SaleService {
 	
 	// POS 카테고리 검색 조회
 	List<ProductVO> getInfo(String category);
+	
 }

@@ -78,6 +78,7 @@ nav {
 	padding: 10px;
 	text-align: center;
 	cursor: pointer;
+	transition: background-color 0.3s ease;
 }
 
 .menu-item:hover {
@@ -230,7 +231,7 @@ footer {
 				<div class="header-right"></div>
 			</header>
 			<nav class="menu-type">
-				<button class="nav-button active" data-category="전체메뉴">전체메뉴</button>
+				<button class="nav-button active" data-category="">전체메뉴</button>
 				<button class="nav-button" data-category="브레드">빵</button>
 				<button class="nav-button" data-category="쿠키">쿠키</button>
 				<button class="nav-button" data-category="샌드위치">샌드위치</button>
@@ -238,13 +239,6 @@ footer {
 				<button class="nav-button" data-category="기타">기타</button>
 			</nav>
 			<div class="menu-grid">
-				<div class="menu-item hot" th:each="list : ${product}"
-					th:data-name="${list.productName}"
-					th:data-price="${list.salePrice}"
-					th:data-code="${list.productCode}">
-					<div class="item-name">[[ ${list.productName} ]]</div>
-					<div class="item-price">[[ ${list.salePrice} ]]</div>
-				</div>
 			</div>
 			<div class="action-buttons">
 				<span class="item-count">0개</span>
@@ -252,9 +246,8 @@ footer {
 			</div>
 			<footer>
 				<div class="footer-actions">
+					<div class="pagination"></div>
 					<div class="total"></div>
-					<button class="action-button">◀</button>
-					<button class="action-button">▶</button>
 					<button class="submit-button">마감 정산</button>
 				</div>
 			</footer>
@@ -280,8 +273,16 @@ footer {
 		let totalPriceElem = document.querySelector(".total-price");
 		let itemCountElem = document.querySelector('.item-count');
 		let disItemCnt = 0; // 현재 보여지는 아이템 갯수
-		loadMenu('전체메뉴');
+		let curPage = 1; // 현재 페이지
+		let itemsPage = 20; // 한 페이지 아이템 수
+		let totalPages = 1; // 전체 페이지 수
+		let menuData = []; // 메뉴데이터
 		
+		// 메뉴 탭 AJAX
+		loadMenu();
+
+		
+		// 클릭시 오른쪽 화면에 나오게끔
 		document.addEventListener('DOMContentLoaded', function(){
 			itemGrid.addEventListener("click", (event) => {
 				if(event.target.closest(".menu-item")) {
@@ -291,7 +292,7 @@ footer {
 		
 					// 해당 메뉴가 이미 배열에 있는지 체크
 					let existingItem = selectedMenu.find(item => item.name === name);
-	
+
 					if(existingItem) {
 						// 이미 있으면 수량 증가
 						existingItem.count++;
@@ -306,31 +307,45 @@ footer {
 				}
 			});
 		});
-
+		
 		function arrayPrint() {
-			// 리스트를 비우고
-	        selectItemList.innerHTML = '';
-        	let totalPrice = 0;
+		    // 리스트를 비우고
+		    selectItemList.innerHTML = '';
+		    let totalPrice = 0;
 
-			// 9개씩 표시
-			let itemsShow = selectedMenu.slice(0, disItemCnt + 9);
+		    // 9개씩 표시
+		    let itemsShow = selectedMenu.slice(0, disItemCnt + 9);
 
-			itemsShow.forEach((item,idx) => {
-				// 숫자 3자리마자 쉼표
-				let priceCom = (item.price * item.count).toLocaleString();
-				
-				// 항목을 HTML로 변환
-	          	let node = `<li class="list-group-item d-flex justify-content-between lh-sm">
-	                      <div style="width:100px">
-	                        <h6 class="my-0">${item.name}</h6>
-	                        <small class="text-body-secondary">수량: ${item.count} EA</small>
-	                      </div>
-	                      <span class="text-body-secondary">${priceCom}</span>              
-	                      <button class="btn btn-danger btn-sm ms-2 delete-button" data-idx="${idx}">삭제</button>
-	                      </li>`;
-	          	selectItemList.insertAdjacentHTML("beforeend", node);
-	          	totalPrice += item.price * item.count;
-        	});
+		    itemsShow.forEach((item, idx) => {
+		        // 숫자 3자리마다 쉼표 추가
+		        let priceCom = (item.price * item.count).toLocaleString();
+		        
+		        // 항목을 HTML로 변환
+		        let node = `
+		            <li class="list-group-item d-flex justify-content-between lh-sm">
+		                <div style="width:100px">
+		                    <h6 class="my-0">${item.name}</h6>
+		                    <small class="text-body-secondary su">수량: ${item.count} EA</small>
+		                    <button class="btn amount" value="plus">+</button>
+		                    <button class="btn amount" value="minus">-</button>
+		                </div>
+		                <span class="text-body-secondary">${priceCom}</span>              
+		                <button class="btn btn-danger btn-sm ms-1 delete-button" data-idx="${idx}">삭제</button>
+		            </li>`;
+		        
+		        selectItemList.insertAdjacentHTML("beforeend", node);
+		        totalPrice += item.price * item.count;
+		    });
+			// 수량증가 / 감소
+			amountBnt();
+		    // 총 금액 업데이트
+		    totalPriceElem.textContent = `총 금액: ${totalPrice.toLocaleString()}원`;
+		    itemCountElem.textContent = `${selectedMenu.length}개`;
+
+		    // 9개 이상이면 더 보여주기
+		    if (selectedMenu.length >= disItemCnt + 9) {
+		        disItemCnt += 9;
+		    }
 
 	        // 총 금액 업데이트
 	        totalPriceElem.textContent = `총 금액: ${totalPrice.toLocaleString()}원`;
@@ -363,42 +378,146 @@ footer {
 		document.addEventListener('DOMContentLoaded', function(){
 
 			// 카테고리 버튼 클릭 시 메뉴를 AJAX로 로드
-			const buttons = document.querySelectorAll('.nav-button');
+			let buttons = document.querySelectorAll('.nav-button');
 			buttons.forEach(button => {
 				button.addEventListener('click', function() {
 					// 버튼 클릭 시 해당 카테고리로 메뉴 업데이트
 					buttons.forEach(b => b.classList.remove('active'));
 					button.classList.add('active');
 					
-					const category = button.getAttribute('data-category');
+					let category = button.getAttribute('data-category');
 					loadMenu(category);  // 메뉴를 로드하는 함수 호출
 				});
 			});
 		});
 		
+		// 버튼 클릭시 수량 증가/감수
+		function amountBnt() {
+		    // 클래스 이름이 'amount'인 버튼들을 불러오기
+		    let btns = document.querySelectorAll('.amount');
+		
+		    btns.forEach(function(btn) {
+		        btn.addEventListener('click', function(event) {
+		            // 클릭된 버튼의 가장 가까운 부모 요소
+		            let item = event.target.closest('.list-group-item');
+		            
+		            // id가 cnt인 요소 (수량 표시 부분)
+		            let su = item.querySelector('.su');
+		            let idx = item.querySelector('.delete-button').getAttribute('data-idx');
+		            let selItem = selectedMenu[idx]; // 선택된 메뉴 항목 가져오기
+		
+		            // 수량 증가 또는 감소
+		            if (btn.value === "plus") {
+		                selItem.count += 1;  // 수량 증가
+		            } else if (btn.value === "minus") {
+		                // 최소 수량 1개 유지
+		                selItem.count = Math.max(1, selItem.count - 1); 
+		            }
+		
+		            // 수량을 갱신
+		            su.textContent = `수량: ${selItem.count} EA`; // 수량 업데이트
+		
+		            // 총 금액 및 선택된 메뉴 리스트 업데이트
+		            arrayPrint(); // 메뉴 전체 갱신
+		        });
+		    });
+		}
+		
 		// 메뉴를 AJAX로 로드하는 함수
 		function loadMenu(category) {
-			let url = category ? '/pos/menu' : `/pos/menu?category=${category}`;
-			  
-			
-			fetch(url)  // 카테고리를 서버로 전달하여 해당 메뉴를 요청
-				.then(response => response.json())
-				.then(data => {
-					// 메뉴 그리드 업데이트
-					itemGrid.innerHTML = '';
-					data.forEach(item => {
-						let exitItem = itemGrid.querySelector(`.menu-item[data-code="${item.productCode}"]`);
-						let node = `<div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}">
-											<div class="item-name">${item.productName}</div>
-											<div class="item-price">${item.salePrice}</div>
-										</div>`;
-						itemGrid.insertAdjacentHTML('beforeend', node);  // 새로운 메뉴 항목을 추가
-					});
-				})
-				.catch(error => {
-					console.error("AJAX 요청 실패:", error);  // 에러 처리
-				});
+		    // category가 없으면 전체 메뉴를 요청
+		    let url = category ? `/pos/menu?category=${category}` : '/pos/menu';  // /pos/menu로 변경
+		
+		    fetch(url)
+		        .then(response => {
+		            if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+		                return response.json();
+		            } else {
+		                return response.text().then(text => {
+		                    throw new Error('응답이 JSON이 아닙니다: ' + text);
+		                });
+		            }
+		        })
+		        .then(data => {
+		        	menuData = data;
+		        	totalPages = Math.ceil(menuData.length / itemsPage);
+		        	renderMenu();
+		        })
+		        .catch(error => {
+		            console.error("AJAX 요청 실패:", error);
+		        });
 		}
+		
+		function renderMenu(){
+			let startIndex = (curPage - 1) * itemsPage;
+			let endIndex = startIndex + itemsPage;
+			let itemsToDisplay = menuData.slice(startIndex, endIndex);
+			
+			itemGrid.innerHTML = '';
+			
+			itemsToDisplay.forEach(item => {
+                let node = `
+                    <div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}">
+                        <div class="item-name">${item.productName}</div>
+                        <div class="item-price">${item.salePrice}</div>
+                    </div>
+                `;
+                itemGrid.insertAdjacentHTML('beforeend', node);
+			});
+			
+			//페이지 번호 업데이트
+			updatePagination();
+		}
+		
+		function updatePagination(){
+			let pagination = document.querySelector('.pagination');
+			pagination.innerHTML = '';
+			
+			let prevBtn = document.createElement('button');
+			prevBtn.textContent = '◀';
+			prevBtn.classList.add('action-button');
+			prevBtn.disabled = curPage == 1;
+			prevBtn.addEventListener('click', () => changePage(curPage -1));
+			pagination.appendChild(prevBtn);
+			
+			
+			let pageNum = document.createElement('span');
+			pageNum.textContent = `페이지 ${currentPage} / ${totalPages}`;
+			pagination.appendChild(pageNum);
+			
+			let nextBtn = document.createElement('button');
+			nextBtn.textContent = '▶';
+			nextBtn.classList.add('action-button');
+			nextBtn.disabled = curPage == totalPages;
+			nextBtn.addEventListener('click', () => changePage(curPage + 1));
+			pagination.appendChild(nextBtn);
+			
+		}
+		
+		function changePage(page){
+			if(page < 1 || page > totalPages) return;
+			curPage = page;
+			renderMenu();
+		}
+		
+		document.addEventListener('DOMContentLoaded', function(){
+			let btn = document.querySelectorAll('.nav-button');
+			btn.forEach(button => {
+				button.addEventlistener('click', function(){
+					btn.forEach(b => b.classList.remove('active'));
+					button.classList.add('active');
+					
+					let category = button.getAttribute('data-category');
+					loadMenu(category);
+				});
+			});
+			
+			loadMenu();
+		});
+
+		
+		
+		
 		
 
     </script>

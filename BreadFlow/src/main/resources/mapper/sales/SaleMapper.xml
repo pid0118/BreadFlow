@@ -32,10 +32,14 @@
 		ORDER BY product_code ASC
 	</select>
 	
-	<select id="ProductInfo" resultType="ProductVO" parameterType="ProductVO">
+	<select id="ProductInfo" resultType="ProductVO" parameterType="String">
 		SELECT product_name
 		      ,sale_price
 		FROM product
-		WHERE sub = #{sub}
+		<where>
+		<if test="sub != null and sub != ''">
+			sub = #{sub}		
+		</if>
+		</where>
 	</select>
 </mapper>
