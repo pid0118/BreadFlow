@@ -24,4 +24,6 @@ public interface AccountService {
 	public int UpdateCompanyTel(AccountVO accountVO);
 
 	public AccountVO chkIdPw(AccountVO accountVO);
+
+	public List<AccountVO> getCompanyList();
 }

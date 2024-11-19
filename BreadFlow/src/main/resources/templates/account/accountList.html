@@ -290,7 +290,7 @@
 					</div>
 				</div>
 				<div class="col-md-1 col-sm-12">
-					<label>&nbsp;</label> <input type="button" id="comSerachBtn"
+					<label>&nbsp;</label> <input type="button" id="comSerachBtn" data-toggle="modal" data-target="#bd-example-modal-lg"
 						class="form-control btn btn-light" value="검색">
 				</div>
 				
@@ -338,12 +338,59 @@
 					<button type="reset" class="btn btn-warning btn-lg" id="resetEmployeeBtn">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertEmployeeBtn">확인</button>
 				</div>
-			</div>      
+			</div>
 			</form>
 		</div>
 		<!-- "사원 계정 생성" 폼 끝 -->
 	</div>
 </div>
+
+<!-- 업체검색 모달창 -->
+
+<div
+	class="modal fade bs-example-modal-lg"
+	id="bd-example-modal-lg"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					업체 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="companys" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>업체코드</th>
+							<th>업체명</th>
+							<th>구분</th>
+							<th>대표자</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<input >
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+				<button type="button" class="btn btn-primary">확인</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 <script>
 	//=======================================================
@@ -365,9 +412,7 @@
 	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);						// "비밀번호 초기화"
 	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
 	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
-	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
-	
-	document.querySelector("#comSerachBtn").addEventListener("click", confirmBrn);						// "업체 검색"
+	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);						// 사업자등록증 검증
 	
 	// 버튼 이벤트 끝
 	// =======================================================
@@ -397,6 +442,22 @@
                 }
             }
 	    });
+	    
+	    $('#companys').DataTable({
+	    	info: false,
+	    	paging: false,
+	    	ajax: {
+	   			url: 'getCompanys.do',
+	   			type: "GET",
+	   			dataSrc: ''
+	   		},
+	   		columns:[
+	   			{data: "companyNo"},
+	   			{data: "companyName"},
+	   			{data: "div"},
+	   			{data: "name"},
+	   		]
+	    })
 	} );
 	// Datatable 선언 끝
 	// =======================================================
@@ -461,6 +522,23 @@
 	}
 	// 상세정보 출력 코드 끝
 	// =======================================================
+
+		
+		
+	// =======================================================
+	// [박진석|24.11.19] 모달 테이블 행 클릭 시 input출력 및 선택
+	// TODO: 막힘!
+	let comsTblTrs = document.querySelectorAll("#companys tr");
+	
+	for(let i = 1; i < comsTblTrs.length; i++) {
+		comsTblTrs[i].addEventListener("click", getCompanyInfo);
+	}
+	
+	function getCompanyInfo(e) {
+		console.log(e.target);
+	}
+	// 행 클릭시 input 출력 선택 끝
+	// =======================================================		
 		
 		
 		

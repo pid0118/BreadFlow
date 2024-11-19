@@ -37,4 +37,7 @@ public interface AccountMapper {
 
 	// 아이디/비밀번호 체크
 	public AccountVO checkIdPw(AccountVO accountVO);
+
+	// 업체 리스트 조회
+	public List<AccountVO> selectCompanyList();
 }

@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.breadflow.app.account.service.AccountService;
 import com.breadflow.app.account.service.AccountVO;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 @Controller
 public class AccountController {
 	
@@ -128,4 +125,18 @@ public class AccountController {
 		
 		return result;
 	}
+	
+	
+	// 모달창으로 업체 조회하는 AJAX
+	@GetMapping("getCompanys.do")
+	@ResponseBody
+	public List<AccountVO> getCompanyList(Model model) {
+		List<AccountVO> list = accountService.getCompanyList();
+		model.addAttribute("getCompanys", list);
+		
+		System.out.println("\nlist: " + list + "\n");
+		return list;
+	}
+	
+	
 }

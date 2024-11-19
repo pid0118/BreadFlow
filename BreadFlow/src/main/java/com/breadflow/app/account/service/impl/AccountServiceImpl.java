@@ -76,5 +76,10 @@ public class AccountServiceImpl implements AccountService {
 		return result;
 	}
 
+	@Override
+	public List<AccountVO> getCompanyList() {
+		return accountMapper.selectCompanyList();
+	}
+
 	
 }
