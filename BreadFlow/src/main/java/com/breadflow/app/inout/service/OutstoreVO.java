@@ -4,12 +4,15 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
 public class OutstoreVO {
 	private String outstoreNo;
-	@DateTimeFormat(pattern = "yyyy년 MM월 dd일")
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
 	private Date outstoreDate;
 	private Integer outstoreQuantity;
 	private String outstoreManager;
@@ -17,10 +20,22 @@ public class OutstoreVO {
 	private String instoreNo;
 	private String salesNo;
 	
-	private String standard;
-	private String unit;
+	private String prdStandard;
+	private String prdUnit;
+	private String ingStandard;
+	private String ingUnit;
 	private String outstoreCompany;
 	private String instoreCompany;
+	private String ordersItem;
+	private Integer instoreQuantity;
+	
+	private String companyInput;
+	
+	private String orderingProduct;
+	private String orderingIngredient;
+	
+	private String ingredientName;
+	private String productName;
 	
 	private String itemDiv;
 }
