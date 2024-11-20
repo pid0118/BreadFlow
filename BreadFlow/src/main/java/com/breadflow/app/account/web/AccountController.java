@@ -36,6 +36,12 @@ public class AccountController {
 		return "account/accountinfo";
 	}
 	
+	@GetMapping("logout.do")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "account/index";
+	}
+	
 	// 로그인 검사
 	@PostMapping("loginCheck.do")
 	@ResponseBody
@@ -48,10 +54,13 @@ public class AccountController {
 			return 0;
 		}
 		
-		session.setAttribute("id", acVO.getId());			// 아이디
-		session.setAttribute("name", acVO.getName());		// 이름
-		session.setAttribute("div", acVO.getPosition());	// 담당자/사원
-		//session.setAttribute("div", acVO.getDiv());			// 권한
+		session.setAttribute("memNo", acVO.getMemberNo());		// 회원번호;
+		session.setAttribute("id", acVO.getId());				// 아이디
+		session.setAttribute("name", acVO.getName());			// 이름
+		session.setAttribute("position", acVO.getPosition());	// 담당자/사원
+		session.setAttribute("div", acVO.getDiv());				// 권한
+		
+		System.out.println(acVO.getPosition());
 		
 		return 1;		// 로그인 성공
 	}

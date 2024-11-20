@@ -119,10 +119,15 @@
 	
 	<!-- 아이디 체크 -->
 	<select id="selectMemberForLogin" parameterType="AccountVO">
-		SELECT id, name, FIND_CD(position)
-		FROM member
-		WHERE id = #{id}
-		  AND password = #{password}
+		SELECT  m.id
+		        , m.name
+		        , FIND_CD(m.position) AS position
+		        , FIND_CD(c.div) AS div
+		        , m.member_no
+		FROM    member m JOIN company c
+		            ON (m.company_no = c.company_no)
+		WHERE	m.id = #{id}
+		  AND 	m.password = #{password}
 	</select>
 	
 	<!-- 업체 리스트 조회 -->
