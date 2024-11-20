@@ -3,43 +3,49 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+<!-- Sweet Alert 사용하기 위한 script, css -->
+<!-- <script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
+<script src="/src/main/resources/static/plugins/sweetalert2/sweet-alert.init.js"></script>
+<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" /> -->
+
+
 <style>
-.insertButtons {
-	
+.required {
+	color: red;
 }
 
-.searchs {
-	
+.insertButtons {
+	padding-bottom: 10px;
 }
 
 .updateButtons button {
 	float: right;
 	margin-left: 10px;
 }
+
+.form-control.date-picker[readonly] {
+    background-color: #ffffff;
+}
+
+
 </style>
 
 <div class="container">
 	<div class="parentArea">
 		<div class="insertButtons">
-			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정 생성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정(업체) 생성</button>
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
-		<div class="searchs">
-			<form>
-				<select name="condition" id="cond">
-					<option value="name">이름</option>
-					<option value="role">권한</option>
-					<option value="comname">회사명</option>
-				</select>
-			</form>
-		</div>
-
 		<div>
+		
+		
 			<!-- 회원 테이블 시작 -->
 			<div class="card-box mb-30">
 				<div class="pb-20">
-					<table class="accounts-table table stripe hover nowrap">
+					<table id="accounts" class="accounts-table table stripe hover nowrap">
 						<thead>
 							<tr>
 								<th class="table-plus datatable-nosort">순번</th>
@@ -54,6 +60,7 @@
 								<th hidden="hidden">지역</th>
 								<th hidden="hidden">주소</th>
 								<th hidden="hidden">계약일자</th>
+								<th hidden="hidden">업체고유번호</th>
 
 							</tr>
 						</thead>
@@ -61,7 +68,7 @@
 							<th:block th:each="acc, sts : ${accounts}">
 								<tr>
 									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
-									<td id="parentPosit">[[ ${acc.position} ]]</td>
+									<td id="parentPosit" th:text="${acc.position == 'b1' ? '담당자' : (acc.position == 'b2' ? '사원' : '기타')}"></td>
 									<td id="parentId">[[ ${acc.id} ]]</td>
 									<td id="parentName">[[ ${acc.name} ]]</td>
 									<td id="parentComName">[[ ${acc.companyName} ]]</td>
@@ -72,6 +79,7 @@
 									<td id="parentRegion"  hidden="hidden">[[ ${acc.region} ]]</td>									
 									<td id="parentComAddr"  hidden="hidden">[[ ${acc.companyAddress} ]]</td>
 									<td id="parentContDt"  hidden="hidden">[[ ${acc.contractDate} ]]</td>
+									<td id="parentComNo" hidden="hidden">[[ ${acc.companyNo}]] </td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -84,7 +92,8 @@
 	</div>
 	<hr>
 	<div class="childArea">
-		<div class="updateAccounts" style="display: block;">
+		<!-- 기본 상세보기 폼 시작 -->
+		<div class="updateAccounts" style="display: block;">	<!-- 기본 block -->
 			<form id="updateAccountFrm" method="post">
 				<div class="row">
 					<div class="col-md-4 col-sm-12">
@@ -101,8 +110,9 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
-							<label>이름</label> <input type="text" class="form-control"
-								id="updName" name="name" >
+							<label>계약일자</label>
+							<input class="form-control" type="text"
+								id="updContDt" name="contractDate" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
@@ -113,50 +123,55 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
-							<label>연락처</label> <input type="text" class="form-control"
-								id="updTel" name="companyTel" >
-						</div>
-					</div>
-					<div class="col-md-4 col-sm-12">
-						<div class="form-group">
-							<label>계약일자</label>
-							<!-- <input type="text" class="form-control" id="updContDt"> -->
-							<input class="form-control date-picker" type="text"
-								id="updContDt" name="contractDate" >
-						</div>
-					</div>
-					<div class="col-md-4 col-sm-12">
-						<div class="form-group">
 							<label>지역</label>
-							<select class="custom-select col-12" id="updRegion" name="region">
-								<option value="서울">서울</option>
-								<option value="대전">대전</option>
-								<option value="대구">대구</option>
-								<option value="부산">부산</option>
-						</select>
+							<input type="text" class="form-control" id="updRegion" name="region" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>주소</label> <input type="text" class="form-control"
-								id="updAddr" name="companyAddress" >
+								id="updAddr" name="companyAddress" readonly>
 						</div>
 					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>이름</label> <input type="text" class="form-control"
+								id="updName" name="name" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>연락처</label> <input type="text" class="form-control"
+								id="updTel" name="companyTel" >
+						</div>
+					</div>					
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>기타사항</label> <input type="text" class="form-control"
 								id="updOther" name="other" >
 						</div>
 					</div>
-					<div class="col-md-4 col-sm-12">	<!-- TODO : 히든처리 하기 -->
+					<div class="col-md-4 col-sm-12" hidden="hidden">
 						<div class="form-group">
 							<label>아이디</label> <input type="text" class="form-control"
-								id="updId" name="id" >
+								id="updId" name="id">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>직책</label> <input type="text" class="form-control"
+								id="updPosition" name="position">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>회사코드</label> <input type="text" class="form-control"
+								id="updCompanyNo" name="memberNo">
 						</div>
 					</div>
 					<div class="updateButtons">
 						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">선택한
-							계정 삭제</button>
+							계정/업체 삭제</button>
 						<button type="button" class="btn btn-primary btn-lg"
 							id="udtAccBtn">수정사항 저장</button>
 						<button type="button" class="btn btn-warning btn-lg"
@@ -165,54 +180,57 @@
 				</div>
 			</form>
 		</div>
-
-		<div class="insertMngAccount" style="display: none;">
+		<!-- 기본 상세보기 폼 끝 -->
+		
+		
+		
+		<!-- "담당자 계정 생성" 폼 시작 -->
+		<div class="insertMngAccount" style="display: none;">	<!-- 기본 none -->
 			<form id="insertMngAccountFrm" method="post">
 			<div class="row">
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-3 col-sm-12">
 					<div class="form-group">
-						<label>고유번호</label> <input type="text" class="form-control" name="companyNo">
+						<label>사업자등록번호</label>
+						<input type="text" class="form-control" name="brn">
 					</div>
 				</div>
-				<div class="col-md-4 col-sm-12">
-					<div class="form-group">
-						<label>사업자등록번호</label> <input type="text" class="form-control" name="brn">
-					</div>
-				</div>
-				<div class="col-md-2 col-sm-12">
+				<div class="col-md-1 col-sm-12">
 					<label>&nbsp;</label> <input type="button" id="brnConfirmBtn"
-						class="form-control btn btn-primary" value="번호검증">
+						class="form-control btn btn-light" value="검증">
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>이름</label> <input type="text" class="form-control" name="name">
+						<label>이름</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="name">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체명</label> <input type="text" class="form-control" name="companyName">
+						<label>업체명</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyName">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+						<label>연락처</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="companyTel">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>업체분류</label>
+						<label>업체분류</label><b class="required"> *</b>
 						<select class="custom-select col-12" name="div">
-							<option selected="selected" value="본">본사</option>
-							<option value="가">가맹점</option>
-							<option value="공">공급업체</option>
-							<option value="제">제조공장</option>
-							<option value="물">물류창고</option>
+							<option selected="selected" value="a1">본사</option>
+							<option value="a2">공급업체</option>
+							<option value="a3">제조공장</option>
+							<option value="a4">물류창고</option>
+							<option value="a5">가맹점</option>
 						</select>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>지역</label>
+						<label>지역</label><b class="required"> *</b>
 						<select class="custom-select col-12" name="region">
 							<option selected="selected" value="서울">서울</option>
 							<option value="대전">대전</option>
@@ -229,7 +247,84 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>계약일자</label>
-						<input class="form-control date-picker" type="text" name="contractDate">
+						<input class="form-control date-picker" type="text" name="contractDate" readonly>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>기타사항</label> <input type="text" class="form-control" name="other">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12" hidden="hidden">	<!-- hidden할것 -->
+					<div class="form-group">
+						<label>직책(담당자)</label> <input type="text" class="form-control" value="b1" name="position">
+					</div>
+				</div>
+				
+				<div class="updateButtons">
+					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn" onclick="brnChk = 0;">취소</button>
+					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
+				</div>
+			</div>
+			</form>
+		</div>
+		<!-- "담당자 계정 생성" 폼 끝 -->
+		
+		
+		
+		<!-- "사원 계정 생성" 폼 시작 -->
+		<div class="insertEmployeeAccount" style="display: none;">	<!-- 기본 none -->
+			<form id="insertEmpAccountFrm" method="post">
+			<div class="row">
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>이름</label><b class="required"> *</b>
+						<input type="text" class="form-control" name="name">
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-12">
+					<div class="form-group">
+						<label>업체명</label><b class="required"> *</b>
+						<input type="text" class="form-control" id="empComNmInsert" name="companyName" readonly>	<!-- member insert에 이건 필요 X -->
+					</div>
+				</div>
+				<div class="col-md-1 col-sm-12">
+					<label>&nbsp;</label> <input type="button" id="comSerachBtn" data-toggle="modal" data-target="#bd-example-modal-lg"
+						class="form-control btn btn-light" value="검색">
+				</div>
+				
+				<div class="col-md-4 col-sm-12" hidden="hidden">
+					<div class="form-group">
+						<label>업체코드</label>
+						<input type="text" class="form-control" id="empComNoInsert" name="companyNo">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12" hidden="hidden">
+					<div class="form-group">
+						<label>직책(사원)</label> <input type="text" class="form-control" value="b2" name="position">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>계약일자</label>
+						<input class="form-control date-picker" id="empCntrctDtInsert" type="text" name="contractDate" readonly>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>비밀번호</label><b class="required"> *</b>
+						<input type="password" class="form-control" name="password">
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-12">
+					<div class="form-group">
+						<label>비밀번호 확인</label><b class="required"> *</b>
+						<input type="password" class="form-control" id="pwConfirm">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -239,107 +334,443 @@
 				</div>
 				
 				<div class="updateButtons">
-					<button type="button" class="btn btn-warning btn-lg" id="resetMngBtn">취소</button>
-					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
+					<button type="reset" class="btn btn-warning btn-lg" id="resetEmployeeBtn">취소</button>
+					<button type="button" class="btn btn-primary btn-lg" id="insertEmployeeBtn">확인</button>
 				</div>
 			</div>
 			</form>
 		</div>
+		<!-- "사원 계정 생성" 폼 끝 -->
 	</div>
 </div>
 
+<!-- 업체검색 모달창 -->
+
+<div
+	class="modal fade bs-example-modal-lg"
+	id="bd-example-modal-lg"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					업체 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="companys" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>업체코드</th>
+							<th>업체명</th>
+							<th>구분</th>
+							<th>대표자</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 업체명:</b>
+					<input id="selectedComNo" class="form-control" hidden="hidden">
+					<input id="selectedComNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="comModalConfirm()">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <script>
-	// [박진석|24.11.14] 버튼들 이벤트 걸기
-	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);	// 담당자 계정 생성으로 폼 전환 버튼
-	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);
-	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);
-	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);
-	// 버튼 이벤트 끝
+	//=======================================================
+	// [박진석|24.11.18] 필요한 변수들 생성
+	let brnChk = 0;		// 사업자등록번호 검증. 0 -> 번호 없음 | 1 -> 번호 유효하지 않음 | 2 -> 번호 유효함
 	
+	// 변수 끝
+	//=======================================================
 	
-	// [박진석|24.11.14] "담당자 계정 생성" 버튼 클릭 시 폼 전환하는 코드
-	function showMngInsertForm() {
-		document.querySelector(".insertMngAccount").style.display = 'block';
-		document.querySelector(".updateAccounts").style.display = 'none';
-	}
-	// 담당자 계정 생성 폼 전환 끝
 	
 
+	//=======================================================
+	// [박진석|24.11.14] 버튼들 이벤트 걸기
+	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);		// 담당자 계정 생성으로 폼 전환 버튼
+	document.querySelector("#employeeInsertBtn").addEventListener("click", showEmployeeInsertForm);		// 직원 계정 생성으로 폼 전환 버튼
+	
+	document.querySelector("#insertMngBtn").addEventListener("click", MngInsertAjax);					// 담당자 계정 생성
+	document.querySelector("#insertEmployeeBtn").addEventListener("click", employeeInsertAjax);			// 직원 계정 생성
+	document.querySelector("#resetPwBtn").addEventListener("click", resetPwAjax);						// "비밀번호 초기화"
+	document.querySelector("#udtAccBtn").addEventListener("click", AccountUpdateAjax);					// "수정사항 저장"
+	document.querySelector("#delAccBtn").addEventListener("click", accountDeleteAjax);					// "선택한 계정 삭제"
+	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);						// 사업자등록증 검증
+	document.querySelector("#comSerachBtn").addEventListener("click", companyListShow);						// 업체 검색 모달
+	
+	// 버튼 이벤트 끝
+	// =======================================================
+	
+		
+		
+	// =======================================================
+	// [박진석|24.11.16] 데이터 테이블 선언
+	$(document).ready( function () {
+	    $('#accounts').DataTable({
+	    	pageLength: 5,
+	    	paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            language: {
+                lengthMenu: "_MENU_ 개씩 보기",
+                zeroRecords: "데이터가 없습니다.",
+                info: "총 _TOTAL_개의 데이터 중 _START_ - _END_",
+                infoEmpty: "데이터가 없습니다.",
+                search: "검색:",
+                paginate: {
+                    first: "처음",
+                    last: "마지막",
+                    next: "다음",
+                    previous: "이전"
+                }
+            }
+	    });
+	    
+	    $('#companys').DataTable({
+	    	info: false,
+	    	paging: false,
+	    	ajax: {
+	   			url: 'getCompanys.do',
+	   			type: "GET",
+	   			dataSrc: ''
+	   		},
+	   		columns:[
+	   			{data: "companyNo"},
+	   			{data: "companyName"},
+	   			{data: "div"},
+	   			{data: "name"},
+	   		]
+	    })
+	} );
+	// Datatable 선언 끝
+	// =======================================================
+		
+		
+		
+	// =======================================================
+	// [박진석|24.11.14] "... 계정 생성" 버튼 클릭 시 폼 전환하는 코드
+	function showMngInsertForm() {
+		document.querySelector(".insertMngAccount").style.display = 'block';		// 담당자 계정 생성 폼만 활성화
+		document.querySelector(".updateAccounts").style.display = 'none';
+		document.querySelector(".insertEmployeeAccount").style.display = 'none';
+		document.querySelector("#resetMngBtn").click();
+		let brnChk = 0;
+	}
+	
+	function showEmployeeInsertForm() {
+		document.querySelector(".insertMngAccount").style.display = 'none';		// 직원 계정 생성 폼만 활성화
+		document.querySelector(".updateAccounts").style.display = 'none';
+		document.querySelector(".insertEmployeeAccount").style.display = 'block';
+		document.querySelector("#resetEmployeeBtn").click();
+		let brnChk = 0;
+	}
+	// 계정 생성 폼 전환 끝
+	// =======================================================
+		
+		
+	
+	// =======================================================
 	// [박진석|24.11.14] 테이블의 행 클릭 시 상세정보 출력하는 코드
 	let accTblTrs = document.querySelectorAll(".accounts-table tr");
-	
-	
 	
 	for (let i = 1; i < accTblTrs.length; i++) {
 		accTblTrs[i].addEventListener("click", getTargetInfo);
 	}
 
 	function getTargetInfo(e) {
-		document.querySelector(".insertMngAccount").style.display = 'none';
+		document.querySelector(".insertMngAccount").style.display = 'none';			// 자세히 보기 폼만 활성화
+		document.querySelector(".insertEmployeeAccount").style.display = 'none';
 		document.querySelector(".updateAccounts").style.display = 'block';
+		let brnChk = 0;
 		
 		let parentInfo = e.target.parentElement;
+		
 		document.querySelector("#updMemNo").value = parentInfo.querySelector("#parentMemNo").innerText;
 		document.querySelector("#updBrn").value = parentInfo.querySelector("#parentBrn").innerText;
 		document.querySelector("#updName").value = parentInfo.querySelector("#parentName").innerText;
 		document.querySelector("#updComName").value = parentInfo.querySelector("#parentComName").innerText;
-		document.querySelector("#updTel").value = parentInfo.querySelector("#parentMemNo").innerText;
+		document.querySelector("#updTel").value = parentInfo.querySelector("#parentTel").innerText;
 		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
 		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
 		
+		// document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
+		
 		let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
-		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);
+		document.querySelector("#updContDt").value = formatDate(convDateBefore);
+
+		/*let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);*/
 		
 		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
+		document.querySelector("#updPosition").value = parentInfo.querySelector("#parentPosit").innerText;
+		document.querySelector("#updCompanyNo").value = parentInfo.querySelector("#parentComNo").innerText;
 	}
 	// 상세정보 출력 코드 끝
+	// =======================================================
 
+		
+		
+	// =======================================================
+	// [박진석|24.11.19] 모달 테이블 행 클릭 시 input출력 및 선택
+	function companyListShow() {
+		let comsTblTrs = document.querySelectorAll("#companys tr");
+	
+		for(let i = 1; i < comsTblTrs.length; i++) {
+			comsTblTrs[i].addEventListener("click", getCompanyInfo);
+		}
+	}
+	
+	let comNo;
+	let comNm;
+	
+	function getCompanyInfo(e) {
+		comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+		comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+		
+		document.querySelector("#selectedComNm").value = comNm;
+		document.querySelector("#selectedComNo").value = comNo;
+	}
+	
+	//document.querySelector("#comModalConfirm").addEventListener("click", comModalOk)
+	
+	function comModalConfirm() {
+		document.querySelector("#empComNmInsert").value = comNm;
+		document.querySelector("#empComNoInsert").value = comNo;
+		
+		comNm = "";
+		comNo = "";	
+	}
+	
+	// 행 클릭시 input 출력 선택 끝
+	// =======================================================		
+		
+
+		
+	// =======================================================
+	// [박진석|24.11.20] contractDate 날짜형식을 "2024-11-20"으로 바꾸는 코드
+	let dateForm = document.querySelector("#empCntrctDtInsert");
+	dateForm.addEventListener("focusout", function() {changeDateFormat(dateForm.value)});
+	
+	function changeDateFormat(dateString) {
+	    const date = new Date(dateString);
+
+	    const year = date.getFullYear();
+	    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+	    const day = String(date.getDate()).padStart(2, '0');
+
+	    return `${year}-${month}-${day}`;
+	}
+	
+	
+	// 
+	// =======================================================		
+		
+		
+		
+	// =======================================================	
 	// [박진석|24.11.14] 비밀번호 초기화하는 코드
-	function resetPwAjax() {
+	function resetPwAjax() {	
+		let id = document.querySelector("#updId").value;
+		
+		if (id == "") {
+			alertNoSelected();
+		} else {
+			
+			if(confirm("비밀번호를 초기화 하시겠습니까?")) {
+				$.ajax({
+		            url: "ResetAccountPw.do",
+		            type: "POST",
+		            data: { 'id': id },
+		            success: function(data){
+		                alert("비밀번호가 '0000'으로 초기화되었습니다.");
+		                //swal("비밀번호 초기화가 완료되었습니다.","초기화된 비밀번호는 '0000' 입니다.", {icon: "success"});
+		                console.log(data);
+		            },
+		            error: function(){  alert("비밀번호 초기화 실패");  }
+		        });
+			} else {
+				alert("취소하였습니다.")
+			}
+		}
+	}
+	
+	function alertNoSelected() {
+		alert("행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
+	}	
+	// 비밀번호 초기화 끝
+	// =======================================================
+	
+		
+		
+	// =======================================================
+	// [박진석|24.11.15] updateForm 수정하는 AJAX
+	function AccountUpdateAjax() {
 		let id = document.querySelector("#updId").value;
 		console.log(id);
 		
 		if (id == "") {
 			alertNoSelected();
 		} else {
-			$.ajax({
-	            url: "ResetAccountPw.do",
-	            type: "POST",
-	            data: { 'id': id },
-	            success: function(data){
-	                alert("비밀번호 초기화 이게되네");
-	                console.log(data);
-	            },
-	            error: function(){  alert("비밀번호 초기화 실패");  }
-	        });
+			if(confirm("수정하시겠습니까?")) {
+				$.ajax({
+		            url: "updateAccount.do",
+		            type: "POST",
+		            data: $('#updateAccountFrm').serialize(),
+		            success: function(data){
+		                alert("수정 이게되네");
+		                location.reload(true);
+		            },
+		            error: function(){  alert("수정 이건안되네");  }
+		        });
+			} else {
+				alert("취소하였습니다.")
+			}
+		}
+	}
+	// update AJAX 끝
+	// =======================================================
+	
+		
+		
+	// =======================================================	
+	// [박진석|24.11.14] 담당자 계정 생성했을 때 DB에 Insert하는 코드
+	function MngInsertAjax() {
+		let nameVal = document.querySelector("#insertMngAccountFrm input[name^='name']");
+		let comNmVal = document.querySelector("#insertMngAccountFrm input[name^='companyName']");
+		let comTelVal = document.querySelector("#insertMngAccountFrm input[name^='companyTel']");
+		
+		if(nameVal.value == "" || comNmVal.value == "" || comTelVal.value == "") {
+			alert("필수값을 입력해주세요.");
+			return false;
 		}
 		
-	}
-	
-	function alertNoSelected() {
-		alert("초기화할 행을 선택해주세요.");	// TODO: sweetAlert 등 써서 알림창 예쁘게 만들기
-	}
-	
-	// 비밀번호 초기화 끝
-	
-	
-	// [박진석|24.11.14] 담당자 계정 DB에 Insert하는 코드
-	function MngInsertAjax() {
-		$.ajax({
-            url: "insertAccount.do",
-            type: "POST",
-            data: $('#insertMngAccountFrm').serialize(),
-            success: function(data){
-                alert("신규등록 성공!");
-                location.reload(true);
-            },
-            error: function(){  alert("신규등록 error");  }
-        });
+		if(brnChk === 1) {
+			alert("사업자등록번호를 확인해주세요.")
+			return false;
+		}
+		
+		if(confirm("등록하시겠습니까?")) {
+			$.ajax({
+	            url: "insertAccount.do",
+	            type: "POST",
+	            data: $('#insertMngAccountFrm').serialize(),
+	            success: function(data){
+	                alert("신규등록 성공!");
+	                brnChk = 0;
+	                location.reload(true);
+	            },
+	            error: function(){  alert("신규등록 error");  }
+	        });
+		} else {
+			alert("취소하였습니다.")
+		}
 	}
 	// 담당자 계정 DB Insert AJAX끝
+	// =======================================================
+		
 	
-	
+		
+	// =======================================================
+	// [박진석|24.11.15] 사원 계정 DB INSERT AJAX
+	function employeeInsertAjax() {
+		
+		let nameVal = document.querySelector("#insertEmpAccountFrm input[name^='name']");
+		let comNmVal = document.querySelector("#insertEmpAccountFrm input[name^='companyName']");
+		let pwVal = document.querySelector("#insertEmpAccountFrm input[name^='password']");
+		let pwCnfrmVal = document.querySelector("#pwConfirm");
+		
+		if(pwVal.value != pwCnfrmVal.value) {
+			alert("비밀번호가 일치하지 않습니다.");
+			return false;
+		}
+		
+		if(nameVal.value == "" || comNmVal.value == "" || pwVal.value == "" || pwCnfrmVal.value == "") {
+			alert("필수값을 입력해주세요.");
+			return false;
+		}
+		
+		if(confirm("등록하시겠습니까?")) {
+			$.ajax({
+	            url: "insertEmployeeAccount.do",
+	            type: "POST",
+	            data: $('#insertEmpAccountFrm').serialize(),
+	            success: function(data){
+	                alert("사원 신규등록 성공!");
+	                location.reload(true);
+	            },
+	            error: function(){  alert("사원 신규등록 error");  }
+	        });
+		} else {
+			alert("취소하였습니다.")
+		}
+	}	
+	// 일반 계정 INSERT AJAX 끝
+	// ======================================================
+		
+		
+		
+	// =======================================================
+	// [박진석|24.11.16] 계정 DB DELETE AJAX
+	function accountDeleteAjax() {
+		let id = document.querySelector("#updId").value;
+		
+		if (id == "") {
+			alertNoSelected();
+		} else {
+			if(confirm("담당자 계정을 삭제하는 경우 업체정보와 하위 사원의 정보가 함께 삭제됩니다.\n정말 삭제하시겠습니까?")) {
+				let no = document.querySelector("#updMemNo").value;
+				let compNo = document.querySelector("#updCompanyNo").value;
+				let posit = document.querySelector("#updPosition").value;
+				
+				if (no == "") {
+					alertNoSelected();
+				} else {
+					$.ajax({
+			            url: "deleteAccount.do",
+			            type: "POST",
+			            data:  { 'memberNo': no , 'companyNo': compNo, 'position': posit},
+			            success: function(data){
+			                alert("삭제 성공하였습니다.");
+			                location.reload(true);
+			            },
+			            error: function(){  alert("삭제에 실패하였습니다.");  }
+			        });
+				}
+			} else {
+				alert("취소하였습니다. ");
+			}
+		}
+	}	
+	// 계정 DELETE AJAX 끝
+	// ======================================================		
+		
+		
+
+	// =======================================================	
 	// [박진석|24.11.15] 사업자등록번호 검증하는 코드
 	function confirmBrn () {
 		let brn = document.querySelector("#insertMngAccountFrm input[name^='brn']").value;
@@ -351,7 +782,7 @@
 		}
 		
 		var data = {
-				b_no: [brn],
+			b_no: [brn],
 		}
 		
 		$.ajax({
@@ -365,48 +796,53 @@
 			      let code = result.data[0].b_stt_cd
 			      if(code == '01') {
 			    	  alert("정상적인 번호입니다.");
+			    	  brnChk = 2;
 			      } else if(code == '02' || code == '03') {
-			    	  alert("휴업 또는 폐업된 번호입니다.")
+			    	  alert("휴업 또는 폐업된 번호입니다.");
+			    	  brnChk = 1;
 			      } else {
-			    	  alert("잘못된 번호입니다.")
+			    	  alert("잘못된 번호입니다.");
+			    	  brnChk = 1;
 			      }
 			  },
 			  error: function(result) {
 			      console.log(result.responseText);
 			  }
-			});
+		});
 	}
 	// 검증코드 끝
+	// =======================================================
+		
+		
+		
+	// =======================================================	
+	// [박진석|241120] 날짜 변환 함수 ( Tue Nov 12 00:00:00 KST 2024 => 12 November 2024 )
+	function formatDate(dateString) {
+		
+	    const parts = dateString.split(" ");
+	    const day = parts[2];
+	    const month = parts[1];
+	    const year = parts[5];
 	
+	    // 월 이름 배열
+	    const monthNames = {
+	        Jan: "January", Feb: "February", Mar: "March", Apr: "April",
+	        May: "May", Jun: "June", Jul: "July", Aug: "August",
+	        Sep: "September", Oct: "October", Nov: "November", Dec: "December"
+	    };
 	
+	    // 월 이름 변환
+	    const monthFullName = monthNames[month];
 	
-	// [박진석|241115] 날짜 변환 함수
-	function formatKoreanDate(dateString) {
-	    // 정규표현식을 이용해 연도, 월, 일을 추출
-	    const datePattern = /([A-Za-z]{3})\s([A-Za-z]{3})\s(\d{1,2})\s\d{2}:\d{2}:\d{2}\s[A-Z]{3}\s(\d{4})/;
-	    const match = dateString.match(datePattern);
-	
-	    if (match) {
-	        // 월 문자열을 숫자로 변환하기 위해 월 이름 배열 선언
-	        const months = {
-	            Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
-	            Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
-	        };
-	
-	        // 추출한 값 할당
-	        const month = months[match[2]];  // 두 번째 그룹이 월
-	        const day = parseInt(match[3], 10);  // 세 번째 그룹이 일
-	        const year = parseInt(match[4], 10); // 네 번째 그룹이 연도
-	
-	        // 원하는 포맷으로 반환
-	        return `${year}년 ${month}월 ${day}일`;
-	    } else {
-	        // 포맷이 잘못된 경우 에러 메시지 반환
-	        return "올바르지 않은 날짜 형식입니다.";
+	    if (parts[0] === "") {
+	    	return ``;
 	    }
+	    
+	    return `${day} ${monthFullName} ${year}`;
 	}
 	// 날짜 변환함수 끝
+	// =======================================================
 
-
-	
 </script>
+
+

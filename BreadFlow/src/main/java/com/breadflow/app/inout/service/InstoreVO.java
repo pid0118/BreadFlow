@@ -3,11 +3,17 @@ package com.breadflow.app.inout.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
 public class InstoreVO {
 	private String instoreNo;
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
 	private Date instoreDate;
 	private String itemDiv;
 	private String itemCode;
@@ -22,8 +28,12 @@ public class InstoreVO {
 	private String instoreDivNo;
 	private Date expirationDeadline;
 	
-	private String standard;
-	private String unit;
+	private String name;
+	
+	private String prdStandard;
+	private String prdUnit;
+	private String ingStandard;
+	private String ingUnit;
 	private String outstoreCompany;
 	private String instoreCompany;
 	private String orderingProduct;
@@ -37,4 +47,5 @@ public class InstoreVO {
 	private String productName;
 	
 	private String companyName;
+	private String companyInput;
 }

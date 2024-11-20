@@ -16,15 +16,15 @@
 		<form id="inOutInsertForm" name="inOutInsertForm">
 			<div>
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" id="companyInput" value="(주)보라보라" readonly>
+					<input class="form-control" type="text" name="companyInput" id="companyInput" value="(주)보라보라" readonly>
 				</div>
 
 				<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 					<label class="btn btn-outline-secondary active">
-						<input type="radio" name="options" id="instoreBtn" autocomplete="off" checked> 입고
+						<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
 					</label>
 					<label class="btn btn-outline-secondary">
-						<input type="radio" name="options" id="outstoreBtn" autocomplete="off"> 출고
+						<input type="radio" name="options" id="outstoreBtn" value="출고" autocomplete="off">출고
 					</label>
 				</div>
 
@@ -56,12 +56,6 @@
 			<div class="pd-20 input-group mb-3" hidden="hidden">
 				<input class="form-control" type="text" id="standard">
 			</div>
-
-			<div class="pd-20">
-				<button type="submit" form="inOutInsertForm" class="btn btn-primary" id="submitBtn" hidden="hidden">등록</button>
-				<button type="reset" form="inOutInsertForm" class="btn btn-primary" id="resetBtn" hidden="hidden">취소</button>
-				<button type="button" form="inOutInsertForm" class="btn btn-primary" id="printListBtn" hidden="hidden">거래 명세서 발행</button>
-			</div>
 		</form>
 		<div class="pd-20 input-group mb-3">
 			<input class="form-control" type="text" id="searchKeyword">
@@ -74,8 +68,8 @@
 						<th class="table-plus">발주일자</th>
 						<th class="datatable-nosort">재고 분류</th>
 						<th class="datatable-nosort">품목</th>
-						<th>발주 수량</th>
-						<th>출고 수량</th>
+						<th id="firstQuanTh">발주 수량</th>
+						<th id="secondQuanTh">입고 수량</th>
 						<th class="datatable-nosort">규격/단위</th>
 					</tr>
 				</thead>
@@ -85,9 +79,9 @@
 			</table>
 		</div>
 		<div class="pd-20">
-			<button type="submit" form="inOutInsertForm" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="reset" form="inOutInsertForm" class="btn btn-primary" id="resetBtn">취소</button>
-			<button type="button" form="inOutInsertForm" class="btn btn-primary" id="printListBtn">거래 명세서 발행</button>
+			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
+			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
+			<button type="button" class="btn btn-primary" id="printListBtn">거래 명세서 발행</button>
 		</div>
 	</div>
 	
@@ -100,22 +94,6 @@
 	        // 기본 날짜 출력 (입고/출고)
 	        loadTodayDate();
 	        
-	        //initDataTable();
-	        
-	        /*function initDataTable() {
-				if ($.fn.dataTable.isDataTable('#compTble')) {
-		            $('#compTble').DataTable().destroy();
-		        }
-				
-				$('#compTble').DataTable({
-					paging: true,
-			    	searching: true,
-			    	ordering: true,
-			    	info: true,
-			    	select: true
-			    });
-			}*/
-	
 	        // 입고 내역 버튼 클릭
 	        $("#instoreBtn").click(function() {
 	        	loadOrderList();
@@ -123,6 +101,8 @@
 	
 	        // 출고 내역 버튼 클릭
 	        $("#outstoreBtn").click(function() {
+	        	$("#firstQuanTh").text("입고 수량");
+	        	$("#secondQuanTh").text("출고 수량");
 	            loadInstoreList();
 	        });
 	
@@ -160,45 +140,42 @@
 	            // 선택된 행을 추출
 	            var selectedRows = [];
 	            $("#inOutTable tr.selected").each(function() {
-	            	if ($("input[name='options']:checked").text() === '입고') {
+	            	if ($("input[name='options']:checked").val() === '입고') {
 	            		var row = $(this);
 		                var data = {
+		                    instoreDate: $("#inOutDate").val(),
 		                    itemDiv: row.find("td:nth-child(2)").text(),
-		                    instoreQuantity: row.find("td:nth-child(5) input").value(),
-		                    outstoreQuantity: '0',
-		                    stockQuantity: '0',
-		                    facilitiesDivNo: '0',
+		                    name: row.find("td:nth-child(3)").text(),
+		                    instoreQuantity: row.find("td:nth-child(5) input").val(),
+		                    outstoreQuantity: '1',
 		                    orderingDetailCode: row.find("td:nth-child(7)").text(),
 		                    instoreDiv: row.find("td:nth-child(8)").text(),
-		                    expirationDeadline: row.find("td:nth-child(9)").text(),
-		                    instoreManager: $(".user-name").text(),
-	    	                instoreDate: $("#inOutDate").val(),
-	    	                itemType: $("input[name='options']:checked").text()
+		                    itemCode: row.find("td:nth-child(10)").text(),
+		                    companyInput: $("#companyInput").val()
 		                };
 		                selectedRows.push(data);
 	                } else {
 	                	var row = $(this);
 		                var data = {
-		                    instoreNo: row.find("td:nth-child(1)").text(),
-		                    ordersDetailNo: row.find("td:nth-child(9)").text(),
-		                    outstoreQuantity: row.find("td:nth-child(6) input").value(),
-		                    salesNo: '0',
-		                    outstoreManager: $(".user-name").text(),
-	    	                outstoreDate: $("#inOutDate").val(),
-	    	                itemType: $("input[name='options']:checked").text()
+		                	outstoreDate: $("#inOutDate").val(),
+		                	outstoreQuantity: row.find("td:nth-child(5) input").val(),
+		                	ordersDetailNo: row.find("td:nth-child(8)").text(),
+		                    instoreNo: row.find("td:nth-child(7)").text(),
+		                    companyInput: $("#companyInput").val()
 		                };
 		                selectedRows.push(data);
 	                }
 	            });
-
+	            console.log(selectedRows);
 	            // Ajax로 데이터 전송
-	            var url = selectedRows.itemType === '입고' ? '/inOut/insertIn' : '/inOut/insertOut';
+	            var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/insertIn' : '/inOut/insertOut';
 	            $.ajax({
 	                url: url,
 	                method: 'POST',
 	                data: JSON.stringify(selectedRows),
 	                contentType: 'application/json',
 	                success: function(response) {
+	                	console.log(selectedRows);
 	                    alert("등록되었습니다.");
 	                },
 	                error: function() {
@@ -216,7 +193,6 @@
 	            method : 'GET',
 	            success : function(data) {
 	                updateTable(data, 'instore');
-	                //initDataTable();
 	            },
 	            error : function() {
 	                alert("입고 내역을 불러오는 데 실패했습니다.");
@@ -231,7 +207,6 @@
 	            method : 'GET',
 	            success : function(data) {
 	                updateTable(data, 'order');
-	                //initDataTable();
 	            },
 	            error : function() {
 	                alert("발주 내역을 불러오는 데 실패했습니다.");
@@ -245,8 +220,8 @@
 	    	var day = objectDate.getDate();
 	    	var month = objectDate.getMonth();
 	    	var year = objectDate.getFullYear();
-	    	var todayDate = year + "년 " + (month + 1) + "월 " + day + "일";
-	 		$("#inOutDate").val(todayDate);
+	    	var todayDate = year + "/" + (month + 1) + "/" + day;
+	 		$("#inOutDate").val(todayDate.slice(2, 10));
 	 	}
 
 	    // 목록 갱신
@@ -258,35 +233,52 @@
 	            if (type === 'instore') {
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + item.orderingProduct + "</td>";
+	                	row += "<td class='prd'>" + "g1" + "</td>";
 	                	row += "<td class='prd'>" + item.productName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + item.orderingIngredient + "</td>";
+	                	row += "<td class='ing'>" + "g2" + "</td>";
 	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
 	                }
-	                row += "<td>" + item.quantity + "</td>";
+	                row += "<td>" + item.instoreQuantity + "</td>";
 	                row += "<td>" + "<input class='form-control' type='text' placeholder='출고 수량을 입력하세요.'></input>" + "</td>";
-	                row += "<td>" + item.standard + "/" + item.unit + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
+	                } else {
+	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
+	                }
 	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
 	                row += "<td style='display:none;'>" + item.ordersDetailNo + "</td>";
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "G1" + "</td>";
+	                	row += "<td class='prd'>" + "g1" + "</td>";
 	                	row += "<td class='prd'>" + item.productName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "G2" + "</td>";
+	                	row += "<td class='ing'>" + "g2" + "</td>";
 	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
 	                }
 	                row += "<td>" + item.quantity + "</td>";
 	                row += "<td>" + "<input class='form-control' type='text' placeholder='입고 수량을 입력하세요.'></input>" + "</td>";
-	                row += "<td>" + item.standard + "/" + item.unit + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
+	                } else {
+	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
+	                }
 	                row += "<td style='display:none;'>" + item.orderingDetailCode + "</td>";
-	                row += "<td style='display:none;'>" + "재고 입고" + "</td>";
+	                if (item.orderingProduct != null) {
+	                	row += "<td style='display:none;'>" + "f2" + "</td>";
+	                } else {
+	                	row += "<td style='display:none;'>" + "f1" + "</td>";
+	                }
 	                if (item.orderingProduct != null) {
 	                	row += "<td style='display:none;'>" + item.prdExpirationDeadline + "</td>";
 	                } else {
 	                	row += "<td style='display:none;'>" + item.ingExpirationDeadline + "</td>";
+	                }
+	                if (item.orderingProduct != null) {
+	                	row += "<td style='display:none;'>" + item.orderingProduct + "</td>";
+	                } else {
+	                	row += "<td style='display:none;'>" + item.orderingIngredient + "</td>";
 	                }
 	            }
 	            row += "</tr>";
@@ -298,7 +290,7 @@
 	    function loadRawmatList() {
 	        $("#inOutTable tr").each(function() {
 	            var rowText = $(this).text().toLowerCase();
-	            if (rowText.includes("ix")) {
+	            if (rowText.includes("g2")) {
 	                $(this).show();
 	            } else {
 	                $(this).hide();
@@ -310,7 +302,7 @@
 	    function loadFinprdList() {
 	        $("#inOutTable tr").each(function() {
 	            var rowText = $(this).text().toLowerCase();
-	            if (rowText.includes("ib")) {
+	            if (rowText.includes("g1")) {
 	                $(this).show();
 	            } else {
 	                $(this).hide();

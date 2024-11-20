@@ -72,7 +72,7 @@
                 </tr>
             </thead>
             <tbody>
-                <th:block th:each="info, sts : ${products}">
+                <th:block th:each="info, sts : ${product}">
                     <tr>
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productCode}]]</td>
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productName}]]</td>
