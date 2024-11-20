@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+<!-- Sweet Alert 사용하기 위한 script, css -->
+<!-- <script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
+<script src="/src/main/resources/static/plugins/sweetalert2/sweet-alert.init.js"></script>
+<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" /> -->
+
+
+<style>
+.required {
+	color: red;
+}
+
+.insertButtons {
+	padding-bottom: 10px;
+}
+
+.updateButtons button {
+	float: right;
+	margin-left: 10px;
+}
+
+.form-control.date-picker[readonly] {
+    background-color: #ffffff;
+}
+
+
+</style>
+
+<div class="container">
+	<h2>회원정보 수정</h2>
+	<div class="childArea">
+		<!-- 기본 상세보기 폼 시작 -->
+		<div class="updateAccounts" style="display: block;">	<!-- 기본 block -->
+			<form id="updateAccountFrm" method="post">
+				<div class="row">
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>고유번호</label> <input type="text" class="form-control"
+								id="updMemNo" name="companyNo" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>사업자등록번호</label> <input type="text" class="form-control"
+								id="updBrn" name="brn" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>계약일자</label>
+							<input class="form-control" type="text"
+								id="updContDt" name="contractDate" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>업체명</label> <input type="text" class="form-control"
+								id="updComName" name="companyName"  readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>지역</label>
+							<input type="text" class="form-control" id="updRegion" name="region" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>주소</label> <input type="text" class="form-control"
+								id="updAddr" name="companyAddress" readonly>
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>이름</label> <input type="text" class="form-control"
+								id="updName" name="name" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>연락처</label> <input type="text" class="form-control"
+								id="updTel" name="companyTel" >
+						</div>
+					</div>					
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>기타사항</label> <input type="text" class="form-control"
+								id="updOther" name="other" >
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>아이디</label> <input type="text" class="form-control"
+								id="updId" name="id">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>비밀번호</label> <input type="password" class="form-control"
+								id="updPw" name="password">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12">
+						<div class="form-group">
+							<label>비밀번호 확인</label> <input type="password" class="form-control"
+								id="updPwConfitm">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>직책</label> <input type="text" class="form-control"
+								id="updPosition" name="position">
+						</div>
+					</div>
+					<div class="col-md-4 col-sm-12" hidden="hidden">
+						<div class="form-group">
+							<label>회사코드</label> <input type="text" class="form-control"
+								id="updCompanyNo" name="memberNo">
+						</div>
+					</div>
+					<div class="updateButtons">
+						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">취소</button>
+						<button type="button" class="btn btn-primary btn-lg"
+							id="udtAccBtn">확인</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- 기본 상세보기 폼 끝 -->
+	</div>
+</div>
+
+<script>
+
+</script>
+
+

@@ -18,8 +18,8 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public List<AccountVO> getList() {
-		return accountMapper.selectAccountList();
+	public List<AccountVO> selectMemberList() {
+		return accountMapper.selectMemberList();
 	}
 
 	@Override
@@ -35,9 +35,51 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public int updatePwMember(String id) {
-		int result = accountMapper.updatePwMember(id);
-		return 0;
+	public int updateMemberForPw(String id) {
+		int result = accountMapper.updateMemberForPw(id);
+		return result;
 	}
+
+	@Override
+	public int deleteMember(String no) {
+		int result = accountMapper.deleteMember(no);
+		return result;
+	}
+
+	@Override
+	public int deleteMemberForCompany(String companyNo) {
+		int result = accountMapper.deleteMemberForCompany(companyNo);
+		return result;
+	}
+
+	@Override
+	public int deleteCompany(String companyNo) {
+		int result = accountMapper.deleteCompany(companyNo);
+		return result;
+	}
+
+	@Override
+	public int updateMemberForEmp(AccountVO accountVO) {
+		int result = accountMapper.updateMemberForEmp(accountVO);
+		return result;
+	}
+
+	@Override
+	public int UpdateCompanyForTel(AccountVO accountVO) {
+		int result = accountMapper.UpdateCompanyForTel(accountVO);
+		return result;
+	}
+
+	@Override
+	public AccountVO selectMemberForLogin(AccountVO accountVO) {
+		AccountVO result = accountMapper.selectMemberForLogin(accountVO);
+		return result;
+	}
+
+	@Override
+	public List<AccountVO> selectCompanyList() {
+		return accountMapper.selectCompanyList();
+	}
+
 	
 }
