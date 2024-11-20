@@ -11,12 +11,8 @@
       			</div>
       			<div class="modal-body">
       				<div class="card-box mb-30">
-						<div class="pd-20 input-group mb-3">
-							<input class="form-control" type="text" id="searchKeyword" placeholder="업체명을 검색하세요">
-							<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
-						</div>
 						<div class="pd-20">
-							<table class="data-table table hover multiple-select-row nowrap">
+							<table class="table table-striped hover multiple-select-row nowrap" id="compTble">
 								<thead>
 									<tr>
 										<th class="table-plus">업체구분</th>
@@ -25,6 +21,7 @@
 									</tr>
 								</thead>
 								<tbody id="companyTableBody">
+								
 								</tbody>
 							</table>
 						</div>
@@ -37,18 +34,25 @@
     		</div>
   		</div>
 	</div>
-	
-	<form id="companySelectionForm" action="inOutList" method="GET">
-	    <input type="hidden" id="selectedCompanyName" name="companyName" />
-	</form>
-	<form id="companySelectionFormInsert" action="inOutInsert" method="GET">
-	    <input type="hidden" id="selectedCompanyNameInsert" name="companyName" />
-	</form>
 
 	<script>
 		$(document).ready(function() {
 			
         loadCompanyList();
+        
+        function initDataTable() {
+			if ($.fn.dataTable.isDataTable('#compTble')) {
+	            $('#compTble').DataTable().destroy();
+	        }
+			
+			$('#compTble').DataTable({
+				paging: true,
+		    	searching: true,
+		    	ordering: true,
+		    	info: true,
+		    	select: true
+		    });
+		}
 
 	    $("#searchBtn").click(function() {
 	        var searchKeyword = $("#searchKeyword").val().toLowerCase();
@@ -65,10 +69,6 @@
 	    $("#companyTableBody").on('click', 'tr', function() {
 			$("#companyTableBody tr").removeClass('selected');
 			$(this).addClass('selected');
-			var selectedCompanyName = $(this).find("td:nth-child(2)").text();
-			$("#selectedCompanyName").val(selectedCompanyName); 
-			$("#selectedCompanyNameInsert").val(selectedCompanyName);
-			selectedCompany = selectedCompanyName;
 		});
 
 	    function filterCompanyTable(keyword) {
@@ -88,6 +88,7 @@
                 method : 'GET',
                 success : function(data) {
                     updateTable(data);
+                    initDataTable();
                 },
                 error : function() {
                     alert("업체 내역을 불러오는 데 실패했습니다.");
@@ -109,10 +110,12 @@
         }
 
 	    $("#selectCompanyBtn").click(function() {
-	        if (selectedCompany) {
-	            console.log(companyName);
-	            $("#companySelectionForm").submit();
-	            $("#companySelectionFormInsert").submit();
+			var selectedCompanyName = $("#companyTableBody .selected").find("td:nth-child(2)").text();
+	        if (selectedCompanyName) {
+	            console.log(selectedCompanyName);
+	            $("#companyName").val(selectedCompanyName); 
+				$("#coFilter").val(selectedCompanyName); 
+				selectedCompany = selectedCompanyName;
 	            $("#coFilterModal").modal('hide');
 	        } else {
 	            alert("회사를 선택하세요.");

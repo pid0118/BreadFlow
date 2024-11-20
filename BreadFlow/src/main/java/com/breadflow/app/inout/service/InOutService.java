@@ -8,7 +8,7 @@ public interface InOutService {
 	public List<OutstoreVO> outstoreList();
 	public List<OrderListVO> orderListForInsert();
 	public List<InstoreVO> instoreListForInsert();
-	public int instoreInsert(InstoreVO instoreVO);
-	public int outstoreInsert(OutstoreVO outstoreVO);
+	public int instoreInsert(List<InstoreVO> instoreVO);
+	public int outstoreInsert(List<OutstoreVO> outstoreVO);
 	public List<ItemListVO> itemList();
 }
