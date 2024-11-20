@@ -19,6 +19,15 @@
 		FROM member m JOIN company c
 		        ON m.company_no = c.company_no
 	</select>
+	
+	<!-- 단건조회 -->
+	<!-- TODO: SELECT 하는 컬럼 수정하기 -->
+	<select id="selectMember" resultType="AccountVO" parameterType="AccountVO">
+		SELECT 	*
+		FROM    member m JOIN company c
+            ON (m.company_no = c.company_no)
+		WHERE   member_no = #{memberNo}
+	</select>
 
 	<insert id="insertCompany" parameterType="AccountVO">
 	<selectKey resultType="string" keyProperty="companyNo" order="BEFORE">

@@ -32,10 +32,18 @@ public class AccountController {
 	}
 	
 	@GetMapping("account")
-	public String accountinfo() {
+	public String accountinfo(Model model, HttpSession session) {
+		String memberNo = (String) session.getAttribute("memNo");
+		
+		AccountVO accVO = new AccountVO();
+		accVO.setMemberNo(memberNo);
+		
+		AccountVO accountvo = accountService.selectMember(accVO);
+		model.addAttribute("account", accountvo);
 		return "account/accountinfo";
 	}
 	
+	// 로그아웃
 	@GetMapping("logout.do")
 	public String logout(HttpSession session) {
 		session.invalidate();

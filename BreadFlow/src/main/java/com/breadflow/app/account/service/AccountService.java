@@ -26,6 +26,8 @@ public interface AccountService {
 	public AccountVO selectMemberForLogin(AccountVO accountVO);
 
 	public List<AccountVO> selectCompanyList();
+
+	public AccountVO selectMember(AccountVO accountVO);
 }
 
 //selectMemberForLogin
