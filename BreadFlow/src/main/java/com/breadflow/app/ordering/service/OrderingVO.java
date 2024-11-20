@@ -12,4 +12,6 @@ public class OrderingVO {
 	private int totalPrice;
 	private String approvalWhether;
 	private String orderingApprovalManger;
+	private String orderformNo;
+	private Date deliveryDesireDate;
 }
