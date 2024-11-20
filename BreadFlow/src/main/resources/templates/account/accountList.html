@@ -3,7 +3,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
@@ -286,7 +285,7 @@
 				<div class="col-md-3 col-sm-12">
 					<div class="form-group">
 						<label>업체명</label><b class="required"> *</b>
-						<input type="text" class="form-control" name="companyName">	<!-- member insert에 이건 필요 X -->
+						<input type="text" class="form-control" id="empComNmInsert" name="companyName" readonly>	<!-- member insert에 이건 필요 X -->
 					</div>
 				</div>
 				<div class="col-md-1 col-sm-12">
@@ -294,10 +293,10 @@
 						class="form-control btn btn-light" value="검색">
 				</div>
 				
-				<div class="col-md-4 col-sm-12">	<!-- TODO 나중에 HIdden 할것 -->
+				<div class="col-md-4 col-sm-12" hidden="hidden">
 					<div class="form-group">
-						<label>업체코드</label><b class="required"> *</b>
-						<input type="text" class="form-control" name="companyNo">
+						<label>업체코드</label>
+						<input type="text" class="form-control" id="empComNoInsert" name="companyNo">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -385,12 +384,12 @@
 			<div class="modal-footer justify-content-between">
 				<div>
 					<b>선택한 업체명:</b>
-					<input id="selectedComNo" class="form-control" > <!-- hidden 처리할것 -->
+					<input id="selectedComNo" class="form-control" hidden="hidden">
 					<input id="selectedComNm" class="form-control" readonly>
 				</div>
 				<div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-					<button type="button" class="btn btn-primary" onclick="comModalConfirm()">확인</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="comModalConfirm()">확인</button>
 				</div>
 			</div>
 		</div>
@@ -543,23 +542,25 @@
 		}
 	}
 	
+	let comNo;
+	let comNm;
+	
 	function getCompanyInfo(e) {
-		let comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
-		let comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+		comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+		comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
 		
-		document.querySelector("#selectedComNm").value = comNm
-		document.querySelector("#selectedComNo").value = comNo
+		document.querySelector("#selectedComNm").value = comNm;
+		document.querySelector("#selectedComNo").value = comNo;
 	}
 	
 	//document.querySelector("#comModalConfirm").addEventListener("click", comModalOk)
 	
 	function comModalConfirm() {
-		if(document.querySelector("#selectedComNm").value == "") {
-			alert("업체를 선택해주세요.")
-			return false;
-		}
+		document.querySelector("#empComNmInsert").value = comNm;
+		document.querySelector("#empComNoInsert").value = comNo;
 		
-		console.log("ddddd");
+		comNm = "";
+		comNo = "";	
 	}
 	
 	// 행 클릭시 input 출력 선택 끝
