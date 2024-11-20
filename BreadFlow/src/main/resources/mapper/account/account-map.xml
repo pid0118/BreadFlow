@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.account.mapper.AccountMapper">
 	<!-- 전체조회 -->
-	<select id="selectAccountList" resultType="AccountVO">
+	<select id="selectMemberList" resultType="AccountVO">
 		SELECT 	m.position
         		,m.id
 				,m.member_no
@@ -78,7 +78,7 @@
 	</insert>
 	
 	<!-- 비밀번호 초기화 -->
-	<update id="updatePwMember" parameterType="String">
+	<update id="updateMemberForPw" parameterType="String">
 		UPDATE 	member
 		SET 	password = '0000'
 		WHERE 	id = #{id}
@@ -91,7 +91,7 @@
 	</delete>
 	
 	<!-- 회사코드 기준으로 모든 사원 및 담당자 삭제 -->
-	<delete id="deleteMembersWhereCompany" parameterType="String">
+	<delete id="deleteMemberForCompany" parameterType="String">
 		DELETE FROM member
 		WHERE company_no = #{companyNo}
 	</delete>
@@ -103,7 +103,7 @@
 	</delete>
 	
 	<!-- 회원 수정 -->
-	<update id="updateEmpMember" parameterType="AccountVO">
+	<update id="updateMemberForEmp" parameterType="AccountVO">
 		UPDATE 	member
 		SET		name = #{name}
 				,tel = #{companyTel}
@@ -111,14 +111,14 @@
 		WHERE	member_no = #{companyNo}
 	</update>
 	
-	<update id="updateCompanyTel" parameterType="AccountVO">
+	<update id="UpdateCompanyForTel" parameterType="AccountVO">
 		UPDATE 	company
 		SET		company_tel = #{companyTel}
 		WHERE	company_no = #{memberNo}
 	</update>
 	
 	<!-- 아이디 체크 -->
-	<select id="checkIdPw" parameterType="AccountVO">
+	<select id="selectMemberForLogin" parameterType="AccountVO">
 		SELECT id, name, FIND_CD(position)
 		FROM member
 		WHERE id = #{id}

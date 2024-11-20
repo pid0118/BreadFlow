@@ -312,7 +312,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>계약일자</label>
-						<input class="form-control date-picker" type="text" name="contractDate" readonly>
+						<input class="form-control date-picker" id="empCntrctDtInsert" type="text" name="contractDate" readonly>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -516,10 +516,13 @@
 		document.querySelector("#updRegion").value = parentInfo.querySelector("#parentRegion").innerText;
 		document.querySelector("#updAddr").value = parentInfo.querySelector("#parentComAddr").innerText;
 		
-		//document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
+		// document.querySelector("#updContDt").value = parentInfo.querySelector("#parentContDt").innerText;		
 		
 		let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
-		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);
+		document.querySelector("#updContDt").value = formatDate(convDateBefore);
+
+		/*let convDateBefore = parentInfo.querySelector("#parentContDt").innerText;
+		document.querySelector("#updContDt").value = formatKoreanDate(convDateBefore);*/
 		
 		document.querySelector("#updOther").value = parentInfo.querySelector("#parentOther").innerText;
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
@@ -533,7 +536,6 @@
 		
 	// =======================================================
 	// [박진석|24.11.19] 모달 테이블 행 클릭 시 input출력 및 선택
-	// TODO: 하자
 	function companyListShow() {
 		let comsTblTrs = document.querySelectorAll("#companys tr");
 	
@@ -564,6 +566,27 @@
 	}
 	
 	// 행 클릭시 input 출력 선택 끝
+	// =======================================================		
+		
+
+		
+	// =======================================================
+	// [박진석|24.11.20] contractDate 날짜형식을 "2024-11-20"으로 바꾸는 코드
+	let dateForm = document.querySelector("#empCntrctDtInsert");
+	dateForm.addEventListener("focusout", function() {changeDateFormat(dateForm.value)});
+	
+	function changeDateFormat(dateString) {
+	    const date = new Date(dateString);
+
+	    const year = date.getFullYear();
+	    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+	    const day = String(date.getDate()).padStart(2, '0');
+
+	    return `${year}-${month}-${day}`;
+	}
+	
+	
+	// 
 	// =======================================================		
 		
 		
@@ -789,34 +812,33 @@
 	}
 	// 검증코드 끝
 	// =======================================================
-	
-	
+		
+		
 		
 	// =======================================================	
-	// [박진석|241115] 날짜 변환 함수 (미사용)
-	function formatKoreanDate(dateString) {
-	    // 정규표현식을 이용해 연도, 월, 일을 추출
-	    const datePattern = /([A-Za-z]{3})\s([A-Za-z]{3})\s(\d{1,2})\s\d{2}:\d{2}:\d{2}\s[A-Z]{3}\s(\d{4})/;
-	    const match = dateString.match(datePattern);
+	// [박진석|241120] 날짜 변환 함수 ( Tue Nov 12 00:00:00 KST 2024 => 12 November 2024 )
+	function formatDate(dateString) {
+		
+	    const parts = dateString.split(" ");
+	    const day = parts[2];
+	    const month = parts[1];
+	    const year = parts[5];
 	
-	    if (match) {
-	        // 월 문자열을 숫자로 변환하기 위해 월 이름 배열 선언
-	        const months = {
-	            Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
-	            Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
-	        };
+	    // 월 이름 배열
+	    const monthNames = {
+	        Jan: "January", Feb: "February", Mar: "March", Apr: "April",
+	        May: "May", Jun: "June", Jul: "July", Aug: "August",
+	        Sep: "September", Oct: "October", Nov: "November", Dec: "December"
+	    };
 	
-	        // 추출한 값 할당
-	        const month = months[match[2]];  // 두 번째 그룹이 월
-	        const day = parseInt(match[3], 10);  // 세 번째 그룹이 일
-	        const year = parseInt(match[4], 10); // 네 번째 그룹이 연도
+	    // 월 이름 변환
+	    const monthFullName = monthNames[month];
 	
-	        // 원하는 포맷으로 반환
-	        return `${year}-${month}-${day}`;
-	    } else {
-	        // 포맷이 잘못된 경우 에러 메시지 반환
-	        return "올바르지 않은 날짜 형식입니다.";
+	    if (parts[0] === "") {
+	    	return ``;
 	    }
+	    
+	    return `${day} ${monthFullName} ${year}`;
 	}
 	// 날짜 변환함수 끝
 	// =======================================================

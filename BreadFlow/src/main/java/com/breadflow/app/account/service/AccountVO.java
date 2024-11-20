@@ -25,7 +25,7 @@ public class AccountVO {
 	private String	tel;					// 연락처
 	private String	other;					// 기타사항
 	private String	position;				// 직책
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date	contractDate;			// 계약일자
 	
 
