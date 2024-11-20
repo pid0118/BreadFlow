@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.common.service.CategoryService;
 import com.breadflow.app.common.service.CategoryVO;
+import com.breadflow.app.common.service.ComCodeService;
+import com.breadflow.app.common.service.ComCodeVO;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
@@ -21,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
+	final CategoryService categoryService;
+	final ComCodeService comCodeService;
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
@@ -29,7 +34,7 @@ public class ProductController {
 		List<ProductVO> list = productService.getListAll(productVO);
 		
 		// 카테고리
-		List<CategoryVO> category = productService.getCategory();
+		List<CategoryVO> category = categoryService.getCategoriesSub("제품");
 		
 		model.addAttribute("products", list);
 		model.addAttribute("category", category);
@@ -54,10 +59,12 @@ public class ProductController {
 	public String productInsertForm(Model model) {
 		
 		String productCode = productService.getProductCode();
-		List<CategoryVO> category = productService.getCategory();
+		List<CategoryVO> category = categoryService.getCategoriesSub("제품");
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
 		
 		model.addAttribute("productCode", productCode);
 		model.addAttribute("category", category);
+		model.addAttribute("codeVal", codeVal);
 		
 		return "product/productInsert";
 	}

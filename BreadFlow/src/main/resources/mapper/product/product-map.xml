@@ -102,11 +102,5 @@
 		Where product_code = #{productCode}
 	</delete>
 	
-	<!-- 카테고리 목록 가져오기 -->
-	<select id="selectCategory" resultType="CategoryVO">
-		SELECT DISTINCT
-			major
-		FROM CATEGORY
-		WHERE major LIKE '%품'
-	</select>
+
 </mapper>
