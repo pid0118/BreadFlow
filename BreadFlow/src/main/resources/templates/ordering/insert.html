@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title>발주 신청</title>
+</head>
+<body>
+	<div class="card-box mb-30">
+		<div class="row">
+			<div class="col-md-6 col-sm-12 pd-30">
+				<h4 class="text-blue h4">발주 신청</h4>
+			</div>
+			<div class="col-md-6 col-sm-12 pd-30 text-right">
+				<button type="button" class="btn btn-primary btn-sm"
+					data-toggle="modal" data-target="#bd-example-modal-lg">품목
+					추가</button>
+				<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
+					tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog modal-lg modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-hidden="true">×</button>
+							</div>
+							<div class="modal-body">
+								<div class="row">
+									<div class="col-md-6 text-left">
+										<div class="form-group">
+											<label>품목 종류</label> <select
+												class="custom-select2 form-control first"
+												multiple="multiple" style="width: 100%;">
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6 text-left">
+										<div class="form-group">
+											<label>세부 종류</label> <select
+												class="custom-select2 form-control second"
+												multiple="multiple" style="width: 100%;">
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-9 col-sm-12">
+										<input type="text" class="form-control" placeholder="품목명">
+									</div>
+									<div class="col-md-3 col-sm-12">
+										<button type="button" class="btn btn-primary">검색</button>
+									</div>
+								</div>
+								<table class="table">
+									<thead>
+										<tr>
+											<th></th>
+											<th>품목코드</th>
+											<th>품목명</th>
+											<th>단위</th>
+											<th>규격</th>
+											<th>가격</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<div class="custom-control custom-checkbox mb-5">
+													<input type="checkbox" class="custom-control-input"
+														id="customCheck1"> <label
+														class="custom-control-label" for="customCheck1"></label>
+												</div>
+											</td>
+											<td>IX0000</td>
+											<td>강력 밀가루</td>
+											<td>1KG</td>
+											<td>EA/BOX</td>
+											<td>5000</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="custom-control custom-checkbox mb-5">
+													<input type="checkbox" class="custom-control-input"
+														id="customCheck2"> <label
+														class="custom-control-label" for="customCheck2"></label>
+												</div>
+											</td>
+											<td>IX0000</td>
+											<td>강력 밀가루</td>
+											<td>1KG</td>
+											<td>EA/BOX</td>
+											<td>5000</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal"
+									aria-hidden="true">추가</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="btn btn-primary btn-sm">발주 신청</button>
+			</div>
+		</div>
+		<div class="pb-20">
+			<table class="datatable table nowrap">
+				<thead>
+					<tr>
+						<th>품목코드</th>
+						<th>품목명</th>
+						<th>단위</th>
+						<th>규격</th>
+						<th>금액</th>
+						<th>수량</th>
+						<td>총 금액</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>IX060600</td>
+						<td>밀가루</td>
+						<td>1KG</td>
+						<td>EA/BOX</td>
+						<td>5,000</td>
+						<td>
+							<div class="col-4">
+								<input type="number" class="form-control" value="100" min="1">
+							</div>
+						</td>
+						<td>50,000</td>
+					</tr>
+					<tr>
+						<td>IX060600</td>
+						<td>밀가루</td>
+						<td>1KG</td>
+						<td>EA/BOX</td>
+						<td>5,000</td>
+						<td>
+							<div class="col-4">
+								<input type="number" class="form-control" value="200" min="1">
+							</div>
+						</td>
+						<td>50,000</td>
+					</tr>
+					<!-- <tr>
+						<td colspan="4" style="text-align: center;">합계</td>
+						<td>300</td>
+						<td>100,000</td>
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+	<!-- js -->
+	<script src="../vendors/scripts/core.js"></script>
+	<script src="../vendors/scripts/script.min.js"></script>
+	<script src="../vendors/scripts/process.js"></script>
+	<script src="../vendors/scripts/layout-settings.js"></script>
+	<script src="../plugins/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="../plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+	<script src="../plugins/datatables/js/dataTables.responsive.min.js"></script>
+	<script src="../plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+	<!-- buttons for Export datatable -->
+	<script src="../plugins/datatables/js/dataTables.buttons.min.js"></script>
+	<script src="../plugins/datatables/js/buttons.bootstrap4.min.js"></script>
+	<script src="../plugins/datatables/js/buttons.print.min.js"></script>
+	<script src="../plugins/datatables/js/buttons.html5.min.js"></script>
+	<script src="../plugins/datatables/js/buttons.flash.min.js"></script>
+	<script src="../plugins/datatables/js/pdfmake.min.js"></script>
+	<script src="../plugins/datatables/js/vfs_fonts.js"></script>
+	<!-- Datatable Setting js -->
+	<script src="../vendors/scripts/datatable-setting.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('.custom-select2').select2();
+			
+			$('.custom-select2').on('change', function() {
+				let selval = $(this).val();
+				let changeOpt = $('.custom-select2').val();
+				let changeVal = changeOpt[changeOpt.length - 1];
+			});
+		});
+		
+		fetch("../category/list")
+		.then(result => result.json())
+		.then(datas => {
+			let major = datas[0];
+			let element = '';
+			for(let data in datas){
+				if(major == datas[data].major){
+					element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+				} else {
+					element += '</optgroup>';
+					$('.custom-select2.second').append(element);
+					element = `<optgroup label="${datas[data].major}">
+						<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+					major = datas[data].major;	
+				}
+			}
+			element += '</optgroup>';
+			$('.custom-select2.second').append(element);
+			
+		})
+		.catch(err => console.log());
+		
+		
+		itemAdd.addEventListener('click', function() {
+			let checktd = document.querySelectorAll('table .custom-checkbox input');
+			checktd.forEach(td => {
+				if(td.checked == true){
+					let datas = td.closest('tr').querySelectorAll('td');
+					let element = '<tr>';
+					for(let i=1; i<datas.length; i++){
+						console.log(datas[i].innerText);
+						element += `<td>${datas[i].innerText}</td>`;
+					} 
+					element += '<td><div class="col-4"><input type="number" class="form-control" min="1"></div></td><td></td></tr>';
+					$('.datatable tbody').append(element);
+				}
+			})
+		})
+		
+	</script>
+</body>
+</html>

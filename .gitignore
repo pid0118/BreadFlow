@@ -28,7 +28,6 @@ replay_pid*
 target/
 settings/
 bin/
-test/
-.md
 .project
-.gitignore
+
+

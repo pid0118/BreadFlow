@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.ordering.mapper.OrderingMapper">
+	<select id="selectOrderingList" resultType="OrderingVO">
+		SELECT ordering_code
+		       , ordering_date
+		       , ordering_request_manager
+		       , total_price
+		       , approval_whether
+		       , ordering_approval_manager
+		FROM   ordering
+	</select>
+</mapper>
