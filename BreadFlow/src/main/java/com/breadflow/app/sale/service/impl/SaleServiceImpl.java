@@ -1,12 +1,15 @@
 package com.breadflow.app.sale.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.product.service.ProductVO;
 import com.breadflow.app.sale.mapper.SaleMapper;
+import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
 import com.breadflow.app.sale.service.SaleVO;
 
@@ -16,18 +19,22 @@ public class SaleServiceImpl implements SaleService {
 	public SaleMapper saleMapper;
 	
 	@Override
-	public List<SaleVO> toGetList() {
-		return saleMapper.selectToSale();
+	public List<PosVO> selectSaleList() {
+		return saleMapper.selectSaleList();
 	}
 
 	@Override
-	public List<ProductVO> getListAll() {
-		return saleMapper.ProductList();
+	public List<ProductVO> selectProductList(String category) {
+		return saleMapper.selectProductList(category);
+	}
+	
+	
+	@Transactional
+	@Override
+	public Map<String,Object> insertSale(List<SaleVO> sale) {
+
+		return saleMapper.insertSale(sale);
 	}
 
-	@Override
-	public List<ProductVO> getInfo(String category) {
-		return saleMapper.ProductInfo(category);
-	}
 
 }
