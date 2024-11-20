@@ -95,6 +95,7 @@
                 </tr>
             </thead>
             <tbody>
+
                 <th:block th:each="info, sts : ${products}">
                     <tr th:data-sub="${info.sub}" th:data-major="${info.major}">
                     	<td>
@@ -103,6 +104,7 @@
                                 <span class="dt-checkbox-lable"></span>
                         	</div>
                     	</td>
+
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productCode}]]</td>
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productName}]]</td>
                         <td>[[${info.expirationDeadline}]]</td>

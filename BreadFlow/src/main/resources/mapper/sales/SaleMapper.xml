@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.sale.mapper.SaleMapper">
-	<select id="selectToSale" resultType="com.breadflow.app.sale.service.SaleVO">
+	<select id="selectSaleList" resultType="com.breadflow.app.sale.service.SaleVO">
 		SELECT 
 		    co.region,
 		    sa.company_name,
@@ -22,5 +22,25 @@
 		    mem.other
 		ORDER BY total
 	</select>
-
+	
+	<select id="selectProductList" resultType="ProductVO" parameterType="String">
+		SELECT sub
+			  ,product_name
+		      ,sale_price
+		FROM product
+		<where>
+			<if test="sub != null and sub != ''">
+				sub = #{sub}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="insertSale" parameterType="saleVO">
+		INSERT INTO sale_detail_history
+		VALUES (( SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
+		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})
+		        ,#{salePrice}
+		        ,#{quantity});
+	</insert>
+	
 </mapper>

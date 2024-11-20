@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.breadflow.app.common.mapper.CategoryMapper;
 import com.breadflow.app.common.service.CategoryService;
 import com.breadflow.app.common.service.CategoryVO;
+import com.breadflow.app.common.service.SearchItemVO;
+import com.breadflow.app.common.service.SearchOptionVO;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -23,6 +25,16 @@ public class CategoryServiceImpl implements CategoryService{
 	public List<CategoryVO> selectCategorySub(String major) {
 		// TODO Auto-generated method stub
 		return categoryMapper.selectCategorySub(major);
+	}
+	
+	@Override
+	public List<SearchItemVO> getItems(SearchOptionVO option) {
+		return categoryMapper.selectItems(option);
+	}
+
+	@Override
+	public int getItemPages(SearchOptionVO option) {
+		return categoryMapper.selectItemPaging(option);
 	}
 	
 }
