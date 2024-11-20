@@ -11,8 +11,10 @@ public class OrderListVO {
 	private String orderingIngredient;
 	private String orderingProduct;
 	private Integer quantity;
-	private String standard;
-	private String unit;
+	private String prdStandard;
+	private String prdUnit;
+	private String ingStandard;
+	private String ingUnit;
 	private String orderingDetailCode;
 	private String ingredientName;
 	private String productName;
