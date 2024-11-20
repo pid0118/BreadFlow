@@ -19,13 +19,13 @@ public class ProductServiceImpl implements ProductService {
 	
 	// 제품 전체조회
 	@Override
-	public List<ProductVO> getListAll(ProductVO productVO) {
-		return productMapper.selectAllProductList(productVO);
+	public List<ProductVO> selectProductList(ProductVO productVO) {
+		return productMapper.selectProductList(productVO);
 	}
 
 	// 제품 단건조회
 	@Override
-	public ProductVO getInfo(String productCode) {
+	public ProductVO selectProduct(String productCode) {
 		return productMapper.selectProduct(productCode);
 	}
 	
@@ -37,8 +37,8 @@ public class ProductServiceImpl implements ProductService {
 	
 	// 제품 수정
 	@Override
-	public int updateProduct(ProductVO productVO) {
-		return productMapper.updateProduct(productVO);
+	public int updateProductList(ProductVO productVO) {
+		return productMapper.updateProductList(productVO);
 	}
 	
 	// 제품 삭제
@@ -47,9 +47,9 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.deleteProduct(productVO);
 	}
 
-
+	// 제품코드 가져오기
 	@Override
-	public String getProductCode() {
+	public String selectProductCode() {
 		// TODO Auto-generated method stub
 		return productMapper.selectProductCode();
 	}

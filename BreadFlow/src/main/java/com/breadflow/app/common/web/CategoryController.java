@@ -20,13 +20,13 @@ public class CategoryController {
 	@GetMapping("category/list")
 	@ResponseBody
 	public List<CategoryVO> categoryList() {
-		return categoryService.getCategories();
+		return categoryService.selectCategory();
 	}
 	
 	@GetMapping("category/subList")
 	@ResponseBody
 	public List<CategoryVO> categorySubList(@RequestParam String major) {
-		return categoryService.getCategoriesSub(major);
+		return categoryService.selectCategorySub(major);
 	}
 	
 }

@@ -29,12 +29,12 @@ public class ProductController {
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
-	public String productListAll(ProductVO productVO, Model model) {
+	public String selectProductList(ProductVO productVO, Model model) {
 		// 제품 리스트
-		List<ProductVO> list = productService.getListAll(productVO);
+		List<ProductVO> list = productService.selectProductList(productVO);
 		
 		// 카테고리
-		List<CategoryVO> category = categoryService.getCategoriesSub("제품");
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
 		
 		model.addAttribute("products", list);
 		model.addAttribute("category", category);
@@ -47,9 +47,9 @@ public class ProductController {
 	// 단건조회
 	@ResponseBody
 	@GetMapping("productListAll/{productCode}")
-	public ProductVO productInfo(@PathVariable String productCode, Model model) {
+	public ProductVO selectProduct(@PathVariable String productCode, Model model) {
 		
-		ProductVO productVO = productService.getInfo(productCode);
+		ProductVO productVO = productService.selectProduct(productCode);
 		
 		return productVO;
 	}
@@ -58,8 +58,8 @@ public class ProductController {
 	@GetMapping("product/Insert")
 	public String productInsertForm(Model model) {
 		
-		String productCode = productService.getProductCode();
-		List<CategoryVO> category = categoryService.getCategoriesSub("제품");
+		String productCode = productService.selectProductCode();
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
 		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
 		
 		model.addAttribute("productCode", productCode);

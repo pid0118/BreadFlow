@@ -15,14 +15,14 @@ public class CategoryServiceImpl implements CategoryService{
 	public CategoryMapper categoryMapper;
 	
 	@Override
-	public List<CategoryVO> getCategories() {
-		return categoryMapper.selectCategories();
+	public List<CategoryVO> selectCategory() {
+		return categoryMapper.selectCategory();
 	}
 
 	@Override
-	public List<CategoryVO> getCategoriesSub(String major) {
+	public List<CategoryVO> selectCategorySub(String major) {
 		// TODO Auto-generated method stub
-		return categoryMapper.selectCategoriesSub(major);
+		return categoryMapper.selectCategorySub(major);
 	}
 	
 }

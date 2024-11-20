@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.product.mapper.ProductMapper">
 	<!-- 제품 전체조회 -->
-	<select id="selectAllProductList" resultType="ProductVO">
+	<select id="selectProductList" resultType="ProductVO">
 		SELECT product_code,
 			   product_name,
 			   expiration_deadline,
@@ -36,7 +36,8 @@
 			   major,
 			   sub,
 			   unit,
-			   standard
+			   standard,
+			   amount
 		FROM  product
 		WHERE product_code = #{productCode}
 	</select>
@@ -61,7 +62,8 @@
 			major,
 			sub,
 			unit,
-			standard
+			standard,
+			amount
 		) VALUES (
 		      #{productCode}
 		    , #{productName}
@@ -75,11 +77,12 @@
 		    , #{sub}
 		    , #{unit}
 		    , #{standard}
+		    , #{amount}
 		)
 	</insert>
 <!-- 22 -->
 	<!-- 제품정보 수정 -->
-	<update id="updateProduct" parameterType="ProductVO">
+	<update id="updateProductList" parameterType="ProductVO">
 		UPDATE product
 		SET	   <if test="productName != null!">product_name = #{productName}</if>
 			   <if test="expriationDeadline != null!">expiration_deadline = #{expriationDeadline}</if>
