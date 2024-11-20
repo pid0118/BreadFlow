@@ -84,22 +84,6 @@
             // 기본 내역 출력 (입고)
             loadInstoreList();
             
-            //initDataTable();
-            
-            /*function initDataTable() {
-    			if ($.fn.dataTable.isDataTable('#compTble')) {
-    	            $('#compTble').DataTable().destroy();
-    	        }
-    			
-    			$('#compTble').DataTable({
-    				paging: true,
-    		    	searching: true,
-    		    	ordering: true,
-    		    	info: true,
-    		    	select: true
-    		    });
-    		}*/
-
             // 입고 내역 버튼 클릭
             $("#instoreBtn").click(function() {
                 loadInstoreList();
@@ -176,7 +160,6 @@
                 method : 'GET',
                 success : function(data) {
                     updateTable(data, 'instore');
-                    //initDataTable();
                 },
                 error : function() {
                     alert("입고 내역을 불러오는 데 실패했습니다.");
@@ -191,7 +174,6 @@
                 method : 'GET',
                 success : function(data) {
                     updateTable(data, 'outstore');
-                    //initDataTable();
                 },
                 error : function() {
                     alert("출고 내역을 불러오는 데 실패했습니다.");
@@ -213,18 +195,26 @@
 	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
 	                }
                     row += "<td>" + item.instoreQuantity + "</td>";
-                    row += "<td>" + item.standard + "/" + item.unit + "</td>";
+                    if (item.orderingProduct != null) {
+	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
+	                } else {
+	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
+	                }
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                 } else if (type === 'outstore') {
                     row += "<td class='table-plus'>" + item.outstoreDate + "</td>";
-                    if (item.orderingProduct != null) {
+                    if (item.prdStandard != null) {
 	                	row += "<td class='prd'>" + item.productName + "</td>";
 	                } else {
 	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
 	                }
                     row += "<td>" + item.outstoreQuantity + "</td>";
-                    row += "<td>" + item.standard + "/" + item.unit + "</td>";
+                    if (item.prdStandard != null) {
+	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
+	                } else {
+	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
+	                }
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                 }
@@ -237,7 +227,7 @@
         function loadRawmatList() {
             $("#inOutTable tr").each(function() {
                 var rowText = $(this).text().toLowerCase();
-                if (rowText.includes("ix")) {
+                if (rowText.includes("g2")) {
                     $(this).show();
                 } else {
                     $(this).hide();
@@ -249,7 +239,7 @@
         function loadFinprdList() {
             $("#inOutTable tr").each(function() {
                 var rowText = $(this).text().toLowerCase();
-                if (rowText.includes("ib")) {
+                if (rowText.includes("g1")) {
                     $(this).show();
                 } else {
                     $(this).hide();
