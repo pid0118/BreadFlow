@@ -6,8 +6,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.common.service.CategoryService;
+import com.breadflow.app.common.service.CategoryVO;
+import com.breadflow.app.common.service.ComCodeService;
+import com.breadflow.app.common.service.ComCodeVO;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
@@ -17,36 +24,59 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService productService;
+	final CategoryService categoryService;
+	final ComCodeService comCodeService;
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
-	public String productListAll(Model model) {
-		List<ProductVO> list = productService.getListAll();
+	public String selectProductList(ProductVO productVO, Model model) {
+		// 제품 리스트
+		List<ProductVO> list = productService.selectProductList(productVO);
+		
+		// 카테고리
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
 		
 		model.addAttribute("products", list);
+		model.addAttribute("category", category);
+		
 		return "product/prodctListAll";
 	}
 	
+	
+	
 	// 단건조회
-	@GetMapping("productInfo")
-	public String productInfo(ProductVO prductVO, Model model) {
+	@ResponseBody
+	@GetMapping("productListAll/{productCode}")
+	public ProductVO selectProduct(@PathVariable String productCode, Model model) {
 		
-		ProductVO findVO = productService.getInfo(prductVO);
+		ProductVO productVO = productService.selectProduct(productCode);
 		
-		model.addAttribute("product", findVO);
-		return "product/productInfo";
+		return productVO;
 	}
 	
 	// 제품등록 - 페이지
 	@GetMapping("product/Insert")
-	public String productInsertForm() {
+	public String productInsertForm(Model model) {
+		
+		String productCode = productService.selectProductCode();
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		
+		model.addAttribute("productCode", productCode);
+		model.addAttribute("category", category);
+		model.addAttribute("codeVal", codeVal);
+		
 		return "product/productInsert";
 	}
 	
 	// 제품등록 - 처리
+	@ResponseBody
 	@PostMapping("product/Insert")
-	public String productInsertProcess(ProductVO productVO) {
-		return "redirect:/productListAll";
+	public int productInsertProcess(@RequestBody ProductVO productVO) {
+		
+		int result = productService.insertProduct(productVO);
+			
+		return result;
 	}
 	
 	//수정 페이지
@@ -66,6 +96,8 @@ public class ProductController {
 	// 삭제처리
 	@DeleteMapping("product/Delete")
 	public String productDelete(ProductVO productVO) {
+		
+		
 		return "redirect:/productListAll";
 	}
 	

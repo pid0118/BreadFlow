@@ -2,12 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.common.mapper.CategoryMapper">
 
-	<select id="selectCategories" resultType="CategoryVO">
+	<select id="selectCategory" resultType="CategoryVO">
 		SELECT major
 			   , sub
 		FROM   category	
 	</select>
+
+	<select id="selectCategorySub" resultType="CategoryVO">
+		SELECT major
+			   , sub
+		FROM   category	
+		WHERE major = #{major}
+	</select>
 	
+
+
 	<select id="selectItems" resultType="SearchItemVO" parameterType="SearchOptionVO">
 		SELECT b.item_code, b.item_name, b.unit, b.standard, b.purchase_price
 		FROM(SELECT rownum rnum, a.*
@@ -76,5 +85,6 @@
 		</if>
 		)
 	</select>
+
 	
 </mapper>

@@ -5,8 +5,12 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.common.service.CategoryService;
@@ -24,7 +28,13 @@ public class CategoryController {
 	@GetMapping("category/list")
 	@ResponseBody
 	public List<CategoryVO> categoryList() {
-		return categoryService.getCategories();
+		return categoryService.selectCategory();
+	}
+	
+	@GetMapping("category/subList")
+	@ResponseBody
+	public List<CategoryVO> categorySubList(@RequestParam String major) {
+		return categoryService.selectCategorySub(major);
 	}
 	
 	@PostMapping("search/item")
