@@ -18,6 +18,6 @@ public interface SaleMapper {
 	public List<ProductVO> selectProductList(String category);
 	
 	// 주문 버튼 눌렀을시 insert
-	public Map<String,Object> insertSale(List<SaleVO> saleVO);
+	public int insertSale(List<SaleVO> saleVO);
 	
 }

@@ -262,7 +262,7 @@ footer {
 				</div>
 			</footer>
 		</div>
-		<form th:action="insertSale" method="post">
+		<form th:action="@{/insertSale}" method="post">
 			<div class="right-panel">
 				<h3>선택된 메뉴</h3>
 				<ul id="selected-items" class="list-group mb-3">
@@ -272,7 +272,7 @@ footer {
 					총 금액: <span id="total-price">0</span>원
 				</div>
 				<div class="button-container">
-					<button class="submit-button">주문</button>
+					<button type="submit" class="submit-button">주문</button>
 					<button class="details-button">상세내역</button>
 				</div>
 			</div>
@@ -368,7 +368,7 @@ footer {
 		                    <button class="btn amount" value="plus">+</button>
 		                    <button class="btn amount" value="minus">-</button>
 		                </div>
-		                <span class="text-body-secondary">${priceCom}</span>              
+		                <span class="text-body-secondary pri">${priceCom}</span>              
 		                <button class="btn btn-danger delete-button" data-idx="${idx}" style="height:50px">삭제</button>
 		            </li>`;
 		        
@@ -526,6 +526,36 @@ footer {
 			renderMenu();
 		}
 
+		// 주문 등록 함수
+		document.querySelector(".submit-button").addEventListener('click', function(){
+			let item = document.querySelectorAll(".select-item-list");
+			let aryMenu = [];
+			item.querySelectorAll(".list-group-item").forEach(function(){
+				let data = {
+					productCode: document.querySelector(".my-0").innerText,
+					salePrice: document.querySelector(".pri").innerText.replace(',',''),
+					quantity: document.querySelector(".su").innerText.split(" ")[1]
+				}
+				aryMenu.push(data);
+			});
+			
+			//AJAX			
+			fetch("/insertSale", {
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+			})
+			.then(response => response.json())
+			.then(data => {
+				alert("등록되었습니다!!");
+			})
+			.catch(error => {
+				console.error(error);
+				alert("등록에 실패했습니다 ㅜㅜ..");
+			})
+			
+		});
 		
 		
 		

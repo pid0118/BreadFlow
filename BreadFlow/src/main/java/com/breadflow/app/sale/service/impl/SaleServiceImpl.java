@@ -1,7 +1,6 @@
 package com.breadflow.app.sale.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +14,10 @@ import com.breadflow.app.sale.service.SaleVO;
 
 @Service
 public class SaleServiceImpl implements SaleService {
+	
 	@Autowired
 	public SaleMapper saleMapper;
+	
 	
 	@Override
 	public List<PosVO> selectSaleList() {
@@ -31,9 +32,12 @@ public class SaleServiceImpl implements SaleService {
 	
 	@Transactional
 	@Override
-	public Map<String,Object> insertSale(List<SaleVO> sale) {
-
-		return saleMapper.insertSale(sale);
+	public int insertSale(List<SaleVO> list) {
+		int result = 0;
+		for(SaleVO i : list) {
+			result = saleMapper.insertSale(list);
+		}
+		return result;
 	}
 
 

@@ -35,7 +35,7 @@
 		</where>
 	</select>
 	
-	<insert id="insertSale" parameterType="saleVO">
+	<insert id="insertSale" parameterType="SaleVO">
 		INSERT INTO sale_detail_history
 		VALUES (( SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
 		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})

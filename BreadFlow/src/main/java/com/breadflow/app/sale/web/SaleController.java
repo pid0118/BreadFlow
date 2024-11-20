@@ -1,7 +1,6 @@
 package com.breadflow.app.sale.web;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +32,6 @@ public class SaleController {
     // POS 메인화면
     @GetMapping("/pos")
     public String posPage() {
-        // '전체' 메뉴를 조회하여 첫 화면에 렌더링
-		
-		
         return "sale/pos"; // pos.html을 반환
     }
 
@@ -49,14 +45,12 @@ public class SaleController {
         return ResponseEntity.ok(products);  // 정상적으로 JSON 응답 반환
     }
 
-    
-    
     // 주문 버튼 눌렀을시 insert
-    @PostMapping("/insert")
+    @PostMapping("/insertSale")
     @ResponseBody
-    public Map<String,Object> insertSale(@RequestBody List<SaleVO> saleVO) {
-    	
-    	return saleService.insertSale(saleVO);
+    public String insertSale(@RequestParam List<SaleVO> saleVO) {
+    		saleService.insertSale(saleVO);
+    	return "sale/pos";
     }
 
     

@@ -13,6 +13,7 @@ public interface SaleService {
 	public List<ProductVO> selectProductList(String category);
 	
 	// POS 주문 버튼 클릭시 제품 상세 등록
-	public Map<String,Object> insertSale(List<SaleVO> sale);
+	public int insertSale(List<SaleVO> saleVO);
+
 	
 }
