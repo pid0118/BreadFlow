@@ -54,5 +54,10 @@ public class ProductServiceImpl implements ProductService {
 		return productMapper.selectProductCode();
 	}
 
+	@Override
+	public String selectProductName(String productName) {
+		return productMapper.selectProductName(productName);
+	}
+
 	
 }

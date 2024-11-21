@@ -2,6 +2,8 @@ package com.breadflow.app.product.web;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +52,9 @@ public class ProductController {
 	public ProductVO selectProduct(@PathVariable String productCode, Model model) {
 		
 		ProductVO productVO = productService.selectProduct(productCode);
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		
+		model.addAttribute("codeVal", codeVal);
 		
 		return productVO;
 	}
@@ -59,10 +64,12 @@ public class ProductController {
 	public String productInsertForm(Model model) {
 		
 		String productCode = productService.selectProductCode();
+		
 		List<CategoryVO> category = categoryService.selectCategorySub("제품");
 		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
 		
 		model.addAttribute("productCode", productCode);
+		
 		model.addAttribute("category", category);
 		model.addAttribute("codeVal", codeVal);
 		
@@ -78,6 +85,19 @@ public class ProductController {
 			
 		return result;
 	}
+	// 상품명 중복체크
+	@PostMapping("productNameCheck")
+	@ResponseBody
+	public ResponseEntity<Boolean> productNameCheck(String productName) {
+		 
+		String productreuslt = productService.selectProductName(productName);
+		
+		if (productreuslt != null) {
+			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+	    }
+	    return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
 	
 	//수정 페이지
 	@GetMapping("product/update")
