@@ -33,7 +33,7 @@
 
 </style>
 
-<!-- TODO: 회원정보 조회 가능토록 폼에 값 넣기(컨트롤러의 accountinfo 참고) -->
+<!-- TODO: 회원정보 수정 기능 넣기 -->
 <div class="container">
 	<h2>회원정보 수정</h2>
 	<div class="childArea">
@@ -44,62 +44,62 @@
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>고유번호</label> <input type="text" class="form-control"
-								id="updMemNo" name="companyNo" readonly>
+								id="updMemNo" name="companyNo" th:value="${account.companyNo}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>사업자등록번호</label> <input type="text" class="form-control"
-								id="updBrn" name="brn" readonly>
+								id="updBrn" name="brn" th:value="${account.brn}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>계약일자</label>
 							<input class="form-control" type="text"
-								id="updContDt" name="contractDate" readonly>
+								id="updContDt" name="contractDate" th:value="${account.contractDate}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>업체명</label> <input type="text" class="form-control"
-								id="updComName" name="companyName"  readonly>
+								id="updComName" name="companyName" th:value="${account.companyName}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>지역</label>
-							<input type="text" class="form-control" id="updRegion" name="region" readonly>
+							<input type="text" class="form-control" id="updRegion" name="region" th:value="${account.region}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>주소</label> <input type="text" class="form-control"
-								id="updAddr" name="companyAddress" readonly>
+								id="updAddr" name="companyAddress" th:value="${account.companyAddress}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>이름</label> <input type="text" class="form-control"
-								id="updName" name="name" >
+								id="updName" name="name" th:value="${account.name}" >
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>연락처</label> <input type="text" class="form-control"
-								id="updTel" name="companyTel" >
+								id="updTel" name="companyTel" th:value="${account.companyTel}" >
 						</div>
 					</div>					
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>기타사항</label> <input type="text" class="form-control"
-								id="updOther" name="other" >
+								id="updOther" name="other" th:value="${account.other}" >
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>아이디</label> <input type="text" class="form-control"
-								id="updId" name="id">
+								id="updId" name="id" th:value="${account.id}" >
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
