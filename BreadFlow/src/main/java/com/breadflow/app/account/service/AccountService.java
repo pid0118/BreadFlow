@@ -28,6 +28,6 @@ public interface AccountService {
 	public List<AccountVO> selectCompanyList();
 
 	public AccountVO selectMember(AccountVO accountVO);
-}
 
-//selectMemberForLogin
+	public int UpdateMember(AccountVO accountVO);
+}

@@ -57,7 +57,7 @@
 						<div class="form-group">
 							<label>계약일자</label>
 							<input class="form-control" type="text"
-								id="updContDt" name="contractDate" th:value="${account.contractDate}" readonly>
+								id="updContDt" name="contractDate" th:value="${#dates.format(account.contractDate, 'yyyy/MM/dd')}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
@@ -87,7 +87,7 @@
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>연락처</label> <input type="text" class="form-control"
-								id="updTel" name="companyTel" th:value="${account.companyTel}" >
+								id="updTel" name="tel" th:value="${account.tel}" >
 						</div>
 					</div>					
 					<div class="col-md-4 col-sm-12">
@@ -116,20 +116,13 @@
 					</div>
 					<div class="col-md-4 col-sm-12" hidden="hidden">
 						<div class="form-group">
-							<label>직책</label> <input type="text" class="form-control"
-								id="updPosition" name="position">
-						</div>
-					</div>
-					<div class="col-md-4 col-sm-12" hidden="hidden">
-						<div class="form-group">
 							<label>회사코드</label> <input type="text" class="form-control"
-								id="updCompanyNo" name="memberNo">
+								id="updCompanyNo" th:value="${account.memberNo}" name="memberNo">
 						</div>
 					</div>
 					<div class="updateButtons">
 						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">취소</button>
-						<button type="button" class="btn btn-primary btn-lg"
-							id="udtAccBtn">확인</button>
+						<button type="button" class="btn btn-primary btn-lg" id="udtAccBtn">확인</button>
 					</div>
 				</div>
 			</form>
@@ -139,6 +132,32 @@
 </div>
 
 <script>
+	// =================================================================
+	// [박진석|24.11.21] 수정 AJAX 이벤트 걸기
+	document.querySelector("#udtAccBtn").addEventListener('click', updateMember);
+	
+	function updateMember() {
+		if(confirm("정말 정보를 수정하시겠습니까?")) {
+			console.log("aaaaa");
+			$.ajax({
+				url: "updateAccountInfo.do",
+				type: "POST",
+				data: $("#updateAccountFrm").serialize(),
+				success: function(data) {
+					alert("수정이 완료되었습니다.");
+					location.reload(true);
+				},
+				error: function(data) {
+					alert("오류가 발생하였습니다. 관리자에게 문의하세요.");
+					console.log(data);
+				},
+			});
+		} else {
+			alert("취소하였습니다.");
+		}
+	}
+	// 이벤트 걸기 끝
+	// =================================================================
 
 </script>
 
