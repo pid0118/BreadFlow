@@ -24,7 +24,7 @@ public class SaleController {
 	// 본사 가맹점 정보 / 매출 조회
     @GetMapping("/toSalList")
     public String totalSale(Model model) {
-		List<PosVO> list = saleService.selectSaleList();
+		List<SaleVO> list = saleService.selectSaleList();
 		model.addAttribute("SList", list);
 		return "sale/toSalList";
     }
@@ -36,23 +36,28 @@ public class SaleController {
     }
 
 	// POS 카테고리 검색(AJAX) - 다른 URL 사용
-    
     @ResponseBody
-    @GetMapping("/pos/menu")
+    @GetMapping("/pos/menu")					  // 파라미터를 매개변수로 받음(category 매개변수를 선택안해도 응답함)
     public ResponseEntity<List<ProductVO>> getMenu(@RequestParam(required = false) String category) {
         List<ProductVO> products = saleService.selectProductList(category);
         
-        return ResponseEntity.ok(products);  // 정상적으로 JSON 응답 반환
+        return ResponseEntity.ok(products);  // 정상적으로 JSON 응답 반환 (요청에 성공적으로 응답)
     }
 
     // 주문 버튼 눌렀을시 insert
-    @PostMapping("/insertSale")
+    @PostMapping("/pos")
     @ResponseBody
-    public String insertSale(@RequestParam List<SaleVO> saleVO) {
+    public String insertSale(@RequestBody List<PosVO> saleVO) {
     		saleService.insertSale(saleVO);
-    	return "sale/pos";
+    	return "true";
     }
-
     
+    // 가맹점 매출 조회
+    @GetMapping("/daySale")
+    @ResponseBody
+    public List<SaleVO> daySale() {
+		List<SaleVO> list = saleService.selectSales();
+    	return list;
+    }
     
 }

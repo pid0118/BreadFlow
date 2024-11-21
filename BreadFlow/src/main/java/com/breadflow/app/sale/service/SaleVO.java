@@ -11,7 +11,7 @@ public class SaleVO {
 	private String brn;
 	private String name;
 	private Date contractDate;
-	private Integer totalSales;
+	private int daySales;
 	private String other;
 
 }

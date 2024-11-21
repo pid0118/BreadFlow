@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title></title>
+    <style>
+		body {
+		    font-family: Arial, sans-serif;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    height: 100vh;
+		    margin: 0;
+		    background-color: #f0f0f0;
+		}
+		
+		.calendar {
+		    background-color: white;
+		    border-radius: 10px;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		    padding: 20px;
+		    width: 100%;
+		    height: 800px;
+		    display: flex;
+		    flex-direction: column;
+		}
+		
+		.calendar-header {
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		    margin-bottom: 20px;
+		}
+		
+		button {
+		    background-color: #f0f0f0;
+		    border: none;
+		    color: black;
+		    padding: 10px 15px;
+		    text-align: center;
+		    text-decoration: none;
+		    display: inline-block;
+		    font-size: 16px;
+		    margin: 4px 2px;
+		    cursor: pointer;
+		    border-radius: 5px;
+		}
+		
+		table {
+		    border-collapse: collapse;
+		    width: 100%;
+		    height: calc(100% - 60px);
+		}
+		
+		th, td {
+		    border: 1px solid #ddd;
+		    padding: 8px;
+		    text-align: right;
+		    vertical-align: top;
+		}
+		
+		th {
+		    background-color: #f2f2f2;
+		    text-align: center;
+		}
+		
+		td {
+		    height: 15%;
+		}
+		
+		.date {
+		    font-weight: bold;
+		    margin-bottom: 5px;
+		}
+		
+		.sunday {
+		    color: red;
+		}
+		
+		.saturday {
+		    color: blue;
+		}
+		
+		#totalRow td {
+		    text-align: center;
+		    font-weight: bold;
+		}
+    </style>
+</head>
+<body>
+    <div class="calendar">
+        <div class="calendar-header">
+            <button id="prevMonth">&lt;</button>
+            <h2 id="currentMonth"></h2>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <table id="calendarTable">
+            <thead>
+                <tr>
+                    <th>일</th>
+                    <th>월</th>
+                    <th>화</th>
+                    <th>수</th>
+                    <th>목</th>
+                    <th>금</th>
+                    <th>토</th>
+                    <th>계</th>
+                </tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+            <tfoot>
+                <tr id="totalRow"></tr>
+            </tfoot>
+        </table>
+    </div>
+    <script>
+	    let currentDate = new Date();
+	
+	    function updateCalendar() {
+	        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
+	            "7월", "8월", "9월", "10월", "11월", "12월"];
+	        
+	        document.getElementById('currentMonth').textContent = `${currentDate.getFullYear()}-${monthNames[currentDate.getMonth()]}`;
+	
+	        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+	
+	        const calendarBody = document.getElementById('calendarBody');
+	        calendarBody.innerHTML = '';
+	
+	        let date = 1;
+	        let weekTotal = 0;
+	        let monthTotal = 0;
+	        let dayTotals = [0, 0, 0, 0, 0, 0, 0];
+	        for (let i = 0; i < 6; i++) {
+	            const row = document.createElement('tr');
+	            weekTotal = 0;
+	            for (let j = 0; j < 8; j++) {
+	                const cell = document.createElement('td');
+	                if (j === 7) {
+	                    cell.textContent = weekTotal.toLocaleString() + "원";
+	                    cell.style.color = "green";
+	                    cell.style.textAlign = "center";
+	                    cell.style.verticalAlign = "middle";
+	                } else if (i === 0 && j < firstDay.getDay()) {
+	                    // Empty cell
+	                } else if (date > lastDay.getDate()) {
+	                    // Empty cell
+	                } else {
+	                    const dateDiv = document.createElement('div');
+	                    dateDiv.textContent = date;
+	                    dateDiv.className = 'date';
+	                    if (j === 0) dateDiv.classList.add('sunday');
+	                    if (j === 6) dateDiv.classList.add('saturday');
+	                    cell.appendChild(dateDiv);
+	
+	                    const salesDiv = document.createElement('div');
+	                    const sales = Math.floor(Math.random() * 100000);
+	                    salesDiv.textContent = sales.toLocaleString() + '원'; // Update 1
+	                    cell.appendChild(salesDiv);
+	
+	                    weekTotal += sales;
+	                    monthTotal += sales;
+	                    dayTotals[j] += sales;
+	                    date++;
+	                }
+	                row.appendChild(cell);
+	            }
+	            calendarBody.appendChild(row);
+	            if (date > lastDay.getDate()) {
+	                break;
+	            }
+	        }
+	
+	        const totalRow = document.getElementById('totalRow');
+	        totalRow.innerHTML = '';
+	        const days = ['일요일(합)', '월요일(합)', '화요일(합)', '수요일(합)', '목요일(합)', '금요일(합)', '토요일(합)', '총계']; // Update 2
+	        for (let i = 0; i < 8; i++) {
+	            const cell = document.createElement('td');
+	            cell.textContent = `${days[i]}\n${(i < 7 ? dayTotals[i] : monthTotal).toLocaleString()}원`; // Update 3
+	            totalRow.appendChild(cell);
+	        }
+	
+	
+	        const dayTotalRow = document.getElementById('dayTotalRow');
+	        dayTotalRow.innerHTML = '';
+	        const daysOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+	        const totalCell2 = document.createElement('td');
+	        totalCell2.textContent = `총계\n${monthTotal.toLocaleString()}`;
+	        dayTotalRow.appendChild(totalCell2);
+	    }
+	
+	    document.getElementById('prevMonth').addEventListener('click', () => {
+	        currentDate.setMonth(currentDate.getMonth() - 1);
+	        updateCalendar();
+	    });
+	
+	    document.getElementById('nextMonth').addEventListener('click', () => {
+	        currentDate.setMonth(currentDate.getMonth() + 1);
+	        updateCalendar();
+	    });
+	
+	    updateCalendar();
+		
+	    function saleData(){
+	    	fetch()
+	    	.then
+	    	.then
+	    	.catch()
+	    }
+
+    </script>
+</body>
+</html>
+

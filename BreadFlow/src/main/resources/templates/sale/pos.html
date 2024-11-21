@@ -258,25 +258,23 @@ footer {
 				<div class="footer-actions">
 					<div class="pagination"></div>
 					<div class="total"></div>
-					<button class="submit-button">마감 정산</button>
+					<button id="salesSub" class="submit-button">마감 정산</button>
 				</div>
 			</footer>
 		</div>
-		<form th:action="@{/insertSale}" method="post">
-			<div class="right-panel">
-				<h3>선택된 메뉴</h3>
-				<ul id="selected-items" class="list-group mb-3">
-				</ul>
+		<div class="right-panel">
+			<h3>선택된 메뉴</h3>
+			<ul id="selected-items" class="list-group mb-3">
+			</ul>
 	
-				<div class="total-price">
-					총 금액: <span id="total-price">0</span>원
-				</div>
-				<div class="button-container">
-					<button type="submit" class="submit-button">주문</button>
-					<button class="details-button">상세내역</button>
-				</div>
+			<div class="total-price">
+				총 금액: <span id="total-price">0</span>원
 			</div>
-		</form>
+			<div class="button-container">
+				<button type="submit" id="menuSub" class="submit-button">주문</button>
+				<button class="details-button">상세내역</button>
+			</div>
+		</div>
 	</div>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
@@ -345,7 +343,47 @@ footer {
 		            arrayPrint();
 				}
 			});
+			
+			// 주문 등록 ( 매출 상세 저장 )
+			document.querySelector("#menuSub").addEventListener('click', function(){
+				
+				let items = document.querySelectorAll("#selected-items .list-group-item");
+				let aryMenu = [];
+				items.forEach(item => {
+						let data = {
+							productCode: document.querySelector(".my-0").innerText,
+							salePrice: document.querySelector(".pri").innerText.replace(',',''),
+							quantity: document.querySelector(".su").innerText.split(" ")[1]
+						}
+						aryMenu.push(data);
+				});
+				
+				//AJAX			
+				fetch("/pos", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(aryMenu)
+				})
+				.then(response => response.text())
+				.then(data => {
+					alert("주문완료!");
+					selectItemList.innerHTML = '';
+				})
+				.catch(error => {
+					console.error(error);
+					alert("주문실패 ㅜㅜ..");
+				})
+				
+			});
+			
+			document.querySelector("#salesSub").addEventLisener('click', function(){
+				
+			});
 		});
+		
+
 		
 		
 		function arrayPrint() {
@@ -526,36 +564,7 @@ footer {
 			renderMenu();
 		}
 
-		// 주문 등록 함수
-		document.querySelector(".submit-button").addEventListener('click', function(){
-			let item = document.querySelectorAll(".select-item-list");
-			let aryMenu = [];
-			item.querySelectorAll(".list-group-item").forEach(function(){
-				let data = {
-					productCode: document.querySelector(".my-0").innerText,
-					salePrice: document.querySelector(".pri").innerText.replace(',',''),
-					quantity: document.querySelector(".su").innerText.split(" ")[1]
-				}
-				aryMenu.push(data);
-			});
-			
-			//AJAX			
-			fetch("/insertSale", {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-			})
-			.then(response => response.json())
-			.then(data => {
-				alert("등록되었습니다!!");
-			})
-			.catch(error => {
-				console.error(error);
-				alert("등록에 실패했습니다 ㅜㅜ..");
-			})
-			
-		});
+		
 		
 		
 		

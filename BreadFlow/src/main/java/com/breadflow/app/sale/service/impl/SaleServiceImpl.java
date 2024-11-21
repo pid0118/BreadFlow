@@ -20,7 +20,7 @@ public class SaleServiceImpl implements SaleService {
 	
 	
 	@Override
-	public List<PosVO> selectSaleList() {
+	public List<SaleVO> selectSaleList() {
 		return saleMapper.selectSaleList();
 	}
 
@@ -29,15 +29,24 @@ public class SaleServiceImpl implements SaleService {
 		return saleMapper.selectProductList(category);
 	}
 	
-	
 	@Transactional
 	@Override
-	public int insertSale(List<SaleVO> list) {
+	public int insertSale(List<PosVO> list) {
 		int result = 0;
-		for(SaleVO i : list) {
-			result = saleMapper.insertSale(list);
+		for(PosVO i : list) {
+			result = saleMapper.insertSale(i);
 		}
 		return result;
+	}
+
+	@Override
+	public int insertSales() {
+		return saleMapper.insertSales();
+	}
+
+	@Override
+	public List<SaleVO> selectSales() {
+		return saleMapper.selectSales();
 	}
 
 
