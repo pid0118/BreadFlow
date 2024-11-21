@@ -2,103 +2,181 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.inout.mapper.InOutMapper">
 	<select id="selectInstoreList" resultType="InstoreVO">
-		SELECT		i.instore_date
-		            , i.instore_quantity
-		            , i.expiration_deadline
-		            , prd.standard AS prdStandard
-		            , prd.unit AS prdUnit
-		            , ing.standard AS ingStandard
-		            , ing.unit AS ingUnit
-		            , od.ordering_ingredient
-		            , od.ordering_product
-		            , ods.outstore_company
-		            , ods.instore_company
-		            , ing.ingredient_name
-		            , prd.product_name
-		FROM		instore i LEFT JOIN ordering_detail od
-					ON i.ordering_detail_code = od.ordering_detail_code
-					LEFT JOIN orders_detail ods
-					ON od.ordering_detail_code = ods.ordering_detail_code		
-					LEFT JOIN ingredient ing
-					ON od.ordering_ingredient = ing.ingredient_code
-					LEFT JOIN product prd
-					ON od.ordering_product = prd.product_code
-		ORDER BY	i.instore_no DESC
+		SELECT
+		    I.INSTORE_DATE,
+		    I.INSTORE_QUANTITY,
+		    I.EXPIRATION_DEADLINE,
+		    PRD.STANDARD AS PRDSTANDARD,
+		    PRD.UNIT     AS PRDUNIT,
+		    ING.STANDARD AS INGSTANDARD,
+		    ING.UNIT     AS INGUNIT,
+		    OD.ORDERING_INGREDIENT,
+		    OD.ORDERING_PRODUCT,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
+		    ING.INGREDIENT_NAME,
+		    PRD.PRODUCT_NAME
+		FROM
+		              INSTORE I
+		    LEFT JOIN ORDERING_DETAIL OD  ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN ORDERS_DETAIL   ODS ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+			ODS.INSTORE_COMPANY = #{companyInput}
+			<if test="comp != null and comp != ''">
+			AND ODS.OUTSTORE_COMPANY = #{comp}
+			</if>
+			<if test="item != null and item != ''">
+		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+			</if>
+			<if test="year != null and year != ''">
+			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+			</if>
+			<if test="month != null and month != ''">
+			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+			</if>
+			<if test="prd != null and prd != ''">
+			AND OD.ORDERING_PRODUCT IS NOT NULL
+			</if>
+			<if test="ing != null and ing != ''">
+			AND OD.ORDERING_INGREDIENT IS NOT NULL
+			</if>
+		ORDER BY
+		    I.INSTORE_NO DESC
 	</select>
 	<select id="selectOutstoreList" resultType="OutstoreVO">
-		SELECT		o.outstore_date
-		            , o.outstore_quantity
-		            , prd.standard AS prdStandard
-		            , prd.unit AS prdUnit
-		            , ing.standard AS ingStandard
-		            , ing.unit AS ingUnit
-		            , ods.outstore_company
-		            , ods.instore_company
-		            , ods.orders_item
-		            , ing.ingredient_name
-		            , prd.product_name
-		FROM		outstore o JOIN orders_detail ods
-					ON o.orders_detail_no = ods.orders_detail_no
-					LEFT JOIN ordering_detail od
-					ON od.ordering_detail_code = ods.ordering_detail_code
-					LEFT JOIN ingredient ing
-					ON od.ordering_ingredient = ing.ingredient_code
-					LEFT JOIN product prd
-					ON od.ordering_product = prd.product_code
-		ORDER BY	o.outstore_no DESC
+		SELECT
+		    O.OUTSTORE_DATE,
+		    O.OUTSTORE_QUANTITY,
+		    PRD.STANDARD AS PRDSTANDARD,
+		    PRD.UNIT     AS PRDUNIT,
+		    ING.STANDARD AS INGSTANDARD,
+		    ING.UNIT     AS INGUNIT,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
+		    ODS.ORDERS_ITEM,
+		    ING.INGREDIENT_NAME,
+		    PRD.PRODUCT_NAME
+		FROM
+		         OUTSTORE O
+		    JOIN ORDERS_DETAIL   ODS      ON O.ORDERS_DETAIL_NO = ODS.ORDERS_DETAIL_NO
+		    LEFT JOIN ORDERING_DETAIL OD  ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+			ODS.OUTSTORE_COMPANY = #{companyInput}
+			<if test="comp != null and comp != ''">
+			AND ODS.INSTORE_COMPANY = #{comp}
+			</if>
+			<if test="item != null and item != ''">
+		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+			</if>
+			<if test="year != null and year != ''">
+			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+			</if>
+			<if test="month != null and month != ''">
+			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+			</if>
+			<if test="prd != null and prd != ''">
+			AND OD.ORDERING_PRODUCT IS NOT NULL
+			</if>
+			<if test="ing != null and ing != ''">
+			AND OD.ORDERING_INGREDIENT IS NOT NULL
+			</if>
+		ORDER BY
+		    O.OUTSTORE_NO DESC
 	</select>
 	<select id="selectOrderListForInsert" resultType="OrderListVO">
-		SELECT      o.ordering_date
-		            , od.ordering_ingredient
-		            , od.ordering_product
-		            , od.quantity
-		            , prd.standard AS prdStandard
-		            , prd.unit AS prdUnit
-		            , ing.standard AS ingStandard
-		            , ing.unit AS ingUnit
-		            , od.ordering_detail_code
-		            , ing.ingredient_name
-		            , ing.expiration_deadline AS ing_expiration_deadline
-		            , prd.product_name
-		            , prd.expiration_deadline AS prd_expiration_deadline
-		FROM		ordering o JOIN ordering_detail od
-					ON o.ordering_code = od.ordering_code
-					LEFT JOIN orders_detail ods
-					ON ods.ordering_detail_code = od.ordering_detail_code
-					LEFT JOIN ingredient ing
-					ON od.ordering_ingredient = ing.ingredient_code
-					LEFT JOIN product prd
-					ON od.ordering_product = prd.product_code
-		WHERE		ods.instore_company = '(주)보라보라' AND ods.outstore_company = '(주)노랑'
-		ORDER BY   	o.ordering_date DESC
+		SELECT
+		    O.ORDERING_DATE,
+		    OD.ORDERING_INGREDIENT,
+		    OD.ORDERING_PRODUCT,
+		    OD.QUANTITY,
+		    PRD.STANDARD            AS PRDSTANDARD,
+		    PRD.UNIT                AS PRDUNIT,
+		    ING.STANDARD            AS INGSTANDARD,
+		    ING.UNIT                AS INGUNIT,
+		    OD.ORDERING_DETAIL_CODE,
+		    ING.INGREDIENT_NAME,
+		    ING.EXPIRATION_DEADLINE AS ING_EXPIRATION_DEADLINE,
+		    PRD.PRODUCT_NAME,
+		    PRD.EXPIRATION_DEADLINE AS PRD_EXPIRATION_DEADLINE
+		FROM
+		         ORDERING O
+		    JOIN ORDERING_DETAIL OD       ON O.ORDERING_CODE = OD.ORDERING_CODE
+		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+			ODS.INSTORE_COMPANY = #{companyInput}
+			<if test="comp != null and comp != ''">
+			AND ODS.OUTSTORE_COMPANY = #{comp}
+			</if>
+			<if test="item != null and item != ''">
+		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+			</if>
+			<if test="year != null and year != ''">
+			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+			</if>
+			<if test="month != null and month != ''">
+			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+			</if>
+			<if test="prd != null and prd != ''">
+			AND OD.ORDERING_PRODUCT IS NOT NULL
+			</if>
+			<if test="ing != null and ing != ''">
+			AND OD.ORDERING_INGREDIENT IS NOT NULL
+			</if>
+		ORDER BY
+		    O.ORDERING_DATE DESC
 	</select>
 	<select id="selectInstoreListForInsert" resultType="InstoreVO">
-		SELECT		i.instore_date
-					, i.instore_no
-		            , i.instore_manager
-		            , prd.standard AS prdStandard
-		            , prd.unit AS prdUnit
-		            , ing.standard AS ingStandard
-		            , ing.unit AS ingUnit
-		            , i.instore_quantity
-		            , od.ordering_product
-		            , od.ordering_ingredient
-		            , ods.orders_detail_no
-		            , ing.ingredient_name
-		            , prd.product_name
-		FROM		instore i JOIN ordering_detail od
-					ON i.ordering_detail_code = od.ordering_detail_code
-					LEFT JOIN orders_detail ods
-					ON ods.ordering_detail_code = od.ordering_detail_code
-					LEFT JOIN ingredient ing
-					ON od.ordering_ingredient = ing.ingredient_code
-					LEFT JOIN product prd
-					ON od.ordering_product = prd.product_code
-		WHERE		ods.outstore_company = '(주)노랑' AND ods.instore_company = '(주)보라보라'
-		ORDER BY	i.instore_date DESC
+		SELECT
+		    I.INSTORE_DATE,
+		    I.INSTORE_NO,
+		    I.INSTORE_MANAGER,
+		    PRD.STANDARD AS PRDSTANDARD,
+		    PRD.UNIT     AS PRDUNIT,
+		    ING.STANDARD AS INGSTANDARD,
+		    ING.UNIT     AS INGUNIT,
+		    I.INSTORE_QUANTITY,
+		    OD.ORDERING_PRODUCT,
+		    OD.ORDERING_INGREDIENT,
+		    ODS.ORDERS_DETAIL_NO,
+		    ING.INGREDIENT_NAME,
+		    PRD.PRODUCT_NAME
+		FROM
+		         INSTORE I
+		    JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+			ODS.OUTSTORE_COMPANY = #{companyInput}
+			<if test="comp != null and comp != ''">
+			AND ODS.INSTORE_COMPANY = #{comp}
+			</if>
+			<if test="item != null and item != ''">
+		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+			</if>
+			<if test="year != null and year != ''">
+			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+			</if>
+			<if test="month != null and month != ''">
+			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+			</if>
+			<if test="prd != null and prd != ''">
+			AND OD.ORDERING_PRODUCT IS NOT NULL
+			</if>
+			<if test="ing != null and ing != ''">
+			AND OD.ORDERING_INGREDIENT IS NOT NULL
+			</if>
+		ORDER BY
+		    I.INSTORE_DATE DESC
 	</select>
 	<insert id="insertInstoreInfo" parameterType="InstoreVO">
-		INSERT INTO instore (instore_no
+		INSERT INTO INSTORE (instore_no
 		                    , instore_date
 		                    , item_div
 		                    , instore_quantity
@@ -134,7 +212,7 @@
 		            , sysdate)
 	</insert>
 	<insert id="insertOutstoreInfo" parameterType="OutstoreVO">
-		INSERT INTO outstore (outstore_no
+		INSERT INTO OUTSTORE (outstore_no
 		                     , outstore_date
 		                     , outstore_quantity
 		                     , outstore_manager
@@ -148,9 +226,8 @@
 		            , #{instoreNo})
 	</insert>
 	<select id="selectItemList" resultType="ItemListVO">
-		SELECT      i.ingredient_name
-		            , p.product_name
-		FROM        ingredient i JOIN product p
-		            ON 1 = 1
+		(SELECT PRODUCT_NAME FROM PRODUCT)
+		UNION 
+		(SELECT INGREDIENT_NAME FROM INGREDIENT)
 	</select>
 </mapper>
