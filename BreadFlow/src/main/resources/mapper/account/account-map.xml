@@ -126,13 +126,16 @@
 		WHERE	company_no = #{memberNo}
 	</update>
 	
-	<!-- 아이디 체크 -->
+	<!-- 아이디 체크 및 로그인 후 필요한 세션값들 -->
 	<select id="selectMemberForLogin" parameterType="AccountVO">
-		SELECT  m.id
+		SELECT  m.member_no
+		        , m.id
+		        , m.password
 		        , m.name
 		        , FIND_CD(m.position) AS position
 		        , FIND_CD(c.div) AS div
-		        , m.member_no
+		        , c.company_name
+		        , c.company_no
 		FROM    member m JOIN company c
 		            ON (m.company_no = c.company_no)
 		WHERE	m.id = #{id}
