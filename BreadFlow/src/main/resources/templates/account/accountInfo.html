@@ -137,9 +137,22 @@
 	document.querySelector("#udtAccBtn").addEventListener('click', updateMember);
 	
 	function updateMember() {
+		let updName = document.querySelector("#updName");
+		let updTel = document.querySelector("#updTel");
+		let updId = document.querySelector("#updId");
 		
 		let updPw = document.querySelector("#updPw");
 		let updPwConfitm = document.querySelector("#updPwConfitm");
+		
+		if(updName.value == "" || updTel.value == "" || updId.value == "") {
+			alert("필수값을 확인해주세요.");
+			return false;
+		}
+		
+		if(updPw.value != updPwConfitm.value) {
+			alert("비밀번호 확인이 일치하지 않습니다.");
+			return false;
+		}
 		
 		if(confirm("정말 정보를 수정하시겠습니까?")) {
 			console.log("aaaaa");
