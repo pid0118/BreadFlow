@@ -19,6 +19,15 @@
 		FROM member m JOIN company c
 		        ON m.company_no = c.company_no
 	</select>
+	
+	<!-- 단건조회 -->
+	<!-- TODO: SELECT 하는 컬럼 수정하기 -->
+	<select id="selectMember" resultType="AccountVO" parameterType="AccountVO">
+		SELECT 	*
+		FROM    member m JOIN company c
+            ON (m.company_no = c.company_no)
+		WHERE   member_no = #{memberNo}
+	</select>
 
 	<insert id="insertCompany" parameterType="AccountVO">
 	<selectKey resultType="string" keyProperty="companyNo" order="BEFORE">
@@ -117,12 +126,20 @@
 		WHERE	company_no = #{memberNo}
 	</update>
 	
-	<!-- 아이디 체크 -->
+	<!-- 아이디 체크 및 로그인 후 필요한 세션값들 -->
 	<select id="selectMemberForLogin" parameterType="AccountVO">
-		SELECT id, name, FIND_CD(position)
-		FROM member
-		WHERE id = #{id}
-		  AND password = #{password}
+		SELECT  m.member_no
+		        , m.id
+		        , m.password
+		        , m.name
+		        , FIND_CD(m.position) AS position
+		        , FIND_CD(c.div) AS div
+		        , c.company_name
+		        , c.company_no
+		FROM    member m JOIN company c
+		            ON (m.company_no = c.company_no)
+		WHERE	m.id = #{id}
+		  AND 	m.password = #{password}
 	</select>
 	
 	<!-- 업체 리스트 조회 -->

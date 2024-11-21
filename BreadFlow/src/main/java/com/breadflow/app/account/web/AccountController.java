@@ -32,8 +32,22 @@ public class AccountController {
 	}
 	
 	@GetMapping("account")
-	public String accountinfo() {
+	public String accountinfo(Model model, HttpSession session) {
+		String memberNo = (String) session.getAttribute("memNo");
+		
+		AccountVO accVO = new AccountVO();
+		accVO.setMemberNo(memberNo);
+		
+		AccountVO accountvo = accountService.selectMember(accVO);
+		model.addAttribute("account", accountvo);
 		return "account/accountinfo";
+	}
+	
+	// 로그아웃
+	@GetMapping("logout.do")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "account/index";
 	}
 	
 	// 로그인 검사
@@ -48,11 +62,14 @@ public class AccountController {
 			return 0;
 		}
 		
-		session.setAttribute("id", acVO.getId());			// 아이디
-		session.setAttribute("name", acVO.getName());		// 이름
-		session.setAttribute("div", acVO.getPosition());	// 담당자/사원
-		//session.setAttribute("div", acVO.getDiv());			// 권한
-		
+		session.setAttribute("memNo", acVO.getMemberNo());				// 회원번호
+		session.setAttribute("id", acVO.getId());						// 아이디
+		session.setAttribute("name", acVO.getName());					// 이름
+		session.setAttribute("position", acVO.getPosition());			// 담당자/사원
+		session.setAttribute("div", acVO.getDiv());						// 권한
+		session.setAttribute("companyName", acVO.getCompanyName());		// 업체명
+		session.setAttribute("companyNo", acVO.getCompanyNo());			// 업체코드
+
 		return 1;		// 로그인 성공
 	}
 	
