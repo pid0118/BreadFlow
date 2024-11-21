@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.common.service.DateUtil;
 import com.breadflow.app.product.service.ProductVO;
 import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
@@ -20,6 +21,8 @@ import com.breadflow.app.sale.service.SaleVO;
 public class SaleController {
 	@Autowired
 	private SaleService saleService;
+	
+	private DateUtil dateUtil;
 	
 	// 본사 가맹점 정보 / 매출 조회
     @GetMapping("/toSalList")
@@ -55,9 +58,9 @@ public class SaleController {
     // 가맹점 매출 조회
     @GetMapping("/daySale")
     @ResponseBody
-    public List<SaleVO> daySale() {
+    public String daySale() {
 		List<SaleVO> list = saleService.selectSales();
-    	return list;
+    	return "sale/daySale";
     }
     
 }

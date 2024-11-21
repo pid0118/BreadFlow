@@ -11,6 +11,7 @@ import com.breadflow.app.sale.service.SaleVO;
 
 @Mapper
 public interface SaleMapper {
+	
 	// 본사 가맹점 정보 / 매출 조회
 	public List<SaleVO> selectSaleList();
 	
@@ -25,4 +26,5 @@ public interface SaleMapper {
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
 	public int insertSales();
+	
 }

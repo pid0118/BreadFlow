@@ -158,7 +158,7 @@
 	                    cell.appendChild(dateDiv);
 	
 	                    const salesDiv = document.createElement('div');
-	                    const sales = Math.floor(Math.random() * 100000);
+	                    const sales = salesData[date] || 0;
 	                    salesDiv.textContent = sales.toLocaleString() + '원'; // Update 1
 	                    cell.appendChild(salesDiv);
 	
@@ -174,7 +174,7 @@
 	                break;
 	            }
 	        }
-	
+
 	        const totalRow = document.getElementById('totalRow');
 	        totalRow.innerHTML = '';
 	        const days = ['일요일(합)', '월요일(합)', '화요일(합)', '수요일(합)', '목요일(합)', '금요일(합)', '토요일(합)', '총계']; // Update 2
@@ -206,11 +206,19 @@
 	    updateCalendar();
 		
 	    function saleData(){
-	    	fetch()
-	    	.then
-	    	.then
-	    	.catch()
+	    	fetch("/daySale")
+	    	.then(response => response.json())
+	    	.then(data => {
+	    		data.forEach(item => {
+	    			salesData[item.date] = item.sales;
+	    		})
+	    	})
+	    	.catch(error => {
+	    		console.error("삐용삐용");
+	    	})
 	    }
+	    
+	    saleData();
 
     </script>
 </body>

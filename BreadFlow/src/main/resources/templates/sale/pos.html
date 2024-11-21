@@ -351,9 +351,9 @@ footer {
 				let aryMenu = [];
 				items.forEach(item => {
 						let data = {
-							productCode: document.querySelector(".my-0").innerText,
-							salePrice: document.querySelector(".pri").innerText.replace(',',''),
-							quantity: document.querySelector(".su").innerText.split(" ")[1]
+							productCode: item.querySelector(".my-0").innerText,
+							salePrice: item.querySelector(".pri").innerText.replace(',',''),
+							quantity: item.querySelector(".su").innerText.split(" ")[1]
 						}
 						aryMenu.push(data);
 				});
@@ -369,16 +369,14 @@ footer {
 				.then(response => response.text())
 				.then(data => {
 					alert("주문완료!");
-					selectItemList.innerHTML = '';
 				})
 				.catch(error => {
 					console.error(error);
 					alert("주문실패 ㅜㅜ..");
-				})
-				
-			});
-			
-			document.querySelector("#salesSub").addEventLisener('click', function(){
+				});
+				selectedMenu = [];
+				arrayPrint();
+				selectItemList.innerHTML = '';
 				
 			});
 		});

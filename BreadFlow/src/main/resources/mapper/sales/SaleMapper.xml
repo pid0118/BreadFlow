@@ -40,12 +40,14 @@
 										,product_code
 										,sale_price
 										,quantity
-										,company_name)
+										,company_name
+										,last)
 		VALUES ('PA' || (SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
 		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})
 		        ,#{salePrice}
 		        ,#{quantity}
-		        ,'test')
+		        ,'test'
+		        ,'주문')
 	</insert>
 	
 	<insert id="insertSales" parameterType="PosVO">
