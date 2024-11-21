@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.inout.mapper.InOutMapper;
+import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
 import com.breadflow.app.inout.service.InstoreVO;
 import com.breadflow.app.inout.service.ItemListVO;
@@ -22,23 +23,23 @@ public class InOutServiceImpl implements InOutService {
 	}
 
 	@Override
-	public List<InstoreVO> instoreList() {
-		return inOutMapper.selectInstoreList();
+	public List<InstoreVO> instoreList(FilterVO filterVO) {
+		return inOutMapper.selectInstoreList(filterVO);
 	}
 
 	@Override
-	public List<OutstoreVO> outstoreList() {
-		return inOutMapper.selectOutstoreList();
+	public List<OutstoreVO> outstoreList(FilterVO filterVO) {
+		return inOutMapper.selectOutstoreList(filterVO);
 	}
 	
 	@Override
-	public List<OrderListVO> orderListForInsert() {
-		return inOutMapper.selectOrderListForInsert();
+	public List<OrderListVO> orderListForInsert(FilterVO filterVO) {
+		return inOutMapper.selectOrderListForInsert(filterVO);
 	}
 
 	@Override
-	public List<InstoreVO> instoreListForInsert() {
-		return inOutMapper.selectInstoreListForInsert();
+	public List<InstoreVO> instoreListForInsert(FilterVO filterVO) {
+		return inOutMapper.selectInstoreListForInsert(filterVO);
 	}
 
 	@Transactional

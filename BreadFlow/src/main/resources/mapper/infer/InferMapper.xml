@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.infer.mapper.InferMapper">
+	<!-- <select id="selectInferList" resultType="InferHistoryVO">
+	
+	</select>
+	<select id="selectInferListDetail" resultType="InferHistoryVO" parameterType="InferHistoryVO">
+	
+	</select>
+	<insert id="insertInferHistory" parameterType="InferHistoryVO">
+	
+	</insert>
+	<update id="updateInferHistory" parameterType="InferHistoryVO">
+	
+	</update>
+	<insert id="insertInferAnswer" parameterType="InferAnswerVO">
+	
+	</insert> -->
+</mapper>
