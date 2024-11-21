@@ -6,93 +6,118 @@
 <head>
     <meta charset="UTF-8">
     <title>제품목록</title>
+    <style>
+        .clickable {
+            cursor: pointer;
+            color: #0d6efd;
+        }
+        .clickable:hover {
+            text-decoration: underline;
+        }
+        /* Remove sort arrows */
+        th.datatable::after,
+        th.datatable::before,
+        th.table-plus::after,
+        th.table-plus::before {
+            display: none !important;
+        }
+        /* Search styling */
+        .search-container {
+            display: flex;
+            gap: 8px;
+        }
+        .search-input {
+            padding: 4px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-button {
+            padding: 4px 16px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <h2>제품목록</h2>
-    <div class="d-flex gap-3 mb-3">
+    <h2 class="mb-4">제품목록</h2>
+    <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
         <div class="col-md-3">
             <div class="form-group">
-                <select class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
-                    <optgroup label="카태고리">
-                        <option>완제품</option>
-                        <option>생산품</option>
-                    </optgroup>
+                <select id="categorylist"
+                	class="selectpicker form-control form-control-sm" data-size="5"
+                    data-style="btn-outline-secondary btn-sm">
+                    <option value="">선택</option>
+                    <th:block th:each="cate : ${category}">
+                    	<option th:value="${cate.major}" th:utext="${cate.major}"></option>
+                    </th:block>
                 </select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <select class="selectpicker form-control form-control-sm" data-size="5"
+                <select id="subList"
+                	class="selectpicker form-control form-control-sm" data-size="5"
                     data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
-                    <optgroup label="완제품">
-                        <option>커피/음료</option>
-                        <option>포장지</option>
-                        <option>박스</option>
-                        <option>기타</option>
-                        <option>식기류</option>
-                        <option>데코레이션</option>
-                    </optgroup>
-                    <optgroup label="생산품">
-                        <option>브레드</option>
-                        <option>샌드위치</option>
-                        <option>케이크</option>
-                        <option>쿠키</option>
-                        <option>생지</option>
-                    </optgroup>
                 </select>
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-end gap-2 mb-3">
-        <input type="text" name="keyword" value="">
-        <button class="DocSearch--active" type="submit">검색</button>
+	<div class="gap-2 mb-3">
+	        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/product/Insert}'|">등록</button>
+	        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
     </div>
-    <div class="d-flex justify-content-end gap-2 mb-3">
-        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/product/Insert}'|">등록</button>
-        <button type="submit" class="btn btn-secondary btn-sm">수정</button>
-        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
-    </div>
+    
+    <!-- 데이터 테이블 시작 -->
     <div class="pb-20">
-        <table class="data-table table stripe hover nowrap">
+        <table class="data-table table stripe hover wrap" id="productTable">
+        
             <thead>
                 <tr>
+                	<th class="datatable">
+	                	<div class="dt-checkbox">
+	                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
+	                            <span class="dt-checkbox-lable"></span>
+	                    </div>
+                	</th>
                     <th class="table-plus">제품코드</th>
-                    <th class="datatable-nosort">제품명</th>
-                    <th class="datatable-nosort">소비기한</th>
-                    <th class="datatable-nosort">매입가</th>
-                    <th class="datatable-nosort">판매가</th>
-                    <th class="datatable-nosort">규격</th>
-                    <th class="dt-body-center sorting_disabled">
-                        <div class="dt-checkbox">
-                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
-                            <span class="dt-checkbox-lable"></span>
-                        </div>
-                    </th>
+                    <th class="datatable">제품명</th>
+                    <th class="datatable">소비기한</th>
+                    <th class="datatable">매입가</th>
+                    <th class="datatable">판매가</th>
+                    <th class="datatable">규격</th>
                 </tr>
             </thead>
             <tbody>
+
                 <th:block th:each="info, sts : ${products}">
-                    <tr>
+                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}">
+                    	<td>
+                    		<div class="dt-checkbox">
+                                <input type="checkbox" name="id[]" value="">
+                                <span class="dt-checkbox-lable"></span>
+                        	</div>
+                    	</td>
+
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productCode}]]</td>
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productName}]]</td>
                         <td>[[${info.expirationDeadline}]]</td>
-                        <td>[[${info.purchasePrice}]]</td>
-                        <td>[[${info.salePrice}]]</td>
+                        <td class="purchasePrice">[[${info.purchasePrice}]]</td>
+                        <td class="salePrice">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
-                        <td class="dt-checkbox">
-                            <div class="dt-checkbox">
-                                <input type="checkbox" name="id[]" value>
-                                <span class="dt-checkbox-lable"></span>
-                            </div>
-                        </td>
                     </tr>
                 </th:block>
             </tbody>
         </table>
     </div>
-
-    <!-- Product Detail Modal -->
+	
+    <!-- 제품상세보기 모달창 -->
     <div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -102,71 +127,192 @@
                 </div>
                 <div class="modal-body">
                     <div id="productDetailContent">
-                        <!-- Content will be loaded dynamically -->
+                     <!-- 제품 상세 정보 -->
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">수정</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <style>
-        .clickable {
-            cursor: pointer;
-            color: #0d6efd;
-        }
-        .clickable:hover {
-            text-decoration: underline;
-        }
-    </style>
-
+    
     <script>
+	// 가격에 , 찍기
+      
+    
+    // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
         function showProductDetail(productCode) {
-            // Here you would typically make an AJAX call to get the product details
-            // For demonstration, we'll show static content
-            const content = `
-                <div class="table-responsive">
-                    <table class="table">
-                        <tr>
-                            <th>제품코드</th>
-                            <td>${productCode}</td>
-                            <th>카테고리</th>
-                            <td>완제품</td>
-                        </tr>
-                        <tr>
-                            <th>제품명</th>
-                            <td colspan="3">샘플 제품명</td>
-                        </tr>
-                        <tr>
-                            <th>소비기한</th>
-                            <td>2024-12-31</td>
-                            <th>규격</th>
-                            <td>100g</td>
-                        </tr>
-                        <tr>
-                            <th>매입가</th>
-                            <td>10,000원</td>
-                            <th>판매가</th>
-                            <td>15,000원</td>
-                        </tr>
-                    </table>
-                </div>
-            `;
-
-            document.getElementById('productDetailContent').innerHTML = content;
-            $('#productDetailModal').modal('show');
+            // AJAX call to fetch product details
+            $.ajax({
+                url: '/productListAll/' + productCode,
+                method: 'GET',
+                success: function(product) {
+                    const content = `
+                        <div>
+                            <table class="table table-responsive">
+                                <tr>
+                                    <th>제품코드</th>
+                                    <td>${product.productCode}</td>
+                                    <th>카테고리</th>
+                                    <td>${product.category}</td>
+                                </tr>
+                                <tr>
+                                    <th>제품명</th>
+                                    <td colspan="3">${product.productName}</td>
+                                </tr>
+                                <tr>
+                                    <th>소비기한</th>
+                                    <td>${product.expirationDeadline}</td>
+                                    <th>규격</th>
+                                    <td>${product.standard}</td>
+                                </tr>
+                                <tr>
+                                    <th>매입가</th>
+                                    <td>${product.purchasePrice}원</td>
+                                    <th>판매가</th>
+                                    <td>${product.salePrice}원</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+                    document.getElementById('productDetailContent').innerHTML = content;
+                    $('#productDetailModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    alert('제품 정보를 불러오는데 실패했습니다.');
+                }
+            });
         }
-
-        // Optional: Close modal when clicking outside
+	
+	
+        let myTable ;
+        // Modal close handlers
         $(document).ready(function() {
+            // Close on X button
+            $('.close').on('click', function() {
+                $('#productDetailModal').modal('hide');
+            });
+            
+            // Close on close button
+            $('.btn-secondary[data-dismiss="modal"]').on('click', function() {
+                $('#productDetailModal').modal('hide');
+            });
+            
+            // Close on outside click
             $('#productDetailModal').on('click', function(e) {
                 if ($(e.target).hasClass('modal')) {
                     $('#productDetailModal').modal('hide');
                 }
             });
+
+            // Initialize DataTable without sorting
+           myTable = $('.data-table').DataTable({
+                "ordering": false,
+                "info": false,         
+                "lengthChange": false ,
+                language: {
+                    search: "검색:",
+                    paginate: {
+                        first: "처음",
+                        last: "마지막",
+                        next: "다음",
+                        previous: "이전"
+                    }                    
+                }
+            });
+            
+            
+           var mySelect = $('#categorylist');
+           var mySelect2 = $('#subList');
+           
+           $('#categorylist').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+     			console.log(e, clickedIndex, isSelected, previousValue)
+     			const category = e.target.options[clickedIndex].value
+     			mySelect2.empty()
+     			
+     	        	// ajax 들어가야함
+     	        	fetch("category/subList?major="+category)
+     	        	.then(response => response.json())
+     	        	.then(response => {
+     	        		
+     	        		for(item of response){
+     	        			mySelect2.append(`<option>${item.sub}</option>`)
+     	        		}
+     	        		mySelect2.selectpicker('refresh');
+     	        	})
+     	        myTable.draw();
+     	   });
+   		
+           $('#subList').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+     			myTable.draw()
+           });
+           
         });
+        
+        // 현제모달이 외부클릭시 닫히게끔하는 기능 -- x 버튼클릭시 닫기가능하게 바꾸기 수정버튼 클릭시 등록하면으로 전환 + 데이터넘겨서 등록화면에서 수정가능하게 만들기까지.
+
+        
+        
+        
+        // 체크박스 체크후 삭제버튼 클릭시 해당품목을 삭제하시겠습니까? 작은모달창 질문후 예 버튼 클릭시 해당 품목삭제기능 
+        		
+        $(document).ready(function() {
+		    // 전체 선택 체크박스 클릭 시
+		    $('#example-select-all').on('click', function() {
+		        var isChecked = $(this).prop('checked');  // 체크 여부 확인
+		        // tbody의 모든 체크박스에 동일한 상태 적용
+		        $('#productTable tbody input[type="checkbox"]').prop('checked', isChecked);
+		    });
+		
+		    // 개별 체크박스 클릭 시
+		    $('#productTable tbody').on('change', 'input[type="checkbox"]', function() {
+		        // 모든 체크박스가 선택되었으면 thead의 체크박스를 체크
+		        var totalCheckboxes = $('#productTable tbody input[type="checkbox"]').length;
+		        var checkedCheckboxes = $('#productTable tbody input[type="checkbox"]:checked').length;
+		
+		        // 전체 체크박스가 다 선택되었으면 thead 체크박스를 체크
+		        if (totalCheckboxes === checkedCheckboxes) {
+		            $('#example-select-all').prop('checked', true);
+		        } else {
+		            // 하나라도 선택되지 않으면 thead 체크박스를 해제
+		            $('#example-select-all').prop('checked', false);
+		        }
+		    });
+		});
+        
+        
+        // 검색어 재품코드 or 제품명 검색시 검색항목 보기
+        
+		
+        
+        
+        
+        // 카테고리 선택시 테이블에 카테고리 선택항목만 열람
+       
+        $.fn.dataTable.ext.search.push(function(setting, data, dataIndex){
+        	
+        	var trNode = setting.aoData[dataIndex].nTr;
+            var attr1 = trNode.getAttribute("data-major");
+            var attr2 = trNode.getAttribute("data-sub");
+        	
+        	var val1 = $('#categorylist').val();
+        	var val2 = [];
+        	
+        	$('#subList option:selected').each((idx, element) => val2.push(element.value))
+        	console.log(attr2, val2)
+        	if((val1 === "" || val1 === attr1) &&
+        	 (val2.length == 0 || val2.includes(attr2))){
+        		return true;
+        	}
+        	return false;
+        });
+        	
+            	
+        
+        		
     </script>
 </body>
 </html>
