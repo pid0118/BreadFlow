@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
 import lombok.extern.log4j.Log4j2;

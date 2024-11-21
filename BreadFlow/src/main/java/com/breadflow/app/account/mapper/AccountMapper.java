@@ -40,4 +40,7 @@ public interface AccountMapper {
 
 	// 업체 리스트 조회
 	public List<AccountVO> selectCompanyList();
+
+	// 계정 단건 조회
+	public AccountVO selectMember(AccountVO accountVO);
 }
