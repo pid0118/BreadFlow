@@ -24,12 +24,12 @@ import lombok.RequiredArgsConstructor;
 public class OrderingController {
 	private final OrderingService orderingService;
 	
-	@GetMapping("ordering/insert")
+	@GetMapping("/ordering/insert")
 	public String insertForm() {
 		return "ordering/insert";
 	}
 	
-	@PostMapping("ordering/insert")
+	@PostMapping("/ordering/insert")
 	public String insertOrdering(@RequestBody Map<String, Object> ordering) {
 		int result = orderingService.insertOrdering(ordering);
 		return "ordering/insert";
