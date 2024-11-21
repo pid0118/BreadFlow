@@ -81,5 +81,10 @@ public class AccountServiceImpl implements AccountService {
 		return accountMapper.selectCompanyList();
 	}
 
+	@Override
+	public AccountVO selectMember(AccountVO accountVO) {
+		return accountMapper.selectMember(accountVO);
+	}
+
 	
 }

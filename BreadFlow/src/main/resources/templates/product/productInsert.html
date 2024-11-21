@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/breadflow_layout}"
-	  layout:fragment="Content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/breadflow_layout}"
+      layout:fragment="Content">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>제품 수정/등록</title>
-      <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제품 수정/등록</title>
+    <style>
         .content-area {
-            min-height: calc(100vh - 60px); /* Adjust based on header height */
+            min-height: calc(100vh - 60px);
             background-color: #f8f9fa;
             padding: 20px;
         }
@@ -23,7 +23,7 @@
 
         .image-placeholder {
             width: 100%;
-            height: 200px;
+            height: 100%;
             background-color: #e6e6fa;
             display: flex;
             align-items: center;
@@ -50,17 +50,11 @@
             font-size: 0.875rem;
         }
 
-        .tab-button {
-            padding: 4px 16px;
-            font-size: 0.875rem;
-        }
-
         .action-buttons {
             padding: 4px 16px;
             font-size: 0.875rem;
         }
     </style>
-
 </head>
 <body>
     <div class="content-area">
@@ -69,111 +63,219 @@
 
             <form>
                 <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="image-placeholder" id="imagePreview">
-                            <span>이미지</span>
-                        </div>
-                        <input type="file" class="d-none" id="productImage" accept="image/*">
-                    </div>
-                    
-                    <div class="col-md-8">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">제품코드</label>
-                                <input type="text" class="form-control form-control-sm">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">제품명</label>
-                                <input type="text" class="form-control form-control-sm">
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">규격</label>
-                                <input type="text" class="form-control form-control-sm">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">소비기한</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">구매가</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">판매가</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">안전재고 수량</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">생산지</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">단위</label>
-                        <input type="text" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">대분류</label>
-                        <select class="form-select form-select-sm">
-                            <option selected>선택하세요</option>
-                            <option>식품</option>
-                            <option>의류</option>
-                            <option>전자제품</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">소분류</label>
-                        <select class="form-select form-select-sm">
-                            <option selected>선택하세요</option>
-                            <option>과일</option>
-                            <option>채소</option>
-                            <option>육류</option>
-                        </select>
-                    </div>
-                </div>
-
+				    <div class="col-md-4">
+				        <div class="image-placeholder" id="imagePreview">
+				            <span>이미지</span>
+				        </div>
+				        <input type="file" class="d-none" id="image" accept="image/*">
+				        <input type="hidden" id="productImage">
+				    </div>
+				
+				    <!-- 나머지 항목들을 3개씩 배치 -->
+				    <div class="col-md-8">
+				        <div class="row g-3">
+				            <!-- 1번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">제품코드</label>
+				                <input type="text" class="form-control form-control-sm" id="productCode" th:value="${productCode}" readonly>
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">제품명</label>
+				                <input type="text" class="form-control form-control-sm" id="productName">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">규격</label>
+				                <input type="text" class="form-control form-control-sm" id="standard">
+				            </div>
+				            <!-- 2번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">소비기한</label>
+				                <input type="text" class="form-control form-control-sm" id="expirationDeadline">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">구매가</label>
+				                <input type="text" class="form-control form-control-sm" id="purchasePrice">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">판매가</label>
+				                <input type="text" class="form-control form-control-sm" id="salePrice">
+				            </div>
+				            <!-- 3번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">안전재고 수량</label>
+				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">생산지</label>
+				                <input type="text" class="form-control form-control-sm" id="proplace">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">용량</label>
+				                <input type="text" class="form-control form-control-sm" id="amount">
+				            </div>
+				            <!-- 4번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">대분류</label>
+				                <select class="form-select form-select-sm" id="mainCategory">
+				                    <option selected>선택하세요</option>
+				                    <th:block th:each="cate : ${category}">
+				                        <option th:value="${cate.sub}" th:text="${cate.sub}"></option>
+				                    </th:block>
+				                </select>
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">소분류</label>
+				                <select class="form-select form-select-sm" id="subCategory">
+				                    <option selected>선택하세요</option>
+				                </select>
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">단위</label>
+				                <select class="form-select form-select-sm" id="unit">
+				                    <option selected>선택하세요</option>
+				                    <th:block th:each="code : ${codeVal}">
+				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}"></option>
+				                    </th:block>
+				                </select>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+				
                 <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-primary action-buttons">등록</button>
-                    <button type="button" class="btn btn-secondary action-buttons">취소</button>
+                    <button type="button" class="btn btn-primary action-buttons" onclick="insertProduct()">등록</button>
+                    <button type="button" class="btn btn-secondary action-buttons" id="cancelBtn">취소</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.getElementById('imagePreview').addEventListener('click', function() {
-            document.getElementById('productImage').click();
-        });
+        $(document).ready(function() {
+        	
+            // 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
 
-        document.getElementById('productImage').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    const imagePreview = document.getElementById('imagePreview');
-                    imagePreview.innerHTML = '';
-                    imagePreview.appendChild(img);
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = $('<img>').attr('src', e.target.result);
+                        $('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
+        	// 이미지 업로드    
+        		
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        			
+        			$("#productImage").val(data);
+        			}
+        		});
+        	});
+        
+        	
+        	
+            });
+    	        
+	            
+            
+         	// 카테고리 변경 처리
+        	var subCategory = $('#subCategory');
+    
+            $("#mainCategory").change(function() {
+                const category = this.value;
+                
+                /* $.ajax({
+                	url : "/category/subList?major="+ category,
+                	method : "get",
+                	success : function (data) {
+                		console.log(data)
+                	},
+                	error : function (err) {
+                		console.log(err)
+                	}
+                	
+                }); */
+               // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
+                if (category === "") {
+                    subCategory.empty().append('<option selected>선택하세요</option>');
+                    return;
+                }
+
+                fetch("/category/subList?major=" + category)
+                    .then(response => response.json())
+                    .then(response => {
+                        // 기존 옵션을 지운 후 새로운 옵션 추가
+                        subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
+                        for (let item of response) {
+                            subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error)); // 오류 처리 
+            });
+         
+           
+       
+        
+	     	// 제품등록
+	     	function insertProduct() {
+	     
+	     		$.ajax({
+	     			url : "/product/Insert",
+	     			method : "post",
+	     			data : JSON.stringify({
+	     				"productCode" : $("#productCode").val(),
+	     				"productName" : $("#productName").val(),
+	     				"standard" : $("#standard").val(),
+	     				"expirationDeadline" : $("#expirationDeadline").val(),
+	     				"purchasePrice" : $("#purchasePrice").val(),
+	     				"salePrice" : $("#salePrice").val(),
+	     				"safeStockQuantity" : $("#safeStockQuantity").val(),
+	     				"proplace" : $("#proplace").val(),
+	     				"unit" : $("#unit option:selected").val(),
+	     				"major" : $("#mainCategory option:selected").val(),
+	     				"sub" : $("#subCategory option:selected").val(),
+	     				"amount" : $("#amount").val(),
+	     				"productImage" : $("#productImage").val()
+	     			}),
+	     			contentType : 'application/json',
+	     			dataType : "json",
+	     			success : function (data) {
+	     				if (data == 1) {
+	     					alert("상품 등록에 성공하였습니다.");
+	     					location.href = "/productListAll";
+	     				} else {
+	     					alert("등록에 실패했습니다.");
+	     				}
+	     			}, 
+	     			error : function (err) {
+	     				console.log(err);
+	     			}
+	     			
+	     		});
+	     	}  
+        
+	     	
+	     	 // 취소 버튼 처리
+            $('#cancelBtn').click(function() {
+                window.location.href = '/productListAll';
+            });
+	     	
+        // 등록 버튼클릭시 데이터 DB 에 입력하기까지 END
     </script>
-</body>
-</html>
 </body>
 </html>

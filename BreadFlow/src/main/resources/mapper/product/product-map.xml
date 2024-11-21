@@ -2,23 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.product.mapper.ProductMapper">
 	<!-- 제품 전체조회 -->
-	<select id="selectAllProductList" resultType="ProductVO">
+	<select id="selectProductList" resultType="ProductVO">
 		SELECT product_code,
 			   product_name,
 			   expiration_deadline,
 			   purchase_price,
 			   sale_price,
-			   standard
+			   standard,
+			   major,
+			   sub
 		FROM product
+		<where>
+			<if test="subList != null and subList.size() > 0">	
+	    		<foreach item="item" index="index" collection="subList"
+	        	open="sub in (" separator="," close=")">
+	          	#{item}
+	    		</foreach>
+	    	</if>	
+  		</where>
 		ORDER BY product_code ASC
 	</select>
 	
 	<!-- 제품 상세조회 -->
-	<select id="selectProduct" parameterType="ProductVO" resultType="ProductVO">
+	<select id="selectProduct" parameterType="string" resultType="ProductVO">
 		SELECT product_code,
 			   product_name,
 			   expiration_deadline,
-			   priduct_price,
+			   purchase_price,
 			   sale_price,
 			   safe_stock_quantity,
 			   proplace,
@@ -26,18 +36,53 @@
 			   major,
 			   sub,
 			   unit,
-			   standard
+			   standard,
+			   amount
 		FROM  product
 		WHERE product_code = #{productCode}
 	</select>
 	
+	<!-- 제품 코드 가져오기 -->
+	<select id="selectProductCode" resultType="string">
+		SELECT 'IB' || LPAD(SUBSTR(MAX(product_code), 3) +1, 5, '0') FROM product
+	</select>
+	
 	<!-- 제품 등록 -->
 	<insert id="insertProduct" parameterType="ProductVO">
-		
+		INSERT INTO product
+		(
+		    product_code,
+			product_name,
+			expiration_deadline,
+			purchase_price,
+			sale_price,
+			safe_stock_quantity,
+			proplace,
+			product_image,
+			major,
+			sub,
+			unit,
+			standard,
+			amount
+		) VALUES (
+		      #{productCode}
+		    , #{productName}
+		    , #{expirationDeadline}
+		    , #{purchasePrice}
+		    , #{salePrice}
+		    , #{safeStockQuantity}
+		    , #{proplace}
+		    , #{productImage}
+		    , #{major}
+		    , #{sub}
+		    , #{unit}
+		    , #{standard}
+		    , #{amount}
+		)
 	</insert>
-
+<!-- 22 -->
 	<!-- 제품정보 수정 -->
-	<update id="updateProduct" parameterType="ProductVO">
+	<update id="updateProductList" parameterType="ProductVO">
 		UPDATE product
 		SET	   <if test="productName != null!">product_name = #{productName}</if>
 			   <if test="expriationDeadline != null!">expiration_deadline = #{expriationDeadline}</if>
@@ -60,4 +105,5 @@
 		Where product_code = #{productCode}
 	</delete>
 	
+
 </mapper>

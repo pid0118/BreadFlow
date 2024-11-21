@@ -2,10 +2,89 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.common.mapper.CategoryMapper">
 
-	<select id="selectCategories" resultType="CategoryVO">
+	<select id="selectCategory" resultType="CategoryVO">
 		SELECT major
 			   , sub
 		FROM   category	
 	</select>
+
+	<select id="selectCategorySub" resultType="CategoryVO">
+		SELECT major
+			   , sub
+		FROM   category	
+		WHERE major = #{major}
+	</select>
+	
+
+
+	<select id="selectItems" resultType="SearchItemVO" parameterType="SearchOptionVO">
+		SELECT b.item_code, b.item_name, b.unit, b.standard, b.purchase_price
+		FROM(SELECT rownum rnum, a.*
+		     FROM(
+			<if test="products.size() != 0">
+				SELECT product_code item_code, product_name item_name, amount||FIND_CD(unit) unit, standard, purchase_price
+				FROM product
+				WHERE sub IN (
+				<foreach collection="products" item="item" separator=",">
+					#{item}
+				</foreach>
+				)
+					<if test="name != null">
+					AND product_name LIKE '%' || #{name} || '%'
+					</if>
+			</if>
+			<if test="products.size() != 0 and ingredients.size() != 0">
+				UNION
+			</if>
+			<if test="ingredients.size() != 0">
+				SELECT ingredient_code item_code, ingredient_name item_name, amount||FIND_CD(unit) unit, standard, purchase_price
+				FROM ingredient
+				WHERE sub IN (
+				<foreach collection="ingredients" item="item" separator=",">
+					#{item}
+				</foreach>
+				)
+					<if test="name != null">
+					AND ingredient_name LIKE '%' || #{name} || '%'
+					</if>
+			</if>
+				)a
+			)b
+		WHERE b.rnum BETWEEN (#{page}-1) * 5 + 1 AND (#{page}-1) * 5 + 5
+	</select>
+	
+	<select id="selectItemPaging" resultType="int" parameterType="SearchOptionVO">
+		SELECT count(*)
+		FROM (
+		<if test="products.size() != 0">
+			SELECT product_code item_code, product_name item_name, amount||FIND_CD(unit) unit, standard, purchase_price
+			FROM product
+			WHERE sub IN (
+			<foreach collection="products" item="item" separator=",">
+				#{item}
+			</foreach>
+			)
+				<if test="name != null">
+				AND product_name LIKE '%' || #{name} || '%'
+				</if>
+		</if>
+		<if test="products.size() != 0 and ingredients.size() != 0">
+			UNION
+		</if>
+		<if test="ingredients.size() != 0">
+			SELECT ingredient_code item_code, ingredient_name item_name, amount||FIND_CD(unit) unit, standard, purchase_price
+			FROM ingredient
+			WHERE sub IN (
+			<foreach collection="ingredients" item="item" separator=",">
+				#{item}
+			</foreach>
+			)
+				<if test="name != null">
+				AND ingredient_name LIKE '%' || #{name} || '%'
+				</if>
+		</if>
+		)
+	</select>
+
 	
 </mapper>
