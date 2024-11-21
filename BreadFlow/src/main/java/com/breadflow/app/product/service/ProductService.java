@@ -21,4 +21,7 @@ public interface ProductService {
 	// ProductCode 가져오기
 	public String selectProductCode();
 	
+	// ProductName 가져오기
+	public String selectProductName(String productName);
+	
 }

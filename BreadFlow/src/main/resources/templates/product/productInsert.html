@@ -228,12 +228,49 @@
                     .catch(error => console.error('Error:', error)); // 오류 처리 
             });
          
-           
-       
-        
 	     	// 제품등록
+	     	// NOT NULL값 미입력시 알림 및 등록 불가
 	     	function insertProduct() {
-	     
+	     		if($("#productName").val()==''){
+	     			alert("제품명을 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#purchasePrice").val() == ''){
+	     			alert("구매가를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#salePrice").val() == ''){
+	     			alert("판매가를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#safeStockQuantity").val() == ''){
+	     			alert("안전재고 수량을 입력주세요")
+	     			return;
+	     		}
+	     		if($("#proplace").val() == ''){
+	     			alert("생산지를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#amount").val() == ''){
+	     			alert("양를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#unit option:selected").val() == '선택하세요'){
+	     			alert("단위를 선택해주세요")
+	     			return;
+	     		}
+	     		if($("#mainCategory option:selected").val() == '선택하세요'){
+	     			alert("대분류를 선택해주세요")
+	     			return;
+	     		}
+	     		if($("#subCategory option:selected").val() == '선택하세요'){
+	     			alert("소분류를 선택해주세요")
+	     			return;
+	     		}
+	     		if(sameCheck == false){
+	     			alert("제품명이 중복되거나 상품이 등록되어있습니다")
+	     			return;
+	     		}
 	     		$.ajax({
 	     			url : "/product/Insert",
 	     			method : "post",
@@ -256,7 +293,7 @@
 	     			dataType : "json",
 	     			success : function (data) {
 	     				if (data == 1) {
-	     					alert("상품 등록에 성공하였습니다.");
+	     					alert("제품 등록에 성공하였습니다.");
 	     					location.href = "/productListAll";
 	     				} else {
 	     					alert("등록에 실패했습니다.");
@@ -268,7 +305,30 @@
 	     			
 	     		});
 	     	}  
-        
+        	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
+        	let sameCheck = false;
+        	
+        	$("#productName").on('change', function(){
+        		let data = { productName: $('#productName').val() };
+        		
+        		$.ajax({
+        			url:"/productNameCheck",
+        			type: "post",
+        			data: data,
+        		}).done((res)=> {
+        			console.log(res);
+        			sameCheck = true;
+        		}).fail((err)=>{
+        			alert("이미등록된 상품이거나 상품명이 중복되었습니다")
+        			console.log(err);
+        			sameCheck = false;
+        		});
+        		
+        	});
+	     	
+	     	
+	     	
+	     	
 	     	
 	     	 // 취소 버튼 처리
             $('#cancelBtn').click(function() {
