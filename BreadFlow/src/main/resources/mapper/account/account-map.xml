@@ -21,9 +21,19 @@
 	</select>
 	
 	<!-- 단건조회 -->
-	<!-- TODO: SELECT 하는 컬럼 수정하기 -->
 	<select id="selectMember" resultType="AccountVO" parameterType="AccountVO">
-		SELECT 	*
+		SELECT 	m.member_no
+				, m.id
+				, m.name
+				, m.tel
+				, m.other
+				, m.company_no
+				, m.contract_date
+				, c.company_name
+				, c.company_address
+				, c.company_tel
+				, c.brn
+				, c.region
 		FROM    member m JOIN company c
             ON (m.company_no = c.company_no)
 		WHERE   member_no = #{memberNo}
@@ -152,5 +162,20 @@
             	ON (m.company_no = c.company_no)
 		WHERE 	m.position = 'b1'
 	</select>
+	
+	<update id="updateMember" parameterType="AccountVO">
+		UPDATE	member
+		
+		SET		name = #{name}
+				,tel = #{tel}
+				, other = #{other}
+				, id = #{id}
+					
+			    <if test="password != null and password != ''">	
+					, password = #{password}
+				</if>
+				
+		WHERE	member_no = #{memberNo}	
+	</update>
 
 </mapper>

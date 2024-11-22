@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layouts/breadflow_layout}"
       layout:fragment="Content">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제품 등록</title>
+<meta charset="UTF-8">
+<title>제품 수정</title>
     <style>
         .content-area {
             min-height: calc(100vh - 60px);
@@ -57,9 +56,9 @@
     </style>
 </head>
 <body>
-    <div class="content-area">
+	    <div class="content-area">
         <div class="form-container">
-            <h4 class="mb-4">제품 등록</h4>
+            <h4 class="mb-4">제품 수정</h4>
 
             <form>
                 <div class="row g-4">
@@ -231,9 +230,6 @@
 	     	// 제품등록
 	     	// NOT NULL값 미입력시 알림 및 등록 불가
 	     	function insertProduct() {
-	     		
-	     		
-	     		
 	     		if($("#productName").val()==''){
 	     			alert("제품명을 입력해주세요")
 	     			return;
@@ -274,7 +270,6 @@
 	     			alert("제품명이 중복되거나 상품이 등록되어있습니다")
 	     			return;
 	     		}
-	     		
 	     		$.ajax({
 	     			url : "/product/Insert",
 	     			method : "post",

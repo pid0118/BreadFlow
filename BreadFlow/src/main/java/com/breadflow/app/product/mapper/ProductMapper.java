@@ -20,10 +20,15 @@ public interface ProductMapper {
 	public int updateProductList(ProductVO productVO);
 		
 	// 삭제
-	public int deleteProduct(ProductVO productVO);
+	public int deleteProduct(String productCode);
 	
 	// ProductCode 가져오기
 	public String selectProductCode();
 	
+	// 제품명 단건조회 / 중복값 제거위해
+	public String selectProductName(String productName);
+	
+	// 주문상세 주문품목 조회
+	public List<String> selectOrdersItems();
 
 }

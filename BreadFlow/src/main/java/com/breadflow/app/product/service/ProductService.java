@@ -16,9 +16,12 @@ public interface ProductService {
 	public int updateProductList(ProductVO productVO);
 	
 	// 삭제
-	public int deleteProduct(ProductVO productVO);
+	public int deleteProduct(List<String> productCode);
 	
 	// ProductCode 가져오기
 	public String selectProductCode();
+	
+	// ProductName 가져오기
+	public String selectProductName(String productName);
 	
 }

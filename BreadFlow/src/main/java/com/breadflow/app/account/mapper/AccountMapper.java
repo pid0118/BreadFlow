@@ -43,4 +43,7 @@ public interface AccountMapper {
 
 	// 계정 단건 조회
 	public AccountVO selectMember(AccountVO accountVO);
+
+	// 회원 단건 수정
+	public int updateMember(AccountVO accountVO);
 }

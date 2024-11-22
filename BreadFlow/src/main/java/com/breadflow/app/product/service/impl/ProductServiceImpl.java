@@ -3,10 +3,9 @@ package com.breadflow.app.product.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.product.mapper.ProductMapper;
-import com.breadflow.app.common.service.CategoryVO;
-import com.breadflow.app.common.service.ComCodeVO;
 import com.breadflow.app.product.service.ProductService;
 import com.breadflow.app.product.service.ProductVO;
 
@@ -42,9 +41,15 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	// 제품 삭제
+	@Transactional
 	@Override
-	public int deleteProduct(ProductVO productVO) {
-		return productMapper.deleteProduct(productVO);
+	public int deleteProduct(List<String> productCode) {
+		for(int i = 0;i < productCode.size();i++ ) {
+			
+			
+			productMapper.deleteProduct(productCode.get(i));
+		}
+		return 0;
 	}
 
 	// 제품코드 가져오기
@@ -52,6 +57,11 @@ public class ProductServiceImpl implements ProductService {
 	public String selectProductCode() {
 		// TODO Auto-generated method stub
 		return productMapper.selectProductCode();
+	}
+
+	@Override
+	public String selectProductName(String productName) {
+		return productMapper.selectProductName(productName);
 	}
 
 	

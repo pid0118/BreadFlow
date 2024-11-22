@@ -86,5 +86,11 @@ public class AccountServiceImpl implements AccountService {
 		return accountMapper.selectMember(accountVO);
 	}
 
+	@Override
+	public int UpdateMember(AccountVO accountVO) {
+		int result = accountMapper.updateMember(accountVO);
+		return result;
+	}
+
 	
 }

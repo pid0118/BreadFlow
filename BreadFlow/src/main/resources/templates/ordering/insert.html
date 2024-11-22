@@ -23,21 +23,19 @@
 					</div>
 					<div class="col-md-6 form-group">
 						<button type="button" class="btn btn-primary"
-							data-toggle="modal" data-target="#bd-example-modal-lg">품목
+							data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">품목
 							추가</button>
-						<button type="submit" class="btn btn-primary" form="orderingInsert" id="orderRequest">발주 신청</button>
+						<button type="button" class="btn btn-primary" form="orderingInsert" id="orderRequest">발주 신청</button>
 					</div>
 					
 				</div>
 				<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
-					tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-					aria-hidden="true">
+					tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
 					<div class="modal-dialog modal-lg modal-dialog-centered">
 						<div class="modal-content">
 							<div class="modal-header">
 								<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
-								<button type="button" class="close" data-dismiss="modal"
-									aria-hidden="true">×</button>
+								<button type="button" class="close" data-dismiss="modal">×</button>
 							</div>
 							<div class="modal-body">
 								<div class="row">
@@ -62,7 +60,7 @@
 									<thead>
 										<tr>
 											<th><div class="custom-control custom-checkbox mb-5">
-												<input type="checkbox" class="custom-control-input"
+												<input type="checkbox" class="custom-control-input checkAll"
 													id="customCheck"> <label
 													class="custom-control-label" for="customCheck"></label>
 											</div></th>
@@ -90,8 +88,7 @@
 								</ul>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal"
-									aria-hidden="true">추가</button>
+								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal">추가</button>
 							</div>
 						</div>
 					</div>
@@ -121,15 +118,16 @@
 		</form>
 	</div>
 	<!-- buttons for Export datatable -->
-	<script src="../plugins/datatables/js/pdfmake.min.js"></script>
-	<script src="../plugins/datatables/js/vfs_fonts.js"></script>
+	<script src="/plugins/datatables/js/pdfmake.min.js"></script>
+	<script src="/plugins/datatables/js/vfs_fonts.js"></script>
 	<!-- Datatable Setting js -->
-	<script src="../vendors/scripts/datatable-setting.js"></script>
+	<script src="/vendors/scripts/datatable-setting.js"></script>
 	<script>
 	
 		$(document).ready(function() {
 			// 옵션값 초기화
 			$('.custom-select2').select2();
+			
 		});
 		
 		// 품목 종류 카테고리 생성
@@ -178,7 +176,7 @@
 						for(let i=1; i<datas.length; i++){
 							element += `<td>${datas[i].innerText}</td>`;
 						} 
-						element += '<td><div class="col-4"><input type="number" class="form-control" min="1"></div></td><td></td></tr>';	
+						element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
 					}
 					
 				}
@@ -198,6 +196,7 @@
 						<td></td>
 						<td></td>
 					</tr>`);
+				itemSum();
 			}
 		})
 		
@@ -344,13 +343,13 @@
 		document.querySelector('.datatable').addEventListener('change', itemSum)
 		
 		// 합계 계산 합수
-		function itemSum(event) {
+		function itemSum() {
+			let priceTotal = 0;
+			let amountTotal = 0;
 			if(event.target.tagName == 'INPUT'){
 				let datatd = event.target.closest('td');
 				let price = datatd.previousElementSibling.innerText;
 				datatd.nextElementSibling.innerText = price * event.target.value;
-				let priceTotal = 0;
-				let amountTotal = 0;
 				document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
 					amountTotal += Number(data.value.replace(',', ''));	
 				})
@@ -359,7 +358,19 @@
 				})
 				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
 				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
-			}	
+			}
+			if (event.target.tagName == 'BUTTON') {
+				let td = document.querySelectorAll('.datatable tbody tr');
+				for(let i=0; i<td.length - 1; i++){
+					let price = td[i].children[4].innerText;
+					let amount = td[i].children[5].querySelector('input').value;
+					td[i].children[6].innerText = price * amount;
+					amountTotal += Number(amount);	
+					priceTotal += Number(price);
+				}
+				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
+				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
+			}
 		}
 
 		// 납기 희망 일자 - 현재 일자 포함 이전 비활성화
@@ -373,32 +384,81 @@
 		
 		// DOM 요소 완성후 실행
 		window.addEventListener("DOMContentLoaded", () => {
+			$('#coFilterModal.modal.fade').remove();
 			disabledDate();
 		})
 		
+		// 발주 신청 이벤트
 		orderRequest.addEventListener('click', function() {
+			if($('.date-picker').val() == ''){
+				alert('납기 희망 일자를 선택해주세요.');
+				return false;	
+			}
+			let itemCodes = document.querySelectorAll('#orderingInsert tbody td:first-child');
+			let itemQuan = document.querySelectorAll('#orderingInsert tbody td:nth-child(6) input');
+			let items = [];
+			for(let i = 0; i < itemCodes.length - 1; i++) {
+	    		items.push({"itemCode" :itemCodes[i].innerText, 
+	    					"itemQuan" :Number(itemQuan[i].value)});
+	    	}
 			let list = {
-				    "orderingCode": "1",
-				    "orderingDate": new Date(),
-				    "deliveryDesireDate" : new Date('21 November 2024'),
+				    "deliveryDesireDate" : new Date($('.date-picker').val()),
 				    "orderingRequestManger": "test",
-				    "totalPrice": 10000,
-				    "test": {
-				    	"test1": "1",
-				    	"test2": "2"
-				    }
+				    "totalPrice": Number($('#total td:last-child').text()),
+				    "itemCodes": items
 				};
+			
 			fetch('../ordering/insert', {
 				method: "POST",
 			 	headers: {
 			    	"Content-Type": "application/json",
 			  	},
-				body: JSON.stringify(list, list)
+				body: JSON.stringify(list)
 			})
-			.then(response => response.json())
-			.then(data => console.log(data))
+			.then(response => response.url)
+			.then(data => {
+				window.location.href = data;
+			})
 			.catch(err => console.log(err));
 		})
+		
+		// 수량 입력시 숫자이외 값 방지
+		orderingInsert.addEventListener('input', function() {
+		    if(event.target.tagName == 'INPUT') {
+	    	    if(Number(event.target.value) == 0){
+	    	    	event.target.value = 1;
+	    	        alert('숫자가 아닙니다.');
+	    	        itemSum(event);
+	    	    }
+		    } 
+		})
+		
+		// 품목 추가 옵션 초기화
+		function allOptionOff(){
+			$('input.checkAll').prop("checked",false);	
+			$('input.check').prop("checked",false);
+			$('.custom-select2').val('');
+			$('li.select2-selection__choice').remove();
+			iname.value = '';
+			$('.modal-body table tbody tr').remove();
+			$('.page-item#addcol').remove();
+		}
+		
+		$('#addItems').click(function() {
+			allOptionOff();
+		})
+		
+		// 품목 체크막스 전체 선택
+		$('input.checkAll').click(function(){
+		    if($('input.checkAll').prop("checked")){
+		        $('input.check').prop("checked",true);
+		    }else{
+		    	$('input.check').prop("checked",false); 
+		    }
+		});
+		
+		
+		
 		
 	</script>
 </body>

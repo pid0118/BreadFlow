@@ -7,8 +7,10 @@
 		       , ordering_request_manager
 		       , total_price
 		       , approval_whether
-		       , ordering_approval_manager
+		       , orderform_no
+		       , delivery_desire_date
 		FROM   ordering
+		WHERE  approval_whether IN ('d3', 'd4')
 	</select>
 	
 	<insert id="insertOrdering">
@@ -16,37 +18,29 @@
 			SELECT 'BW'|| GETSEQ('ordering', 'orderform_no')
 			FROM dual
 		</selectKey>
-		INSERT INTO ordering('ordering_code', 'ordering_date', 'ordering_request_manager', 'total_price', 'approval_whether', 'orderform_no', 'delivery_desire_date')
-		VALUES (#{orderingCode}, sysdate, #{orderingRequestManager}, #{totalPrice}, 'd3', #{orderformNo}, '#{deliveryDesireDate}')
+		INSERT INTO ordering (ordering_code, ordering_date, ordering_request_manager, total_price, approval_whether, orderform_no, delivery_desire_date)
+		VALUES (#{code}, sysdate, #{orderingVO.orderingRequestManager}, #{orderingVO.totalPrice}, 'd3', #{orderformNo}, #{orderingVO.deliveryDesireDate})
 	</insert>
 	
 	<insert id="insertOrderingDetail">
 		<selectKey resultType="string" keyProperty="detailcode" order="BEFORE">
-			SELECT GETSEQ('ordering_detail', 'ordering_detail_code') 
+			SELECT 'BC'|| GETSEQ('ordering_detail', 'ordering_detail_code') 
 			FROM dual
 		</selectKey>
-		INSERT INTO ordering_detail('ordering_detail_code'
-									, 'quantity'
-									<if test="#{orderingDetailVO.orderingIngredient} != ''">
-									, 'ordering_ingredient'
-									</if>
-									<if test="#{orderingDetailVO.orderingProduct} != ''">
-									, 'ordering_product'
-									</if>
-									, 'ordering_code')
-		VALUES(#{detailCode}
-			   , #{quantity}
-			   <if test="#{orderingDetailVO.orderingIngredient} != ''">
-			   , #{orderingIngredient}
-			   </if>
-			   <if test="#{orderingDetailVO.orderingProduct} != ''">
-			   , #{orderingProduct}
-			   </if>
-			   , #{orderingCode})
+		INSERT INTO ordering_detail (ordering_detail_code
+								, quantity
+								, ordering_ingredient
+								, ordering_product
+								, ordering_code)
+		VALUES(#{detailcode}
+			   , #{orderingDetailVO.quantity}
+			   , #{orderingDetailVO.orderingIngredient}
+			   , #{orderingDetailVO.orderingProduct}
+			   , #{code})
 	</insert>
 	
 	<select id="selectOrderingCode">
 		SELECT 'BC'|| GETSEQ('ordering', 'ordering_code')
-		FROM dual;
+		FROM dual
 	</select>
 </mapper>
