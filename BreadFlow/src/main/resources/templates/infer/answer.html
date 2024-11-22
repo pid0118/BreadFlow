@@ -43,6 +43,17 @@
 				<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${loginMember}" readonly>
 			</div>
 		</div>
+		<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
+			<label class="btn btn-outline-secondary active">
+				<input type="radio" name="options" value="반품" id="seeAll" autocomplete="off" checked>전체
+			</label>
+			<label class="btn btn-outline-secondary">
+				<input type="radio" name="options" value="폐기" id="seeUnchecked" autocomplete="off">미확인
+			</label>
+			<label class="btn btn-outline-secondary">
+				<input type="radio" name="options" value="철회" id="seeChecked" autocomplete="off">확인
+			</label>
+		</div>
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
@@ -97,33 +108,11 @@
 			
 			// 필요 정보 추출
 			var getData = [];
-            $("#inOutTable tr.selected").each(function() {
-            	if ($("input[name='options']:checked").val() === '입고') {
-            		var row = $(this);
-	                var data = {
-	                    instoreDate: $("#inOutDate").val(),
-	                    itemDiv: row.find("td:nth-child(2)").text(),
-	                    name: row.find("td:nth-child(3)").text(),
-	                    instoreQuantity: row.find("td:nth-child(5) input").val(),
-	                    outstoreQuantity: '1',
-	                    orderingDetailCode: row.find("td:nth-child(7)").text(),
-	                    instoreDiv: row.find("td:nth-child(8)").text(),
-	                    itemCode: row.find("td:nth-child(10)").text(),
-	                    companyInput: $("#companyInput").val()
-	                };
-	                selectedRows.push(data);
-                } else {
-                	var row = $(this);
-	                var data = {
-	                	outstoreDate: $("#inOutDate").val(),
-	                	outstoreQuantity: row.find("td:nth-child(5) input").val(),
-	                	ordersDetailNo: row.find("td:nth-child(8)").text(),
-	                    instoreNo: row.find("td:nth-child(7)").text(),
-	                    companyInput: $("#companyInput").val()
-	                };
-	                getData.push(data);
-                }
-            });
+			var row = $(this);
+            var data = {
+                disposalWhether : ''
+            };
+            getData.push(data);
             console.log(getData);
 			
 			// 답변 등록
