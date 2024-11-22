@@ -100,13 +100,13 @@ public class ProductController {
 	
 	
 	//수정 페이지
-	@GetMapping("product/update")
+	@GetMapping("product/Update")
 	public String productUpdateForm() {
 		return "product/productInsert";
 	}
 	
 	// 수정처리
-	@PostMapping("product/update")
+	@PostMapping("product/Update")
 	public String productUpdateProcess(ProductVO productVO) {
 		
 		return "redirect:/productListAll";
@@ -114,11 +114,11 @@ public class ProductController {
 	
 	
 	// 삭제처리
-	@DeleteMapping("product/Delete")
-	public String productDelete(ProductVO productVO) {
+	@DeleteMapping("product")
+	@ResponseBody
+	public int productDelete(@RequestBody List<String> checkBoxArr) {
 		
-		
-		return "redirect:/productListAll";
+		return productService.deleteProduct(checkBoxArr);
 	}
 	
 }
