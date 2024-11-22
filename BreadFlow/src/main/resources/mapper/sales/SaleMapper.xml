@@ -67,8 +67,9 @@
 		      ,'test');
 	</insert>
 	
-	<select id="selectSales" resultType="SaleVO">
+	<select id="selectSales" resultType="PosVO">
 		SELECT day_sales
+			  ,sales_date
 		FROM sales
 	</select>
 </mapper>

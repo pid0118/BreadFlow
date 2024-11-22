@@ -45,9 +45,10 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public List<SaleVO> selectSales() {
+	public List<PosVO> selectSales() {
 		return saleMapper.selectSales();
 	}
+
 
 
 }

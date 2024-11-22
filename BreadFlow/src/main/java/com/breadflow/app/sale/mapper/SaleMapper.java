@@ -22,7 +22,7 @@ public interface SaleMapper {
 	public int insertSale(PosVO saleVO);
 	
 	// 가맹점 일 매출 조회
-	public List<SaleVO> selectSales();
+	public List<PosVO> selectSales();
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
 	public int insertSales();

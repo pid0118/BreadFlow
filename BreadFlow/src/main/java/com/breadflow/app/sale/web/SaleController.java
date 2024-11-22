@@ -58,9 +58,18 @@ public class SaleController {
     // 가맹점 매출 조회
     @GetMapping("/daySale")
     public String daySale(Model model) {
-		List<SaleVO> list = saleService.selectSales();
+		List<PosVO> list = saleService.selectSales();
 		model.addAttribute("dList",list);
-    	return "sale/daySale";
+		return "sale/daySale";
     }
+    
+    // AJAX
+    @GetMapping("/daySale/stupid")
+    @ResponseBody
+    public ResponseEntity<List<PosVO>> daySaleAjax() {
+    	List<PosVO> list = saleService.selectSales();
+    	return ResponseEntity.ok(list);
+    }
+    
     
 }
