@@ -5,7 +5,7 @@
 	<!-- 단건입력 -->
 	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">
-			SELECT 'SP' || PLANSEQ('production_plan','production_plan_no') FROM dual;
+			SELECT 'SP' || PLANSEQ('production_plan','production_plan_no') FROM dual
 		</selectKey>
 	
 		INSERT INTO production_plan

@@ -222,6 +222,8 @@ deleteRowBtn.addEventListener('click', function() {
 // 이벤트 걸기 끝
 // ========================================================================
 
+	
+	
 // ========================================================================
 // [박진석|241122] 자식 테이블 생성
 
@@ -268,7 +270,18 @@ const grid = new Grid({
 // ========================================================================
 // [박진석|241122] 생산계획&상세 저장하는 AJAX
 function insertPrdPlanAjax() {
-	if(confirm("생산계획을 저장 하시겠습니까?")) {
+	let updStartDate = document.querySelector("#updStartDate").value
+	let updLastDate = document.querySelector("#updLastDate").value
+	let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
+	let updProductionCompany = document.querySelector("#updProductionCompany").value
+	
+	if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
+		alert("날짜 또는 업체를 선택했는지 확인하세요.");
+		return false;
+	}
+	
+	
+	if(confirm("생산을 저장 하시겠습니까?")) {
 		$.ajax({
            url: "insertPrdtplan.do",
            type: "POST",
