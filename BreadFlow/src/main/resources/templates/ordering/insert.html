@@ -127,6 +127,7 @@
 		$(document).ready(function() {
 			// 옵션값 초기화
 			$('.custom-select2').select2();
+			
 		});
 		
 		// 품목 종류 카테고리 생성
@@ -343,12 +344,12 @@
 		
 		// 합계 계산 합수
 		function itemSum() {
+			let priceTotal = 0;
+			let amountTotal = 0;
 			if(event.target.tagName == 'INPUT'){
 				let datatd = event.target.closest('td');
 				let price = datatd.previousElementSibling.innerText;
 				datatd.nextElementSibling.innerText = price * event.target.value;
-				let priceTotal = 0;
-				let amountTotal = 0;
 				document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
 					amountTotal += Number(data.value.replace(',', ''));	
 				})
@@ -359,17 +360,14 @@
 				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
 			}
 			if (event.target.tagName == 'BUTTON') {
-				let price = document.querySelector('.datatable tbody td:nth-child(5)');
-				let dataQuan = document.querySelectorAll('.datatable tbody td:nth-child(6) input');
-				let dataPuan = document.querySelectorAll('.datatable tbody td:nth-child(7)');
-				let priceTotal = 0;
-				let amountTotal = 0;
-				dataPrice.forEach(price => {
-					amountTotal += Number(price.value.replace(',', ''));
-				})
-				dataQuan.forEach(quan => {
-					priceTotal += Number(quan.innerText.replace(',', ''));
-				})
+				let td = document.querySelectorAll('.datatable tbody tr');
+				for(let i=0; i<td.length - 1; i++){
+					let price = td[i].children[4].innerText;
+					let amount = td[i].children[5].querySelector('input').value;
+					td[i].children[6].innerText = price * amount;
+					amountTotal += Number(amount);	
+					priceTotal += Number(price);
+				}
 				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
 				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
 			}
@@ -417,9 +415,9 @@
 			  	},
 				body: JSON.stringify(list)
 			})
-			.then(response => response.text())
+			.then(response => response.url)
 			.then(data => {
-				
+				window.location.href = data;
 			})
 			.catch(err => console.log(err));
 		})
@@ -446,6 +444,10 @@
 			$('.page-item#addcol').remove();
 		}
 		
+		$('#addItems').click(function() {
+			allOptionOff();
+		})
+		
 		// 품목 체크막스 전체 선택
 		$('input.checkAll').click(function(){
 		    if($('input.checkAll').prop("checked")){
@@ -455,9 +457,7 @@
 		    }
 		});
 		
-		$('#addItems').click(function() {
-			allOptionOff();
-		})
+		
 		
 		
 	</script>
