@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
 import com.breadflow.app.inout.service.InstoreVO;
 import com.breadflow.app.inout.service.ItemListVO;
 import com.breadflow.app.inout.service.OrderListVO;
 import com.breadflow.app.inout.service.OutstoreVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -24,94 +26,69 @@ import lombok.RequiredArgsConstructor;
 public class InOutController {
 	private final InOutService inOutService;
 	
-	// 입고/출고 내역
+	
+	// 입출고 내역
     @GetMapping("inOutList")
-    public String inOutList(Model model) {
+    public String inOutList(Model model, HttpSession session) {
     	Calendar cal = Calendar.getInstance();
     	Integer localDateTime = cal.get(Calendar.YEAR);
     	List<ItemListVO> items = inOutService.itemList();
+    	String companyName = (String) session.getAttribute("companyName");
     	model.addAttribute("localDateTime", localDateTime);
     	model.addAttribute("items", items);
-        return "inout/list"; // 초기 페이지 로드
+    	model.addAttribute("companyName", companyName);
+        return "inout/list";
     }
     
-    // 입고 내역 반환 (AJAX)
+    // 입고 내역 반환
     @GetMapping("inOut/instores")
     @ResponseBody
-    public List<InstoreVO> getInstoreList() {
-        return inOutService.instoreList();
+    public List<InstoreVO> getInstoreList(FilterVO filterVO) {
+        return inOutService.instoreList(filterVO);
     }
     
-    // 출고 내역 반환 (AJAX)
+    // 출고 내역 반환
     @GetMapping("inOut/outstores")
     @ResponseBody
-    public List<OutstoreVO> getOutstoreList() {
-        return inOutService.outstoreList();
+    public List<OutstoreVO> getOutstoreList(FilterVO filterVO) {
+        return inOutService.outstoreList(filterVO);
     }
     
-    // 등록용 발주 내역 반환 (AJAX)
+    // 등록용 발주 내역 반환
     @GetMapping("inOut/ordersInsert")
     @ResponseBody
-    public List<OrderListVO> getOrderListForInsert() {
-        return inOutService.orderListForInsert();
+    public List<OrderListVO> getOrderListForInsert(FilterVO filterVO) {
+        return inOutService.orderListForInsert(filterVO);
     }
     
-    // 등록용 입고 내역 반환 (AJAX)
+    // 등록용 입고 내역 반환
     @GetMapping("inOut/instoresInsert")
     @ResponseBody
-    public List<InstoreVO> getInstoreListForInsert() {
-        return inOutService.instoreListForInsert();
+    public List<InstoreVO> getInstoreListForInsert(FilterVO filterVO) {
+        return inOutService.instoreListForInsert(filterVO);
     }
 	
-    // 입고/출고 등록
+    // 입출고 등록
 	@GetMapping("inOutInsert")	
-	public String inOutInsert(Model model) {
+	public String inOutInsert(Model model, HttpSession session) {
 		List<ItemListVO> items = inOutService.itemList();
+		String companyName = (String) session.getAttribute("companyName");
 		model.addAttribute("items", items);
+		model.addAttribute("companyName", companyName);
 		return "inout/insert";
 	}
 	
-	// 입고 등록 반환 (AJAX)
+	// 입고 등록 반환
 	@PostMapping("inOut/insertIn")
 	@ResponseBody
 	public int insertIn(@RequestBody List<InstoreVO> instoreVO) {
-		System.out.println(instoreVO);
 		return inOutService.instoreInsert(instoreVO);
 	}
 	
-	// 출고 등록 반환 (AJAX)
+	// 출고 등록 반환
 	@PostMapping("inOut/insertOut")
 	@ResponseBody
 	public int insertOut(@RequestBody List<OutstoreVO> outstoreVO) {
-		System.out.println(outstoreVO);
 		return inOutService.outstoreInsert(outstoreVO);
 	}
-	
-//	// 입고 등록 반환 (AJAX)
-//	@PostMapping("inOut/insertIn")
-//	@ResponseBody
-//	public String insertInProcess(InstoreVO instoreVO) {
-//		int mno = inOutService.instoreInsert(instoreVO);
-//		String url = null;
-//		if(mno > 0) {
-//			url = "redirect:instoreList?memberNo=" + mno;
-//		} else {
-//			url = "redirect:insertIn";
-//		}
-//		return url;
-//	}
-//	
-//	// 출고 등록 반환 (AJAX)
-//	@PostMapping("inOut/insertOut")
-//	@ResponseBody
-//	public String insertOutProcess(OutstoreVO outstoreVO) {
-//		int mno = inOutService.outstoreInsert(outstoreVO);
-//		String url = null;
-//		if(mno > 0) {
-//			url = "redirect:outstoreList?memberNo=" + mno;
-//		} else {
-//			url = "redirect:insertOut";
-//		}
-//		return url;
-//	}
 }

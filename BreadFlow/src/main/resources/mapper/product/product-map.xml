@@ -23,6 +23,13 @@
 		ORDER BY product_code ASC
 	</select>
 	
+	<!-- 제품명 단건조회 -->
+	<select id="selectProductName" resultType="ProductVO">
+		SELECT product_name
+		FROM product
+		WHERE product_name = #{productName}
+	</select>
+	
 	<!-- 제품 상세조회 -->
 	<select id="selectProduct" parameterType="string" resultType="ProductVO">
 		SELECT product_code,

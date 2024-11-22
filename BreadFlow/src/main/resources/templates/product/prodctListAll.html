@@ -55,7 +55,7 @@
                     data-style="btn-outline-secondary btn-sm">
                     <option value="">선택</option>
                     <th:block th:each="cate : ${category}">
-                    	<option th:value="${cate.major}" th:utext="${cate.major}"></option>
+                    	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
                     </th:block>
                 </select>
             </div>
@@ -79,7 +79,7 @@
         <table class="data-table table stripe hover wrap" id="productTable">
         
             <thead>
-                <tr>
+                <tr style="text-align : center;">
                 	<th class="datatable">
 	                	<div class="dt-checkbox">
 	                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
@@ -97,7 +97,7 @@
             <tbody>
 
                 <th:block th:each="info, sts : ${products}">
-                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}">
+                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
                     	<td>
                     		<div class="dt-checkbox">
                                 <input type="checkbox" name="id[]" value="">
@@ -107,9 +107,9 @@
 
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productCode}]]</td>
                         <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productName}]]</td>
-                        <td>[[${info.expirationDeadline}]]</td>
-                        <td class="purchasePrice">[[${info.purchasePrice}]]</td>
-                        <td class="salePrice">[[${info.salePrice}]]</td>
+                        <td>[[${info.expirationDeadline}]]일</td>
+                        <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
+                        <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
                     </tr>
                 </th:block>
@@ -118,78 +118,144 @@
     </div>
 	
     <!-- 제품상세보기 모달창 -->
-    <div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="productDetailModalLabel">제품 상세정보</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <div class="modal-body">
-                    <div id="productDetailContent">
-                     <!-- 제품 상세 정보 -->
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">수정</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg modal-dialog-centered">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title" id="productDetailModalLabel">제품 상세정보</h4>
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	            </div>
+	            <div class="modal-body">
+	                <div class="row">
+	                    <div class="col-md-4 text-center mb-3">
+	                        <img id="productImage" src="" alt="" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+	                    </div>
+	                    <div class="col-md-8">
+	                        <div class="row row-cols-4">
+	                            <div class="col mb-3">
+	                                    <strong>제품코드</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="productCode"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>제품명</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="productName"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>소비기한</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="expirationDeadline"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>규격</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="standard"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>매입가</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="purchasePrice"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>판매가</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="salePrice"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>안전재고수량</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="safeStockQuantity"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>생산지</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="proplace"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>단위</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="unit"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>대분류</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="major"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>소분류</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="sub"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>양</strong>
+	                                <div class="border rounded p-2 h-80">
+	                                    <div id="amount"></div>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="submit" class="btn btn-primary" data-dismiss="modal">수정</button>
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
-    
-    <script>
+
+	<script>
 	// 가격에 , 찍기
-      
+	    function comma(num){
+			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+		
+	  
     
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
-        function showProductDetail(productCode) {
-            // AJAX call to fetch product details
-            $.ajax({
-                url: '/productListAll/' + productCode,
-                method: 'GET',
-                success: function(product) {
-                    const content = `
-                        <div>
-                            <table class="table table-responsive">
-                                <tr>
-                                    <th>제품코드</th>
-                                    <td>${product.productCode}</td>
-                                    <th>카테고리</th>
-                                    <td>${product.category}</td>
-                                </tr>
-                                <tr>
-                                    <th>제품명</th>
-                                    <td colspan="3">${product.productName}</td>
-                                </tr>
-                                <tr>
-                                    <th>소비기한</th>
-                                    <td>${product.expirationDeadline}</td>
-                                    <th>규격</th>
-                                    <td>${product.standard}</td>
-                                </tr>
-                                <tr>
-                                    <th>매입가</th>
-                                    <td>${product.purchasePrice}원</td>
-                                    <th>판매가</th>
-                                    <td>${product.salePrice}원</td>
-                                </tr>
-                            </table>
-                        </div>
-                    `;
-                    document.getElementById('productDetailContent').innerHTML = content;
-                    $('#productDetailModal').modal('show');
-                },
-                error: function(xhr, status, error) {
-                    alert('제품 정보를 불러오는데 실패했습니다.');
-                }
-            });
-        }
-	
+		function showProductDetail(productCode) {
+		    $.ajax({
+		        url: '/productListAll/' + productCode,
+		        method: 'GET',
+		        success: function(product) {
+		        	
+		            document.getElementById('productImage').src = '/imgs/' + product.productImage;
+		            document.getElementById('productImage').alt = product.productName;
+		            document.getElementById('productCode').textContent = product.productCode;
+		            document.getElementById('productName').textContent = product.productName;
+		            document.getElementById('expirationDeadline').textContent = product.expirationDeadline;
+		            document.getElementById('standard').textContent = product.standard;
+		            document.getElementById('purchasePrice').textContent = product.purchasePrice + '원';
+		            document.getElementById('salePrice').textContent = product.salePrice + '원';
+		            document.getElementById('safeStockQuantity').textContent = product.safeStockQuantity;
+		            document.getElementById('proplace').textContent = product.proplace;
+		            document.getElementById('unit').textContent = product.unit;
+		            document.getElementById('major').textContent = product.major;
+		            document.getElementById('sub').textContent = product.sub;
+		            document.getElementById('amount').textContent = product.amount;
+		            $('#productDetailModal').modal('show');
+		        },
+		        error: function(xhr, status, error) {
+		            alert('제품 정보를 불러오는데 실패했습니다.');
+		        }
+		    });
+		}
 	
         let myTable ;
-        // Modal close handlers
+        // 모달 close handlers
         $(document).ready(function() {
             // Close on X button
             $('.close').on('click', function() {
@@ -207,8 +273,11 @@
                     $('#productDetailModal').modal('hide');
                 }
             });
+         // 현제모달이 외부클릭시 닫히게끔하는 기능 -- x 버튼클릭시 닫기가능하게 바꾸기 수정버튼 클릭시 등록하면으로 전환 + 데이터넘겨서 등록화면에서 수정가능하게 만들기까지.
+            
+            
 
-            // Initialize DataTable without sorting
+           // Initialize DataTable without sorting 데이터테이블 사용 설정
            myTable = $('.data-table').DataTable({
                 "ordering": false,
                 "info": false,         
@@ -229,11 +298,10 @@
            var mySelect2 = $('#subList');
            
            $('#categorylist').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-     			console.log(e, clickedIndex, isSelected, previousValue)
      			const category = e.target.options[clickedIndex].value
      			mySelect2.empty()
      			
-     	        	// ajax 들어가야함
+     	        	// ajax
      	        	fetch("category/subList?major="+category)
      	        	.then(response => response.json())
      	        	.then(response => {
@@ -252,7 +320,6 @@
            
         });
         
-        // 현제모달이 외부클릭시 닫히게끔하는 기능 -- x 버튼클릭시 닫기가능하게 바꾸기 수정버튼 클릭시 등록하면으로 전환 + 데이터넘겨서 등록화면에서 수정가능하게 만들기까지.
 
         
         
@@ -283,12 +350,7 @@
 		    });
 		});
         
-        
-        // 검색어 재품코드 or 제품명 검색시 검색항목 보기
-        
-		
-        
-        
+     
         
         // 카테고리 선택시 테이블에 카테고리 선택항목만 열람
        

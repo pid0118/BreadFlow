@@ -5,37 +5,28 @@
 	  layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
-<title>입출고 내역</title>
+<title>불량 내역 조회</title>
 </head>
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
-			<h2 class="text-black">입출고 내역</h2>
+			<h2 class="text-black">불량 내역</h2>
 		</div>
 		<div>
 			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${companyName}" style=display:none; readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 				<label class="btn btn-outline-secondary active">
-					<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
+					<input type="radio" name="options" value="전체" id="seeAll" autocomplete="off" checked>전체
 				</label>
 				<label class="btn btn-outline-secondary">
-					<input type="radio" name="options" id="outstoreBtn" value="출고" autocomplete="off">출고
+					<input type="radio" name="options" value="미확인" id="seeUnchecked" autocomplete="off">미확인
 				</label>
-			</div>
-			<div class="pd-20 input-group mb-3">
-				<input class="form-control" type="text" id="companyName" placeholder="업체명을 검색하세요" readonly>
-				<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
+				<label class="btn btn-outline-secondary">
+					<input type="radio" name="options" value="확인" id="seeChecked" autocomplete="off">확인
+				</label>
 			</div>
 		</div>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="rawmatBtn">원재료</button>
-			<button type="button" class="btn btn-primary" id="finprdBtn">완제품</button>
-			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
-			<ul class="dropdown-menu" id="itemMenu">
-				<li th:each="item : ${items}">
-                    <a class="dropdown-item item">[[ ${item.productName} ]]</a>
-                </li>
-			</ul>
   			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="yearlyBtn" data-bs-toggle="dropdown" aria-expanded="false">연도</button>
 			<ul class="dropdown-menu" id="yearlyMenu">
 				<li th:each="num : ${#numbers.sequence(localDateTime-10, localDateTime)}">
@@ -57,18 +48,18 @@
 			<button type="button" class="btn btn-primary input-group-button" id="dateFilterBtn">검색</button>
 		</div>
 		<div class="pd-20">
-			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
+			<table class="table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
 					<tr>
-						<th class="table-plus">거래일자</th>
+						<th class="table-plus">불량 입력 일자</th>
+						<th class="datatable-nosort">확인 위치</th>
 						<th class="datatable-nosort">품목</th>
 						<th>수량</th>
-						<th class="datatable-nosort">규격/단위</th>
-						<th class="datatable-nosort">출고처</th>
-						<th class="datatable-nosort">입고처</th>
+						<th class="datatable-nosort">처분</th>
+						<th class="datatable-nosort">확인 여부</th>
 					</tr>
 				</thead>
-				<tbody id="inOutTable">
+				<tbody id="inferHistoryTable">
 
 				</tbody>
 			</table>
@@ -84,13 +75,14 @@
 		var item = null;
 		var year = null;
 		var month = null;
+		var confirm = null;
    	
         $(document).ready(function() {
         	
         	// 로그인한 업체 이름 저장
         	companyInput = $("#companyInput").val();
 
-            // 기본 내역 출력 (입고)
+            // 기본 내역 출력
             changeFilter();
             
             function clear() {
@@ -100,7 +92,13 @@
     			item = null;
     			year = null;
     			month = null;
+    			confrim = null;
             }
+            
+            // 전체 내역 버튼 클릭
+            $("seeAll").click(function() {
+            	$("")
+            });
             
             // 입고 내역 버튼 클릭
             $("#instoreBtn").click(function() {

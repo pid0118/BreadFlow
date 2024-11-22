@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -16,7 +15,7 @@
 		<form id="inOutInsertForm" name="inOutInsertForm">
 			<div>
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" name="companyInput" id="companyInput" value="(주)보라보라" readonly>
+					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${companyName}" readonly>
 				</div>
 
 				<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
@@ -29,7 +28,7 @@
 				</div>
 
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" id="coFilter" placeholder="업체명을 검색하세요" readonly>
+					<input class="form-control" type="text" id="companyName" placeholder="업체명을 검색하세요" readonly>
 					<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
 				</div>
 
@@ -40,7 +39,7 @@
 				<div class="pd-20">
 					<button type="button" class="btn btn-primary" id="rawmatBtn">원재료</button>
 					<button type="button" class="btn btn-primary" id="finprdBtn">완제품</button>
-					<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목별</button>
+					<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
 					<ul class="dropdown-menu" id="itemMenu">
 						<li th:each="item : ${items}">
                     		<a class="dropdown-item item">[[ ${item.productName} ]]</a>
@@ -86,41 +85,72 @@
 	</div>
 	
 	<script>
+		// 조건
+		var companyInput = null;
+		var comp = null;
+		var ing = null;
+		var prd = null;
+		var item = null;
+		var year = null;
+		var month = null;
+		
 		$(document).ready(function() {
 			
+			// 로그인한 업체 이름 저장
+			companyInput = $("#companyInput").val();
+			
 			// 기본 내역 출력 (입고)
-	        loadOrderList();
+	        changeFilter();
 
 	        // 기본 날짜 출력 (입고/출고)
 	        loadTodayDate();
 	        
+	        function clear() {
+            	comp = null;
+            	ing = null;
+            	prd = null;
+    			item = null;
+    			year = null;
+    			month = null;
+            }
+	        
 	        // 입고 내역 버튼 클릭
 	        $("#instoreBtn").click(function() {
-	        	loadOrderList();
+	        	$("#firstQuanTh").text("발주 수량");
+	        	$("#secondQuanTh").text("입고 수량");
+	        	$("#itemBtn").text('품목');
+	        	clear();
+            	changeFilter();
 	        });
 	
 	        // 출고 내역 버튼 클릭
 	        $("#outstoreBtn").click(function() {
 	        	$("#firstQuanTh").text("입고 수량");
 	        	$("#secondQuanTh").text("출고 수량");
-	            loadInstoreList();
+	        	$("#itemBtn").text('품목');
+	        	clear();
+            	changeFilter();
 	        });
 	
 	        // 원재료 버튼 클릭
 	        $("#rawmatBtn").click(function() {
-	            loadRawmatList();
+	        	prd = null;
+            	ing = 'ing';
+            	changeFilter();
 	        });
 	
 	        // 완제품 버튼 클릭
 	        $("#finprdBtn").click(function() {
-	            loadFinprdList();
+	        	ing = null;
+            	prd = 'prd';
+            	changeFilter();
 	        });
 	        
 	     	// 품목별 필터 클릭
             $(document).on('click', '.item', function() {
-                var item = $(this).text().trim();
+            	item = $(this).text().trim();
                 $("#itemBtn").text(item);
-                loadItemList(item);
+                changeFilter();
             });
 	        
 	     	// 입력시 검색
@@ -133,6 +163,15 @@
             $("#searchBtn").click(function() {
                 var keyword = $("#searchKeyword").val().toLowerCase();
                 searchData(keyword);
+            });
+            
+         	// 업체 검색 모달에서 선택
+            $("#selectCompanyBtn").click(function() {
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                $("#companyName").val(selectedCompanyName);
+                $('#coFilterModal').modal('hide');
+                comp = selectedCompanyName;
+                changeFilter();
             });
 
 	     	// 저장 버튼 클릭 시 처리
@@ -185,34 +224,30 @@
 	        });
 			
 	    });
-
-	    // 입고 내역 가져오기
-	    function loadInstoreList() {
-	        $.ajax({
-	            url : '/inOut/instoresInsert',
-	            method : 'GET',
-	            success : function(data) {
-	                updateTable(data, 'instore');
-	            },
-	            error : function() {
-	                alert("입고 내역을 불러오는 데 실패했습니다.");
+		
+		// 필터값 전송
+        function changeFilter() {
+        	var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/ordersInsert' : '/inOut/instoresInsert';
+        	var type = $("input[name='options']:checked").val() === '입고' ? 'order' : 'instore';
+        	$.ajax({
+            	url : url,
+            	method : 'GET',
+            	data : {companyInput,
+            			comp,
+            			item,
+            			year,
+            			month,
+            			prd,
+            			ing},
+            	success : function(data) {
+            		updateTable(data, type);
+            		console.log(data);
+            	},
+            	error : function() {
+	                alert("내역을 불러오는 데 실패했습니다.");
 	            }
-	        });
-	    }
-	    
-	    // 발주 내역 가져오기
-	    function loadOrderList() {
-	        $.ajax({
-	            url : '/inOut/ordersInsert',
-	            method : 'GET',
-	            success : function(data) {
-	                updateTable(data, 'order');
-	            },
-	            error : function() {
-	                alert("발주 내역을 불러오는 데 실패했습니다.");
-	            }
-	        });
-	    }
+            });
+        }
 	    
 	 	// 당일 날짜 가져오기
 	    function loadTodayDate() {
@@ -285,42 +320,6 @@
 	            tbody.append(row);
 	        });
 	    }
-	
-	    // 원재료 목록 필터
-	    function loadRawmatList() {
-	        $("#inOutTable tr").each(function() {
-	            var rowText = $(this).text().toLowerCase();
-	            if (rowText.includes("g2")) {
-	                $(this).show();
-	            } else {
-	                $(this).hide();
-	            }
-	        });
-	    }
-	
-	    // 완제품 목록 필터
-	    function loadFinprdList() {
-	        $("#inOutTable tr").each(function() {
-	            var rowText = $(this).text().toLowerCase();
-	            if (rowText.includes("g1")) {
-	                $(this).show();
-	            } else {
-	                $(this).hide();
-	            }
-	        });
-	    }
-	    
-	 	// 품목 필터
-        function loadItemList(item) {
-        	$("#inOutTable tr").each(function() {
-        		var rowText = $(this).text().toLowerCase();
-        		if (rowText.includes(item)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
 	    
 	 	// 검색
         function searchData(keyword) {
@@ -333,22 +332,13 @@
                 }
             });
         }
-
+	 	
         // 테이블에서 행 클릭 시 선택 처리
         $("#inOutTable").on('click', 'tr', function() {
             $(this).toggleClass('selected');
             $(this).css("background-color", "black");
             $(this).css("color", "white");
         });
-
-	    
-     	// 업체 검색 모달에서 선택
-        $("#selectCompanyBtn").click(function() {
-            var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
-            $("#companyName").val(selectedCompanyName);
-            $('#coFilterModal').modal('hide');
-        });
-     	
 	</script>
 </body>
 </html>
