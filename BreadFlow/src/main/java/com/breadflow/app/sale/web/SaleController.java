@@ -57,9 +57,9 @@ public class SaleController {
     
     // 가맹점 매출 조회
     @GetMapping("/daySale")
-    @ResponseBody
-    public String daySale() {
+    public String daySale(Model model) {
 		List<SaleVO> list = saleService.selectSales();
+		model.addAttribute("dList",list);
     	return "sale/daySale";
     }
     
