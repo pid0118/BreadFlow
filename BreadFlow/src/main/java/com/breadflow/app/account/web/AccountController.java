@@ -116,12 +116,20 @@ public class AccountController {
 		return result;
 	}
 	
+	// 사원 단건 업데이트
+	@PostMapping("updateAccountInfo.do")
+	@ResponseBody
+	public int updateAccountInfo(AccountVO accountVO) {
+		System.out.println("\n[AccountController.java] updateAccountInfo - accountVO: " + accountVO + "\n");
+		
+		int result = accountService.UpdateMember(accountVO);
+		return 1;
+	}
+	
 	// 사원 신규등록 AJAX
 	@PostMapping("insertEmployeeAccount.do")
 	@ResponseBody
 	public int employeeAccountInsert(AccountVO accountVO) {
-		System.out.println("\n" + accountVO.getContractDate() + "\n");
-		
 		int result = accountService.insertMember(accountVO);
 		return result;
 	}
@@ -153,6 +161,7 @@ public class AccountController {
 		System.out.println("\nlist: " + list + "\n");
 		return list;
 	}
+	
 	
 	
 }

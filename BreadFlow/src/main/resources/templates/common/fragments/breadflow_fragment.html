@@ -56,7 +56,7 @@
 <th:block th:fragment="NavFrag">
 	<div class="left-side-bar">
 			<div class="brand-logo">
-				<a href="index.html">
+				<a href="/welcome">
 					<img src="/vendors/images/breadFlowLogoWhite.png">
 					
 				</a>
@@ -68,21 +68,18 @@
 				<div class="sidebar-menu">
 				
 					<!-- ============================================================== -->
-					<!-- [박진석|24.11.20] 세션(로그인)값에 따라 보이는 메뉴 다르게 설정-->
+					<!-- [박진석|24.11.21] 로그인 세션(권한)값에 따라 보이는 메뉴 다르게 설정-->
 					<th:block th:switch="${session.div}">
+					    
+					    
 					    
 					    <!-- "본사"인 경우 -->
 					    <ul id="accordion-menu" th:case="본사">
 					    	<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/accountList}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-house"></span
 									><span class="mtext">계정 관리</span>
 								</a>
-								<ul class="submenu">
-									<li><a href="index.html">Dashboard style 1</a></li>
-									<li><a href="index2.html">Dashboard style 2</a></li>
-									<li><a href="index3.html">Dashboard style 3</a></li>
-								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
@@ -90,15 +87,8 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a href="form-basic.html">Form Basic</a></li>
-									<li>
-										<a href="advanced-components.html">Advanced Components</a>
-									</li>
-									<li><a href="form-wizard.html">Form Wizard</a></li>
-									<li><a href="html5-editor.html">HTML5 Editor</a></li>
-									<li><a href="form-pickers.html">Form Pickers</a></li>
-									<li><a href="image-cropper.html">Image Cropper</a></li>
-									<li><a href="image-dropzone.html">Image Dropzone</a></li>
+									<li><a th:href="@{/welcome}">주문 신청</a></li>
+									<li><a th:href="@{/welcome}">주문/발주 현황 조회</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -107,39 +97,25 @@
 									><span class="mtext">일정/생산 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a href="basic-table.html">Basic Tables</a></li>
-									<li><a href="datatable.html">DataTables</a></li>
+									<li><a th:href="@{/welcome}">생산계획 관리</a></li>
+									<li><a th:href="@{/welcome}">자재소요계획 관리</a></li>
+									<li><a th:href="@{/welcome}">자재소요계획 조회</a></li>
 								</ul>
 							</li>
 							<li>
-								<a href="calendar.html" class="dropdown-toggle no-arrow">
+								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-calendar4-week"></span
 									><span class="mtext">불량 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">불량 신청 내역 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/welcome}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-archive"></span
 									><span class="mtext"> 재고 관리 </span>
 								</a>
-								<ul class="submenu">
-									<li><a href="ui-buttons.html">Buttons</a></li>
-									<li><a href="ui-cards.html">Cards</a></li>
-									<li><a href="ui-cards-hover.html">Cards Hover</a></li>
-									<li><a href="ui-modals.html">Modals</a></li>
-									<li><a href="ui-tabs.html">Tabs</a></li>
-									<li>
-										<a href="ui-tooltip-popover.html">Tooltip &amp; Popover</a>
-									</li>
-									<li><a href="ui-sweet-alert.html">Sweet Alert</a></li>
-									<li><a href="ui-notification.html">Notification</a></li>
-									<li><a href="ui-timeline.html">Timeline</a></li>
-									<li><a href="ui-progressbar.html">Progressbar</a></li>
-									<li><a href="ui-typography.html">Typography</a></li>
-									<li><a href="ui-list-group.html">List group</a></li>
-									<li><a href="ui-range-slider.html">Range slider</a></li>
-									<li><a href="ui-carousel.html">Carousel</a></li>
-								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
@@ -147,12 +123,7 @@
 									><span class="mtext">입출고 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a href="bootstrap-icon.html">Bootstrap Icons</a></li>
-									<li><a href="font-awesome.html">FontAwesome Icons</a></li>
-									<li><a href="foundation.html">Foundation Icons</a></li>
-									<li><a href="ionicons.html">Ionicons Icons</a></li>
-									<li><a href="themify.html">Themify Icons</a></li>
-									<li><a href="custom-icon.html">Custom Icons</a></li>
+									<li><a th:href="@{/welcome}">입출고 거래 내역 조회</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -161,8 +132,12 @@
 									><span class="mtext">제품 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/productListAll}">제품목록</a></li>
-									<li><a href="knob-chart.html">BOM</a></li>
+									<li><a th:href="@{/productListAll}">제품 목록</a></li>
+									<li><a th:href="@{/welcome}">제품 관리</a></li>
+									<li><a th:href="@{/welcome}">BOM 조회</a></li>
+									<li><a th:href="@{/welcome}">BOM 관리</a></li>
+									<li><a th:href="@{/welcome}">원/부재료 조회</a></li>
+									<li><a th:href="@{/welcome}">원/부재료 관리</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -171,43 +146,19 @@
 									><span class="mtext">매출 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a href="video-player.html">Video Player</a></li>
-									<li><a href="login.html">Login</a></li>
-									<li><a href="forgot-password.html">Forgot Password</a></li>
-									<li><a href="reset-password.html">Reset Password</a></li>
-								</ul>
-							</li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-bug"></span
-									><span class="mtext">거래대금 관리</span>
-								</a>
-								<ul class="submenu">
-									<li><a href="400.html">400</a></li>
-									<li><a href="403.html">403</a></li>
-									<li><a href="404.html">404</a></li>
-									<li><a href="500.html">500</a></li>
-									<li><a href="503.html">503</a></li>
-								</ul>
-							</li>
-	
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-back"></span
-									><span class="mtext">원/부재료 관리</span>
-								</a>
-								<ul class="submenu">
-									<li><a href="blank.html">원/부재료 등록</a></li>
-									<li><a href="contact-directory.html">원/부재료 목록</a></li>
+									<li><a th:href="@{/welcome}">매출 내역 조회</a></li>
+									<li><a th:href="@{/welcome}">매출 상세 내역 조회</a></li>
 								</ul>
 							</li>
 					    </ul>
 					    <!-- "본사" 끝 -->
 					    
+					    
+					    
 					    <!-- "공급업체"인 경우 -->
 					    <ul id="accordion-menu" th:case="공급업체">
 					    	<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/account}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-house"></span
 									><span class="mtext">계정 관리</span>
 								</a>
@@ -217,23 +168,33 @@
 									<span class="micon bi bi-textarea-resize"></span
 									><span class="mtext">주문/발주 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">주문 현황 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-table"></span
 									><span class="mtext">일정/생산 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">자재소요계획 관리</a></li>
+								</ul>
 							</li>
 							<li>
-								<a href="calendar.html" class="dropdown-toggle no-arrow">
+								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-calendar4-week"></span
 									><span class="mtext">불량 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">불량 신청</a></li>
+									<li><a th:href="@{/welcome}">내 불량 신청 내역 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/welcome}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-archive"></span
-									><span class="mtext">재고 관리</span>
+									><span class="mtext"> 재고 관리 </span>
 								</a>
 							</li>
 							<li class="dropdown">
@@ -241,39 +202,20 @@
 									<span class="micon bi bi-command"></span
 									><span class="mtext">입출고 관리</span>
 								</a>
-							</li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-pie-chart"></span
-									><span class="mtext">제품 관리</span>
-								</a>
-							</li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-file-earmark-text"></span
-									><span class="mtext">매출 관리</span>
-								</a>
-							</li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-bug"></span
-									><span class="mtext">거래대금 관리</span>
-								</a>
-							</li>
-	
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-back"></span
-									><span class="mtext">원/부재료 관리</span>
-								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">입출고 등록</a></li>
+									<li><a th:href="@{/welcome}">내 입출고 거래 내역 조회</a></li>
+								</ul>
 							</li>
 					    </ul>
 					    <!-- "공급업체" 끝 -->
 					    
+					    
+					    
 					    <!-- "제조공장"인 경우 -->
 					    <ul id="accordion-menu" th:case="제조공장">
 					    	<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/account}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-house"></span
 									><span class="mtext">계정 관리</span>
 								</a>
@@ -283,23 +225,34 @@
 									<span class="micon bi bi-textarea-resize"></span
 									><span class="mtext">주문/발주 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">발주 신청</a></li>
+									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-table"></span
 									><span class="mtext">일정/생산 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">생산계획 관리</a></li>
+								</ul>
 							</li>
 							<li>
-								<a href="calendar.html" class="dropdown-toggle no-arrow">
+								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-calendar4-week"></span
 									><span class="mtext">불량 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">불량 신청</a></li>
+									<li><a th:href="@{/welcome}">내 불량 신청 내역 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
+								<a th:href="@{/welcome}" class="dropdown-toggle no-arrow">
 									<span class="micon bi bi-archive"></span
-									><span class="mtext">재고 관리</span>
+									><span class="mtext"> 재고 관리 </span>
 								</a>
 							</li>
 							<li class="dropdown">
@@ -307,37 +260,148 @@
 									<span class="micon bi bi-command"></span
 									><span class="mtext">입출고 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">입출고 등록</a></li>
+									<li><a th:href="@{/welcome}">내 입출고 거래 내역 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-pie-chart"></span
 									><span class="mtext">제품 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/productListAll}">제품 목록</a></li>
+									<li><a th:href="@{/welcome}">BOM 조회</a></li>
+									<li><a th:href="@{/welcome}">원/부재료 조회</a></li>
+								</ul>
+							</li>
+					    </ul>
+					    <!-- "제조공장" 끝 -->
+					    
+					    
+					    
+					    <!-- "물류창고"인 경우 -->
+					    <ul id="accordion-menu" th:case="물류창고">
+					    	<li class="dropdown">
+								<a th:href="@{/account}" class="dropdown-toggle no-arrow">
+									<span class="micon bi bi-house"></span
+									><span class="mtext">계정 관리</span>
+								</a>
+							</li>
+							<li class="dropdown">
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-textarea-resize"></span
+									><span class="mtext">주문/발주 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">발주 신청</a></li>
+									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-calendar4-week"></span
+									><span class="mtext">불량 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">불량 신청</a></li>
+									<li><a th:href="@{/welcome}">내 불량 신청 내역 조회</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a th:href="@{/welcome}" class="dropdown-toggle no-arrow">
+									<span class="micon bi bi-archive"></span
+									><span class="mtext"> 재고 관리 </span>
+								</a>
+							</li>
+							<li class="dropdown">
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-command"></span
+									><span class="mtext">입출고 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">입출고 등록</a></li>
+									<li><a th:href="@{/welcome}">내 입출고 거래 내역 조회</a></li>
+								</ul>
+							</li>
+					    </ul>
+					    <!-- "물류창고" 끝 -->
+					    
+					    
+					    
+					    <!-- "가맹점"인 경우 -->
+					    <ul id="accordion-menu" th:case="가맹점">
+					    	<li class="dropdown">
+								<a th:href="@{/account}" class="dropdown-toggle no-arrow">
+									<span class="micon bi bi-house"></span
+									><span class="mtext">계정 관리</span>
+								</a>
+							</li>
+							<li class="dropdown">
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-textarea-resize"></span
+									><span class="mtext">주문/발주 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">발주 신청</a></li>
+									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+								</ul>
+							</li>
+							<li>
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-calendar4-week"></span
+									><span class="mtext">불량 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">불량 신청</a></li>
+									<li><a th:href="@{/welcome}">내 불량 신청 내역 조회</a></li>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a th:href="@{/welcome}" class="dropdown-toggle no-arrow">
+									<span class="micon bi bi-archive"></span
+									><span class="mtext"> 재고 관리 </span>
+								</a>
+							</li>
+							<li class="dropdown">
+								<a href="javascript:;" class="dropdown-toggle">
+									<span class="micon bi bi-command"></span
+									><span class="mtext">입출고 관리</span>
+								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">입출고 등록</a></li>
+									<li><a th:href="@{/welcome}">내 입출고 거래 내역 조회</a></li>
+								</ul>
 							</li>
 							<li class="dropdown">
 								<a href="javascript:;" class="dropdown-toggle">
 									<span class="micon bi bi-file-earmark-text"></span
 									><span class="mtext">매출 관리</span>
 								</a>
+								<ul class="submenu">
+									<li><a th:href="@{/welcome}">매출 내역 조회</a></li>
+									<li><a th:href="@{/welcome}">매출 상세 내역 조회</a></li>
+									<li><a th:href="@{/welcome}">POS</a></li>
+								</ul>
 							</li>
-							<li class="dropdown">
-								<a href="javascript:;" class="dropdown-toggle">
-									<span class="micon bi bi-back"></span
-									><span class="mtext">원/부재료 관리</span>
+					    </ul>
+					    <!-- "가맹점" 끝 -->
+					    
+					    
+					    
+					    <!-- 로그인 안한 경우 -->
+					    <ul id="accordion-menu" th:case="*">
+					    	<li class="dropdown">
+								<a th:href="@{/index}" class="dropdown-toggle no-arrow">
+									<span class="micon bi bi-house"></span
+									><span class="mtext">로그인</span>
 								</a>
 							</li>
 					    </ul>
-					    <!-- "제조공장" 끝 -->
+					    <!-- 비로그인 끝 -->
 					    
-					    <!-- "물류창고"인 경우 -->
-					    <ul id="accordion-menu" th:case="물류창고">
-					    </ul>
-					    <!-- "물류창고" 끝 -->
 					    
-					    <!-- "가맹점"인 경우 -->
-					    <ul id="accordion-menu" th:case="가맹점">
-					    </ul>
-					    <!-- "가맹점" 끝 -->
 					</th:block>
 					<!-- 세션에 따라 보이는 메뉴 다르게 끝-->
 					<!-- ============================================================== -->
