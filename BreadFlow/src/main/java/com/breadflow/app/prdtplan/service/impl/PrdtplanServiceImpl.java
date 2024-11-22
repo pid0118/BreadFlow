@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.breadflow.app.prdtplan.mapper.PrdtplanMapper;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
+import com.breadflow.app.prdtplan.service.PrdtplanVO;
 
 @Service
 public class PrdtplanServiceImpl implements PrdtplanService {
@@ -12,6 +13,13 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	
 	public PrdtplanServiceImpl(PrdtplanMapper prdtplanMapper) {
 		this.prdtplanMapper = prdtplanMapper;
+	}
+
+	@Override
+	public int insertPrdtplan(PrdtplanVO prdtplanVO) {
+		System.out.println("\n[PrdtplanServiceImpl.java] insertPrdtplan 접근 완료!\n");
+		int result = prdtplanMapper.insertPrdtplan(prdtplanVO);
+		return result;
 	}
 	
 	

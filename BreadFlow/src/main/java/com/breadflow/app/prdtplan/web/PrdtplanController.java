@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.prdtplan.service.PrdtplanService;
+import com.breadflow.app.prdtplan.service.PrdtplanVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PrdtplanController {
@@ -22,7 +25,18 @@ public class PrdtplanController {
 	
 	@PostMapping("insertPrdtplan.do")
 	@ResponseBody
-	public int insertPrdtplan() {
-		return 1;
+	public int insertPrdtplan(PrdtplanVO prdtplanVO, HttpSession session) {
+		System.out.println("\n[PrdtplanController.java] insertPrdtplan.do - prdtplanVO: " + prdtplanVO + "\n");
+		String writer = (String) session.getAttribute("memNo");
+		
+		if(writer == "" || writer == null) {
+			return 0;
+		}
+		
+		prdtplanVO.setWriter(writer);
+		int result = prdtplanService.insertPrdtplan(prdtplanVO);
+		
+		System.out.println("\n[PrdtplanController.java] insertPrdtplan.do - result: " + result + "\n");
+		return result;
 	}
 }

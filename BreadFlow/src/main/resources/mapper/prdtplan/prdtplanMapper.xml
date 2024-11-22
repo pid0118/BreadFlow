@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.prdtplan.mapper.PrdtplanMapper">
+	
+	<!-- 단건입력 -->
+	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
+		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">
+			SELECT 'SP' || PLANSEQ('production_plan','production_plan_no') FROM dual;
+		</selectKey>
+	
+		INSERT INTO production_plan
+		(
+			production_plan_no
+			, start_date
+			, last_date
+			, delivery_location
+			, production_company
+			, writer
+		) VALUES (
+			#{productionPlanNo}
+			, #{startDate}
+			, #{lastDate}
+			, #{deliveryLocation}
+			, #{productionCompany}
+			, #{writer}
+		)
+	</insert>
+
+</mapper>
