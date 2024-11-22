@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.sale.mapper.SaleMapper">
-	<select id="selectSaleList" resultType="com.breadflow.app.sale.service.SaleVO">
+	<select id="selectSaleList" resultType="SaleVO">
 		SELECT 
 		    co.region,
 		    sa.company_name,
@@ -35,12 +35,41 @@
 		</where>
 	</select>
 	
-	<insert id="insertSale" parameterType="saleVO">
-		INSERT INTO sale_detail_history
-		VALUES (( SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
+	<insert id="insertSale" parameterType="PosVO">
+		INSERT INTO sale_detail_history (sale_no
+										,product_code
+										,sale_price
+										,quantity
+										,company_name
+										,last)
+		VALUES ('PA' || (SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
 		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})
 		        ,#{salePrice}
-		        ,#{quantity});
+		        ,#{quantity}
+		        ,'test'
+		        ,'주문')
 	</insert>
 	
+	<insert id="insertSales" parameterType="PosVO">
+		INSERT INTO sales(sales_no
+                 ,sales_date
+                 ,total_quantity
+                 ,day_sales
+                 ,company_name)
+		VALUES('MA' || GETSEQ('sales','sales_no')
+		       ,sysdate
+		       ,(SELECT SUM(sale_price)*SUM(quantity) AS day_sales
+		        FROM sale_detail_history
+		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
+		      ,(SELECT SUM(quantity) AS total
+		        FROM sale_detail_history
+		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
+		      ,'test');
+	</insert>
+	
+	<select id="selectSales" resultType="PosVO">
+		SELECT day_sales
+			  ,sales_date
+		FROM sales
+	</select>
 </mapper>
