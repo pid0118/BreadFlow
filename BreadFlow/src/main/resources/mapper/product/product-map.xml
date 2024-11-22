@@ -107,10 +107,16 @@
 	</update>
 	
 	<!-- 제품 삭제 -->
-	<delete id="deleteProduct" parameterType="ProductVO">
+	<delete id="deleteProduct" parameterType="String">
 		DELETE FROM product
 		Where product_code = #{productCode}
 	</delete>
 	
-
+	<select id="" parameterType="int">
+		SELECT  orders_item
+		FROM	orders_detale
+		WHERE	orders_item = #{ordersItem}
+	</select>
+	
+	
 </mapper>

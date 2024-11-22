@@ -71,7 +71,7 @@
     </div>
 	<div class="gap-2 mb-3">
 	        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/product/Insert}'|">등록</button>
-	        <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+	        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
     </div>
     
     <!-- 데이터 테이블 시작 -->
@@ -96,11 +96,11 @@
             </thead>
             <tbody>
 
-                <th:block th:each="info, sts : ${products}">
+                <th:block th:each="info : ${products}">
                     <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
                     	<td>
                     		<div class="dt-checkbox">
-                                <input type="checkbox" name="id[]" value="">
+                                <input type="checkbox" name="checkProductCode">
                                 <span class="dt-checkbox-lable"></span>
                         	</div>
                     	</td>
@@ -219,10 +219,6 @@
 
 	<script>
 	// 가격에 , 찍기
-	    function comma(num){
-			return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		}
-		
 	  
     
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
@@ -320,12 +316,8 @@
            
         });
         
-
-        
-        
         
         // 체크박스 체크후 삭제버튼 클릭시 해당품목을 삭제하시겠습니까? 작은모달창 질문후 예 버튼 클릭시 해당 품목삭제기능 
-        		
         $(document).ready(function() {
 		    // 전체 선택 체크박스 클릭 시
 		    $('#example-select-all').on('click', function() {
@@ -348,12 +340,39 @@
 		            $('#example-select-all').prop('checked', false);
 		        }
 		    });
+            
+		    
+		    
+		    
 		});
         
-     
+      //체크박스 클릭시 삭제하기 기능 전체삭제까지
+		function checkBoxDeleteClick(){
+    	  	let delcheck = confirm("삭제하시겠습니까?")
+    	  	if(delcheck == false){
+    	  		return
+    	  	}
+        	var checkBoxArr = [];
+        	$("[name='checkProductCode']:checked").each(function(){
+        		checkBoxArr.push($(this).closest('td').next().text()); // 체크된 항목 값 배열에 push
+        	})
+        	$.ajax({
+        		url : "product",
+        		type : "DELETE",
+        		contentType : 'application/json',
+        		data : JSON.stringify(checkBoxArr),
+        		success : function(result){
+        			location.reload(true);
+        		},
+        		error : function(xhr, status, error){
+        			alert("삭제에 실패했습니다.");
+        		}
+        		
+        	});
+        	
+        }			
         
         // 카테고리 선택시 테이블에 카테고리 선택항목만 열람
-       
         $.fn.dataTable.ext.search.push(function(setting, data, dataIndex){
         	
         	var trNode = setting.aoData[dataIndex].nTr;
@@ -372,7 +391,8 @@
         	return false;
         });
         	
-            	
+        
+        
         
         		
     </script>
