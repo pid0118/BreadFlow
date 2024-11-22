@@ -19,4 +19,10 @@ public class InferAnswerVO {
 	@JsonFormat(pattern = "yy/MM/dd")
 	private Date answerDate;
 	private String inferNo;
+	
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
+	private String inferApplicationDate;
+	private String confrimLocation;
+	private String confirmWhether;
 }

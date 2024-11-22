@@ -1,19 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.infer.mapper.InferMapper">
-	<!-- <select id="selectInferList" resultType="InferHistoryVO">
-	
+	<select id="selectInferList" resultType="InferHistoryVO">
+		SELECT
+		    INFER_NO,
+		    INFER_APPLICATION_DATE,
+		    CONFIRM_LOCATION,
+		    (SELECT
+		            INFER_ITEM
+		     FROM
+		            INFER_DETAIL_HISTORY
+		     WHERE
+		            INFER_NO = IH.INFER_NO AND ROWNUM = 1) AS INFER_ITEM,
+		    (SELECT
+		            SUM(INFER_QUANTITY)
+		     FROM
+		            INFER_DETAIL_HISTORY
+		     WHERE
+		            INFER_NO = IH.INFER_NO
+		     GROUP BY
+		            INFER_NO) AS INFER_QUANTITY,
+		    CONFIRM_WHETHER
+		FROM
+		    INFER_HISTORY IH
+		<if test="clear != null and clear != ''">
+		WHERE
+			<if test="confirmComp != null and confirmComp != ''">
+			AND CONFIRM_LOCATION = #{confirmComp}
+			</if>
+			<if test="year != null and year != ''">
+			AND EXTRACT(YEAR FROM CAST(INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{year})
+			</if>
+			<if test="month != null and month != ''">
+			AND EXTRACT(MONTH FROM CAST(INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
+			</if>
+			<if test="checked != null and checked != ''">
+			AND CONFIRM_WHETHER = #{checked}
+			</if>
+			<if test="unchecked != null and unchecked != ''">
+			AND CONFIRM_WHETHER = #{unchecked}
+			</if>
+		</if>		    
+		ORDER BY
+		    INFER_NO
 	</select>
-	<select id="selectInferListDetail" resultType="InferHistoryVO" parameterType="InferHistoryVO">
-	
+	<select id="selectInferListDetail" resultType="InferDetailVO" parameterType="String">
+		SELECT
+		    IDH.INFER_DETAIL_CODE,
+		    IDH.INFER_ITEM,
+		    IDH.TOTAL_QUANTITY,
+		    IDH.INFER_QUANTITY,
+		    IDH.INFER_TYPE,
+		    IDH.INFER_IMAGE,
+		    IDH.INFER_NO,
+		    IDH.INSTORE_NO,
+		    IH.INFER_APPLICATION_DATE,
+		    IH.CONFIRM_LOCATION,
+		    IH.CONFIRM_WHETHER,
+		    I.INSTORE_DATE
+		FROM
+		         INFER_DETAIL_HISTORY IDH
+		    LEFT JOIN INFER_HISTORY IH ON IDH.INFER_NO = IH.INFER_NO
+		    LEFT JOIN INSTORE I ON I.INSTORE_NO = IDH.INSTORE_NO
+		WHERE
+		    IDH.INFER_NO = #{inferNo}
+		ORDER BY
+		    IDH.INFER_DETAIL_CODE
 	</select>
-	<insert id="insertInferHistory" parameterType="InferHistoryVO">
-	
+	<insert id="insertInferDetail" parameterType="InferDetailVO">
+		INSERT INTO INFER_DETAIL_HISTORY 
+				(
+		        infer_detail_code,
+		        infer_item,
+		        total_quantity,
+		        infer_quantity,
+		        infer_type,
+		        infer_no,
+		        instore_no
+		    	)
+		VALUES 	(
+				('BUA' || (SELECT GETSEQ('infer_detail_history','infer_detail_code') FROM dual))
+		        , #{inferItem}
+		        , #{totalQuantity}
+		        , #{inferQuantity}
+		        , #{inferType}
+		        , #{inferNo}
+		        , #{instoreNo}
+		        )
 	</insert>
-	<update id="updateInferHistory" parameterType="InferHistoryVO">
-	
+	<insert id="insertInferHistory" parameterType="InferHistoryVO">
+		INSERT INTO INFER_HISTORY
+			  	(
+			  	infer_no,
+                infer_application_date,
+                confirm_location,
+                confirm_whether
+                )
+		VALUES  (
+        	    ('BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual))
+        	    , sysdate
+                , #{confirmLocation}
+                , #{confirmWhether}
+                )
+	</insert>
+	<update id="updateInferHistory" parameterType="InferAnswerVO">
+		UPDATE 	INFER_HISTORY
+		SET		CONFIRM_WHETHER = '확인'
+		WHERE	INFER_NO = #{inferNo};
 	</update>
 	<insert id="insertInferAnswer" parameterType="InferAnswerVO">
-	
-	</insert> -->
+		INSERT INTO INFER_ANSWER 
+		    	(
+		        infer_answer_no,
+		        disposal_whether,
+		        answer,
+		        manager,
+		        answerer,
+		        answer_date,
+		        infer_no
+		    	)
+		VALUES  (
+		        ('BUA' || (SELECT GETSEQ('infer_answer','infer_answer_no') FROM dual)
+		        , #{disposalWhether}
+		        , #{answer}
+		        , #{manager}
+		        , #{answerer}
+		        , sysdate
+		        , #{inferNo}
+		        );
+	</insert>
+	<select id="selectCompany" resultType="CompanyVO">
+		SELECT		COMPANY_NO
+					, DIV
+					, COMPANY_NAME
+					, COMPANY_ADDRESS
+					, COMPANY_TEL
+					, BRN
+					, REGION
+		FROM		COMPANY
+		ORDER BY 	COMPANY_NO
+	</select>
 </mapper>
