@@ -23,7 +23,7 @@ public class OrderingServiceImpl implements OrderingService{
 	
 	@Override
 	public List<OrderingVO> selectOrderingList() {
-		return null;
+		return orderingMapper.selectOrderingList();
 	}
 
 	@Override

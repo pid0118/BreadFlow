@@ -7,8 +7,10 @@
 		       , ordering_request_manager
 		       , total_price
 		       , approval_whether
-		       , ordering_approval_manager
+		       , orderform_no
+		       , delivery_desire_date
 		FROM   ordering
+		WHERE  approval_whether IN ('d3', 'd4')
 	</select>
 	
 	<insert id="insertOrdering">

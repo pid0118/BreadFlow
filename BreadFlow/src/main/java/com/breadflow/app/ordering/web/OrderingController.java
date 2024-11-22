@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.ordering.service.OrderingDetailVO;
 import com.breadflow.app.ordering.service.OrderingService;
@@ -31,7 +33,20 @@ public class OrderingController {
 	
 	@PostMapping("/ordering/insert")
 	public String insertOrdering(@RequestBody Map<String, Object> ordering) {
-		int result = orderingService.insertOrdering(ordering);
-		return "ordering/insert";
+		orderingService.insertOrdering(ordering);
+		return "redirect:/order/list";
 	}
+	
+	@GetMapping("/order/list")
+	public String orderListPage(Model model) {
+		return "ordering/orderlist";
+	}
+	
+	@GetMapping("/ordering/list")
+	@ResponseBody
+	public List<OrderingVO> selectOrderList(){
+		List<OrderingVO> list = orderingService.selectOrderingList();
+		return list;
+	}
+	
 }

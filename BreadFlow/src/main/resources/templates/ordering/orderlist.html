@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div class="pd-20 card-box mb-30">
+	<div class="clearfix mb-20">
+		<div class="tab">
+			<ul class="nav nav-tabs customtab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" href="#ordering" role="tab" aria-selected="true" onclick="">발주 현황</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" href="#orders" role="tab" aria-selected="false" onclick="">주문 현황</a>
+				</li>
+			</ul>
+		</div>
+		<div class="tab-content">
+			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
+				<div class="pd-20">
+					<div class="pull-left">
+						<h4 class="text-blue h4">발주 현황</h4>
+					</div>
+					<div class="pull-right">
+						<div class="form-group">
+							<select class="custom-select2 form-control" multiple="multiple">
+								<optgroup label="s">
+									<option value="AK">Alaska</option>
+									<option value="HI">Hawaii</option>
+								</optgroup>
+								<optgroup label="Pacific Time Zone">
+									<option value="CA">California</option>
+									<option value="NV">Nevada</option>
+									<option value="OR">Oregon</option>
+									<option value="WA">Washington</option>
+								</optgroup>
+								<optgroup label="Mountain Time Zone">
+									<option value="AZ">Arizona</option>
+									<option value="CO">Colorado</option>
+									<option value="ID">Idaho</option>
+									<option value="MT">Montana</option>
+									<option value="NE">Nebraska</option>
+									<option value="NM">New Mexico</option>
+									<option value="ND">North Dakota</option>
+									<option value="UT">Utah</option>
+									<option value="WY">Wyoming</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+					<div class="table-responsive">
+						<table class="table" id="orderingTable">
+							<thead>
+								<tr>
+									<th scope="col">발주코드</th>
+									<th scope="col">발주일자</th>
+									<th scope="col">발주 요청자</th>
+									<th scope="col">총 금액</th>
+									<th scope="col">발주 상태</th>
+									<th scope="col">승인</th>
+									<th scope="col">거절</th>
+								</tr>
+							</thead>
+							<tbody></tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="orders" role="tabpanel">
+				<div class="pd-20">
+					<div class="pull-left">
+						<h4 class="text-blue h4">주문 현황</h4>
+					</div>
+					<div class="pull-right">
+							
+					</div>
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<tr>
+									<th scope="col">#</th>
+									<th scope="col">First</th>
+									<th scope="col">Last</th>
+									<th scope="col">Handle</th>
+									<th scope="col">Tag</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="table-active">
+									<th scope="row">1</th>
+									<td>Mark</td>
+									<td>Otto</td>
+									<td>@mdo</td>
+									<td><span class="badge badge-primary">Primary</span></td>
+								</tr>
+								<tr class="table-primary">
+									<th scope="row">2</th>
+									<td>Jacob</td>
+									<td>Thornton</td>
+									<td>@fat</td>
+									<td><span class="badge badge-secondary">Secondary</span></td>
+								</tr>
+								<tr class="table-danger">
+									<th scope="row">3</th>
+									<td>Larry</td>
+									<td>the Bird</td>
+									<td>@twitter</td>
+									<td><span class="badge badge-success">Success</span></td>
+								</tr>
+								<tr class="table-light">
+									<th scope="row">3</th>
+									<td>Larry</td>
+									<td>the Bird</td>
+									<td>@twitter</td>
+									<td><span class="badge badge-success">Success</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>				
+<script>
+	orderingList();
+
+	function orderingList(){
+		fetch('/ordering/list')
+		.then(response => response.json())
+		.then(data => {
+			console.log(data);
+			data.forEach(data => {
+				let ele;
+				if(data.approvalWhether == 'd3'){
+					ele = `<tr class="table-light">
+						<td>${data.orderingCode}</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+						<td><span class="badge badge-secondary">요청</span></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm">승인</button></td>
+						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
+					</tr>`
+				} else {
+					ele = `<tr class="table-danger">
+						<td>${data.orderingCode}</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+						<td><span class="badge badge-danger">긴급</span></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm">승인</button></td>
+						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
+					</tr>`
+				}
+				console.log(ele);
+				$('#orderingTable tbody').append(ele);
+			})
+
+		})
+		.err(err => console.log(err))
+	}
+	
+</script>
+</body>
+</html>
