@@ -37,6 +37,12 @@
 			<ul class="dropdown-menu" id="monthlyMenu">
  				<li th:each="num : ${#numbers.sequence(1,12)}"><a class="dropdown-item month">[[ ${num} ]]</a></li>
             </ul>
+            <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="confirmCompBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
+			<ul class="dropdown-menu" id="companyMenu">
+ 				<li th:each="company : ${companyList}">
+                    <a class="dropdown-item company">[[ ${company.companyName} ]]</a>
+                </li>
+            </ul>
 		</div>
 		<div class="pd-20 input-group mb-3">
 			<input class="form-control" type="text" id="searchKeyword">
@@ -48,7 +54,7 @@
 			<button type="button" class="btn btn-primary input-group-button" id="dateFilterBtn">검색</button>
 		</div>
 		<div class="pd-20">
-			<table class="table stripe hover multiple-select-row nowrap" id="inferTable">
+			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
 					<tr>
 						<th class="table-plus">불량 입력 일자</th>
@@ -69,13 +75,12 @@
     <script>
 	 	// 조건
 	 	var companyInput = null;
-		var comp = null;
-		var ing = null;
-		var prd = null;
-		var item = null;
+	 	var clear = null;
 		var year = null;
 		var month = null;
-		var confirm = null;
+		var checked = null;
+		var unchecked = null;
+		var confirmComp = null;
    	
         $(document).ready(function() {
         	
@@ -86,55 +91,57 @@
             changeFilter();
             
             function clear() {
-            	comp = null;
-            	ing = null;
-            	prd = null;
-    			item = null;
+            	clear = null;
     			year = null;
     			month = null;
-    			confrim = null;
+    			checked = null;
+    			unchecked =  null;
+    			confirmComp = null;
+            }
+            
+            function confirmExClear() {
+    			year = null;
+    			month = null;
+    			confirmComp = null;
             }
             
             // 전체 내역 버튼 클릭
-            $("seeAll").click(function() {
-            	$("")
-            });
-            
-            // 입고 내역 버튼 클릭
-            $("#instoreBtn").click(function() {
+            $("#seeAll").click(function() {
             	$("#yearlyBtn").text('연도');
             	$("#monthlyBtn").text('월');
-            	$("#itemBtn").text('품목');
+            	$("#confirmCompBtn").text('확인 위치');
             	clear();
             	changeFilter();
             });
-
-            // 출고 내역 버튼 클릭
-            $("#outstoreBtn").click(function() {
+            
+            // 미확인 내역 버튼 클릭
+            $("#seeUnchecked").click(function() {
             	$("#yearlyBtn").text('연도');
             	$("#monthlyBtn").text('월');
-            	$("#itemBtn").text('품목');
-            	clear();
-                changeFilter();
-            });
-
-            // 원재료 버튼 클릭
-            $("#rawmatBtn").click(function() {
-            	prd = null;
-            	ing = 'ing';
+            	$("#confirmCompBtn").text('확인 위치');
+            	unchecked = '미확인';
+            	checked = null;
+            	clear = 'notClear';
+            	confirmExClear();
             	changeFilter();
             });
 
-            // 완제품 버튼 클릭
-            $("#finprdBtn").click(function() {
-            	ing = null;
-            	prd = 'prd';
+            // 확인 내역 버튼 클릭
+            $("#seeChecked").click(function() {
+            	$("#yearlyBtn").text('연도');
+            	$("#monthlyBtn").text('월');
+            	$("#confirmCompBtn").text('확인 위치');
+            	checked = '확인';
+            	unchecked = null;
+            	clear = 'notClear';
+            	confirmExClear();
             	changeFilter();
             });
-            
+
             // 연도별 필터 클릭
             $(document).on('click', '.year', function() {
                 year = $(this).text().trim();
+                clear = 'notClear';
                 $("#yearlyBtn").text(year);
                 changeFilter();
             });
@@ -142,14 +149,16 @@
             // 월별 필터 클릭
             $(document).on('click', '.month', function() {
                 month = $(this).text().trim();
+                clear = 'notClear';
                 $("#monthlyBtn").text(month);
                 changeFilter();
             });
             
-            // 품목별 필터 클릭
-            $(document).on('click', '.item', function() {
-                item = $(this).text().trim();
-                $("#itemBtn").text(item);
+            // 확인 위치별 필터 클릭
+            $(document).on('click', '.company', function() {
+                confirmComp = $(this).text().trim();
+                clear = 'notClear';
+                $("#confirmCompBtn").text(confirmComp);
                 changeFilter();
             });
             
@@ -171,34 +180,23 @@
                 var endDate = $("#endDate").val();
                 filterData(startDate, endDate);
             });
-            
-         	// 업체 검색 모달에서 선택
-            $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
-                $("#companyName").val(selectedCompanyName);
-                $('#coFilterModal').modal('hide');
-                comp = selectedCompanyName;
-                changeFilter();
-            });
 
         });
         
         // 필터값 전송
         function changeFilter() {
-        	var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/instores' : '/inOut/outstores';
-        	var type = $("input[name='options']:checked").val() === '입고' ? 'instore' : 'outstore';
         	$.ajax({
-            	url : url,
+            	url : '/infer/getInferList',
             	method : 'GET',
             	data : {companyInput,
-            			comp,
-            			item,
+            			clear,
             			year,
             			month,
-            			prd,
-            			ing},
+            			checked,
+            			unchecked,
+            			confirmComp},
             	success : function(data) {
-            		updateTable(data, type);
+            		updateTable(data);
             		console.log(data);
             	},
             	error : function() {
@@ -208,50 +206,26 @@
         }
 
         // 목록 갱신
-        function updateTable(data, type) {
-            var tbody = $("#inOutTable");
+        function updateTable(data) {
+            var tbody = $("#inferHistoryTable");
             tbody.empty();
             data.forEach(function(item) {
-                var row = "<tr>";
-                if (type === 'instore') {
-                    row += "<td class='table-plus date'>" + item.instoreDate + "</td>";
-                    if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + item.productName + "</td>";
-	                } else {
-	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
-	                }
-                    row += "<td>" + item.instoreQuantity + "</td>";
-                    if (item.orderingProduct != null) {
-	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
-	                } else {
-	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
-	                }
-                    row += "<td>" + item.outstoreCompany + "</td>";
-                    row += "<td>" + item.instoreCompany + "</td>";
-                } else if (type === 'outstore') {
-                    row += "<td class='table-plus date'>" + item.outstoreDate + "</td>";
-                    if (item.prdStandard != null) {
-	                	row += "<td class='prd'>" + item.productName + "</td>";
-	                } else {
-	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
-	                }
-                    row += "<td>" + item.outstoreQuantity + "</td>";
-                    if (item.prdStandard != null) {
-	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
-	                } else {
-	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
-	                }
-                    row += "<td>" + item.outstoreCompany + "</td>";
-                    row += "<td>" + item.instoreCompany + "</td>";
-                }
-                row += "</tr>";
+                var row = "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+                	row += "<td style='display:none;'>" + item.inferNo + "</td>";
+                    row += "<td class='table-plus date'>" + item.inferApplicationDate + "</td>";
+                    row += "<td>" + item.confirmLocation + "</td>";
+                    row += "<td>" + item.inferItem + "</td>";
+                    row += "<td>" + item.inferQuantity + "</td>";
+                    row += "<td>" + "폐기" + "</td>";
+                    row += "<td>" + item.confirmWhether + "</td>";
+                	row += "</tr>";
                 tbody.append(row);
             });
         }
-
+        
         // 검색
         function searchData(keyword) {
-            $("#inOutTable tr").each(function() {
+            $("#inferHistoryTable tr").each(function() {
                 var rowText = $(this).text().toLowerCase();
                 if (rowText.includes(keyword)) {
                     $(this).show();
@@ -265,7 +239,7 @@
         function filterData(startDate, endDate) {
             var start = new Date(startDate);
             var end = new Date(endDate);
-            $("#inOutTable tr").each(function() {
+            $("#inferHistoryTable tr").each(function() {
                 var rowDate = $(this).find(".date").text().trim();
                 var rowDateObj = new Date(rowDate);
                 if (rowDateObj >= start && rowDateObj <= end) {

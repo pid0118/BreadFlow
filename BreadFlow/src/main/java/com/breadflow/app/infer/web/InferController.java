@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.infer.service.InferAnswerVO;
+import com.breadflow.app.infer.service.InferDetailVO;
 import com.breadflow.app.infer.service.InferHistoryVO;
 import com.breadflow.app.infer.service.InferService;
 import com.breadflow.app.inout.service.FilterVO;
@@ -31,8 +33,10 @@ public class InferController {
 	@GetMapping("inferList")
 	public String inferList(Model model, HttpSession session) {
 		Calendar cal = Calendar.getInstance();
+		List<CompanyVO> companyList = inferService.companyList();
     	Integer localDateTime = cal.get(Calendar.YEAR);
     	String companyName = (String) session.getAttribute("companyName");
+    	model.addAttribute("companyList", companyList);
     	model.addAttribute("localDateTime", localDateTime);
     	model.addAttribute("companyName", companyName);
         return "infer/list";
@@ -46,8 +50,10 @@ public class InferController {
 	}
 	
 	// 불량 내역 상세 조회
-	@GetMapping("inferListDetail")
-	public String inferListDetail() {
+	@GetMapping("inferListDetail/{inferNo}")
+	public String inferListDetail(@PathVariable String inferNo, Model model) {
+		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
+		model.addAttribute("infers", list);
 		return "infer/detail";
 	}
 	
@@ -59,30 +65,38 @@ public class InferController {
 		return "infer/insert";
 	}
 	
-	// 불량 내역 등록 반환
-	@PostMapping("infer/insertInfer")
+	// 불량 상세 내역 등록 반환
+	@PostMapping("infer/insertInferDetail")
 	@ResponseBody
-	public int insertInfer(@RequestBody List<InferHistoryVO> inferHistoryVO) {
-		return inferService.inferInsert(inferHistoryVO);
+	public int insertInfer(@RequestBody List<InferDetailVO> inferDetailVO) {
+		return inferService.inferInsert(inferDetailVO);
+	}
+	
+	// 불량 내역 등록 반환
+	@PostMapping("infer/insertInferHistory")
+	@ResponseBody
+	public int insertInferHistory(@RequestBody InferHistoryVO inferHistoryVO) {
+		return inferService.inferHistoryInsert(inferHistoryVO);
 	}
 	
 	// 불량 답변 등록
-	@GetMapping("inferAnswerInsert")
-	public String inferAnswerInsert(Model model) {
+	@GetMapping("inferAnswerInsert/{inferNo}")
+	public String inferAnswerInsert(@PathVariable String inferNo, Model model, HttpSession session) {
+		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
+		String loginMember = (String) session.getAttribute("name");
+		model.addAttribute("infer", list);
+		model.addAttribute("loginMember", loginMember);
+		model.addAttribute("inferNo", inferNo);
 		return "infer/answer";
 	}
 	
 	// 불량 답변 등록 반환
 	@PostMapping("infer/insertInferAnswer")
 	@ResponseBody
-	public int insertInferAnswer(@RequestBody List<InferAnswerVO> inferAnswerVO) {
-		return inferService.inferAnswerInsert(inferAnswerVO);
-	}
-	
-	// 불량 답변 확인 반환
-	@PutMapping("infer/inferHistoryUpdate")
-	@ResponseBody
-	public int inferHistoryUpdate(@RequestBody List<InferHistoryVO> inferHistoryVO) {
-		return inferService.inferUpdate(inferHistoryVO);
+	public int insertInferAnswer(@RequestBody InferAnswerVO inferAnswerVO) {
+		int result = 0;
+		result = inferService.inferUpdate(inferAnswerVO);
+		result = inferService.inferAnswerInsert(inferAnswerVO);
+		return result;
 	}
 }

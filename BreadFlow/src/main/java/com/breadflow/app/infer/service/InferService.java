@@ -9,12 +9,15 @@ public interface InferService {
 	public List<InferHistoryVO> inferList(FilterVO filterVO); // 본사일 시 전체 조회 / 본사 외일 시 로그인한 업체 내역 SELECT
 	
 	// 본사 외
-	public List<InferHistoryVO> inferListDetail();
+	public List<InferDetailVO> inferListDetail(String inferNo);
 	
 	// 본사 외
-	public int inferInsert(List<InferHistoryVO> inferHistoryVO); // 입고 내역 선택해서 INSERT
+	public int inferInsert(List<InferDetailVO> inferDetailVO); // 입고 내역 선택해서 INSERT
+	public int inferHistoryInsert(InferHistoryVO inferHistoryVO);
 	
 	// 본사
-	public int inferUpdate(List<InferHistoryVO> inferHistoryVO); // 확인 시 확인 여부 UPDATE
-	public int inferAnswerInsert(List<InferAnswerVO> inferAnswerVO); // 확인 후 답변 INSERT
+	public int inferUpdate(InferAnswerVO inferAnswerVO); // 확인 시 확인 여부 UPDATE
+	public int inferAnswerInsert(InferAnswerVO inferAnswerVO); // 확인 후 답변 INSERT
+	
+	public List<CompanyVO> companyList();
 }

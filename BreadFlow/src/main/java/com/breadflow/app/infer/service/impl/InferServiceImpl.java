@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.infer.mapper.InferMapper;
+import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.infer.service.InferAnswerVO;
+import com.breadflow.app.infer.service.InferDetailVO;
 import com.breadflow.app.infer.service.InferHistoryVO;
 import com.breadflow.app.infer.service.InferService;
 import com.breadflow.app.inout.service.FilterVO;
@@ -25,37 +27,40 @@ public class InferServiceImpl implements InferService {
 	}
 	
 	@Override
-	public List<InferHistoryVO> inferListDetail() {
-		return inferMapper.selectInferListDetail();
+	public List<InferDetailVO> inferListDetail(String inferNo) {
+		return inferMapper.selectInferListDetail(inferNo);
 	}
 	
 	@Transactional
 	@Override
-	public int inferInsert(List<InferHistoryVO> list) {
+	public int inferInsert(List<InferDetailVO> list) {
 		int result = 0;
-		for (InferHistoryVO inferHistoryVO : list) {
-			result += inferMapper.insertInferHistory(inferHistoryVO);
+		for (InferDetailVO inferDetailVO : list) {
+			result += inferMapper.insertInferDetail(inferDetailVO);
 		}
 		return result;
 	}
 	
 	@Transactional
 	@Override
-	public int inferUpdate(List<InferHistoryVO> list) {
-		int result = 0;
-		for (InferHistoryVO inferHistoryVO : list) {
-			result += inferMapper.updateInferHistory(inferHistoryVO);
-		}
-		return result;
+	public int inferHistoryInsert(InferHistoryVO inferHistoryVO) {
+		return inferMapper.insertInferHistory(inferHistoryVO);
 	}
 	
 	@Transactional
 	@Override
-	public int inferAnswerInsert(List<InferAnswerVO> list) {
-		int result = 0;
-		for (InferAnswerVO inferAnswerVO : list) {
-			result += inferMapper.insertInferAnswer(inferAnswerVO);
-		}
-		return result;
+	public int inferUpdate(InferAnswerVO inferAnswerVO) {
+		return inferMapper.updateInferHistory(inferAnswerVO);
+	}
+	
+	@Transactional
+	@Override
+	public int inferAnswerInsert(InferAnswerVO inferAnswerVO) {
+		return inferMapper.insertInferAnswer(inferAnswerVO);
+	}
+
+	@Override
+	public List<CompanyVO> companyList() {
+		return inferMapper.selectCompany();
 	}
 }
