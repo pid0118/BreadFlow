@@ -59,17 +59,17 @@
 							</tr>
 						</thead>
 						<tbody>
-							<th:block th:each="acc, sts : ${accounts}">
+							<th:block th:each="pl, sts : ${plans}">
 								<tr>
 									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
-									<td id="parentOther">[[ ${acc.other} ]]</td>
-									<td id="parentMemNo">[[ ${acc.memberNo} ]]</td>
-									<td id="parentBrn" >[[ ${acc.brn} ]]</td>
-									<td id="parentTel">[[ ${acc.tel} ]]</td>
-									<td id="parentRegion" >[[ ${acc.region} ]]</td>									
-									<td id="parentComAddr" >[[ ${acc.companyAddress} ]]</td>
-									<td id="parentContDt" >[[ ${acc.contractDate} ]]</td>
-									<td id="parentComNo">[[ ${acc.companyNo}]] </td>
+									<td id="parentOther">[[ ${pl.productionPlanNo} ]]</td>
+									<td id="parentMemNo">[[ ${pl.productCode} ]]</td>
+									<td id="parentBrn" >[[ ${pl.planQuantity} ]]</td>
+									<td id="parentTel">[[ ${pl.productionCompany} ]]</td>
+									<td id="parentRegion" >[[ ${pl.progressSituation} ]]</td>									
+									<td id="parentComAddr" >[[ ${pl.startDate} ]]</td>
+									<td id="parentContDt" >[[ ${pl.lastDate} ]]</td>
+									<td id="parentComNo">[[ ${pl.other}]] </td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -146,34 +146,6 @@
 		<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
 		<!-- 자식 테이블 시작 -->
 		<div id="grid"></div>
-		<!--
-			<div class="card-box mb-30">
-				<div class="pb-20">
-					<table id="childTable" class="child-table display table stripe hover nowrap" style="width:100%">
-						<thead>
-							<tr>
-								<th class="table-plus datatable-nosort">No</th>
-								<th>제품코드</th>
-								<th>제품명</th>
-								<th>계획수량</th>
-								<th>단위</th>
-								<th>기타사항</th>
-							</tr>
-						</thead>
-						<tbody>
-								<tr>
-									<td><input type="text" id="row-1-age" name="row-1-age" value="61"></td>
-									<td><input type="text" id="row-2-age" name="row-2-age" value="61"></td>
-									<td><input type="text" id="row-3-age" name="row-3-age" value="61"></td>
-									<td><input type="text" id="row-4-age" name="row-4-age" value="61"></td>
-									<td><input type="text" id="row-5-age" name="row-5-age" value="61"></td>
-									<td><input type="text" id="row-6-age" name="row-6-age" value="61"></td>
-								</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			-->
 			<!-- 자식 테이블 끝 -->
 		
 			<div class="updateButtons">
@@ -187,20 +159,6 @@
 
 
 <script>
-/*
-var table = $('#childTable').DataTable({
-	paging: false,
-    searching: false,
-    ordering: false,
-    info: false,
-	columnDefs: [
-        {
-            orderable: false,
-            targets: [0, 1, 2, 3, 4, 5]
-        }
-    ]
-});
-*/
 //========================================================================
 // [박진석|241122] 이벤트 걸기
 let udtFormBtn = document.querySelector("#udtFormBtn");			// 저장
@@ -235,27 +193,27 @@ const grid = new Grid({
 	columns: [
 		{
 		  header: '제품코드',
-		  name: 'employeeCode',
+		  name: 'productCode',
 		  editor: 'text',
 		},
 		{
 		  header: '제품명',
-		  name: 'employeeName',
+		  name: 'productNm',
 		  editor: 'text',
 		},
 		{
 		  header:'계획수량',
-		  name:'attendanceDate',
+		  name:'planQuantity',
 		  editor: 'text',
 		},
 		{
 		  header: '단위',
-		  name: 'attCode',
+		  name: 'unit',
 		  editor: 'text',
 		},
 		{
 		  header: '기타사항',
-		  name: 'attendanceTime',
+		  name: 'other',
 		  editor: 'text',
 		}
 	],
@@ -268,7 +226,7 @@ const grid = new Grid({
 
 	
 // ========================================================================
-// [박진석|241122] 생산계획&상세 저장하는 AJAX
+// [박진석|241122] 생산계획 저장하는 AJAX
 function insertPrdPlanAjax() {
 	let updStartDate = document.querySelector("#updStartDate").value
 	let updLastDate = document.querySelector("#updLastDate").value
@@ -289,6 +247,7 @@ function insertPrdPlanAjax() {
            success: function(data){
                alert("성공적으로 저장되었습니다.");
                console.log(data);
+               insertPrdPlanDetailAjax();
            },
            error: function(result){
         	   alert("저장에 실패하였습니다.");
@@ -299,18 +258,41 @@ function insertPrdPlanAjax() {
 		alert("취소하였습니다.");
 	}
 }
-// 이벤트 걸기 끝
+// ajax 걸기 끝
 // ========================================================================
 
 	
+		
+// ========================================================================
+// [박진석|24.11.23] 생산계획 상세 저장하는 AJAX
+function insertPrdPlanDetailAjax() {
+	
+	let jsonData = grid.getData();
+	
+	console.log(jsonData);
+	
+	/*
+	$.ajax({
+		url: "insertPrdtplanDetails.do",
+        type: "POST",
+        data:  grid.getData(),
+        success: function(data){
+            alert("성공적으로 저장되었습니다.");
+            console.log(data);
+        },
+        error: function(result){
+     	   alert("저장에 실패하였습니다.");
+     	   console.log(result);
+     	}
+	});
+	*/
+	
+}	
 	
 	
 	
-	
-	
-	
-	
-	
+// ajax 걸기 끝
+//========================================================================	
 	
 	
 	
