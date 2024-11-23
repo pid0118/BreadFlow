@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.common.service.CategoryService;
@@ -101,15 +102,29 @@ public class ProductController {
 	
 	//수정 페이지
 	@GetMapping("product/Update")
-	public String productUpdateForm() {
-		return "product/productInsert";
+	public String productUpdateForm(@RequestParam String productCode, Model model) {
+		
+		ProductVO product =  productService.selectProduct(productCode);
+		
+		String major = product.getMajor();
+		
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
+		List<CategoryVO> sub = categoryService.selectCategorySub(major);
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		
+		model.addAttribute("pd", product);
+		model.addAttribute("category" , category);
+		model.addAttribute("sub" , sub);
+		model.addAttribute("codeVal" , codeVal);
+		
+		return "product/productUpdate";
 	}
 	
 	// 수정처리
+	@ResponseBody
 	@PostMapping("product/Update")
-	public String productUpdateProcess(ProductVO productVO) {
-		
-		return "redirect:/productListAll";
+	public int productUpdateProcess(@RequestBody ProductVO productVO) {
+		return productService.updateProductList(productVO);
 	}
 	
 	

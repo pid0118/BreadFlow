@@ -91,17 +91,18 @@
 	<!-- 제품정보 수정 -->
 	<update id="updateProductList" parameterType="ProductVO">
 		UPDATE product
-		SET	   <if test="productName != null!">product_name = #{productName}</if>
-			   <if test="expriationDeadline != null!">expiration_deadline = #{expriationDeadline}</if>
-			   <if test="productPrice != null!">priduct_price = #{productPrice}</if>
-			   <if test="salePrice != null!">sale_price = #{salePrice}</if>
-			   <if test="safeStockQuantity != null!">safe_stock_quantity = #{safeStockQuantity}</if>
-			   <if test="proplace != null!">proplace = #{proplace}</if>
-			   <if test="product_image != null!">product_image = #{product_image}</if>
-			   <if test="major != null!">major = #{major}</if>
-			   <if test="sub != null!">sub = #{sub}</if>
-			   <if test="unit != null!">unit = #{unit}</if>
-			   <if test="standard != null!">standard = #{standard}</if>
+		SET	   product_name = #{productName} ,
+			   expiration_deadline = #{expirationDeadline} ,
+			   purchase_price = #{purchasePrice} ,
+			   sale_price = #{salePrice} ,
+			   safe_stock_quantity = #{safeStockQuantity} ,
+			   proplace = #{proplace} ,
+			   product_image = #{productImage} ,
+			   major = #{major} ,
+			   sub = #{sub} ,
+			   unit = #{unit} ,
+			   standard = #{standard} ,
+			   amount = #{amount}
 		WHERE product_code = #{productCode}
 			   
 	</update>

@@ -25,7 +25,25 @@ public class ProductServiceImpl implements ProductService {
 	// 제품 단건조회
 	@Override
 	public ProductVO selectProduct(String productCode) {
-		return productMapper.selectProduct(productCode);
+		ProductVO product = productMapper.selectProduct(productCode);
+		
+		String unitCode = product.getUnit();
+		String unit = "";
+		if (unitCode.equals("j1")) {
+			unit = "g";
+		} else if (unitCode.equals("j2")) {
+			unit = "kg";
+		} else if (unitCode.equals("j3")) {
+			unit = "ml";
+		} else if (unitCode.equals("j4")) {
+			unit = "L";
+		} else  if (unitCode.equals("j5")){
+			unit = "EA";
+		}
+		
+		product.setUnit(unit);
+		
+		return product;
 	}
 	
 	// 제품 등록

@@ -204,12 +204,13 @@
 	                                    <div id="amount"></div>
 	                                </div>
 	                            </div>
+	                            <input type="hidden" id="productCodes"/>
 	                        </div>
 	                    </div>
 	                </div>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-primary" data-dismiss="modal">수정</button>
+	                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="updatePage()">수정</button>
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 	            </div>
 	        </div>
@@ -232,7 +233,7 @@
 		            document.getElementById('productImage').alt = product.productName;
 		            document.getElementById('productCode').textContent = product.productCode;
 		            document.getElementById('productName').textContent = product.productName;
-		            document.getElementById('expirationDeadline').textContent = product.expirationDeadline;
+		            document.getElementById('expirationDeadline').textContent = product.expirationDeadline + '일';
 		            document.getElementById('standard').textContent = product.standard;
 		            document.getElementById('purchasePrice').textContent = product.purchasePrice + '원';
 		            document.getElementById('salePrice').textContent = product.salePrice + '원';
@@ -241,7 +242,8 @@
 		            document.getElementById('unit').textContent = product.unit;
 		            document.getElementById('major').textContent = product.major;
 		            document.getElementById('sub').textContent = product.sub;
-		            document.getElementById('amount').textContent = product.amount;
+		            document.getElementById('amount').textContent = product.amount + product.unit;
+		            document.getElementById('productCodes').value = product.productCode;
 		            $('#productDetailModal').modal('show');
 		        },
 		        error: function(xhr, status, error) {
@@ -392,7 +394,11 @@
         });
         	
         
-        
+        function updatePage() {
+        	const productCode = $('#productCodes').val();
+        	
+        	location.href = "product/Update?productCode=" + productCode;
+        }
         
         		
     </script>

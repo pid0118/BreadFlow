@@ -18,7 +18,7 @@ public class ProductVO {
 	private String sub;					// 소분류
 	private String unit;				// 단위
 	private String standard;			// 규격
-	private String amount;				// 양
+	private Integer amount;				// 양
 	
 	private List<String> subList;		// 검색조건
 }
