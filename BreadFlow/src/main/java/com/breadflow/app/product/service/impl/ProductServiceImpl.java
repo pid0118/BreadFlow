@@ -62,12 +62,16 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	@Override
 	public int deleteProduct(List<String> productCode) {
-		for(int i = 0;i < productCode.size();i++ ) {
-			
-			
-			productMapper.deleteProduct(productCode.get(i));
+		
+		int count = productMapper.selectOrderingProductCnt(productCode);
+		
+		if (count == 0) {
+			for(int i = 0;i < productCode.size();i++ ) {
+				productMapper.deleteProduct(productCode.get(i));
+			}	
 		}
-		return 0;
+		
+		return count;
 	}
 
 	// 제품코드 가져오기

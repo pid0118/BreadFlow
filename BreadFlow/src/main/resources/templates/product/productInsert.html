@@ -232,8 +232,6 @@
 	     	// NOT NULL값 미입력시 알림 및 등록 불가
 	     	function insertProduct() {
 	     		
-	     		
-	     		
 	     		if($("#productName").val()==''){
 	     			alert("제품명을 입력해주세요")
 	     			return;
@@ -275,39 +273,43 @@
 	     			return;
 	     		}
 	     		
-	     		$.ajax({
-	     			url : "/product/Insert",
-	     			method : "post",
-	     			data : JSON.stringify({
-	     				"productCode" : $("#productCode").val(),
-	     				"productName" : $("#productName").val(),
-	     				"standard" : $("#standard").val(),
-	     				"expirationDeadline" : $("#expirationDeadline").val(),
-	     				"purchasePrice" : $("#purchasePrice").val(),
-	     				"salePrice" : $("#salePrice").val(),
-	     				"safeStockQuantity" : $("#safeStockQuantity").val(),
-	     				"proplace" : $("#proplace").val(),
-	     				"unit" : $("#unit option:selected").val(),
-	     				"major" : $("#mainCategory option:selected").val(),
-	     				"sub" : $("#subCategory option:selected").val(),
-	     				"amount" : $("#amount").val(),
-	     				"productImage" : $("#productImage").val()
-	     			}),
-	     			contentType : 'application/json',
-	     			dataType : "json",
-	     			success : function (data) {
-	     				if (data == 1) {
-	     					alert("제품 등록에 성공하였습니다.");
-	     					location.href = "/productListAll";
-	     				} else {
-	     					alert("등록에 실패했습니다.");
-	     				}
-	     			}, 
-	     			error : function (err) {
-	     				console.log(err);
-	     			}
-	     			
-	     		});
+	     		if (confirm("제품을 등록하시겟습니까?")) {
+	     			$.ajax({
+		     			url : "/product/Insert",
+		     			method : "post",
+		     			data : JSON.stringify({
+		     				"productCode" : $("#productCode").val(),
+		     				"productName" : $("#productName").val(),
+		     				"standard" : $("#standard").val(),
+		     				"expirationDeadline" : $("#expirationDeadline").val(),
+		     				"purchasePrice" : $("#purchasePrice").val(),
+		     				"salePrice" : $("#salePrice").val(),
+		     				"safeStockQuantity" : $("#safeStockQuantity").val(),
+		     				"proplace" : $("#proplace").val(),
+		     				"unit" : $("#unit option:selected").val(),
+		     				"major" : $("#mainCategory option:selected").val(),
+		     				"sub" : $("#subCategory option:selected").val(),
+		     				"amount" : $("#amount").val(),
+		     				"productImage" : $("#productImage").val()
+		     			}),
+		     			contentType : 'application/json',
+		     			dataType : "json",
+		     			success : function (data) {
+		     				if (data == 1) {
+		     					alert("제품 등록에 성공하였습니다.");
+		     					location.href = "/productListAll";
+		     				} else {
+		     					alert("등록에 실패했습니다.");
+		     				}
+		     			}, 
+		     			error : function (err) {
+		     				console.log(err);
+		     			}
+		     			
+		     		});
+	     		} else {
+	     			return;
+	     		}
 	     	}  
         	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
         	let sameCheck = false;

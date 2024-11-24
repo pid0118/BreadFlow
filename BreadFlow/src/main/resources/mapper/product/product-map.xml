@@ -113,11 +113,13 @@
 		Where product_code = #{productCode}
 	</delete>
 	
-	<select id="" parameterType="int">
-		SELECT  orders_item
-		FROM	orders_detale
-		WHERE	orders_item = #{ordersItem}
+	<select id="selectOrderingProductCnt" resultType="int">
+		SELECT  COUNT(ordering_product)
+		FROM	ordering_detail
+		WHERE	ordering_product IN 
+		<foreach item="productCode" index="index" collection="list" open="(" separator="," close=")">
+			#{productCode}
+		</foreach>
 	</select>
-	
 	
 </mapper>

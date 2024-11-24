@@ -30,5 +30,8 @@ public interface ProductMapper {
 	
 	// 주문상세 주문품목 조회
 	public List<String> selectOrdersItems();
+	
+	// 주문중 상품코트 조회
+	public int selectOrderingProductCnt(List<String> productCode); 
 
 }
