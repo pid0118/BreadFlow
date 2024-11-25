@@ -12,4 +12,6 @@ public interface PrdtplanMapper {
 	// 생산조회 전체조회
 	public List<PrdtplanVO> selectPrdtplanList();
 
+	public int insertPrdtplanDetail(PrdtplanVO pvo);
+
 }

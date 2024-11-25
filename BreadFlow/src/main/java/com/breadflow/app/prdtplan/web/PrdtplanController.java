@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.prdtplan.service.PrdtplanService;
@@ -30,16 +31,16 @@ public class PrdtplanController {
 	
 	@PostMapping("insertPrdtplan.do")
 	@ResponseBody
-	public int insertPrdtplan(PrdtplanVO prdtplanVO, HttpSession session) {
+	public String insertPrdtplan(PrdtplanVO prdtplanVO, HttpSession session) {
 		System.out.println("\n[PrdtplanController.java] insertPrdtplan.do - prdtplanVO: " + prdtplanVO + "\n");
 		String writer = (String) session.getAttribute("memNo");
 		
-		if(writer == "" || writer == null) {
-			return 0;
+		if(writer == null || writer == "") {
+			return "";
 		}
 		
 		prdtplanVO.setWriter(writer);
-		int result = prdtplanService.insertPrdtplan(prdtplanVO);
+		String result = prdtplanService.insertPrdtplan(prdtplanVO);
 		
 		System.out.println("\n[PrdtplanController.java] insertPrdtplan.do - result: " + result + "\n");
 		return result;
@@ -47,8 +48,9 @@ public class PrdtplanController {
 	
 	@PostMapping("insertPrdtplanDetails.do")
 	@ResponseBody
-	public int insertPrdtplanDetails(PrdtplanVO prdtplanVO) {
-		System.out.println("\n[PrdtplanController.java] insertPrdtplanDetails.do - prdtplanVO: " + prdtplanVO + "\n");
-		return 1;
+	public int insertPrdtplanDetails(@RequestBody List<PrdtplanVO> list) {
+		System.out.println("\n[PrdtplanController.java] insertPrdtplanDetails.do - prdtplanVO: " + list + "\n");
+		int result = prdtplanService.insertPrdtplanDetail(list);
+		return result;
 	}
 }

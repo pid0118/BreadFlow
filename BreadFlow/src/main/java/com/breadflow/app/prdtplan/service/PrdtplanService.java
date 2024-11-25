@@ -4,8 +4,10 @@ import java.util.List;
 
 public interface PrdtplanService {
 
-	public int insertPrdtplan(PrdtplanVO prdtplanVO);
+	public String insertPrdtplan(PrdtplanVO prdtplanVO);
 
 	public List<PrdtplanVO> selectPrdtplanList();
+
+	public int insertPrdtplanDetail(List<PrdtplanVO> list);
 
 }

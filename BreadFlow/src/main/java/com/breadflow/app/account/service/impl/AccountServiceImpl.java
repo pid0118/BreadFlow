@@ -18,8 +18,8 @@ public class AccountServiceImpl implements AccountService {
 	}
 	
 	@Override
-	public List<AccountVO> selectMemberList() {
-		return accountMapper.selectMemberList();
+	public List<AccountVO> selectMemberList(AccountVO accountVO) {
+		return accountMapper.selectMemberList(accountVO);
 	}
 
 	@Override

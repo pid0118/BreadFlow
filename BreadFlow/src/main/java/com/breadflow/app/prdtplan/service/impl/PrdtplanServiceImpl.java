@@ -18,18 +18,26 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	}
 
 	@Override
-	public int insertPrdtplan(PrdtplanVO prdtplanVO) {
+	public String insertPrdtplan(PrdtplanVO prdtplanVO) {
 		System.out.println("\n[PrdtplanServiceImpl.java] insertPrdtplan 접근 완료!\n");
 		int result = prdtplanMapper.insertPrdtplan(prdtplanVO);
-		return result;
+		return result == 1 ? prdtplanVO.getProductionPlanNo() : "" ;
 	}
 
 	@Override
 	public List<PrdtplanVO> selectPrdtplanList() {
 		return prdtplanMapper.selectPrdtplanList();
 	}
-	
-	
-	
+
+	@Override
+	public int insertPrdtplanDetail(List<PrdtplanVO> list) {
+		int result = 0;
+		for(PrdtplanVO pvo : list) {
+			prdtplanMapper.insertPrdtplanDetail(pvo);
+			result++;
+		}
+		return result;
+	}
+
 	
 }

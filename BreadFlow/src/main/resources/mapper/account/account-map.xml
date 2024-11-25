@@ -18,6 +18,11 @@
 		        
 		FROM member m JOIN company c
 		        ON m.company_no = c.company_no
+		        <where>
+		        <if test="div != null and div != ''">
+		        	div = #{div}
+		        </if>
+		        </where>
 	</select>
 	
 	<!-- 단건조회 -->
