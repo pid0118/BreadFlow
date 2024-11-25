@@ -26,9 +26,12 @@ public interface ProductMapper {
 	public String selectProductCode();
 	
 	// 제품명 단건조회 / 중복값 제거위해
-	public String selectProductName(String productName);
+	public String selectProductName(String productName, String productCode);
 	
 	// 주문상세 주문품목 조회
 	public List<String> selectOrdersItems();
+	
+	// 주문중 상품코트 조회
+	public int selectOrderingProductCnt(List<String> productCode); 
 
 }

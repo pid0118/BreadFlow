@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.common.service.CategoryService;
@@ -22,12 +24,19 @@ import com.breadflow.app.product.service.ProductVO;
 
 import lombok.RequiredArgsConstructor;
 
+
+/**
+ * 제품 관리
+ * 작성자 : 박인득
+ * 
+ */
 @Controller
 @RequiredArgsConstructor
 public class ProductController {
+	
 	private final ProductService productService;
-	final CategoryService categoryService;
-	final ComCodeService comCodeService;
+	private final CategoryService categoryService;
+	private final ComCodeService comCodeService;
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
@@ -46,21 +55,8 @@ public class ProductController {
 	
 	
 	
-	// 단건조회
-	@ResponseBody
-	@GetMapping("productListAll/{productCode}")
-	public ProductVO selectProduct(@PathVariable String productCode, Model model) {
-		
-		ProductVO productVO = productService.selectProduct(productCode);
-		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
-		
-		model.addAttribute("codeVal", codeVal);
-		
-		return productVO;
-	}
-	
 	// 제품등록 - 페이지
-	@GetMapping("product/Insert")
+	@GetMapping("productInsert")
 	public String productInsertForm(Model model) {
 		
 		String productCode = productService.selectProductCode();
@@ -76,21 +72,13 @@ public class ProductController {
 		return "product/productInsert";
 	}
 	
-	// 제품등록 - 처리
-	@ResponseBody
-	@PostMapping("product/Insert")
-	public int productInsertProcess(@RequestBody ProductVO productVO) {
-		
-		int result = productService.insertProduct(productVO);
-			
-		return result;
-	}
+	
 	// 상품명 중복체크
 	@PostMapping("productNameCheck")
 	@ResponseBody
-	public ResponseEntity<Boolean> productNameCheck(String productName) {
+	public ResponseEntity<Boolean> productNameCheck(String productName, String productCode) {
 		 
-		String productreuslt = productService.selectProductName(productName);
+		String productreuslt = productService.selectProductName(productName, productCode);
 		
 		if (productreuslt != null) {
 			return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
@@ -100,16 +88,53 @@ public class ProductController {
 	
 	
 	//수정 페이지
-	@GetMapping("product/Update")
-	public String productUpdateForm() {
-		return "product/productInsert";
+	@GetMapping("productUpdate")
+	public String productUpdateForm(@RequestParam String productCode, Model model) {
+		
+		ProductVO product =  productService.selectProduct(productCode);
+		
+		String major = product.getMajor();
+		
+		List<CategoryVO> category = categoryService.selectCategorySub("제품");
+		List<CategoryVO> sub = categoryService.selectCategorySub(major);
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		
+		model.addAttribute("pd", product);
+		model.addAttribute("category" , category);
+		model.addAttribute("sub" , sub);
+		model.addAttribute("codeVal" , codeVal);
+		
+		return "product/productUpdate";
+	}
+
+
+	// 단건조회
+	@ResponseBody
+	@GetMapping("product/{productCode}")
+	public ProductVO selectProduct(@PathVariable String productCode, Model model) {
+		
+		ProductVO productVO = productService.selectProduct(productCode);
+		
+		return productVO;
 	}
 	
-	// 수정처리
-	@PostMapping("product/Update")
-	public String productUpdateProcess(ProductVO productVO) {
+	
+	// 제품등록 - 처리
+	@ResponseBody
+	@PostMapping("product")
+	public int productInsertProcess(@RequestBody ProductVO productVO) {
 		
-		return "redirect:/productListAll";
+		int result = productService.insertProduct(productVO);
+			
+		return result;
+	}
+
+	
+	// 수정처리
+	@ResponseBody
+	@PutMapping("product")
+	public int productUpdateProcess(@RequestBody ProductVO productVO) {
+		return productService.updateProductList(productVO);
 	}
 	
 	

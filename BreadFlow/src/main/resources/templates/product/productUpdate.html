@@ -64,7 +64,7 @@
                 <div class="row g-4">
 				    <div class="col-md-4">
 				        <div class="image-placeholder" id="imagePreview">
-				            <span>이미지</span>
+				            <img th:src="'/imgs/' + ${pd.productImage}" id="img">
 				        </div>
 				        <input type="file" class="d-none" id="image" accept="image/*">
 				        <input type="hidden" id="productImage">
@@ -76,41 +76,41 @@
 				            <!-- 1번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">제품코드</label>
-				                <input type="text" class="form-control form-control-sm" id="productCode" th:value="${productCode}" readonly>
+				                <input type="text" class="form-control form-control-sm" id="productCode" th:value="${pd.productCode}" readonly>
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">제품명</label>
-				                <input type="text" class="form-control form-control-sm" id="productName">
+				                <input type="text" class="form-control form-control-sm" id="productName" th:value="${pd.productName}">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">규격</label>
-				                <input type="text" class="form-control form-control-sm" id="standard">
+				                <input type="text" class="form-control form-control-sm" id="standard" th:value="${pd.standard}">
 				            </div>
 				            <!-- 2번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">소비기한</label>
-				                <input type="text" class="form-control form-control-sm" id="expirationDeadline">
+				                <input type="text" class="form-control form-control-sm" id="expirationDeadline" th:value="${pd.expirationDeadline}">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">구매가</label>
-				                <input type="text" class="form-control form-control-sm" id="purchasePrice">
+				                <input type="text" class="form-control form-control-sm" id="purchasePrice" th:value="${pd.purchasePrice}">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">판매가</label>
-				                <input type="text" class="form-control form-control-sm" id="salePrice">
+				                <input type="text" class="form-control form-control-sm" id="salePrice" th:value="${pd.salePrice}">
 				            </div>
 				            <!-- 3번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">안전재고 수량</label>
-				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity">
+				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity" th:value="${pd.safeStockQuantity}">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">생산지</label>
-				                <input type="text" class="form-control form-control-sm" id="proplace">
+				                <input type="text" class="form-control form-control-sm" id="proplace" th:value="${pd.proplace}">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">용량</label>
-				                <input type="text" class="form-control form-control-sm" id="amount">
+				                <input type="text" class="form-control form-control-sm" id="amount" th:value="${pd.amount}">
 				            </div>
 				            <!-- 4번째 줄 -->
 				            <div class="col-md-4">
@@ -118,7 +118,7 @@
 				                <select class="form-select form-select-sm" id="mainCategory">
 				                    <option selected>선택하세요</option>
 				                    <th:block th:each="cate : ${category}">
-				                        <option th:value="${cate.sub}" th:text="${cate.sub}"></option>
+				                        <option th:value="${cate.sub}" th:text="${cate.sub}" th:selected="${cate.sub} == ${pd.major}"></option>
 				                    </th:block>
 				                </select>
 				            </div>
@@ -126,14 +126,17 @@
 				                <label class="form-label">소분류</label>
 				                <select class="form-select form-select-sm" id="subCategory">
 				                    <option selected>선택하세요</option>
-				                </select>
+				                    <th:block th:each="sb : ${sub}">
+				                        <option th:value="${sb.sub}" th:text="${sb.sub}" th:selected="${sb.sub} == ${pd.sub}"></option>
+				                    </th:block>
+				                </select>			            
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">단위</label>
 				                <select class="form-select form-select-sm" id="unit">
 				                    <option selected>선택하세요</option>
 				                    <th:block th:each="code : ${codeVal}">
-				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}"></option>
+				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}" th:selected="${code.codeRule} == ${pd.unit}"></option>
 				                    </th:block>
 				                </select>
 				            </div>
@@ -142,7 +145,7 @@
 				</div>
 				
                 <div class="text-end mt-4">
-                    <button type="button" class="btn btn-primary action-buttons" onclick="insertProduct()">등록</button>
+                    <button type="button" class="btn btn-primary action-buttons" onclick="updateProduct()">수정</button>
                     <button type="button" class="btn btn-secondary action-buttons" id="cancelBtn">취소</button>
                 </div>
             </form>
@@ -162,8 +165,8 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        const img = $('<img>').attr('src', e.target.result);
-                        $('#imagePreview').empty().append(img);
+                        $('#img').attr('src', e.target.result);
+                        //$('#imagePreview').empty().append(img);
                     }
                     reader.readAsDataURL(file);
                 }
@@ -229,7 +232,7 @@
          
 	     	// 제품등록
 	     	// NOT NULL값 미입력시 알림 및 등록 불가
-	     	function insertProduct() {
+	     	function updateProduct() {
 	     		if($("#productName").val()==''){
 	     			alert("제품명을 입력해주세요")
 	     			return;
@@ -271,8 +274,8 @@
 	     			return;
 	     		}
 	     		$.ajax({
-	     			url : "/product/Insert",
-	     			method : "post",
+	     			url : "/product",
+	     			method : "put",
 	     			data : JSON.stringify({
 	     				"productCode" : $("#productCode").val(),
 	     				"productName" : $("#productName").val(),
@@ -292,10 +295,10 @@
 	     			dataType : "json",
 	     			success : function (data) {
 	     				if (data == 1) {
-	     					alert("제품 등록에 성공하였습니다.");
+	     					alert("제품 수정에 성공하였습니다.");
 	     					location.href = "/productListAll";
 	     				} else {
-	     					alert("등록에 실패했습니다.");
+	     					alert("제품 수정에 실패했습니다.");
 	     				}
 	     			}, 
 	     			error : function (err) {
@@ -305,10 +308,11 @@
 	     		});
 	     	}  
         	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
-        	let sameCheck = false;
+        	let sameCheck = true;
         	
         	$("#productName").on('change', function(){
-        		let data = { productName: $('#productName').val() };
+        		let data = { productName: $('#productName').val(),
+        					 productCode: $('#productCode').val()};
         		
         		$.ajax({
         			url:"/productNameCheck",

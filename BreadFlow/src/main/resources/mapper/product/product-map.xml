@@ -28,6 +28,9 @@
 		SELECT product_name
 		FROM product
 		WHERE product_name = #{productName}
+		<![CDATA[
+		  AND product_code <> #{productCode}
+		]]>
 	</select>
 	
 	<!-- 제품 상세조회 -->
@@ -43,6 +46,7 @@
 			   major,
 			   sub,
 			   unit,
+			   find_cd(unit) as unit_name,
 			   standard,
 			   amount
 		FROM  product
@@ -91,17 +95,20 @@
 	<!-- 제품정보 수정 -->
 	<update id="updateProductList" parameterType="ProductVO">
 		UPDATE product
-		SET	   <if test="productName != null!">product_name = #{productName}</if>
-			   <if test="expriationDeadline != null!">expiration_deadline = #{expriationDeadline}</if>
-			   <if test="productPrice != null!">priduct_price = #{productPrice}</if>
-			   <if test="salePrice != null!">sale_price = #{salePrice}</if>
-			   <if test="safeStockQuantity != null!">safe_stock_quantity = #{safeStockQuantity}</if>
-			   <if test="proplace != null!">proplace = #{proplace}</if>
-			   <if test="product_image != null!">product_image = #{product_image}</if>
-			   <if test="major != null!">major = #{major}</if>
-			   <if test="sub != null!">sub = #{sub}</if>
-			   <if test="unit != null!">unit = #{unit}</if>
-			   <if test="standard != null!">standard = #{standard}</if>
+		SET	   product_name = #{productName} ,
+			   expiration_deadline = #{expirationDeadline} ,
+			   purchase_price = #{purchasePrice} ,
+			   sale_price = #{salePrice} ,
+			   safe_stock_quantity = #{safeStockQuantity} ,
+			   proplace = #{proplace} ,
+			   <if test="productImage != null and productImage != ''">
+			   product_image = #{productImage} ,
+			   </if>
+			   major = #{major} ,
+			   sub = #{sub} ,
+			   unit = #{unit} ,
+			   standard = #{standard} ,
+			   amount = #{amount}
 		WHERE product_code = #{productCode}
 			   
 	</update>
@@ -111,12 +118,14 @@
 		DELETE FROM product
 		Where product_code = #{productCode}
 	</delete>
-	
-	<select id="" parameterType="int">
-		SELECT  orders_item
-		FROM	orders_detale
-		WHERE	orders_item = #{ordersItem}
+	<!-- 삭제 조건 주문중 상품찾기 -->
+	<select id="selectOrderingProductCnt" resultType="int">
+		SELECT  COUNT(ordering_product)
+		FROM	ordering_detail
+		WHERE	ordering_product IN 
+		<foreach item="productCode" index="index" collection="list" open="(" separator="," close=")">
+			#{productCode}
+		</foreach>
 	</select>
-	
 	
 </mapper>
