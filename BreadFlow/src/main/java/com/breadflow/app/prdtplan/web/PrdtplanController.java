@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.prdtplan.service.PrdtplanService;
@@ -55,8 +56,15 @@ public class PrdtplanController {
 	}
 	
 	@GetMapping("selectPrdtplan")
-	public String selectPrdtplan(String productionPlanNo) {
-		prdtplanService.selectPrdtplan(productionPlanNo);
-		return "";
+	@ResponseBody
+	public PrdtplanVO selectPrdtplan(@RequestParam String id) {
+		System.out.println("\n[PrdtplanController.java] selectPrdtplan - productionPlanNo: " + id + "\n");
+		PrdtplanVO prdtplanVO = new PrdtplanVO();
+		prdtplanVO.setProductionPlanNo(id);
+		
+		
+		PrdtplanVO pVO = prdtplanService.selectPrdtplan(prdtplanVO);
+		System.out.println("\n[PrdtplanController.java] selectPrdtplan - PrdtplanVO: " + pVO + "\n");
+		return pVO;
 	}
 }

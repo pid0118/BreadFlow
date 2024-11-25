@@ -16,6 +16,6 @@ public interface PrdtplanMapper {
 	public int insertPrdtplanDetail(PrdtplanVO pvo);
 	
 	// 생산관리 단건 조회
-	public void selectPrdtplan(String productionPlanNo);
+	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO);
 
 }

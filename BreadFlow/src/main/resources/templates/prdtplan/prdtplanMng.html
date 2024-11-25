@@ -397,13 +397,17 @@ function getTargetInfo(e) {
 // ========================================================================
 // [24.11.25] 단건조회 AJAX
 function getPrdtplanInfo(no) {
+	
+	console.log(no);
+	
 	$.ajax({
-	    url: "selectPrdtplan",
+	    url: "selectPrdtplan?id=" + no,
 	    type: "GET",
-	    data: no,
+	    data: {},
 	    success: function(data){
-	        alert("성공적으로 조회되었습니다.");
-	        console.log(data);
+	        $('#updProductionPlanNo').value = data.productionPlanNo;
+	        document.querySelector("#updStartDate").value = data.startDate
+	        // TODO: id 가져와서 뿌리기!
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");

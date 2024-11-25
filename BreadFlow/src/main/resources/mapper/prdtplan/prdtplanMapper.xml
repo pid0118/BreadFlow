@@ -2,8 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.prdtplan.mapper.PrdtplanMapper">
 	
+	<!-- 생산계획 단건 조회(관련 진행상태는 묶어서 최소값만 보여줌) -->
 	<select id="selectPrdtplan" parameterType="String">
-		
+		SELECT  p.production_plan_no
+		        , p.start_date
+		        , p.last_date
+		        , p.delivery_location
+		        ,  (SELECT  company_name
+		            FROM    company
+		            WHERE   company_no = p.delivery_location) AS delivery_location_nm
+		        , p.production_company
+		        ,  (SELECT  company_name
+		            FROM    company
+		            WHERE   company_no = p.production_company) AS production_company_nm
+		        , 'c' || MIN(TO_NUMBER(SUBSTR(d.progress_situation, 2))) AS progress_situation
+		FROM    production_plan p JOIN production_plan_detail d
+		                ON p.production_plan_no = d.production_plan_no
+		WHERE   p.production_plan_no = #{productionPlanNo}
+		GROUP BY p.production_plan_no, p.start_date, p.last_date, p.delivery_location, p.production_company
 	</select>
 	
 	

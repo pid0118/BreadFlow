@@ -22,4 +22,8 @@ public class PrdtplanVO {
 	private String	unit;					// 단위
 	private String	other;					// 기타사항
 	private String	progressSituation;		// 진행상태
+	
+	//== 파생되어진 VO ==//
+	private String deliveryLocationNm;		// 납품위치 업체의 이름
+	private String productionCompanyNm;		// 생산업체의 이름
 }

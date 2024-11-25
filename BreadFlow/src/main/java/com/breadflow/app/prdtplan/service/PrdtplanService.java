@@ -10,6 +10,6 @@ public interface PrdtplanService {
 
 	public int insertPrdtplanDetail(List<PrdtplanVO> list);
 
-	public void selectPrdtplan(String productionPlanNo);
+	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO);
 
 }
