@@ -7,7 +7,7 @@ import com.breadflow.app.account.service.AccountVO;
 public interface AccountMapper {
 
 	// 전체조회
-	public List<AccountVO> selectMemberList();
+	public List<AccountVO> selectMemberList(AccountVO accountVO);
 
 	// 회사(company) 단건 입력
 	public int insertCompany(AccountVO accountVO);

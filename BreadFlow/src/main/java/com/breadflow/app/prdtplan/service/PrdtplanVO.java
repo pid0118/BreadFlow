@@ -21,5 +21,5 @@ public class PrdtplanVO {
 	private Integer planQuantity;			// 계획 수량
 	private String	unit;					// 단위
 	private String	other;					// 기타사항
-	private String	progressSituaion;		// 진행상태
+	private String	progressSituation;		// 진행상태
 }

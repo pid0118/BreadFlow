@@ -40,6 +40,13 @@
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
 		<div>
+			<form>
+				<input type="radio" value="">전체
+				<input type="radio" name="div" th:each="code, sts : ${code0A}" th:value="${code.codeRule}" th:text="${code.codeVal}">
+				<button type="submit">검색</button>
+			</form>
+		</div>
+		<div>
 		
 		
 			<!-- 회원 테이블 시작 -->
@@ -220,11 +227,7 @@
 					<div class="form-group">
 						<label>업체분류</label><b class="required"> *</b>
 						<select class="custom-select col-12" name="div">
-							<option selected="selected" value="a1">본사</option>
-							<option value="a2">공급업체</option>
-							<option value="a3">제조공장</option>
-							<option value="a4">물류창고</option>
-							<option value="a5">가맹점</option>
+							<option th:each="code, sts : ${code0A}"  th:value="${code.codeRule}">[[ ${code.codeVal} ]]</option>
 						</select>
 					</div>
 				</div>
@@ -345,7 +348,6 @@
 </div>
 
 <!-- 업체검색 모달창 -->
-
 <div
 	class="modal fade bs-example-modal-lg"
 	id="bd-example-modal-lg"
@@ -395,7 +397,7 @@
 		</div>
 	</div>
 </div>
-
+<!-- 업체검색 모달창 끝 -->
 
 <script>
 	//=======================================================
@@ -434,6 +436,7 @@
             searching: true,
             ordering: true,
             info: true,
+            autoWidth: false,
             language: {
                 lengthMenu: "_MENU_ 개씩 보기",
                 zeroRecords: "데이터가 없습니다.",

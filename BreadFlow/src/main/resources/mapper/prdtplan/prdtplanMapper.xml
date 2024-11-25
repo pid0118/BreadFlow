@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.prdtplan.mapper.PrdtplanMapper">
+	
+	<!-- 생산계획(production_plan)단건입력 -->
+	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
+		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">
+			SELECT 'SP' || PLANSEQ('production_plan','production_plan_no') FROM dual
+		</selectKey>
+	
+		INSERT INTO production_plan
+		(
+			production_plan_no
+			, start_date
+			, last_date
+			, delivery_location
+			, production_company
+			, writer
+		) VALUES (
+			#{productionPlanNo}
+			, #{startDate}
+			, #{lastDate}
+			, #{deliveryLocation}
+			, #{productionCompany}
+			, #{writer}
+		)
+	</insert>
+	
+	<!-- 생산계획 상세(production_plan_detail) 단건 여러개 입력 -->
+	<insert id="insertPrdtplanDetail" parameterType="PrdtplanVO">
+		<selectKey resultType="string" keyProperty="productionDetailNo" order="BEFORE">
+		    SELECT  'SPD' || PLANSEQ('production_plan_detail','production_detail_no') AS production_detail_no
+			FROM    dual
+	    </selectKey>
+	    
+	    INSERT INTO production_plan_detail
+	    (
+	    	production_detail_no
+	    	, product_code
+	    	, plan_quantity
+	    	, unit
+	    	, other
+	    	, progress_situation
+	    	, production_plan_no
+	    ) VALUES (
+	    	#{productionDetailNo}
+	    	, #{productCode}
+	    	, #{planQuantity}
+	    	, #{unit}
+	    	, #{other}
+	    	, 'c1'
+	    	, #{productionPlanNo}
+	    )
+    
+	</insert>
+	
+	<!-- 전체 조회 -->
+	<!-- 두 테이블 조인할 때 디테일 테이블은 한개의 행만 나오도록 첫번째 행만 뽑아 출력 -->
+	<select id="selectPrdtplanList" resultType="PrdtplanVO">
+	SELECT 	*
+	FROM 	production_plan p
+	JOIN (
+	    SELECT d.production_plan_no, d.production_detail_no, d.product_code, d.plan_quantity, d.unit, d.other, d.progress_situation
+	    FROM (
+	        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.production_plan_no ORDER BY d.production_detail_no ASC) AS rn
+	        FROM production_plan_detail d
+	    ) d
+	    WHERE d.rn = 1
+	) d
+	ON p.production_plan_no = d.production_plan_no
+	</select>
+	
+
+</mapper>

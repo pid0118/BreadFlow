@@ -10,16 +10,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.account.service.AccountService;
 import com.breadflow.app.account.service.AccountVO;
+import com.breadflow.app.common.service.ComCodeService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
+/**
+ * @author 박진석
+ * @
+ */
 @Controller
+@RequiredArgsConstructor
 public class AccountController {
 	
-	private AccountService accountService;	
-	public AccountController(AccountService accountService) {
-		this.accountService = accountService;
-	}
+	private final AccountService accountService;	
+	private final ComCodeService comcodeService;
+	
 	
 	@GetMapping("index")
 	public String index() {
@@ -33,8 +39,8 @@ public class AccountController {
 	
 	@GetMapping("account")
 	public String accountinfo(Model model, HttpSession session) {
-		String memberNo = (String) session.getAttribute("memNo");
-		
+		// 세션 MemberNo 사용.
+		String memberNo = (String) session.getAttribute("memNo");	
 		AccountVO accVO = new AccountVO();
 		accVO.setMemberNo(memberNo);
 		
@@ -56,6 +62,10 @@ public class AccountController {
 	public int loginCheck(AccountVO accountVO, HttpSession session) {
 		System.out.println("id: " + accountVO.getId());
 		System.out.println("pw: " + accountVO.getPassword());
+		
+		//TODO : bcrypt 인코더 또는 paswordendorcer 사용
+		// match 함수 사용하여 비교
+		
 		AccountVO acVO = accountService.selectMemberForLogin(accountVO);
 		
 		if(acVO == null) {	// 로그인 실패
@@ -75,9 +85,10 @@ public class AccountController {
 	
 	// 계정 조회 페이지
 	@GetMapping("accountList")
-	public String accountList(Model model) {
-		List<AccountVO> list = accountService.selectMemberList();
+	public String accountList(Model model, AccountVO accountVO) {
+		List<AccountVO> list = accountService.selectMemberList(accountVO);
 		model.addAttribute("accounts", list);
+		model.addAttribute("code0A",comcodeService.selectComCode("0A"));
 		return "account/accountList";
 	}
 	
@@ -96,6 +107,7 @@ public class AccountController {
 		System.out.println("[AccountController.java] passwordResetUpdate - id: " + accountVO.getId());
 		int result = accountService.updateMemberForPw(accountVO.getId());
 		return result;
+		// TODO 암호화 필요
 		
 	}
 	
