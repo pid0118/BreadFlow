@@ -11,8 +11,8 @@ public class PosVO {
 	private Integer salePrice; // 제품가격
 	private Integer quantity; // 판매수량
 	private String companyName; // 가맹점명
-	@JsonFormat(pattern = "yyyyMMdd")
+	@JsonFormat(pattern = "yyyyMMdd", timezone = "Asia/Seoul" )
 	private Date salesDate; // 매출일
 	private Integer daySales; // 매출
-
+	
 }

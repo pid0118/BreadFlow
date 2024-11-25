@@ -1,5 +1,7 @@
 package com.breadflow.app.sale.web;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,17 +59,16 @@ public class SaleController {
     
     // 가맹점 매출 조회
     @GetMapping("/daySale")
-    public String daySale(Model model) {
-		List<PosVO> list = saleService.selectSales();
-		model.addAttribute("dList",list);
+    public String daySale() {
 		return "sale/daySale";
     }
     
-    // AJAX
-    @GetMapping("/daySale/stupid")
+    // 매출조회 데이터
+    @GetMapping("/daySale/getSale")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> daySaleAjax() {
-    	List<PosVO> list = saleService.selectSales();
+    public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate) {
+
+    	List<PosVO> list = saleService.selectSales(saDate);
     	return ResponseEntity.ok(list);
     }
     
