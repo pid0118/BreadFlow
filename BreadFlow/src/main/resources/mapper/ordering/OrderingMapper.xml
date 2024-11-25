@@ -98,4 +98,10 @@
 	<update id="updateOrderingApprovalCancel" statementType="CALLABLE">
 		CALL ordercancel_prod(#{no}, #{reason})
 	</update>
+	
+	<update id="updateOrderingAccept">
+		UPDATE ordering
+		SET approval_whether = 'd1'
+		WHERE ordering_code = #{orderingCode}
+	</update>
 </mapper>

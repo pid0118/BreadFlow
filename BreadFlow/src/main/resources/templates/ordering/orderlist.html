@@ -183,10 +183,6 @@
 				<div class="modal-body">
 					<p>Lorem ipsum dolor sit ametcia deserunt mollit anim id est laborum.</p>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -240,7 +236,7 @@
 		        window.location.href = 'http://localhost:8099/order/list';
 		    },
 		    error : function(request, status, error) { 
-		        console.log(error)
+		        console.log(error);
 		    }
 		})
 	})
@@ -255,7 +251,7 @@
 			$('li.paginate_button.page-item.page').remove();
 			for(let i = 0; i < endPage; i++){
 				let ele;
-				if(page == i+1){
+				if(page == i+1) {
 					ele = `<li class="paginate_button page-item page active">
 						<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
 					</li>`;
@@ -286,9 +282,7 @@
 				if(data.approvalWhether == 'd3'){
 					ele = `<tr class="table-light">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">
-								${data.orderingCode}
-							</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -305,9 +299,7 @@
 				} else {
 					ele = `<tr class="table-danger">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">
-								${data.orderingCode}
-							</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -326,7 +318,24 @@
 			})
 			// 승인 버튼 이벤트
 			$('button#acceptBtn').on('click', function() {
-				confirm("승인하시겠습니까?");
+				if(confirm("승인하시겠습니까?")){
+					alert("승인");
+					let code = $(this).closest('tr').children('td:first-child').children().text();
+					$.ajax({
+					    type : 'post',
+					    url : '/ordering/updateOdAccept?code=' + code, 
+					    dataType : 'text',
+					    success : function(result) {
+					        console.log(result);
+					        window.location.href = 'http://localhost:8099/order/list';
+					    },
+					    error : function(request, status, error) { 
+					        console.log(error);
+					    }
+					})
+				} else {
+					alert("취소");
+				}
 			})
 			
 			// 거절 버튼 이벤트

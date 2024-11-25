@@ -12,4 +12,5 @@ public interface OrderingMapper {
 	public int insertOrderingDetail(String code, OrderingDetailVO orderingDetailVO); // 발주 상세 insert
 	public String selectOrderingCode(); // 발주코드 조회
 	public int updateOrderingApprovalCancel(String no, String reason); // 발주 취소
+	public int updateOrderingAccept(String orderingCode); // 발주 승인
 }

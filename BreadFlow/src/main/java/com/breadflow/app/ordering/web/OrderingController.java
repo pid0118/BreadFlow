@@ -1,6 +1,5 @@
 package com.breadflow.app.ordering.web;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.repository.query.Param;
@@ -9,11 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.ordering.service.OrderingService;
-import com.breadflow.app.ordering.service.OrderingVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,8 +44,15 @@ public class OrderingController {
 	
 	@PostMapping("/ordering/updateOdCancel")
 	@ResponseBody
-	public String updateOrdering(@Param("no") String no, @Param("reason") String reason) {
+	public String updateOrderingCancel(@Param("no") String no, @Param("reason") String reason) {
 		orderingService.updateOrderingApprovalCancel(no, reason);
+		return "";
+	}
+	
+	@PostMapping("/ordering/updateOdAccept")
+	@ResponseBody
+	public String updateOrderingAccept(@Param("code") String code) {
+		orderingService.updateOrderingAccept(code);
 		return "";
 	}
 }

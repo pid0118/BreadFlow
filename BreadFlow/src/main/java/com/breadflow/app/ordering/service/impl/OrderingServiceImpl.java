@@ -86,9 +86,16 @@ public class OrderingServiceImpl implements OrderingService{
 	}
 
 	@Override
+	@Transactional
 	public int updateOrderingApprovalCancel(String no, String reason) {
 		int result = orderingMapper.updateOrderingApprovalCancel(no, reason);
 		return result;
+	}
+
+	@Override
+	public int updateOrderingAccept(String orderingCode) {
+		orderingMapper.updateOrderingAccept(orderingCode);
+		return 0;
 	}
 
 }
