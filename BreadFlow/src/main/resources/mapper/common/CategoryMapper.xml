@@ -3,9 +3,9 @@
 <mapper namespace="com.breadflow.app.common.mapper.CategoryMapper">
 
 	<select id="selectCategory" resultType="CategoryVO">
-		SELECT major
-			   , sub
-		FROM   category	
+		SELECT c.major, c.sub
+		FROM category c JOIN category ca
+		ON c.major = ca.sub
 	</select>
 
 	<select id="selectCategorySub" resultType="CategoryVO">

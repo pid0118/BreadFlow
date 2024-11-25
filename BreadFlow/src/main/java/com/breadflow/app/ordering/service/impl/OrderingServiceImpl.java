@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,18 @@ public class OrderingServiceImpl implements OrderingService{
 	public OrderingMapper orderingMapper;
 	
 	@Override
-	public List<OrderingVO> selectOrderingList() {
-		return orderingMapper.selectOrderingList();
+	public Map<String, Object> selectOrderingList(String status, String sort, int page) {
+		List<String> list = new ArrayList<>();
+		String[] stat = status.split(",");
+		for(int i = 0; i < stat.length; i++) {
+			list.add(stat[i]);
+		}
+		int totalPage = orderingMapper.selectOrderingPage(list, sort, page);
+		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page);
+		Map<String, Object> map = new HashMap<>();
+		map.put("data", oList);
+		map.put("page", totalPage);
+		return map;
 	}
 
 	@Override
@@ -48,8 +59,8 @@ public class OrderingServiceImpl implements OrderingService{
 		for(int i = 0; i < items.size(); i++) {
 			Map<String, Object> itemMap = (Map<String, Object>)items.get(i);
 			OrderingDetailVO detailVO = new OrderingDetailVO();
-			String pdCode = null;
-			String idCode = null;
+			String pdCode = null; // 상품 코드
+			String idCode = null; // 재료 코드
 			String itemCode = (String) itemMap.get("itemCode");
 			int itemQuan = (int) itemMap.get("itemQuan");
 			String subCode = itemCode.substring(0, 2);
@@ -71,6 +82,12 @@ public class OrderingServiceImpl implements OrderingService{
 		for(int i = 0; i < detailVOs.size(); i++) {
 			result = orderingMapper.insertOrderingDetail(code, detailVOs.get(i));
 		}
+		return result;
+	}
+
+	@Override
+	public int updateOrderingApprovalCancel(String no, String reason) {
+		int result = orderingMapper.updateOrderingApprovalCancel(no, reason);
 		return result;
 	}
 

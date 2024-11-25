@@ -127,7 +127,8 @@
 		$(document).ready(function() {
 			// 옵션값 초기화
 			$('.custom-select2').select2();
-			
+			$('#coFilterModal.modal.fade').remove();
+			disabledDate();
 		});
 		
 		// 품목 종류 카테고리 생성
@@ -136,6 +137,7 @@
 		.then(datas => makeCategory(datas))
 		.catch(err => console.log());
 		
+		// 카테고리 생성
 		function makeCategory(datas) {
 			let major = datas[0];
 			let element = '';
@@ -382,12 +384,6 @@
 			});
 		}
 		
-		// DOM 요소 완성후 실행
-		window.addEventListener("DOMContentLoaded", () => {
-			$('#coFilterModal.modal.fade').remove();
-			disabledDate();
-		})
-		
 		// 발주 신청 이벤트
 		orderRequest.addEventListener('click', function() {
 			if($('.date-picker').val() == ''){
@@ -456,10 +452,7 @@
 		    	$('input.check').prop("checked",false); 
 		    }
 		});
-		
-		
-		
-		
+
 	</script>
 </body>
 </html>
