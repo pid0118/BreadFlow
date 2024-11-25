@@ -11,15 +11,13 @@ public class OrderListVO {
 	private String orderingIngredient;
 	private String orderingProduct;
 	private Integer quantity;
-	private String prdStandard;
-	private String prdUnit;
-	private String ingStandard;
-	private String ingUnit;
+	private String unit;
+	private String standard;
 	private String orderingDetailCode;
 	private String ingredientName;
 	private String productName;
-	private String ingExpirationDeadline;
-	private String prdExpirationDeadline;
+	private String itemName;
+	private String expirationDeadline;
 	
 	private Integer outstoreQuantity;
 	

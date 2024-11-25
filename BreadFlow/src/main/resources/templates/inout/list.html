@@ -13,7 +13,7 @@
 			<h2 class="text-black">입출고 내역</h2>
 		</div>
 		<div>
-			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${companyName}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyName}" style=display:none; readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 				<label class="btn btn-outline-secondary active">
 					<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
@@ -217,32 +217,16 @@
                 var row = "<tr>";
                 if (type === 'instore') {
                     row += "<td class='table-plus date'>" + item.instoreDate + "</td>";
-                    if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + item.productName + "</td>";
-	                } else {
-	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
-	                }
+                    row += "<td>" + item.itemName + "</td>";
                     row += "<td>" + item.instoreQuantity + "</td>";
-                    if (item.orderingProduct != null) {
-	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
-	                } else {
-	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
-	                }
+                    row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                 } else if (type === 'outstore') {
                     row += "<td class='table-plus date'>" + item.outstoreDate + "</td>";
-                    if (item.prdStandard != null) {
-	                	row += "<td class='prd'>" + item.productName + "</td>";
-	                } else {
-	                	row += "<td class='ing'>" + item.ingredientName + "</td>";
-	                }
+                    row += "<td>" + item.itemName + "</td>";
                     row += "<td>" + item.outstoreQuantity + "</td>";
-                    if (item.prdStandard != null) {
-	                	row += "<td>" + item.prdStandard + "/" + item.prdUnit + "</td>";
-	                } else {
-	                	row += "<td>" + item.ingStandard + "/" + item.ingUnit + "</td>";
-	                }
+                    row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                 }
