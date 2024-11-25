@@ -28,6 +28,9 @@
 		SELECT product_name
 		FROM product
 		WHERE product_name = #{productName}
+		<![CDATA[
+		  AND product_code <> #{productCode}
+		]]>
 	</select>
 	
 	<!-- 제품 상세조회 -->
@@ -43,6 +46,7 @@
 			   major,
 			   sub,
 			   unit,
+			   find_cd(unit) as unit_name,
 			   standard,
 			   amount
 		FROM  product
@@ -97,7 +101,9 @@
 			   sale_price = #{salePrice} ,
 			   safe_stock_quantity = #{safeStockQuantity} ,
 			   proplace = #{proplace} ,
+			   <if test="productImage != null and productImage != ''">
 			   product_image = #{productImage} ,
+			   </if>
 			   major = #{major} ,
 			   sub = #{sub} ,
 			   unit = #{unit} ,
@@ -112,7 +118,7 @@
 		DELETE FROM product
 		Where product_code = #{productCode}
 	</delete>
-	
+	<!-- 삭제 조건 주문중 상품찾기 -->
 	<select id="selectOrderingProductCnt" resultType="int">
 		SELECT  COUNT(ordering_product)
 		FROM	ordering_detail

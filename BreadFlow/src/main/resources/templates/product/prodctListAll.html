@@ -43,6 +43,14 @@
         .search-button:hover {
             background-color: #5a6268;
         }
+			/* 검색 입력 필드 스타일 조정 */
+	    .dataTables_filter input {
+	        height: 31px;
+	        padding: 0.25rem 0.5rem;
+	        font-size: 0.875rem;
+	        line-height: 1.5;
+	        border-radius: 0.2rem;
+	    }
     </style>
 </head>
 <body>
@@ -69,15 +77,19 @@
             </div>
         </div>
     </div>
-	<div class="gap-2 mb-3">
-	        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/product/Insert}'|">등록</button>
-	        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
+    
+	<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
+    <div id="dtSearch"></div>
+    <div>
+        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/productInsert}'|">등록</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
     </div>
+	</div>
     
     <!-- 데이터 테이블 시작 -->
     <div class="pb-20">
-        <table class="data-table table stripe hover wrap" id="productTable">
         
+        <table class="data-table table stripe hover wrap" id="productTable">
             <thead>
                 <tr style="text-align : center;">
                 	<th class="datatable">
@@ -225,7 +237,7 @@
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showProductDetail(productCode) {
 		    $.ajax({
-		        url: '/productListAll/' + productCode,
+		        url: '/product/' + productCode,
 		        method: 'GET',
 		        success: function(product) {
 		        	
@@ -239,10 +251,10 @@
 		            document.getElementById('salePrice').textContent = product.salePrice + '원';
 		            document.getElementById('safeStockQuantity').textContent = product.safeStockQuantity;
 		            document.getElementById('proplace').textContent = product.proplace;
-		            document.getElementById('unit').textContent = product.unit;
+		            document.getElementById('unit').textContent = product.unitName;
 		            document.getElementById('major').textContent = product.major;
 		            document.getElementById('sub').textContent = product.sub;
-		            document.getElementById('amount').textContent = product.amount + product.unit;
+		            document.getElementById('amount').textContent = product.amount + product.unitName;
 		            document.getElementById('productCodes').value = product.productCode;
 		            $('#productDetailModal').modal('show');
 		        },
@@ -408,9 +420,11 @@
         function updatePage() {
         	const productCode = $('#productCodes').val();
         	
-        	location.href = "product/Update?productCode=" + productCode;
+        	location.href = "productUpdate?productCode=" + productCode;
         }
-        
+            // 검색 입력 필드를 새로운 위치로 이동
+            $('.dataTables_filter').detach().appendTo('#dtSearch');
+       
         		
     </script>
 </body>

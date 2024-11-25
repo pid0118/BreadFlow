@@ -19,6 +19,7 @@ public class ProductVO {
 	private String unit;				// 단위
 	private String standard;			// 규격
 	private Integer amount;				// 양
+	private String unitName;          	// 단위명
 	
 	private List<String> subList;		// 검색조건
 }

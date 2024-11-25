@@ -27,21 +27,21 @@ public class ProductServiceImpl implements ProductService {
 	public ProductVO selectProduct(String productCode) {
 		ProductVO product = productMapper.selectProduct(productCode);
 		
-		String unitCode = product.getUnit();
-		String unit = "";
-		if (unitCode.equals("j1")) {
-			unit = "g";
-		} else if (unitCode.equals("j2")) {
-			unit = "kg";
-		} else if (unitCode.equals("j3")) {
-			unit = "ml";
-		} else if (unitCode.equals("j4")) {
-			unit = "L";
-		} else  if (unitCode.equals("j5")){
-			unit = "EA";
-		}
-		
-		product.setUnit(unit);
+//		String unitCode = product.getUnit();
+//		String unit = "";
+//		if (unitCode.equals("j1")) {
+//			unit = "g";
+//		} else if (unitCode.equals("j2")) {
+//			unit = "kg";
+//		} else if (unitCode.equals("j3")) {
+//			unit = "ml";
+//		} else if (unitCode.equals("j4")) {
+//			unit = "L";
+//		} else  if (unitCode.equals("j5")){
+//			unit = "EA";
+//		}
+//		
+//		product.setUnit(unit);
 		
 		return product;
 	}
@@ -82,8 +82,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public String selectProductName(String productName) {
-		return productMapper.selectProductName(productName);
+	public String selectProductName(String productName, String productCode) {
+		return productMapper.selectProductName(productName, productCode);
 	}
 
 	

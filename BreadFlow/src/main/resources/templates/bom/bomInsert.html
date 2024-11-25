@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/breadflow_layout}"
+      layout:fragment="Content">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOM 등록/수정</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container mx-auto p-6">
+        <div class="bg-[#f8f9fa] rounded-lg shadow-md">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold mb-6">BOM 등록/수정</h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="flex space-x-6 items-start">
+                    <!-- 제품명 및 이미지 -->
+                    <div class="flex flex-col items-center space-y-2">
+                        <div class="w-48 h-48 bg-[#E6E9FF] flex items-center justify-center border rounded">
+                            이미지
+                        </div>
+                        <input type="text" id="productName" placeholder="제품명" class="w-48 px-3 py-2 border rounded text-center">
+                    </div>
+
+                    <!-- 테이블 섹션 -->
+                    <div class="flex-grow">
+                        <div class="flex justify-between mb-4">
+                            <!-- 원재료 추가 버튼 오른쪽 상단에 배치 -->
+                            <button id="addMaterial" class="px-4 py-2 bg-btn btn-primary action-buttons-500 text-white rounded hover:bg-blue-600">
+                                원재료 추가
+                            </button>
+                        </div>
+                        <!-- 테이블 -->
+                        <table class="w-full border-collapse border border-gray-300 text-center">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 p-2">
+                                        <input type="checkbox" id="selectAll">
+                                    </th>
+                                    <th class="border border-gray-300 p-2">원재료 코드</th>
+                                    <th class="border border-gray-300 p-2">제품명</th>
+                                    <th class="border border-gray-300 p-2">소모량</th>
+                                    <th class="border border-gray-300 p-2">단위</th>
+                                    <th class="border border-gray-300 p-2">비고</th>
+                                    <th class="border border-gray-300 p-2">
+                                        <button id="deleteSelected" disabled>
+                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+                                            </svg>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="entriesBody">
+                                <!-- Entries will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button id="saveButton" class="px-4 py-2 bg-btn btn-primary action-buttons-500 text-white rounded hover:bg-blue-600">저장</button>
+                    <button id="cancelButton" class="px-4 py-2 border border-btn btn-secondary action-buttons-300 ">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // 초기 데이터
+            let entries = [
+                { id: 1, code: 'OB00001', name: '밀가루', quantity: '', unit: '', notes: '' },
+                { id: 2, code: 'OB00002', name: '빵다', quantity: '', unit: '', notes: '' },
+                { id: 3, code: 'OB00003', name: '크림', quantity: '', unit: '', notes: '' },
+                { id: 4, code: 'OB00004', name: '금편기', quantity: '', unit: '', notes: '' },
+            ];
+            let selectedEntries = [];
+            let nextId = 5;
+
+            // 테이블 렌더링 함수
+            function renderEntries() {
+                $('#entriesBody').html(entries.map(entry => `
+                    <tr>
+                        <td class="border border-gray-300 p-2">
+                            <input type="checkbox" class="entry-checkbox" data-id="${entry.id}" ${selectedEntries.includes(entry.id) ? 'checked' : ''}>
+                        </td>
+                        <td class="border border-gray-300 p-2">${entry.code}</td>
+                        <td class="border border-gray-300 p-2">${entry.name}</td>
+                        <td class="border border-gray-300 p-2">
+                            <input type="text" value="${entry.quantity}" class="w-16 px-2 py-1 border rounded quantity-input" data-id="${entry.id}">
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input type="text" value="${entry.unit}" class="w-16 px-2 py-1 border rounded unit-input" data-id="${entry.id}">
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <input type="text" value="${entry.notes}" class="w-16 px-2 py-1 border rounded notes-input" data-id="${entry.id}">
+                        </td>
+                        <td class="border border-gray-300 p-2">
+                            <button class="delete-entry" data-id="${entry.id}">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                `).join(''));
+            }
+
+            // 초기 렌더링
+            renderEntries();
+
+            // 전체 선택/해제 토글
+            $('#selectAll').on('change', function() {
+                const isChecked = $(this).prop('checked');
+                selectedEntries = isChecked ? entries.map(entry => entry.id) : [];
+                renderEntries();
+                updateDeleteButtonState();
+            });
+
+            // 개별 항목 선택/해제 토글
+            $(document).on('change', '.entry-checkbox', function() {
+                const id = parseInt($(this).data('id'));
+                selectedEntries = $(this).prop('checked')
+                    ? [...selectedEntries, id]
+                    : selectedEntries.filter(entryId => entryId !== id);
+                $('#selectAll').prop('checked', selectedEntries.length === entries.length);
+                updateDeleteButtonState();
+            });
+
+            // 삭제 버튼 상태 업데이트
+            function updateDeleteButtonState() {
+                $('#deleteSelected').prop('disabled', selectedEntries.length === 0);
+            }
+
+            // 선택된 항목 삭제
+            $('#deleteSelected').on('click', function() {
+                entries = entries.filter(entry => !selectedEntries.includes(entry.id));
+                selectedEntries = [];
+                renderEntries();
+                updateDeleteButtonState();
+            });
+
+            // 개별 항목 삭제
+            $(document).on('click', '.delete-entry', function() {
+                const id = parseInt($(this).data('id'));
+                entries = entries.filter(entry => entry.id !== id);
+                selectedEntries = selectedEntries.filter(entryId => entryId !== id);
+                renderEntries();
+                updateDeleteButtonState();
+            });
+
+            // 소모량, 단위, 비고 업데이트
+            $(document).on('change', '.quantity-input, .unit-input, .notes-input', function() {
+                const id = parseInt($(this).data('id'));
+                const field = $(this).hasClass('quantity-input') ? 'quantity' : 
+                              $(this).hasClass('unit-input') ? 'unit' : 'notes';
+                const value = $(this).val();
+                entries = entries.map(entry =>
+                    entry.id === id ? { ...entry, [field]: value } : entry
+                );
+            });
+
+            // 새로운 재료 추가
+            $('#addMaterial').on('click', function() {
+                const newEntry = {
+                    id: nextId++,
+                    code: `OB${String(nextId).padStart(5, '0')}`,
+                    name: '새 재료',
+                    quantity: '',
+                    unit: '',
+                    notes: ''
+                };
+                entries.push(newEntry);
+                renderEntries();
+            });
+
+            // 저장 버튼 (실제 저장 로직은 구현되지 않음)
+            $('#saveButton').on('click', function() {
+                alert('저장 기능이 구현되지 않았습니다.');
+            });
+
+            // 취소 버튼
+            $('#cancelButton').on('click', function() {
+                if (confirm('변경사항을 취소하시겠습니까?')) {
+                    location.reload();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
