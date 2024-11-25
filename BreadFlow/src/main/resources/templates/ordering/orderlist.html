@@ -28,29 +28,18 @@
 					</div>
 					<div class="pull-right">
 						<div class="form-group">
-							<select class="custom-select2 form-control" multiple="multiple">
-								<optgroup label="s">
-									<option value="AK">Alaska</option>
-									<option value="HI">Hawaii</option>
-								</optgroup>
-								<optgroup label="Pacific Time Zone">
-									<option value="CA">California</option>
-									<option value="NV">Nevada</option>
-									<option value="OR">Oregon</option>
-									<option value="WA">Washington</option>
-								</optgroup>
-								<optgroup label="Mountain Time Zone">
-									<option value="AZ">Arizona</option>
-									<option value="CO">Colorado</option>
-									<option value="ID">Idaho</option>
-									<option value="MT">Montana</option>
-									<option value="NE">Nebraska</option>
-									<option value="NM">New Mexico</option>
-									<option value="ND">North Dakota</option>
-									<option value="UT">Utah</option>
-									<option value="WY">Wyoming</option>
-								</optgroup>
-							</select>
+							<select class="selectpicker form-control" data-size="5" data-style="btn-outline-secondary" multiple data-max-options="3" id="categorylist">
+						        <optgroup label="Condiments">
+						            <option>Mustard</option>
+						            <option>Ketchup</option>
+						            <option>Relish</option>
+						        </optgroup>
+						        <optgroup label="Breads">
+						            <option>Plain</option>
+						            <option>Steamed</option>
+						            <option>Toasted</option>
+						        </optgroup>
+						    </select>
 						</div>
 					</div>
 					<div class="table-responsive">
@@ -59,6 +48,7 @@
 								<tr>
 									<th scope="col">발주코드</th>
 									<th scope="col">발주일자</th>
+									<th scope="col">납기 희망 일자</th>
 									<th scope="col">발주 요청자</th>
 									<th scope="col">총 금액</th>
 									<th scope="col">발주 상태</th>
@@ -123,6 +113,26 @@
 						</table>
 					</div>
 				</div>
+			</div><!-- 주문 현황 div -->
+		</div>
+	</div>
+	<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myLargeModalLabel">발주 취소</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>거절 사유</label>
+						<textarea class="form-control"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-danger">거절</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -134,23 +144,28 @@
 		fetch('/ordering/list')
 		.then(response => response.json())
 		.then(data => {
-			console.log(data);
 			data.forEach(data => {
 				let ele;
 				if(data.approvalWhether == 'd3'){
 					ele = `<tr class="table-light">
-						<td>${data.orderingCode}</td>
+						<td data-id="${data.orderformNo}">${data.orderingCode}</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-secondary">요청</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm">승인</button></td>
-						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
+						<td>
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+						<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm">거절</button>
+						</a>
+						</td>
 					</tr>`
 				} else {
 					ele = `<tr class="table-danger">
-						<td>${data.orderingCode}</td>
+						<td data-id="${data.orderformNo}">${data.orderingCode}</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-danger">긴급</span></td>
@@ -158,12 +173,11 @@
 						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
 					</tr>`
 				}
-				console.log(ele);
 				$('#orderingTable tbody').append(ele);
 			})
 
 		})
-		.err(err => console.log(err))
+		.catch(err => console.log(err))
 	}
 	
 </script>
