@@ -39,5 +39,11 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		return result;
 	}
 
+	@Override
+	public void selectPrdtplan(String productionPlanNo) {
+		prdtplanMapper.selectPrdtplan(productionPlanNo);
+		
+	}
+
 	
 }

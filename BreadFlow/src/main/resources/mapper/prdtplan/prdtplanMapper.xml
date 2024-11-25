@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.prdtplan.mapper.PrdtplanMapper">
 	
+	<select id="selectPrdtplan" parameterType="String">
+		
+	</select>
+	
+	
 	<!-- 생산계획(production_plan)단건입력 -->
 	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">

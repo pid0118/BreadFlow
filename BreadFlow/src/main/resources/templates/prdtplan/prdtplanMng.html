@@ -35,7 +35,7 @@
 		<div class="insertButtons">
 			<h2>생산 계획 관리</h2>
 			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">날짜 선택</button>
-			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">생산계획 신규 작성</button>
+			<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>
 		</div>
 		<div>
 		
@@ -302,32 +302,124 @@
 
 <script>
 //========================================================================
+// [박진석|241125] 공통변수 
+let mode = 'insert';
+
+
+// 변수 끝
+//========================================================================
+
+
+//========================================================================
 // [박진석|241122] 이벤트 걸기
-let udtFormBtn = document.querySelector("#udtFormBtn");			// 저장
+let udtFormBtn = document.querySelector("#udtFormBtn");							// 저장
 udtFormBtn.addEventListener('click', insertPrdPlanAjax);
 
 
-let appendRowBtn = document.querySelector("#childTblNewRow");	// 행 추가
+let appendRowBtn = document.querySelector("#childTblNewRow");					// 행 추가
 appendRowBtn.addEventListener('click', function() {
 	grid.appendRow();
 })
 
-let deleteRowBtn = document.querySelector("#childTblDelRow");	// 행 삭제
+let deleteRowBtn = document.querySelector("#childTblDelRow");					// 행 삭제
 deleteRowBtn.addEventListener('click', function() {
 	grid.removeRow(grid.getFocusedCell().rowKey);
 })
 
-let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");		// 생산업체 검색
+let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색
 PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
 
 let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색
 DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow)
+
+let newPrdtPlanBtn = document.querySelector("#newPrdtPlanBtn");					// 생산계획 신규 작성 버튼
+newPrdtPlanBtn.addEventListener('click', function() {
+	mode = "insert"
+	$('#updatePrdtplanForm')[0].reset();
+	grid.clear();
+})
 
 // 이벤트 걸기 끝
 // ========================================================================
 
 	
 	
+// ========================================================================
+// [박진석|241122] 부모 데이터 테이블 생성
+$(document).ready( function () {
+    $('#prdtPlan').DataTable({
+	   pageLength: 5,
+	   paging: true,
+       searching: true,
+       ordering: true,
+       info: true,
+       autoWidth: false,
+       language: {
+           lengthMenu: "_MENU_ 개씩 보기",
+           zeroRecords: "데이터가 없습니다.",
+           info: "총 _TOTAL_개의 데이터 중 _START_ - _END_",
+           infoEmpty: "데이터가 없습니다.",
+           search: "검색:",
+           paginate: {
+               first: "처음",
+               last: "마지막",
+               next: "다음",
+               previous: "이전"
+           }
+       }
+    });
+} );
+// 데이터 테이블 생성
+// ========================================================================
+
+	
+	
+// ========================================================================
+// [24.11.25] 부모 테이블 행 클릭 이벤트 걸기
+let accTblTrs = document.querySelectorAll("#prdtPlan tr");
+let prdtplanNo;	
+
+for (let i = 1; i < accTblTrs.length; i++) {
+	accTblTrs[i].addEventListener("click", getTargetInfo);
+}
+
+function getTargetInfo(e) {
+	mode = 'update';
+	prdtplanNo = e.target.parentElement.querySelector('#parentPrdtplanNo').innerText;
+	getPrdtplanInfo(prdtplanNo);
+	getPrdtplanDetailInfo(prdtplanNo);
+}
+// 행 클릭 이벤트 끝
+// ========================================================================
+	
+
+	
+// ========================================================================
+// [24.11.25] 단건조회 AJAX
+function getPrdtplanInfo(no) {
+	$.ajax({
+	    url: "selectPrdtplan",
+	    type: "GET",
+	    data: no,
+	    success: function(data){
+	        alert("성공적으로 조회되었습니다.");
+	        console.log(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+}
+
+
+
+
+// 단건조회 AJAX 끝
+// ========================================================================
+	
+	
+		
 // ========================================================================
 // [박진석|241122] 자식 테이블 생성
 var Grid = tui.Grid;
@@ -482,36 +574,37 @@ function dlvryComModalConfirm() {
 // ========================================================================
 // [박진석|241122] 생산계획 저장하는 AJAX
 function insertPrdPlanAjax() {
-	let updStartDate = document.querySelector("#updStartDate").value
-	let updLastDate = document.querySelector("#updLastDate").value
-	let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
-	let updProductionCompany = document.querySelector("#updProductionCompany").value
-	
-	if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
-		alert("날짜 또는 업체를 선택했는지 확인하세요.");
-		return false;
-	}
-	
-	if(confirm("생산을 저장 하시겠습니까?")) {
-		$.ajax({
-           url: "insertPrdtplan.do",
-           type: "POST",
-           data:  $('#updatePrdtplanForm').serialize(),
-           success: function(data){
-               alert("성공적으로 저장되었습니다.");
-               console.log(data);
-               if (data != '')
-               	insertPrdPlanDetailAjax(data);
-           },
-           error: function(result){
-        	   alert("저장에 실패하였습니다.");
-        	   console.log(result);
-        	}
-       });
-	} else {
-		alert("취소하였습니다.");
-	}
-	
+	if(mode = "insert") {
+		let updStartDate = document.querySelector("#updStartDate").value
+		let updLastDate = document.querySelector("#updLastDate").value
+		let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
+		let updProductionCompany = document.querySelector("#updProductionCompany").value
+		
+		if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
+			alert("날짜 또는 업체를 선택했는지 확인하세요.");
+			return false;
+		}
+		
+		if(confirm("생산을 저장 하시겠습니까?")) {
+			$.ajax({
+	           url: "insertPrdtplan.do",
+	           type: "POST",
+	           data:  $('#updatePrdtplanForm').serialize(),
+	           success: function(data){
+	               alert("성공적으로 저장되었습니다.");
+	               console.log(data);
+	               if (data != '')
+	               	insertPrdPlanDetailAjax(data);
+	           },
+	           error: function(result){
+	        	   alert("저장에 실패하였습니다.");
+	        	   console.log(result);
+	        	}
+	       });
+		} else {
+			alert("취소하였습니다.");
+		}
+	}	
 }
 // ajax 걸기 끝
 // ========================================================================

@@ -53,4 +53,10 @@ public class PrdtplanController {
 		int result = prdtplanService.insertPrdtplanDetail(list);
 		return result;
 	}
+	
+	@GetMapping("selectPrdtplan")
+	public String selectPrdtplan(String productionPlanNo) {
+		prdtplanService.selectPrdtplan(productionPlanNo);
+		return "";
+	}
 }
