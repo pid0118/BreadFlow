@@ -72,5 +72,10 @@ public class SaleController {
     	return ResponseEntity.ok(list);
     }
     
+    @GetMapping("/saleChart")
+    public String saleChart() {
+    	return "sale/chart";
+    }
+    
     
 }
