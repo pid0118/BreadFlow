@@ -34,8 +34,15 @@ public class InferServiceImpl implements InferService {
 	@Transactional
 	@Override
 	public int inferInsert(List<InferDetailVO> list) {
+		// history 등록
+		InferHistoryVO inferHistoryVO = new InferHistoryVO();
+		inferHistoryVO.setConfirmLocation(list.get(0).getConfirmLocation());
+		inferMapper.insertInferHistory(inferHistoryVO);
 		int result = 0;
+		
+		// detail 등록
 		for (InferDetailVO inferDetailVO : list) {
+			inferDetailVO.setInferNo(inferHistoryVO.getInferNo());
 			result += inferMapper.insertInferDetail(inferDetailVO);
 		}
 		return result;

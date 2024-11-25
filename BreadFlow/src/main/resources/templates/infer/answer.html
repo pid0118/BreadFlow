@@ -21,9 +21,19 @@
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
+				<label>처분</label>
 				<div class="form-group">
-					<label>처분</label>
-					<input class="form-control" type="text" name="disposalType" id="disposalType" th:value="폐기" readonly>
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-outline-secondary active">
+							<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
+						</label>
+						<label class="btn btn-outline-secondary">
+							<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
+						</label>
+						<label class="btn btn-outline-secondary">
+							<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
+						</label>
+					</div>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
@@ -40,19 +50,9 @@
 			</div>
 			<div class="form-group">
 				<label>답변자</label>
-				<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${loginMember}" readonly>
+				<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.name}" readonly>
 			</div>
-		</div>
-		<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
-			<label class="btn btn-outline-secondary active">
-				<input type="radio" name="options" value="반품" id="seeAll" autocomplete="off" checked>전체
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="폐기" id="seeUnchecked" autocomplete="off">미확인
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="철회" id="seeChecked" autocomplete="off">확인
-			</label>
+			<input id="inferNo" th:value="${inferNo}" style="display:none;" readonly>
 		</div>
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
@@ -63,7 +63,7 @@
 						<th class="datatable-nosort">품목 이미지</th>
 						<th class="datatable-nosort">품목</th>
 						<th>수량</th>
-						<th class="datatable-nosort">처분</th>
+						<th class="datatable-nosort">불량 유형</th>
 						<th class="datatable-nosort">확인 여부</th>
 					</tr>
 				</thead>
@@ -75,7 +75,7 @@
 						<td th:text="${infer.inferImage}"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
-						<td th:text="페기"></td>
+						<td th:text="${infer.interType}"></td>
 						<td th:text="${infer.confirmWhether}"></td>
 					</tr>
 				</tbody>
@@ -98,31 +98,42 @@
     	// 페이지 로드 시 실행
 		$(document).ready(function() {
         	
-        	// 로그인한 업체 이름 저장
-        	companyInput = $("#companyInput").val();
-            
 		});
 		
 		// 등록 버튼 클릭 시 실행
 		$("#submitBtn").click(function() {
 			
-			// 필요 정보 추출
-			var getData = [];
+			// 등록 정보 추출
+			var insertData = [];
 			var row = $(this);
             var data = {
-                disposalWhether : ''
+                disposalWhether : $("input[name='options']:checked").val(),
+            	answer : $("#answer").text(),
+            	manager : $("#inferMember").val(),
+            	answerer : $("#loginMember").val(),
+            	inferNo : $("#inferNo").val()
             };
-            getData.push(data);
-            console.log(getData);
+            insertData.push(data);
+            console.log(insertData);
+            
+         	// 갱신 정보 추출
+			var updateData = [];
+			var row = $(this);
+            var upData = {
+            	inferNo : $("#inferNo").val()
+            };
+            updateData.push(upData);
+            console.log(updateData);
 			
 			// 답변 등록
 			$.ajax({
-                url: url,
+                url: '/infer/insertInferAnswer',
                 method: 'POST',
-                data: JSON.stringify(selectedRows),
+                async: false,
+                data: JSON.stringify(insertData),
                 contentType: 'application/json',
                 success: function(response) {
-                	console.log(selectedRows);
+                	console.log(insertData);
                     alert("등록되었습니다.");
                 },
                 error: function() {
@@ -132,16 +143,15 @@
 			
 			// 확인 여부 갱신
 			$.ajax({
-                url: url,
+                url: '/infer/updateInferHistory',
                 method: 'PUT',
-                data: JSON.stringify(selectedRows),
+                data: JSON.stringify(updateData),
                 contentType: 'application/json',
                 success: function(response) {
-                	console.log(selectedRows);
-                    alert("등록되었습니다.");
+                	console.log(updateData);
                 },
                 error: function() {
-                    alert("등록하는 데 실패했습니다.");
+                	console.log('확인 여부 갱신에 실패했습니다.');
                 }
             });
 			

@@ -13,7 +13,8 @@
 			<h2 class="text-black">불량 내역</h2>
 		</div>
 		<div>
-			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${companyName}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyName}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style=display:none; readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 				<label class="btn btn-outline-secondary active">
 					<input type="radio" name="options" value="전체" id="seeAll" autocomplete="off" checked>전체
@@ -44,6 +45,21 @@
                 </li>
             </ul>
 		</div>
+		<div class="pd-20">
+			<div class="form-group">
+				<div class="btn-group btn-group-toggle" data-toggle="buttons">
+					<label class="btn btn-outline-secondary active">
+						<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
+					</label>
+					<label class="btn btn-outline-secondary">
+						<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
+					</label>
+					<label class="btn btn-outline-secondary">
+						<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
+					</label>
+				</div>
+			</div>
+		</div>
 		<div class="pd-20 input-group mb-3">
 			<input class="form-control" type="text" id="searchKeyword">
 			<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
@@ -56,7 +72,7 @@
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
-					<tr>
+					<tr id="inferHistoryHead">
 						<th class="table-plus">불량 입력 일자</th>
 						<th class="datatable-nosort">확인 위치</th>
 						<th class="datatable-nosort">품목</th>
@@ -75,7 +91,8 @@
     <script>
 	 	// 조건
 	 	var companyInput = null;
-	 	var clear = null;
+	 	var div = null;
+	 	var clearTable = null;
 		var year = null;
 		var month = null;
 		var checked = null;
@@ -86,12 +103,15 @@
         	
         	// 로그인한 업체 이름 저장
         	companyInput = $("#companyInput").val();
+        	
+        	// 로그인한 업체 코드 저장
+        	div = $("#companyDiv").val();
 
             // 기본 내역 출력
             changeFilter();
             
             function clear() {
-            	clear = null;
+            	clearTable = null;
     			year = null;
     			month = null;
     			checked = null;
@@ -103,6 +123,11 @@
     			year = null;
     			month = null;
     			confirmComp = null;
+            }
+            
+            if (div !== '본사') {
+            	$("#confirmCompBtn").css("display", "none");
+            	$("#inferHistoryHead").append("<th>답변 일자</th>");
             }
             
             // 전체 내역 버튼 클릭
@@ -121,7 +146,7 @@
             	$("#confirmCompBtn").text('확인 위치');
             	unchecked = '미확인';
             	checked = null;
-            	clear = 'notClear';
+            	clearTable = 'notClear';
             	confirmExClear();
             	changeFilter();
             });
@@ -133,7 +158,7 @@
             	$("#confirmCompBtn").text('확인 위치');
             	checked = '확인';
             	unchecked = null;
-            	clear = 'notClear';
+            	clearTable = 'notClear';
             	confirmExClear();
             	changeFilter();
             });
@@ -141,7 +166,7 @@
             // 연도별 필터 클릭
             $(document).on('click', '.year', function() {
                 year = $(this).text().trim();
-                clear = 'notClear';
+                clearTable = 'notClear';
                 $("#yearlyBtn").text(year);
                 changeFilter();
             });
@@ -149,7 +174,7 @@
             // 월별 필터 클릭
             $(document).on('click', '.month', function() {
                 month = $(this).text().trim();
-                clear = 'notClear';
+                clearTable = 'notClear';
                 $("#monthlyBtn").text(month);
                 changeFilter();
             });
@@ -157,7 +182,7 @@
             // 확인 위치별 필터 클릭
             $(document).on('click', '.company', function() {
                 confirmComp = $(this).text().trim();
-                clear = 'notClear';
+                clearTable = 'notClear';
                 $("#confirmCompBtn").text(confirmComp);
                 changeFilter();
             });
@@ -189,12 +214,13 @@
             	url : '/infer/getInferList',
             	method : 'GET',
             	data : {companyInput,
-            			clear,
+            			clearTable,
             			year,
             			month,
             			checked,
             			unchecked,
-            			confirmComp},
+            			confirmComp,
+            			div},
             	success : function(data) {
             		updateTable(data);
             		console.log(data);
@@ -210,14 +236,26 @@
             var tbody = $("#inferHistoryTable");
             tbody.empty();
             data.forEach(function(item) {
-                var row = "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+                var row = null;
+                	if (div !== '본사') {
+                		row += "<tr onclick='window.location = \"/inferListDetail/" + item.inferNo + "\"'>";
+                	} else {
+                		row += "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+                	}
                 	row += "<td style='display:none;'>" + item.inferNo + "</td>";
                     row += "<td class='table-plus date'>" + item.inferApplicationDate + "</td>";
                     row += "<td>" + item.confirmLocation + "</td>";
                     row += "<td>" + item.inferItem + "</td>";
                     row += "<td>" + item.inferQuantity + "</td>";
-                    row += "<td>" + "폐기" + "</td>";
+                    row += "<td>" + item.disposalWhether + "</td>";
                     row += "<td>" + item.confirmWhether + "</td>";
+                    if (div !== '본사') {
+                    	if (item.answerDate != null) {
+                    		row += "<td>" + item.answerDate + "</td>";
+                    	} else {
+                    		row += "<td>답변 대기중</td>";
+                    	}
+                    }
                 	row += "</tr>";
                 tbody.append(row);
             });

@@ -8,6 +8,228 @@
 <title>불량 내역 등록</title>
 </head>
 <body>
-	<h2>불량 내역 등록</h2>
+	<div class="card-box mb-30">
+		<div class="pd-20">
+			<h2 class="text-black">불량 내역 등록</h2>
+		</div>
+		<form>
+			<div class="pd-20 row">
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>불량 일자</label>
+						<input class="form-control" type="date" name="inferDate" id="inferDate">
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<label>처분</label>
+						<div class="form-group">
+							<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								<label class="btn btn-outline-secondary active">
+									<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
+								</label>
+								<label class="btn btn-outline-secondary">
+									<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
+								</label>
+								<label class="btn btn-outline-secondary">
+									<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
+								</label>
+							</div>
+						</div>
+				</div>
+			</div>
+			<div class="pd-20 row">
+				<div class="col-md-6 col-sm-12">
+					<label>확인 위치</label>
+					<div class="input-group">
+						<input class="form-control" type="text" id="companyName" th:value="${session.companyName}" placeholder="업체명을 검색하세요" readonly>
+						<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<div class="form-group">
+						<label>담당자</label>
+						<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.name}" readonly>
+					</div>
+				</div>
+			</div>
+		</form>
+		<div class="pd-20 input-group mb-3">
+			<div class="input-group">
+				<input class="form-control" type="text" id="searchKeyword">
+				<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+			</div>
+		</div>
+		<div class="pd-20">
+			<table class="table stripe hover multiple-select-row nowrap">
+				<thead>
+					<tr>
+						<th class="table-plus">입고 일자</th>
+						<th class="datatable-nosort">품목</th>
+						<th>전체 수량</th>
+						<th class="datatable-nosort">불량 수량</th>
+						<th class="datatable-nosort">불량 유형</th>
+					</tr>
+				</thead>
+				<tbody id="inferTable">
+					
+				</tbody>
+			</table>
+		</div>
+		<div class="pd-20">
+			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
+			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
+		</div>
+	</div>
+	
+	<script>
+	
+		// 업체 이름 조건 생성
+		var companyInput = null;
+		
+		// 페이지 실행
+		$(document).ready(function() {
+			
+			// 로그인한 업체 이름 저장
+			companyInput = $("#companyName").val();
+			
+			// 입고 내역 출력
+	        changeFilter();
+			
+	        // 현 날짜 출력
+	        loadTodayDate();
+
+	        // 품목별 필터 클릭
+            $(document).on('click', '.item', function() {
+            	item = $(this).text().trim();
+                $("#itemBtn").text(item);
+                changeFilter();
+            });
+	        
+	     	// 입력시 검색
+            $("#searchKeyword").on('input', function() {
+    	        var keyword = $(this).val().toLowerCase();
+    	        searchData(keyword);
+    	    });
+
+            // 검색 버튼 클릭
+            $("#searchBtn").click(function() {
+                var keyword = $("#searchKeyword").val().toLowerCase();
+                searchData(keyword);
+            });
+            
+         	// 업체 검색 모달에서 선택 (없어도 될지도)
+            $("#selectCompanyBtn").click(function() {
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                $("#companyName").val(selectedCompanyName);
+                $('#coFilterModal').modal('hide');
+                companyInput = selectedCompanyName;
+                changeFilter();
+            });
+
+	     	// 등록 버튼 클릭 시 처리
+	        $("#submitBtn").click(function() {
+	        	
+	            // 선택된 행 추출
+	            var selectedRows = [];
+	            $("#inOutTable tr.selected").each(function() {
+		            var row = $(this);
+			        var data = {
+				        inferItem: row.find("td:nth-child(2)").text(),
+				        totalQuantity: row.find("td:nth-child(3)").val(),
+				        inferQuantity: row.find("td:nth-child(4) input").text(),
+				        inferType: row.find("td:nth-child(5)").text(),
+				        instoreNo: row.find("td:nth-child(6)").text(),
+				        confirmLocation: $("#companyName").val()
+			        };
+			        selectedRows.push(data);
+	            });
+	            
+	            console.log(selectedRows);
+	            
+	         	// 불량 내역 등록
+	            $.ajax({
+	                url: '/infer/insertInfer',
+	                method: 'POST',
+	                data: JSON.stringify(selectedRows),
+	                contentType: 'application/json',
+	                success: function(response) {
+	                	console.log(selectedRows);
+	                	alert("등록되었습니다.");
+	                },
+	                error: function() {
+	                    alert("불량 내역을 등록하는 데 실패했습니다.");
+	                }
+	            });
+	         	
+	        });
+			
+	    });
+		
+		// 필터값 전송
+        function changeFilter() {
+        	$.ajax({
+            	url : '/infer/getInstore',
+            	method : 'GET',
+            	data : {companyInput},
+            	success : function(data) {
+            		updateTable(data);
+            		console.log(data);
+            	},
+            	error : function() {
+	                alert("내역을 불러오는 데 실패했습니다.");
+	            }
+            });
+        }
+
+	    // 목록 갱신
+	    function updateTable(data) {
+	        var tbody = $("#inferTable");
+	        tbody.empty();
+	        data.forEach(function(item) {
+	            var row = "<tr>";
+	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
+	                row += "<td>" + item.itemName + "</td>";
+	                row += "<td>" + item.instoreQuantity + "</td>";
+	                row += "<td>" + "<input class='form-control' type='text' placeholder='불량 수량을 입력하세요.'></input>" + "</td>";
+	                row += "<td>" + `<select class="custom-select col-12">
+									 	<option selected="">불량 유형을 선택하세요.</option>
+										<option value="h1">부패</option>
+										<option value="h2">분실</option>
+										<option value="h3">파손</option>
+									 </select>` + "</td>";
+	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
+	            	row += "</tr>";
+	            tbody.append(row);
+	        });
+	    }
+	    
+		// 당일 날짜 가져오기
+	    function loadTodayDate() {
+	    	var objectDate = new Date();
+	    	var day = objectDate.getDate();
+	    	var month = objectDate.getMonth();
+	    	var year = objectDate.getFullYear();
+	    	var todayDate = year + "/" + (month + 1) + "/" + day;
+	 		$("#inferDate").val(todayDate.slice(2, 10));
+	 	}
+	    
+	 	// 검색
+        function searchData(keyword) {
+            $("#inOutTable tr").each(function() {
+                var rowText = $(this).text().toLowerCase();
+                if (rowText.includes(keyword)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        }
+	 	
+        // 테이블에서 행 클릭 시 선택 처리
+        $("#inferTable").on('click', 'tr', function() {
+            $(this).toggleClass('selected');
+        });
+        
+	</script>
 </body>
 </html>

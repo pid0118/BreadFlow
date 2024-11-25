@@ -28,12 +28,8 @@ public class InstoreVO {
 	private String instoreDivNo;
 	private Date expirationDeadline;
 	
-	private String name;
-	
-	private String prdStandard;
-	private String prdUnit;
-	private String ingStandard;
-	private String ingUnit;
+	private String unit;
+	private String standard;
 	private String outstoreCompany;
 	private String instoreCompany;
 	private String orderingProduct;
@@ -42,9 +38,8 @@ public class InstoreVO {
 	private String ordersDetailNo;
 
 	private String memberNo;
-	
-	private String ingredientName;
-	private String productName;
+
+	private String itemName;
 	
 	private String companyName;
 	private String companyInput;

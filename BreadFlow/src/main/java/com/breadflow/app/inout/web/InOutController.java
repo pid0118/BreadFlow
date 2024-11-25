@@ -21,22 +21,28 @@ import com.breadflow.app.inout.service.OutstoreVO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
+/**
+ *  @author admin
+ */
 @Controller
 @RequiredArgsConstructor
 public class InOutController {
 	private final InOutService inOutService;
 	
-	
-	// 입출고 내역
+	/**
+	 * 입출고 내역
+	 * @param model
+	 * @param session
+	 * @return
+	 */
     @GetMapping("inOutList")
     public String inOutList(Model model, HttpSession session) {
     	Calendar cal = Calendar.getInstance();
     	Integer localDateTime = cal.get(Calendar.YEAR);
+
     	List<ItemListVO> items = inOutService.itemList();
-    	String companyName = (String) session.getAttribute("companyName");
-    	model.addAttribute("localDateTime", localDateTime);
     	model.addAttribute("items", items);
-    	model.addAttribute("companyName", companyName);
+    	model.addAttribute("localDateTime", localDateTime);
         return "inout/list";
     }
     
@@ -72,9 +78,7 @@ public class InOutController {
 	@GetMapping("inOutInsert")	
 	public String inOutInsert(Model model, HttpSession session) {
 		List<ItemListVO> items = inOutService.itemList();
-		String companyName = (String) session.getAttribute("companyName");
 		model.addAttribute("items", items);
-		model.addAttribute("companyName", companyName);
 		return "inout/insert";
 	}
 	

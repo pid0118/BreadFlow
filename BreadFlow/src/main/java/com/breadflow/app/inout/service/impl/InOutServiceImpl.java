@@ -14,13 +14,12 @@ import com.breadflow.app.inout.service.ItemListVO;
 import com.breadflow.app.inout.service.OrderListVO;
 import com.breadflow.app.inout.service.OutstoreVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class InOutServiceImpl implements InOutService {
-	public InOutMapper inOutMapper;
-	
-	public InOutServiceImpl(InOutMapper inOutMapper) {
-		this.inOutMapper = inOutMapper;
-	}
+	public final InOutMapper inOutMapper;
 
 	@Override
 	public List<InstoreVO> instoreList(FilterVO filterVO) {
