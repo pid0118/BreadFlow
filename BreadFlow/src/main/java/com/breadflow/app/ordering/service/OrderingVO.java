@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 public class OrderingVO {
-	private String orderingCode;
-	private Date orderingDate;
-	private String orderingRequestManager;
-	private int totalPrice;
-	private String approvalWhether;
-	private String orderingApprovalManger;
-	private String orderformNo;
-	private Date deliveryDesireDate;
+	private String orderingCode; // 발주 코드
+	private Date orderingDate; // 발주 일자
+	private String orderingRequestManager; // 발주 요청자
+	private int totalPrice; // 총 금액
+	private String approvalWhether; // 발주 승인 여부
+	private String orderingApprovalManger; // 발주 승인자
+	private String orderformNo; // 발주서 번호
+	private Date deliveryDesireDate; // 납기 희망 일자
 }
