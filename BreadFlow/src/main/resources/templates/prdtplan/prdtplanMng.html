@@ -321,8 +321,9 @@
 			<div class="modal-footer justify-content-between">
 				<div>
 					<b>선택한 제품명:</b>
-					<input id="selectedPrdtCd" class="form-control" hidden="hidden">
 					<input id="selectedPrdtNm" class="form-control" readonly>
+					<input id="selectedPrdtCd" class="form-control" hidden="hidden">
+					<input id="selectedPrdtUnit" class="form-control" hidden="hidden">
 				</div>
 				<div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
@@ -660,6 +661,7 @@ function dlvryComModalConfirm() {
 let currentTarget = null;
 let prdtNm = "";
 let prdtCd = "";
+let prdUnit = "";
 
 grid.on('click', function (ev) {
 	console.log(ev.columnName);
@@ -681,18 +683,20 @@ function getPrdtInfo(e) {
 	
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
+	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
 	
 	document.querySelector("#selectedPrdtNm").value = prdtNm;
 	document.querySelector("#selectedPrdtCd").value = prdtCd;
+	document.querySelector("#selectedPrdtUnit").value = prdUnit;
 }
 
 function prdtModalConfirm() {
 	console.log(currentTarget);
 	grid.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid.setValue(currentTarget.rowKey, 'productNm', prdtNm);
+	grid.setValue(currentTarget.rowKey, 'unit', prdUnit);
+	
 }
-
-
 // 자식테이블 모달 클릭이벤트 끝
 //========================================================================
 		
