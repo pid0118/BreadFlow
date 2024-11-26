@@ -33,14 +33,15 @@
 	<script src="https://code.highcharts.com/highcharts-3d.js"></script>
 	<script src="/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
 	<script>
-		function sales(saDate){
-			let url = `/daySale/getSale?saDate=${saDate}`
-			fetch(url)
+		sales();
+		function sales(){
+			fetch("/saleChart")
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
+				data.foreach(ele => {
+					console.log(ele.saleDate);
+				})
 			})
-			
 		}
 		
 		// chart 2
