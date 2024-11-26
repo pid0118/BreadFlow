@@ -1,15 +1,20 @@
 package com.breadflow.app.ordering.web;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.ordering.service.OrderingDetailsVO;
 import com.breadflow.app.ordering.service.OrderingService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,22 +42,32 @@ public class OrderingController {
 	
 	@GetMapping("/ordering/list")
 	@ResponseBody
-	public Map<String, Object> selectOrderList(@Param("status") String status, @Param("sort") String sort, @Param("page") int page){
+	public Map<String, Object> selectOrderList(@RequestParam("status") String status, 
+			                                   @RequestParam(name = "sort", required = false) String sort, 
+			                                   @RequestParam(name = "page", defaultValue = "1") int page){
 		Map<String, Object> map = orderingService.selectOrderingList(status, sort, page);
 		return map;
 	}
 	
+	
 	@PostMapping("/ordering/updateOdCancel")
 	@ResponseBody
-	public String updateOrderingCancel(@Param("no") String no, @Param("reason") String reason) {
+	public Map<String,Boolean> updateOrderingCancel(@RequestParam("no") String no, 
+			                           @RequestParam("reason") String reason) {
 		orderingService.updateOrderingApprovalCancel(no, reason);
-		return "";
+		return Collections.singletonMap("result", true);
 	}
 	
 	@PostMapping("/ordering/updateOdAccept")
 	@ResponseBody
-	public String updateOrderingAccept(@Param("code") String code) {
+	public ResponseEntity updateOrderingAccept(@RequestParam("code") String code) {
 		orderingService.updateOrderingAccept(code);
-		return "";
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@GetMapping("/ordering/detailList")
+	@ResponseBody
+	public List<OrderingDetailsVO> selectOrderingDeatilList(@RequestParam String orderingCode){
+		return orderingService.selectOrderingDetailList(orderingCode);
 	}
 }
