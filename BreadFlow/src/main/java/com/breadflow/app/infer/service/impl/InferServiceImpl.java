@@ -31,6 +31,11 @@ public class InferServiceImpl implements InferService {
 		return inferMapper.selectInferListDetail(inferNo);
 	}
 	
+	@Override
+	public InferAnswerVO inferAnswerDetail(String inferNo) {
+		return inferMapper.selectInferAnswerDetail(inferNo);
+	}
+	
 	@Transactional
 	@Override
 	public int inferInsert(List<InferDetailVO> list) {
@@ -70,4 +75,5 @@ public class InferServiceImpl implements InferService {
 	public List<CompanyVO> companyList() {
 		return inferMapper.selectCompany();
 	}
+
 }

@@ -44,21 +44,12 @@
                     <a class="dropdown-item company">[[ ${company.companyName} ]]</a>
                 </li>
             </ul>
-		</div>
-		<div class="pd-20">
-			<div class="form-group">
-				<div class="btn-group btn-group-toggle" data-toggle="buttons">
-					<label class="btn btn-outline-secondary active">
-						<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-					</label>
-					<label class="btn btn-outline-secondary">
-						<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-					</label>
-					<label class="btn btn-outline-secondary">
-						<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-					</label>
-				</div>
-			</div>
+            <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
+			<ul class="dropdown-menu" id="disposal">
+ 				<li class="dropdown-item disposal" value="i1">반품</li>
+ 				<li class="dropdown-item disposal" value="i2">폐기</li>
+ 				<li class="dropdown-item disposal" value="i3">철회</li>
+            </ul>
 		</div>
 		<div class="pd-20 input-group mb-3">
 			<input class="form-control" type="text" id="searchKeyword">
@@ -95,9 +86,12 @@
 	 	var clearTable = null;
 		var year = null;
 		var month = null;
+		var disposal = null;
 		var checked = null;
 		var unchecked = null;
 		var confirmComp = null;
+		var startDt = null;
+		var endDt = null;
    	
         $(document).ready(function() {
         	
@@ -114,15 +108,21 @@
             	clearTable = null;
     			year = null;
     			month = null;
+    			disposal = null;
     			checked = null;
     			unchecked =  null;
     			confirmComp = null;
+    			startDt = null;
+    			endDt = null;
             }
             
             function confirmExClear() {
     			year = null;
     			month = null;
+    			disposal = null;
     			confirmComp = null;
+    			startDt = null;
+    			endDt = null;
             }
             
             if (div !== '본사') {
@@ -187,6 +187,14 @@
                 changeFilter();
             });
             
+        	// 처분별 필터 클릭
+            $(document).on('click', '.disposal', function() {
+                disposal = $(this).text().trim();
+                clearTable = 'notClear';
+                $("#disposalBtn").text(disposal);
+                changeFilter();
+            });
+            
             // 입력시 검색
             $("#searchKeyword").on('input', function() {
     	        var keyword = $(this).val().toLowerCase();
@@ -201,9 +209,10 @@
 
             // 날짜 필터 버튼 클릭
             $("#dateFilterBtn").click(function() {
-                var startDate = $("#startDate").val();
-                var endDate = $("#endDate").val();
-                filterData(startDate, endDate);
+                startDt = $("#startDate").val();
+                endDt = $("#endDate").val();
+                clearTable = 'notClear';
+                changeFilter();
             });
 
         });
@@ -217,10 +226,13 @@
             			clearTable,
             			year,
             			month,
+            			disposal,
             			checked,
             			unchecked,
             			confirmComp,
-            			div},
+            			div,
+            			startDt,
+            			endDt},
             	success : function(data) {
             		updateTable(data);
             		console.log(data);
@@ -273,20 +285,6 @@
             });
         }
 
-        // 기간 검색
-        function filterData(startDate, endDate) {
-            var start = new Date(startDate);
-            var end = new Date(endDate);
-            $("#inferHistoryTable tr").each(function() {
-                var rowDate = $(this).find(".date").text().trim();
-                var rowDateObj = new Date(rowDate);
-                if (rowDateObj >= start && rowDateObj <= end) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
     </script>
 </body>
 </html>

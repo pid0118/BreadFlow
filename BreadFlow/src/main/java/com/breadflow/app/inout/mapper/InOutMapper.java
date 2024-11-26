@@ -17,4 +17,9 @@ public interface InOutMapper {
 	public int insertInstoreInfo(InstoreVO instoreVO);
 	public int insertOutstoreInfo(OutstoreVO outstoreVO);
 	public List<ItemListVO> selectItemList();
+	
+	public int countInstoreList(FilterVO filterVO);
+	public int countOutstoreList(FilterVO filterVO);
+	public int countOrderListForInsert(FilterVO filterVO);
+	public int countInstoreListForInsert(FilterVO filterVO);
 }

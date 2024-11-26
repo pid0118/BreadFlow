@@ -3,6 +3,7 @@ package com.breadflow.app.inout.web;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,31 +16,20 @@ import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
 import com.breadflow.app.inout.service.InstoreVO;
 import com.breadflow.app.inout.service.ItemListVO;
-import com.breadflow.app.inout.service.OrderListVO;
 import com.breadflow.app.inout.service.OutstoreVO;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
-/**
- *  @author admin
- */
 @Controller
 @RequiredArgsConstructor
 public class InOutController {
 	private final InOutService inOutService;
 	
-	/**
-	 * 입출고 내역
-	 * @param model
-	 * @param session
-	 * @return
-	 */
     @GetMapping("inOutList")
-    public String inOutList(Model model, HttpSession session) {
+    public String inOutList(Model model) {
     	Calendar cal = Calendar.getInstance();
     	Integer localDateTime = cal.get(Calendar.YEAR);
-
+    	
     	List<ItemListVO> items = inOutService.itemList();
     	model.addAttribute("items", items);
     	model.addAttribute("localDateTime", localDateTime);
@@ -49,34 +39,46 @@ public class InOutController {
     // 입고 내역 반환
     @GetMapping("inOut/instores")
     @ResponseBody
-    public List<InstoreVO> getInstoreList(FilterVO filterVO) {
-        return inOutService.instoreList(filterVO);
+    public Map<String, Object> getInstoreList(Map<String, Object> inMap, FilterVO filterVO) {
+    	Integer countIn = inOutService.countInstore(filterVO);
+    	inMap.put("count", countIn);
+    	inMap.put("list", inOutService.instoreList(filterVO));
+        return inMap;
     }
     
     // 출고 내역 반환
     @GetMapping("inOut/outstores")
     @ResponseBody
-    public List<OutstoreVO> getOutstoreList(FilterVO filterVO) {
-        return inOutService.outstoreList(filterVO);
+    public Map<String, Object> getOutstoreList(Map<String, Object> outMap, FilterVO filterVO) {
+    	Integer countOut = inOutService.countOutstore(filterVO);
+    	outMap.put("count", countOut);
+    	outMap.put("list", inOutService.outstoreList(filterVO));
+        return outMap;
     }
     
     // 등록용 발주 내역 반환
     @GetMapping("inOut/ordersInsert")
     @ResponseBody
-    public List<OrderListVO> getOrderListForInsert(FilterVO filterVO) {
-        return inOutService.orderListForInsert(filterVO);
+    public Map<String, Object> getOrderListForInsert(Map<String, Object> orderMap, FilterVO filterVO) {
+    	Integer countOr = inOutService.countOrderInsert(filterVO);
+    	orderMap.put("count", countOr);
+    	orderMap.put("list", inOutService.orderListForInsert(filterVO));
+        return orderMap;
     }
     
     // 등록용 입고 내역 반환
     @GetMapping("inOut/instoresInsert")
     @ResponseBody
-    public List<InstoreVO> getInstoreListForInsert(FilterVO filterVO) {
-        return inOutService.instoreListForInsert(filterVO);
+    public Map<String, Object> getInstoreListForInsert(Map<String, Object> inMap, FilterVO filterVO) {
+    	Integer countIn = inOutService.countInstoreInsert(filterVO);
+    	inMap.put("count", countIn);
+    	inMap.put("list", inOutService.instoreListForInsert(filterVO));
+        return inMap;
     }
 	
     // 입출고 등록
 	@GetMapping("inOutInsert")	
-	public String inOutInsert(Model model, HttpSession session) {
+	public String inOutInsert(Model model) {
 		List<ItemListVO> items = inOutService.itemList();
 		model.addAttribute("items", items);
 		return "inout/insert";

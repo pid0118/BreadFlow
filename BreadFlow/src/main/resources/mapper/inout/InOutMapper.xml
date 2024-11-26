@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.inout.mapper.InOutMapper">
 	<select id="selectInstoreList" resultType="InstoreVO">
+		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
+		
 		SELECT
 		    I.INSTORE_DATE,
 		    I.INSTORE_QUANTITY,
@@ -39,11 +41,25 @@
 			<if test="ing != null and ing != ''">
 			AND OD.ORDERING_INGREDIENT IS NOT NULL
 			</if>
+			<if test="startDt != null and startDt != ''">
+			<![CDATA[
+			AND I.INSTORE_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 
+			]]>
+			</if>
+			<if test="endDt != null and endDt != ''">
+			<![CDATA[
+			AND I.INSTORE_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+			]]>
+			</if>
 		ORDER BY
 		    I.INSTORE_NO DESC
+		
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
 	
 	<select id="selectOutstoreList" resultType="OutstoreVO">
+		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
+	
 		SELECT
 		    O.OUTSTORE_DATE,
 		    O.OUTSTORE_QUANTITY,
@@ -57,8 +73,8 @@
 		         OUTSTORE O
 		    JOIN ORDERS_DETAIL   ODS      ON O.ORDERS_DETAIL_NO = ODS.ORDERS_DETAIL_NO
 		    LEFT JOIN ORDERING_DETAIL OD  ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
-		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
-		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		    LEFT JOIN INGREDIENT      ING ON ODS.ORDERS_ITEM = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON ODS.ORDERS_ITEM = PRD.PRODUCT_CODE
 		WHERE
 			ODS.OUTSTORE_COMPANY = #{companyInput}
 			<if test="comp != null and comp != ''">
@@ -79,10 +95,25 @@
 			<if test="ing != null and ing != ''">
 			AND OD.ORDERING_INGREDIENT IS NOT NULL
 			</if>
+			<if test="startDt != null and startDt != ''">
+			<![CDATA[
+			AND O.OUTSTORE_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 
+			]]>
+			</if>
+			<if test="endDt != null and endDt != ''">
+			<![CDATA[
+			AND O.OUTSTORE_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+			]]>
+			</if>
 		ORDER BY
 		    O.OUTSTORE_NO DESC
+		    
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
+	
 	<select id="selectOrderListForInsert" resultType="OrderListVO">
+		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
+	
 		SELECT
 		    O.ORDERING_DATE,
 		    OD.ORDERING_INGREDIENT,
@@ -91,7 +122,7 @@
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_DETAIL_CODE,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD_EXPIRATION_DEADLINE ELSE ING_EXPIRATION_DEADLINE END AS EXPIRATIONDEADLINE,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.EXPIRATION_DEADLINE ELSE ING.EXPIRATION_DEADLINE END AS EXPIRATIONDEADLINE,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME
 		FROM
 		         ORDERING O
@@ -121,8 +152,13 @@
 			</if>
 		ORDER BY
 		    O.ORDERING_DATE DESC
+		    
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
+	
 	<select id="selectInstoreListForInsert" resultType="InstoreVO">
+		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
+	
 		SELECT
 		    I.INSTORE_DATE,
 		    I.INSTORE_NO,
@@ -136,7 +172,7 @@
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME
 		FROM
 		         INSTORE I
-		    JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
 		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
 		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
 		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
@@ -162,7 +198,10 @@
 			</if>
 		ORDER BY
 		    I.INSTORE_DATE DESC
+		    
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
+	
 	<insert id="insertInstoreInfo" parameterType="InstoreVO">
 		INSERT INTO INSTORE (instore_no
 		                    , instore_date
@@ -194,11 +233,9 @@
 		            , #{instoreManager}
 		            , #{orderingDetailCode}
 		            , #{instoreDiv}
-		            <!--
-		            , (SELECT pp.last_date FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode}) + #{expirationDeadline})
-		            -->
-		            , sysdate)
+		            , (SELECT pp.last_date + #{expirationDeadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode}))
 	</insert>
+	
 	<insert id="insertOutstoreInfo" parameterType="OutstoreVO">
 		INSERT INTO OUTSTORE (outstore_no
 		                     , outstore_date
@@ -213,9 +250,142 @@
 		            , #{ordersDetailNo}
 		            , #{instoreNo})
 	</insert>
+	
 	<select id="selectItemList" resultType="ItemListVO">
 		(SELECT PRODUCT_NAME FROM PRODUCT)
 		UNION 
 		(SELECT INGREDIENT_NAME FROM INGREDIENT)
+	</select>
+	
+	<select id="countInstoreList" resultType="int">
+	    SELECT COUNT(*)
+	    FROM INSTORE I
+	    LEFT JOIN ORDERING_DETAIL OD  ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+	    LEFT JOIN ORDERS_DETAIL   ODS ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
+	    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+	    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+	    WHERE ODS.INSTORE_COMPANY = #{companyInput}
+	    <if test="comp != null and comp != ''">
+	        AND ODS.OUTSTORE_COMPANY = #{comp}
+	    </if>
+	    <if test="item != null and item != ''">
+	        AND ITEMNAME LIKE '%' || #{item} || '%'
+	    </if>
+	    <if test="year != null and year != ''">
+	        AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+	    </if>
+	    <if test="month != null and month != ''">
+	        AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+	    </if>
+	    <if test="prd != null and prd != ''">
+	        AND OD.ORDERING_PRODUCT IS NOT NULL
+	    </if>
+	    <if test="ing != null and ing != ''">
+	        AND OD.ORDERING_INGREDIENT IS NOT NULL
+	    </if>
+	    <if test="startDt != null and startDt != ''">
+	        <![CDATA[
+	        AND I.INSTORE_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd')
+	        ]]>
+	    </if>
+	    <if test="endDt != null and endDt != ''">
+	        <![CDATA[
+	        AND I.INSTORE_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+	        ]]>
+	    </if>
+	</select>
+	
+	<select id="countOutstoreList" resultType="int">
+	    SELECT COUNT(*)
+	    FROM OUTSTORE O
+	    JOIN ORDERS_DETAIL   ODS      ON O.ORDERS_DETAIL_NO = ODS.ORDERS_DETAIL_NO
+	    LEFT JOIN ORDERING_DETAIL OD  ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
+	    LEFT JOIN INGREDIENT      ING ON ODS.ORDERS_ITEM = ING.INGREDIENT_CODE
+	    LEFT JOIN PRODUCT         PRD ON ODS.ORDERS_ITEM = PRD.PRODUCT_CODE
+	    WHERE ODS.OUTSTORE_COMPANY = #{companyInput}
+	    <if test="comp != null and comp != ''">
+	        AND ODS.INSTORE_COMPANY = #{comp}
+	    </if>
+	    <if test="item != null and item != ''">
+	        AND ITEMNAME LIKE '%' || #{item} || '%'
+	    </if>
+	    <if test="year != null and year != ''">
+	        AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+	    </if>
+	    <if test="month != null and month != ''">
+	        AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+	    </if>
+	    <if test="prd != null and prd != ''">
+	        AND OD.ORDERING_PRODUCT IS NOT NULL
+	    </if>
+	    <if test="ing != null and ing != ''">
+	        AND OD.ORDERING_INGREDIENT IS NOT NULL
+	    </if>
+	    <if test="startDt != null and startDt != ''">
+	        <![CDATA[
+	        AND O.OUTSTORE_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd')
+	        ]]>
+	    </if>
+	    <if test="endDt != null and endDt != ''">
+	        <![CDATA[
+	        AND O.OUTSTORE_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+	        ]]>
+	    </if>
+	</select>
+	
+	<select id="countOrderListForInsert" resultType="int">
+	    SELECT COUNT(*)
+	    FROM ORDERING O
+	    JOIN ORDERING_DETAIL OD       ON O.ORDERING_CODE = OD.ORDERING_CODE
+	    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+	    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+	    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+	    WHERE ODS.INSTORE_COMPANY = #{companyInput}
+	    <if test="comp != null and comp != ''">
+	        AND ODS.OUTSTORE_COMPANY = #{comp}
+	    </if>
+	    <if test="item != null and item != ''">
+	        AND ITEMNAME LIKE '%' || #{item} || '%'
+	    </if>
+	    <if test="year != null and year != ''">
+	        AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+	    </if>
+	    <if test="month != null and month != ''">
+	        AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+	    </if>
+	    <if test="prd != null and prd != ''">
+	        AND OD.ORDERING_PRODUCT IS NOT NULL
+	    </if>
+	    <if test="ing != null and ing != ''">
+	        AND OD.ORDERING_INGREDIENT IS NOT NULL
+	    </if>
+	</select>
+	
+	<select id="countInstoreListForInsert" resultType="int">
+	    SELECT COUNT(*)
+	    FROM INSTORE I
+	    LEFT JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+	    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+	    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+	    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+	    WHERE ODS.OUTSTORE_COMPANY = #{companyInput}
+	    <if test="comp != null and comp != ''">
+	        AND ODS.INSTORE_COMPANY = #{comp}
+	    </if>
+	    <if test="item != null and item != ''">
+	        AND ITEMNAME LIKE '%' || #{item} || '%'
+	    </if>
+	    <if test="year != null and year != ''">
+	        AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+	    </if>
+	    <if test="month != null and month != ''">
+	        AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+	    </if>
+	    <if test="prd != null and prd != ''">
+	        AND OD.ORDERING_PRODUCT IS NOT NULL
+	    </if>
+	    <if test="ing != null and ing != ''">
+	        AND OD.ORDERING_INGREDIENT IS NOT NULL
+	    </if>
 	</select>
 </mapper>
