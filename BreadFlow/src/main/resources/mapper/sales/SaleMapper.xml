@@ -51,20 +51,7 @@
 	</insert>
 	
 	<insert id="insertSales" parameterType="PosVO">
-		INSERT INTO sales(sales_no
-                 ,sales_date
-                 ,total_quantity
-                 ,day_sales
-                 ,company_name)
-		VALUES('MA' || GETSEQ('sales','sales_no')
-		       ,current_date
-		       ,(SELECT SUM(sale_price)*SUM(quantity) AS day_sales
-		        FROM sale_detail_history
-		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
-		      ,(SELECT SUM(quantity) AS total
-		        FROM sale_detail_history
-		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
-		      ,'test')
+		CALL SALES_PROD()
 	</insert>
 	
 	<select id="selectSales" resultType="PosVO" parameterType="String">
@@ -73,4 +60,6 @@
 		FROM sales
 		WHERE TO_CHAR(sales_date, 'yyyyMM') = #{salesDate}
 	</select>
+	
+
 </mapper>

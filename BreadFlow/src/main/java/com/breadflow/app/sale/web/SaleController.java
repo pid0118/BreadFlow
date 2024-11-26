@@ -63,7 +63,7 @@ public class SaleController {
 		return "sale/daySale";
     }
     
-    // 매출조회 데이터
+    // 매출조회 데이터 (월 조건)
     @GetMapping("/daySale/getSale")
     @ResponseBody
     public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate) {
@@ -72,10 +72,18 @@ public class SaleController {
     	return ResponseEntity.ok(list);
     }
     
+    
+    // 매출 차트 조회 (가맹점) << 일,월매출 / 제품별 상세매출 그래프 표시
     @GetMapping("/saleChart")
     public String saleChart() {
     	return "sale/chart";
     }
     
+    // 마감정산
+    @GetMapping("/closeSale")
+    public String closeSale() {
+    	saleService.insertSales();
+        return "sale/pos";
+    }
     
 }

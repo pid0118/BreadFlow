@@ -16,8 +16,8 @@ body {
 
 .container {
 	display: flex;
-	max-width: 1200px;
-	height: 800px;
+	max-width: 100%;
+	height: 100%;
 	margin: 0 auto;
 	background-color: #fff;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -234,6 +234,42 @@ footer {
 .btn.amount:hover {
     background-color: #ddd;  /* hover 시 배경색 변경 */
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%; /* 모달의 너비 */
+}
+
+.close-button {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 </style>
 </head>
 <body>
@@ -275,6 +311,14 @@ footer {
 				<button class="details-button">상세내역</button>
 			</div>
 		</div>
+		<div id="detailsModal" class="modal">
+		    <div class="modal-content">
+		        <span class="close-button">&times;</span>
+		        <h2>상세내역</h2>
+		        <div id="modal-content-body">
+		    </div>
+	    </div>
+	</div>
 	</div>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
@@ -398,7 +442,7 @@ footer {
 		        // 항목을 HTML로 변환
 		        let node = `
 		            <li class="list-group-item d-flex justify-content-between lh-sm">
-		                <div style="width:100px">
+		                <div style="width:50%">
 		                    <h6 class="my-0" style="font-size:15px">${item.name}</h6>
 		                    <small class="text-body-secondary su">수량: ${item.count} EA</small>
 		                    <button class="btn amount" value="plus">+</button>
@@ -562,10 +606,47 @@ footer {
 			renderMenu();
 		}
 
+		document.getElementById("salesSub").addEventListener('click', function(){
+			fetch("/closeSale")
+			.then(res => res.json())
+			.then(date => {
+				alert("마감정산 완료!");
+			})
+		})
 		
 		
-		
-		
+		document.querySelector(".details-button").addEventListener("click", function() {
+	        openModal();
+	    });
+
+	    function openModal() {
+	        let modal = document.getElementById("detailsModal");
+	        let modalBody = document.getElementById("modal-content-body");
+
+	        let menuDetails = selectedMenu.map(item => {
+	            return `
+	                <p><strong>${item.name}</strong> - ${item.price}원 x ${item.count}개 = ${(item.price * item.count).toLocaleString()}원</p>
+	            `;
+	        }).join("");
+
+	        modalBody.innerHTML = menuDetails;
+
+	        modal.style.display = "block";
+	    }
+
+	    function closeModal() {
+	        let modal = document.getElementById("detailsModal");
+	        modal.style.display = "none";
+	    }
+
+	    document.querySelector(".close-button").addEventListener("click", closeModal);
+
+	    window.addEventListener("click", function(event) {
+	        let modal = document.getElementById("detailsModal");
+	        if (event.target === modal) {
+	            closeModal();
+	        }
+	    });
 
     </script>
 </body>
