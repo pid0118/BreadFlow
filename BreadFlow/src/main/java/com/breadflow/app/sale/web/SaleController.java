@@ -1,7 +1,5 @@
 package com.breadflow.app.sale.web;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +12,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.breadflow.app.common.service.DateUtil;
 import com.breadflow.app.product.service.ProductVO;
 import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
 import com.breadflow.app.sale.service.SaleVO;
 @Controller
 public class SaleController {
+	
 	@Autowired
 	private SaleService saleService;
-	
-	private DateUtil dateUtil;
 	
 	// 본사 가맹점 정보 / 매출 조회
     @GetMapping("/toSalList")
@@ -34,9 +30,11 @@ public class SaleController {
 		return "sale/toSalList";
     }
     
-    // POS 메인화면
+    // POS 메인화면 및 상세내역 모달창
     @GetMapping("/pos")
-    public String posPage() {
+    public String posPage(Model model) {
+    	List<PosVO> list = saleService.selectDetailSale();
+    	model.addAttribute("dList", list);
         return "sale/pos"; // pos.html을 반환
     }
 
@@ -63,14 +61,26 @@ public class SaleController {
 		return "sale/daySale";
     }
     
-    // 매출조회 데이터
+    // 매출조회 데이터 (월 조건)
     @GetMapping("/daySale/getSale")
     @ResponseBody
     public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate) {
-
     	List<PosVO> list = saleService.selectSales(saDate);
     	return ResponseEntity.ok(list);
     }
     
+    // 마감정산
+    @GetMapping("/closeSale")
+    public String closeSale() {
+    	saleService.insertSales();
+        return "sale/pos";
+    }
     
+    // 매출 차트 조회 (가맹점) << 일,월매출 / 제품별 상세매출 그래프 표시
+    @GetMapping("/saleChart")
+    @ResponseBody
+    public ResponseEntity<List<PosVO>> saleChartList() {
+    	List<PosVO> list = saleService.selectSaleChart();
+    	return ResponseEntity.ok(list);
+    }
 }

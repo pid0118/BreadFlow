@@ -21,4 +21,9 @@ public interface SaleService {
 	// 마감정산 버튼눌렀을시 일매출 insert
 	public int insertSales();
 	
+	// pos 마감 하기 전 상태 제품 상세보기
+	public List<PosVO> selectDetailSale();
+	
+	// chart 매출 조회
+	public List<PosVO> selectSaleChart();
 }
