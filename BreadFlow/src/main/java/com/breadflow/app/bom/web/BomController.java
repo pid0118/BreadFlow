@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.bom.service.BomService;
@@ -50,9 +51,12 @@ public class BomController {
 		return bomService.selectBom(bomVO);
 	}
 	
-	// BOM 등록
+	// BOM 등록 페이지 이동
 	@GetMapping("bomInsert")
-	public String insertBom(BomVO bomVO){
+	public String insertBom(@RequestParam String productCode, Model model){
+		
+		ProductVO product = productService.selectProduct(productCode);
+		model.addAttribute("product", product);
 		
 		return "bom/bomInsert"; 
 	}
