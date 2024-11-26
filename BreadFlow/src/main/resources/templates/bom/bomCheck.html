@@ -1,22 +1,185 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{common/layouts/breadflow_layout}"
       layout:fragment="Content">
 <head>
-<meta charset="UTF-8">
-<title>BOM 조회</title>
+    <meta charset="UTF-8">
+    <title>BOM등록</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <style>
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .page-title {
+            font-size: 24px;
+            margin: 40px 0;
+            padding-left: 20px;
+        }
+        .image-section {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .image-placeholder {
+            width: 300px;
+            height: 300px;
+            background-color: #E6E9FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .product-name-input {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .grid-section {
+            flex: 1;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #0052CC;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .tui-pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+	    .btn-danger {
+	   		background-color: #ff4d4d;
+	   		color: white;
+	   		border: none;
+		}
+    </style>
 </head>
 <body>
-	<h2 class="mb-4">BOM조회</h2>
+    <h2 class="page-title">BOM등록</h2>
+    
+    <div class="container">
+        <div class="image-section">
+            <div class="image-placeholder">이미지</div>
+            <input type="text" class="product-name-input" placeholder="제품명">
+        </div>
+        
+        <div class="grid-section">
+            <div id="grid"></div>
+            <div class="tui-pagination" id="pagination"></div>
+            <div class="button-container">
+                <button id="saveButton" class="btn btn-primary">수정</button>
+                <button id="cancelButton" class="btn btn-secondary">돌아가기</button>
+            </div>
+        </div>
+    </div>
+
+	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script>
+	    $(document).ready(function () {
+	        const gridData = [
+	            { code: 'OB00001', name: '밀가루', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00002', name: '빵다', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00003', name: '크림', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00004', name: '금편기', quantity: '', unit: '', notes: '' }
+	        ];
 	
+	        const grid = new tui.Grid({
+	            el: document.getElementById('grid'),
+	            data: gridData,
+	            bodyHeight: 300,
+	            rowHeaders: ['checkbox'],
+	            pageOptions: {
+	                useClient: true,
+	                perPage: 5
+	            },
+	            columns: [
+	                { header: '원재료 코드', name: 'code', width: 150, align: 'center' },
+	                { header: '제품명', name: 'name', width: 200 },
+	                { header: '소모량', name: 'quantity', width: 150},
+	                { header: '단위', name: 'unit', width: 150},
+	                { header: '비고', name: 'notes'}
+	            ]
+	        });
 	
+	        // 원재료 추가 버튼
+	        $('#addMaterial').on('click', function () {
+	            const newRow = {
+	                code: `OB${String(grid.getRowCount() + 1).padStart(5, '0')}`,
+	                name: '새 재료',
+	                quantity: '',
+	                unit: '',
+	                notes: ''
+	            };
+	            grid.appendRow(newRow);
+	        });
 	
+	        // 삭제 버튼
+	        $('#deleteMaterial').on('click', function () {
+			    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
+			    if (selectedRows.length > 0) {
+			        // 확인 메시지를 추가해 사용자 확인 요청
+			        if (confirm(`${selectedRows.length}개의 항목을 삭제하시겠습니까?`)) {
+			            selectedRows.forEach(row => grid.removeRow(row.rowKey)); // 체크된 행 삭제
+			            alert(`${selectedRows.length}개의 항목이 삭제되었습니다.`);
+			        }
+			    } else {
+			        // 체크된 항목이 없을 경우
+			        alert('삭제할 항목을 선택해주세요.');
+			    }
+			});
 	
+	        // 저장 버튼
+	        $('#saveButton').on('click', function () {
+	            const updatedData = grid.getData();
+	            console.log('저장된 데이터:', updatedData);
+	            alert('저장되었습니다.');
+	        });
 	
-	<script>
-	
-	
+	        // 취소 버튼
+	        $('#cancelButton').on('click', function () {
+	            if (confirm('변경사항을 취소하시겠습니까?')) {
+	                location.reload();
+	            }
+	        });
+	    });
+	    
+
 	</script>
 
 </body>
