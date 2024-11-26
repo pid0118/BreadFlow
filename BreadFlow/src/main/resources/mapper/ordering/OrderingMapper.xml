@@ -96,6 +96,27 @@
 	</select>
 	
 	<update id="updateOrderingApprovalCancel" statementType="CALLABLE">
-		CALL ordercancel_prod(#{no}, #{reason})
+		CALL ordercancel_prod(#{no}, #{reason}, #{result, mode = OUT, jdbcType=VARCHAR})
 	</update>
+	
+	<update id="updateOrderingAccept">
+		UPDATE ordering
+		SET approval_whether = 'd1'
+		WHERE ordering_code = #{orderingCode}
+	</update>
+	
+	<select id="selectOrderingDetailList">
+		SELECT od.ordering_detail_code ordering_detail_code
+		       , od.quantity quantity
+		       , NVL(p.product_name, i.ingredient_name) itemname
+		       , NVL(p.amount, i.amount) || FIND_CD(NVL(p.unit, i.unit)) unit
+		       , NVL(p.standard, i.standard) standard
+		       , NVL(p.purchase_price, i.purchase_price) * od.quantity price
+		FROM ordering_detail od 
+		LEFT JOIN ingredient i 
+		ON od.ordering_ingredient = i.ingredient_code
+		LEFT JOIN product p 
+		ON od.ordering_product = p.product_code
+		WHERE ordering_code = #{orderingCode}
+	</select>
 </mapper>

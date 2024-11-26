@@ -3,6 +3,7 @@ package com.breadflow.app.ordering.service.impl;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,21 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.ordering.mapper.OrderingMapper;
 import com.breadflow.app.ordering.service.OrderingDetailVO;
+import com.breadflow.app.ordering.service.OrderingDetailsVO;
 import com.breadflow.app.ordering.service.OrderingService;
 import com.breadflow.app.ordering.service.OrderingVO;
 
 @Service
 public class OrderingServiceImpl implements OrderingService{
+	
 	@Autowired
 	public OrderingMapper orderingMapper;
 	
 	@Override
 	public Map<String, Object> selectOrderingList(String status, String sort, int page) {
-		List<String> list = new ArrayList<>();
-		String[] stat = status.split(",");
-		for(int i = 0; i < stat.length; i++) {
-			list.add(stat[i]);
-		}
+		List<String> list = Arrays.asList(status.split(",")) ;
+	
 		int totalPage = orderingMapper.selectOrderingPage(list, sort, page);
 		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page);
 		Map<String, Object> map = new HashMap<>();
@@ -54,7 +54,8 @@ public class OrderingServiceImpl implements OrderingService{
 		orderingVO.setTotalPrice((int)ordering.get("totalPrice"));
 		
 		List<OrderingDetailVO> detailVOs = new ArrayList<>();
-		List items = (List) ordering.get("itemCodes");
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> items = (List<Map<String, Object>>) ordering.get("itemCodes");
 
 		for(int i = 0; i < items.size(); i++) {
 			Map<String, Object> itemMap = (Map<String, Object>)items.get(i);
@@ -85,10 +86,30 @@ public class OrderingServiceImpl implements OrderingService{
 		return result;
 	}
 
+	// 발주 거절
 	@Override
-	public int updateOrderingApprovalCancel(String no, String reason) {
-		int result = orderingMapper.updateOrderingApprovalCancel(no, reason);
-		return result;
+	@Transactional
+	public String updateOrderingApprovalCancel(String no, String reason) {
+		Map<String, Object> itemMap = new HashMap<>();
+		itemMap.put("no", no);
+		itemMap.put("reason", reason);
+		itemMap.put("result", "");
+		orderingMapper.updateOrderingApprovalCancel(itemMap);
+		System.out.println(itemMap.get("result"));
+		return (String)itemMap.get("result");
+	}
+
+	// 발주 승인
+	@Override
+	public int updateOrderingAccept(String orderingCode) {
+		orderingMapper.updateOrderingAccept(orderingCode);
+		return 0;
+	}
+	
+	// 발주 상세 정보 조회
+	@Override
+	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode) {
+		return orderingMapper.selectOrderingDetailList(orderingCode);
 	}
 
 }

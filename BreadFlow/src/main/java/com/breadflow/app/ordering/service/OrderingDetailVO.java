@@ -10,4 +10,5 @@ public class OrderingDetailVO {
 	private String orderingProduct; // 발주 제품
 	private String orderingCode; // 발주 코드
 	private String situationCode; // 상태 코드
+	
 }
