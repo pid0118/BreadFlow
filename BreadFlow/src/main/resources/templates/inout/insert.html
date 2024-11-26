@@ -57,6 +57,11 @@
 			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
 				<thead>
 					<tr>
+						<th>
+							<div class="form-check">
+  								<input class="form-check-input" type="checkbox" id="checkAll">
+							</div>
+						</th>
 						<th class="table-plus">발주일자</th>
 						<th class="datatable-nosort">재고 분류</th>
 						<th class="datatable-nosort">품목</th>
@@ -69,6 +74,11 @@
 					
 				</tbody>
 			</table>
+			<div class="pagination-container">
+			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			    <span id="currentPage">1 페이지</span>
+			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			</div>
 		</div>
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
@@ -78,6 +88,7 @@
 	</div>
 	
 	<script>
+	
 		// 조건
 		var companyInput = null;
 		var comp = null;
@@ -86,6 +97,9 @@
 		var item = null;
 		var year = null;
 		var month = null;
+		
+		var page = 1;
+		var pageSize = 10;
 		
 		$(document).ready(function() {
 			
@@ -105,6 +119,8 @@
     			item = null;
     			year = null;
     			month = null;
+    			page = 1;
+    			pageSize = 10;
             }
 	        
 	        // 입고 내역 버튼 클릭
@@ -160,7 +176,7 @@
             
          	// 업체 검색 모달에서 선택
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 comp = selectedCompanyName;
@@ -176,14 +192,15 @@
 	            		var row = $(this);
 		                var data = {
 		                    instoreDate: $("#inOutDate").val(),
-		                    itemDiv: row.find("td:nth-child(2)").text(),
-		                    itemName: row.find("td:nth-child(3)").text(),
-		                    instoreQuantity: row.find("td:nth-child(5) input").val(),
+		                    itemDiv: row.find("td:nth-child(3)").text(),
+		                    itemName: row.find("td:nth-child(4)").text(),
+		                    instoreQuantity: row.find("td:nth-child(6) input").val(),
 		                    outstoreQuantity: '1',
-		                    outstoreManager: $("#manager").val(),
-		                    orderingDetailCode: row.find("td:nth-child(7)").text(),
-		                    instoreDiv: row.find("td:nth-child(8)").text(),
-		                    itemCode: row.find("td:nth-child(10)").text(),
+		                    instoreManager: $("#manager").val(),
+		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
+		                    instoreDiv: row.find("td:nth-child(9)").text(),
+		                    expirationDeadline: row.find("td:nth-child(10)").text(),
+		                    itemCode: row.find("td:nth-child(11)").text(),
 		                    companyInput: $("#companyInput").val()
 		                };
 		                selectedRows.push(data);
@@ -191,16 +208,17 @@
 	                	var row = $(this);
 		                var data = {
 		                	outstoreDate: $("#inOutDate").val(),
-		                	outstoreQuantity: row.find("td:nth-child(5) input").val(),
+		                	outstoreQuantity: row.find("td:nth-child(6) input").val(),
 		                	outstoreManager: $("#manager").val(),
-		                	ordersDetailNo: row.find("td:nth-child(8)").text(),
-		                    instoreNo: row.find("td:nth-child(7)").text(),
+		                	ordersDetailNo: row.find("td:nth-child(9)").text(),
+		                    instoreNo: row.find("td:nth-child(8)").text(),
 		                    companyInput: $("#companyInput").val()
 		                };
 		                selectedRows.push(data);
 	                }
 	            });
 	            console.log(selectedRows);
+	            
 	            // Ajax로 데이터 전송
 	            var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/insertIn' : '/inOut/insertOut';
 	            $.ajax({
@@ -220,6 +238,20 @@
 			
 	    });
 		
+		$("#prevPageBtn").click(function() {
+		    if (page > 1) {
+		        page--;
+		        changeFilter();
+		        $("#currentPage").text(page + " 페이지");
+		    }
+		});
+
+		$("#nextPageBtn").click(function() {
+		    page++;
+		    changeFilter();
+		    $("#currentPage").text(page + " 페이지");
+		});
+		
 		// 필터값 전송
         function changeFilter() {
         	var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/ordersInsert' : '/inOut/instoresInsert';
@@ -233,10 +265,22 @@
             			year,
             			month,
             			prd,
-            			ing},
+            			ing,
+            			page,
+                        pageSize},
             	success : function(data) {
-            		updateTable(data, type);
-            		console.log(data);
+            		updateTable(data.list, type);
+            		var lastPage = Math.ceil(data.count / pageSize);
+            		if (page == lastPage) {
+            			$("#nextPageBtn").hide();
+            		} else {
+            			$("#nextPageBtn").show();
+            		}
+            		if (page > 1) {
+            			$("#prevPageBtn").show();
+            		} else {
+            			$("#prevPageBtn").hide();
+            		}
             	},
             	error : function() {
 	                alert("내역을 불러오는 데 실패했습니다.");
@@ -260,6 +304,11 @@
 	        tbody.empty();
 	        data.forEach(function(item) {
 	            var row = "<tr>";
+	            	row += `<td>
+								<div class="form-check">
+  									<input class="form-check-input check" type="checkbox">
+								</div>
+							</td>`
 	            if (type === 'instore') {
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                if (item.orderingProduct != null) {
@@ -316,12 +365,29 @@
             });
         }
 	 	
-        // 테이블에서 행 클릭 시 선택 처리
-        $("#inOutTable").on('click', 'tr', function() {
-            $(this).toggleClass('selected');
-            $(this).css("background-color", "black");
-            $(this).css("color", "white");
+     	// 테이블에서 행 클릭 시 선택 처리
+        $("#inOutTable").on('click', '.form-check-input', function() {
+            var row = $(this).closest('tr');
+            
+            if ($(this).prop('checked')) {
+                row.addClass('selected');
+            } else {
+                row.removeClass('selected');
+            }
         });
+     	
+     	// 체크박스 일괄 선택 처리
+     	$("#checkAll").on('click', function() {
+     		if ($(this).prop('checked')) {
+     			$("#inOutTable .form-check-input").prop('checked', true);
+                $("#inOutTable tbody tr").addClass('selected');
+            } else {
+            	$("#inOutTable .form-check-input").prop('checked', false);
+                $("#inOutTable tbody tr").removeClass('selected');
+            }
+     		
+     	});
+     
 	</script>
 </body>
 </html>

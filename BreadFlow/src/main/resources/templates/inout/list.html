@@ -72,10 +72,16 @@
 
 				</tbody>
 			</table>
+			<div class="pagination-container">
+			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			    <span id="currentPage">1 페이지</span>
+			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			</div>
 		</div>
 	</div>
 	
     <script>
+    
 	 	// 조건
 	 	var companyInput = null;
 		var comp = null;
@@ -84,6 +90,11 @@
 		var item = null;
 		var year = null;
 		var month = null;
+		var startDt = null;
+		var endDt = null;
+		
+		var page = 1;
+		var pageSize = 10;
    	
         $(document).ready(function() {
         	
@@ -100,6 +111,10 @@
     			item = null;
     			year = null;
     			month = null;
+    			startDt = null;
+    			endDt = null;
+    			page = 1;
+    			pageSize = 10;
             }
             
             // 입고 내역 버튼 클릭
@@ -169,14 +184,14 @@
 
             // 날짜 필터 버튼 클릭
             $("#dateFilterBtn").click(function() {
-                var startDate = $("#startDate").val();
-                var endDate = $("#endDate").val();
-                filterData(startDate, endDate);
+            	startDt = $("#startDate").val();
+                endDt = $("#endDate").val();
+                changeFilter();
             });
             
          	// 업체 검색 모달에서 선택
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 comp = selectedCompanyName;
@@ -184,6 +199,20 @@
             });
 
         });
+        
+        $("#prevPageBtn").click(function() {
+		    if (page > 1) {
+		        page--;
+		        changeFilter();
+		        $("#currentPage").text(page + " 페이지");
+		    }
+		});
+
+		$("#nextPageBtn").click(function() {
+		    page++;
+		    changeFilter();
+		    $("#currentPage").text(page + " 페이지");
+		});
         
         // 필터값 전송
         function changeFilter() {
@@ -198,9 +227,24 @@
             			year,
             			month,
             			prd,
-            			ing},
+            			ing,
+            			startDt,
+            			endDt,
+            			page,
+                        pageSize},
             	success : function(data) {
-            		updateTable(data, type);
+            		updateTable(data.list, type);
+            		var lastPage = Math.ceil(data.count / pageSize);
+            		if (page == lastPage) {
+            			$("#nextPageBtn").hide();
+            		} else {
+            			$("#nextPageBtn").show();
+            		}
+            		if (page > 1) {
+            			$("#prevPageBtn").show();
+            		} else {
+            			$("#prevPageBtn").hide();
+            		}
             		console.log(data);
             	},
             	error : function() {
@@ -247,20 +291,6 @@
             });
         }
 
-        // 기간 검색
-        function filterData(startDate, endDate) {
-            var start = new Date(startDate);
-            var end = new Date(endDate);
-            $("#inOutTable tr").each(function() {
-                var rowDate = $(this).find(".date").text().trim();
-                var rowDateObj = new Date(rowDate);
-                if (rowDateObj >= start && rowDateObj <= end) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
     </script>
 </body>
 </html>
