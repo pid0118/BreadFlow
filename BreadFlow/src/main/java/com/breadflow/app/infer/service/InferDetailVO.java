@@ -24,6 +24,10 @@ public class InferDetailVO {
 	private Date inferApplicationDate;
 	private String confirmLocation;
 	private String confirmWhether;
+	private String disposalWhether;
+	private String answerer;
+	private String manager;
+	private String answer;
 	
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")

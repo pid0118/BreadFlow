@@ -25,7 +25,25 @@ public class ProductServiceImpl implements ProductService {
 	// 제품 단건조회
 	@Override
 	public ProductVO selectProduct(String productCode) {
-		return productMapper.selectProduct(productCode);
+		ProductVO product = productMapper.selectProduct(productCode);
+		
+//		String unitCode = product.getUnit();
+//		String unit = "";
+//		if (unitCode.equals("j1")) {
+//			unit = "g";
+//		} else if (unitCode.equals("j2")) {
+//			unit = "kg";
+//		} else if (unitCode.equals("j3")) {
+//			unit = "ml";
+//		} else if (unitCode.equals("j4")) {
+//			unit = "L";
+//		} else  if (unitCode.equals("j5")){
+//			unit = "EA";
+//		}
+//		
+//		product.setUnit(unit);
+		
+		return product;
 	}
 	
 	// 제품 등록
@@ -44,12 +62,16 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	@Override
 	public int deleteProduct(List<String> productCode) {
-		for(int i = 0;i < productCode.size();i++ ) {
-			
-			
-			productMapper.deleteProduct(productCode.get(i));
+		
+		int count = productMapper.selectOrderingProductCnt(productCode);
+		
+		if (count == 0) {
+			for(int i = 0;i < productCode.size();i++ ) {
+				productMapper.deleteProduct(productCode.get(i));
+			}	
 		}
-		return 0;
+		
+		return count;
 	}
 
 	// 제품코드 가져오기
@@ -60,8 +82,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public String selectProductName(String productName) {
-		return productMapper.selectProductName(productName);
+	public String selectProductName(String productName, String productCode) {
+		return productMapper.selectProductName(productName, productCode);
 	}
 
 	

@@ -20,10 +20,8 @@ public class OutstoreVO {
 	private String instoreNo;
 	private String salesNo;
 	
-	private String prdStandard;
-	private String prdUnit;
-	private String ingStandard;
-	private String ingUnit;
+	private String unit;
+	private String standard;
 	private String outstoreCompany;
 	private String instoreCompany;
 	private String ordersItem;
@@ -34,8 +32,7 @@ public class OutstoreVO {
 	private String orderingProduct;
 	private String orderingIngredient;
 	
-	private String ingredientName;
-	private String productName;
+	private String itemName;
 	
 	private String itemDiv;
 }

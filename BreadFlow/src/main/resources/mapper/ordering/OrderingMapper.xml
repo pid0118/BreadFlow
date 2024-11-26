@@ -2,15 +2,66 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.ordering.mapper.OrderingMapper">
 	<select id="selectOrderingList" resultType="OrderingVO">
-		SELECT ordering_code
-		       , ordering_date
-		       , ordering_request_manager
-		       , total_price
-		       , approval_whether
-		       , orderform_no
-		       , delivery_desire_date
-		FROM   ordering
-		WHERE  approval_whether IN ('d3', 'd4')
+		SELECT b.*
+		FROM (SELECT rownum rn, a.*
+		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
+				   FROM ordering 
+				   WHERE  approval_whether IN (
+				   <foreach collection="status" item="item" separator=",">
+				   		#{item}
+				   </foreach>
+				   )
+				   ORDER BY
+					<choose>
+						<when test="sort == 'odDesc'">
+							ordering_date DESC
+						</when>
+						<when test="sort == 'odAsc'">
+							ordering_date ASC
+						</when>
+						<when test="sort == 'deDesc'">
+							delivery_desire_date DESC
+						</when>
+						<when test="sort == 'deAsc'">
+							delivery_desire_date ASC
+						</when>
+						<otherwise>
+							ordering_code
+						</otherwise>
+					</choose>) a
+			  ) b
+		WHERE b.rn BETWEEN (#{page}-1) * 10 + 1 AND (#{page}-1) * 10 + 10
+	</select>
+	
+	<select id="selectOrderingPage">
+		SELECT count(b.rn)
+		FROM (SELECT rownum rn, a.*
+		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
+				   FROM ordering 
+				   WHERE  approval_whether IN (
+				   <foreach collection="status" item="item" separator=",">
+				   		#{item}
+				   </foreach>
+				   )
+				   ORDER BY
+					<choose>
+						<when test="sort == 'odDesc'">
+							ordering_date DESC
+						</when>
+						<when test="sort == 'odAsc'">
+							ordering_date ASC
+						</when>
+						<when test="sort == 'deDesc'">
+							delivery_desire_date DESC
+						</when>
+						<when test="sort == 'deAsc'">
+							delivery_desire_date ASC
+						</when>
+						<otherwise>
+							ordering_code
+						</otherwise>
+					</choose>) a
+			  ) b
 	</select>
 	
 	<insert id="insertOrdering">
@@ -43,4 +94,8 @@
 		SELECT 'BC'|| GETSEQ('ordering', 'ordering_code')
 		FROM dual
 	</select>
+	
+	<update id="updateOrderingApprovalCancel" statementType="CALLABLE">
+		CALL ordercancel_prod(#{no}, #{reason})
+	</update>
 </mapper>

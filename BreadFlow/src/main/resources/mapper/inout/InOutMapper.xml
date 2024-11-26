@@ -6,16 +6,13 @@
 		    I.INSTORE_DATE,
 		    I.INSTORE_QUANTITY,
 		    I.EXPIRATION_DEADLINE,
-		    PRD.STANDARD AS PRDSTANDARD,
-		    PRD.UNIT     AS PRDUNIT,
-		    ING.STANDARD AS INGSTANDARD,
-		    ING.UNIT     AS INGUNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_INGREDIENT,
 		    OD.ORDERING_PRODUCT,
 		    ODS.OUTSTORE_COMPANY,
 		    ODS.INSTORE_COMPANY,
-		    ING.INGREDIENT_NAME,
-		    PRD.PRODUCT_NAME
+			CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME		    
 		FROM
 		              INSTORE I
 		    LEFT JOIN ORDERING_DETAIL OD  ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
@@ -28,7 +25,7 @@
 			AND ODS.OUTSTORE_COMPANY = #{comp}
 			</if>
 			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+		    AND ITEMNAME LIKE '%'|| #{item} ||'%'
 			</if>
 			<if test="year != null and year != ''">
 			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
@@ -45,19 +42,17 @@
 		ORDER BY
 		    I.INSTORE_NO DESC
 	</select>
+	
 	<select id="selectOutstoreList" resultType="OutstoreVO">
 		SELECT
 		    O.OUTSTORE_DATE,
 		    O.OUTSTORE_QUANTITY,
-		    PRD.STANDARD AS PRDSTANDARD,
-		    PRD.UNIT     AS PRDUNIT,
-		    ING.STANDARD AS INGSTANDARD,
-		    ING.UNIT     AS INGUNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    ODS.OUTSTORE_COMPANY,
 		    ODS.INSTORE_COMPANY,
 		    ODS.ORDERS_ITEM,
-		    ING.INGREDIENT_NAME,
-		    PRD.PRODUCT_NAME
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME
 		FROM
 		         OUTSTORE O
 		    JOIN ORDERS_DETAIL   ODS      ON O.ORDERS_DETAIL_NO = ODS.ORDERS_DETAIL_NO
@@ -70,7 +65,7 @@
 			AND ODS.INSTORE_COMPANY = #{comp}
 			</if>
 			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+		    AND ITEMNAME LIKE '%'|| #{item} ||'%'
 			</if>
 			<if test="year != null and year != ''">
 			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
@@ -93,15 +88,11 @@
 		    OD.ORDERING_INGREDIENT,
 		    OD.ORDERING_PRODUCT,
 		    OD.QUANTITY,
-		    PRD.STANDARD            AS PRDSTANDARD,
-		    PRD.UNIT                AS PRDUNIT,
-		    ING.STANDARD            AS INGSTANDARD,
-		    ING.UNIT                AS INGUNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_DETAIL_CODE,
-		    ING.INGREDIENT_NAME,
-		    ING.EXPIRATION_DEADLINE AS ING_EXPIRATION_DEADLINE,
-		    PRD.PRODUCT_NAME,
-		    PRD.EXPIRATION_DEADLINE AS PRD_EXPIRATION_DEADLINE
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD_EXPIRATION_DEADLINE ELSE ING_EXPIRATION_DEADLINE END AS EXPIRATIONDEADLINE,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME
 		FROM
 		         ORDERING O
 		    JOIN ORDERING_DETAIL OD       ON O.ORDERING_CODE = OD.ORDERING_CODE
@@ -114,7 +105,7 @@
 			AND ODS.OUTSTORE_COMPANY = #{comp}
 			</if>
 			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+		    AND ITEMNAME LIKE '%'|| #{item} ||'%'
 			</if>
 			<if test="year != null and year != ''">
 			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
@@ -136,16 +127,13 @@
 		    I.INSTORE_DATE,
 		    I.INSTORE_NO,
 		    I.INSTORE_MANAGER,
-		    PRD.STANDARD AS PRDSTANDARD,
-		    PRD.UNIT     AS PRDUNIT,
-		    ING.STANDARD AS INGSTANDARD,
-		    ING.UNIT     AS INGUNIT,
 		    I.INSTORE_QUANTITY,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_PRODUCT,
 		    OD.ORDERING_INGREDIENT,
 		    ODS.ORDERS_DETAIL_NO,
-		    ING.INGREDIENT_NAME,
-		    PRD.PRODUCT_NAME
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME
 		FROM
 		         INSTORE I
 		    JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
@@ -158,7 +146,7 @@
 			AND ODS.INSTORE_COMPANY = #{comp}
 			</if>
 			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
+		    AND ITEMNAME LIKE '%'|| #{item} ||'%'
 			</if>
 			<if test="year != null and year != ''">
 			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
@@ -195,15 +183,15 @@
 		            , #{outstoreQuantity}
 		            <choose>
 		            <when test="itemDiv.equals('g1')">
-		            , (SELECT amount FROM product WHERE product_name = #{name})
+		            , (SELECT amount FROM product WHERE product_name = #{itemName})
 		            </when>
 		            <otherwise>
-		            , (SELECT amount FROM ingredient WHERE ingredient_name = #{name})
+		            , (SELECT amount FROM ingredient WHERE ingredient_name = #{itemName})
 		            </otherwise>
 		            </choose>
 		            , (SELECT div FROM company WHERE company_name = #{companyInput})
 		            , (SUBSTR(#{itemCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
-		            , (SELECT m.name FROM member m JOIN company c ON c.company_no = m.company_no WHERE c.company_name = #{companyInput} AND ROWNUM = 1)
+		            , #{instoreManager}
 		            , #{orderingDetailCode}
 		            , #{instoreDiv}
 		            <!--
@@ -221,7 +209,7 @@
 		VALUES      (('OU' || (SELECT GETSEQ('outstore','outstore_no') FROM dual))
 		            , #{outstoreDate}
 		            , #{outstoreQuantity}
-		            , (SELECT m.name FROM member m JOIN company c ON c.company_no = m.company_no WHERE c.company_name = #{companyInput} AND ROWNUM = 1)
+		            , #{outstoreManager}
 		            , #{ordersDetailNo}
 		            , #{instoreNo})
 	</insert>

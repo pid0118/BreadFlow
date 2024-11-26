@@ -24,33 +24,35 @@
 			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
 				<div class="pd-20">
 					<div class="pull-left">
-						<h4 class="text-blue h4">발주 현황</h4>
+						<h4 class="text-blue h2">발주 현황</h4>
 					</div>
 					<div class="pull-right">
-						<div class="form-group">
-							<select class="custom-select2 form-control" multiple="multiple">
-								<optgroup label="s">
-									<option value="AK">Alaska</option>
-									<option value="HI">Hawaii</option>
-								</optgroup>
-								<optgroup label="Pacific Time Zone">
-									<option value="CA">California</option>
-									<option value="NV">Nevada</option>
-									<option value="OR">Oregon</option>
-									<option value="WA">Washington</option>
-								</optgroup>
-								<optgroup label="Mountain Time Zone">
-									<option value="AZ">Arizona</option>
-									<option value="CO">Colorado</option>
-									<option value="ID">Idaho</option>
-									<option value="MT">Montana</option>
-									<option value="NE">Nebraska</option>
-									<option value="NM">New Mexico</option>
-									<option value="ND">North Dakota</option>
-									<option value="UT">Utah</option>
-									<option value="WY">Wyoming</option>
-								</optgroup>
-							</select>
+						<div class="row">
+							<div class="col-md-6 col-sm-12">
+								<div class="form-group">
+									<label>발주 상태</label>
+									<select class="selectpicker form-control" data-size="5" data-style="btn-outline-secondary" multiple data-max-options="3" id="statusSel">
+							            <option value="d3">요청</option>
+							            <option value="d4">긴급</option>
+								    </select>
+								</div>
+							</div>
+							<div class="col-md-6 col-sm-12">
+								<div class="form-group">
+									<label>일자</label>
+									<select class="selectpicker form-control" data-style="btn-outline-secondary">
+										<option value="none">---- 선택 ----</option>
+										<optgroup label="발주 일자">
+											<option value="odDesc">발주 최신순</option>
+								            <option value="odAsc">발주 오래된순</option>
+							            </optgroup>
+							            <optgroup label="납기 희망 일자">
+							            	<option value="deDesc">후순위 납기일자</option>
+							            	<option value="deAsc">우선 납기일자</option>
+							            </optgroup>
+									</select>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="table-responsive">
@@ -59,6 +61,7 @@
 								<tr>
 									<th scope="col">발주코드</th>
 									<th scope="col">발주일자</th>
+									<th scope="col">납기 희망 일자</th>
 									<th scope="col">발주 요청자</th>
 									<th scope="col">총 금액</th>
 									<th scope="col">발주 상태</th>
@@ -68,6 +71,24 @@
 							</thead>
 							<tbody></tbody>
 						</table>
+						<ul class="pagination justify-content-center">
+							<li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
+								<a href="#" aria-controls="DataTables_Table_0" tabindex="0" class="page-link">
+									<i class="ion-chevron-left"></i>
+								</a>
+							</li>
+							<!-- <li class="paginate_button page-item active">
+								<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link">1</a>
+							</li>
+							<li class="paginate_button page-item ">
+								<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" class="page-link">2</a>
+							</li> -->
+							<li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
+								<a href="#" aria-controls="DataTables_Table_0" tabindex="0" class="page-link">
+									<i class="ion-chevron-right"></i>
+								</a>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -123,47 +144,199 @@
 						</table>
 					</div>
 				</div>
+			</div><!-- 주문 현황 div -->
+		</div>
+	</div>
+	<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myLargeModalLabel">발주 취소서</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<div class="col-md-3 col-sm-12" style="padding-left: 0">
+							<div class="form-group">
+								<label>발주 번호</label>
+								<input type="text" class="form-control" readonly>
+							</div>
+						</div>
+						<label>사유</label>
+						<textarea class="form-control"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-danger" id="cancelBtn">전송</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="Medium-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myLargeModalLabel">발주 상세정보</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					<p>Lorem ipsum dolor sit ametcia deserunt mollit anim id est laborum.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>				
 <script>
-	orderingList();
-
-	function orderingList(){
-		fetch('/ordering/list')
+	let status = 'd3,d4';
+	let sort = '';
+	let page = 1;
+	orderingList(status, sort, page);
+	
+	// 정렬 조건에 따라 발주 현황 조회
+	$('select').on('change', function() {
+		if($(this).attr("id") == 'statusSel'){
+			status = $(this).val();
+		} else {
+			sort = $(this).val();
+		}
+		page = 1;
+		orderingList(status, sort, page);
+	})
+	
+	// 페이지 버튼 클릭 이벤트
+	$('ul.pagination.justify-content-center').on('click', 'li', function(){
+		if(!$(this).hasClass("disabled")){
+			if($('select.selectpicker:first').val().length != 0){
+				status = $('select.selectpicker:first').val();
+				sort = $('select.selectpicker:last').val();
+			}
+			if($(this).hasClass("next")){
+				page = Number($('li.paginate_button.page-item.page.active').children().text()) + 1;
+			}
+			else if($(this).hasClass("previous")){
+				page = Number($('li.paginate_button.page-item.page.active').children().text()) - 1;
+			} else{
+				page = $(this).children().text();
+			}
+			orderingList(status, sort, page)
+		}
+	})
+	
+	// 발주 취소서 전송 버튼 클릭 이벤트
+	$('#cancelBtn').on('click', function() {
+		let no = $('#bd-example-modal-lg input').val();
+		let reason = $('#bd-example-modal-lg textarea').val();
+		$.ajax({
+		    type : 'post',
+		    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
+		    dataType : 'text',
+		    success : function(result) {
+		        console.log(result);
+		        window.location.href = 'http://localhost:8099/order/list';
+		    },
+		    error : function(request, status, error) { 
+		        console.log(error)
+		    }
+		})
+	})
+	
+	// 발주 현황 조회
+	function orderingList(status, sort, page){
+		fetch(`/ordering/list?status=${status}&sort=${sort}&page=${page}`)
 		.then(response => response.json())
-		.then(data => {
-			console.log(data);
-			data.forEach(data => {
+		.then(result => {
+			let totalPage = result.page;
+			let endPage = Math.ceil(totalPage / 10);
+			$('li.paginate_button.page-item.page').remove();
+			for(let i = 0; i < endPage; i++){
+				let ele;
+				if(page == i+1){
+					ele = `<li class="paginate_button page-item page active">
+						<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+					</li>`;
+				} else {
+					ele = `<li class="paginate_button page-item page">
+						<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+					</li>`;
+				}
+				$('ul.pagination.justify-content-center li:last-child').before(ele);
+			}
+			if(totalPage == endPage) {
+				$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
+				$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
+			} else if(page == 1) {
+				$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
+				$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
+			} else if(page == endPage){
+				$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
+				$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
+			} else {
+				$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
+				$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
+			}
+			
+			$('#orderingTable tbody tr').remove();
+			result.data.forEach(data => {
 				let ele;
 				if(data.approvalWhether == 'd3'){
 					ele = `<tr class="table-light">
-						<td>${data.orderingCode}</td>
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">
+								${data.orderingCode}
+							</a>
+						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-secondary">요청</span></td>
-						<td><button type="button" class="btn btn-outline-success btn-sm">승인</button></td>
-						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+						<td>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							</a>
+						</td>
 					</tr>`
 				} else {
 					ele = `<tr class="table-danger">
-						<td>${data.orderingCode}</td>
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">
+								${data.orderingCode}
+							</a>
+						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-danger">긴급</span></td>
-						<td><button type="button" class="btn btn-outline-success btn-sm">승인</button></td>
-						<td><button type="button" class="btn btn-outline-danger btn-sm">거절</button></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+						<td>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							</a>
+						</td>
 					</tr>`
 				}
-				console.log(ele);
 				$('#orderingTable tbody').append(ele);
+			})
+			// 승인 버튼 이벤트
+			$('button#acceptBtn').on('click', function() {
+				confirm("승인하시겠습니까?");
+			})
+			
+			// 거절 버튼 이벤트
+			$('button#modalCancel').on('click', function() {
+				$('#bd-example-modal-lg input').val($(this).data("id"));
+				$('#bd-example-modal-lg textarea').val('');
 			})
 
 		})
-		.err(err => console.log(err))
+		.catch(err => console.log(err))
 	}
 	
 </script>

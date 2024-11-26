@@ -3,9 +3,9 @@
 <mapper namespace="com.breadflow.app.infer.mapper.InferMapper">
 	<select id="selectInferList" resultType="InferHistoryVO">
 		SELECT
-		    INFER_NO,
-		    INFER_APPLICATION_DATE,
-		    CONFIRM_LOCATION,
+		    IH.INFER_NO,
+		    IH.INFER_APPLICATION_DATE,
+		    IH.CONFIRM_LOCATION,
 		    (SELECT
 		            INFER_ITEM
 		     FROM
@@ -20,25 +20,30 @@
 		            INFER_NO = IH.INFER_NO
 		     GROUP BY
 		            INFER_NO) AS INFER_QUANTITY,
-		    CONFIRM_WHETHER
+		    IH.CONFIRM_WHETHER,
+		    IA.ANSWER_DATE,
+		    IA.DISPOSAL_WHETHER
 		FROM
-		    INFER_HISTORY IH
-		<if test="clear != null and clear != ''">
-		WHERE
-			<if test="confirmComp != null and confirmComp != ''">
-			AND CONFIRM_LOCATION = #{confirmComp}
+		    INFER_HISTORY IH JOIN INFER_ANSWER IA ON IH.INFER_NO = IA.INFER_NO
+		<if test="clearTable != null and clearTable != ''">
+		WHERE 1 = 1
+			<if test="div != '본사'">
+			AND IH.CONFIRM_LOCATION = #{companyInput}
+			</if>
+			<if test="confirmComp != null and confirmComp != '' and div == '본사'">
+			AND IH.CONFIRM_LOCATION = #{confirmComp}
 			</if>
 			<if test="year != null and year != ''">
-			AND EXTRACT(YEAR FROM CAST(INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{year})
+			AND EXTRACT(YEAR FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{year})
 			</if>
 			<if test="month != null and month != ''">
-			AND EXTRACT(MONTH FROM CAST(INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
+			AND EXTRACT(MONTH FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
 			</if>
 			<if test="checked != null and checked != ''">
-			AND CONFIRM_WHETHER = #{checked}
+			AND IH.CONFIRM_WHETHER = #{checked}
 			</if>
 			<if test="unchecked != null and unchecked != ''">
-			AND CONFIRM_WHETHER = #{unchecked}
+			AND IH.CONFIRM_WHETHER = #{unchecked}
 			</if>
 		</if>		    
 		ORDER BY
@@ -89,6 +94,9 @@
 		        )
 	</insert>
 	<insert id="insertInferHistory" parameterType="InferHistoryVO">
+		<selectKey resultType="String" keyProperty="inferNo" order="BEFORE">
+			'BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual)
+		</selectKey>
 		INSERT INTO INFER_HISTORY
 			  	(
 			  	infer_no,
@@ -97,10 +105,10 @@
                 confirm_whether
                 )
 		VALUES  (
-        	    ('BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual))
+        	    #{inferNo}
         	    , sysdate
                 , #{confirmLocation}
-                , #{confirmWhether}
+                , '미확인'
                 )
 	</insert>
 	<update id="updateInferHistory" parameterType="InferAnswerVO">
@@ -129,6 +137,14 @@
 		        , #{inferNo}
 		        );
 	</insert>
+	<select id="selectInferAnswer" resultType="InferAnswerVO" parameterType="String">
+		SELECT 	DISPOSAL_WHETHER,
+				ANSWER,
+				MANAGER,
+				ANSWERER
+		FROM	INFER_ANSWER
+		WHERE	INFER_NO = #{inferNo}
+	</select>
 	<select id="selectCompany" resultType="CompanyVO">
 		SELECT		COMPANY_NO
 					, DIV
