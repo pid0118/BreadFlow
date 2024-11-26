@@ -4,10 +4,60 @@
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
 <head>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <meta charset="UTF-8">
 <title></title>
 </head>
 <body>
+<div class="pd-20 card-box mb-30">
+	<div class="clearfix mb-20">
+		<div class="tab-content">
+			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
+				<div class="pd-20">
+					<div class="pull-left">
+						<h4 class="text-blue h2">발주 현황</h4>
+					</div>
+					<div class="pull-right">
+					</div>
+					<div>
+						<div id="grid"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
+
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>	
+<script>
+	const ROW_COUNT = 5;
+	const COL_COUNT = 10;
+	
+	const data = [];
+	const columns = [];
+	
+	for (let i = 0; i < ROW_COUNT; i += 1) {
+	  const row = { id: i };
+	  for (let j = 0; j < COL_COUNT; j += 1) {
+	    row[`c${j}`] = (Math.random() * 10).toFixed();
+	  }
+	  data.push(row);
+	}
+	
+	for (let i = 0; i < COL_COUNT; i += 1) {
+	  const name = `c${i}`;
+	  columns.push({ name, header: name });
+	}
+	
+	const grid = new tui.Grid({
+	  el: document.getElementById('grid'),
+	  rowHeaders: ['checkbox'],
+	  data: data,
+	  width: 'auto',
+	  bodyHeight: 500,
+	  columns: columns
+	});
+</script>
 </body>
 </html>

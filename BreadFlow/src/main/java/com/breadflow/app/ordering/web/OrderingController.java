@@ -70,4 +70,5 @@ public class OrderingController {
 	public List<OrderingDetailsVO> selectOrderingDeatilList(@RequestParam String orderingCode){
 		return orderingService.selectOrderingDetailList(orderingCode);
 	}
+	
 }
