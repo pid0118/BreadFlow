@@ -10,4 +10,10 @@ public interface PrdtplanService {
 
 	public int insertPrdtplanDetail(List<PrdtplanVO> list);
 
+	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO);
+
+	public List<PrdtplanVO> selectPrdtplanDetailList(PrdtplanVO prdtplanVO);
+
+	public int updatedetailForProgress(PrdtplanVO prdtplanVO);
+
 }

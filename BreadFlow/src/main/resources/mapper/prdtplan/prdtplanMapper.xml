@@ -2,6 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.prdtplan.mapper.PrdtplanMapper">
 	
+	<!-- 생산계획 단건 조회(관련 진행상태는 묶어서 최소값만 보여줌) -->
+	<select id="selectPrdtplan" parameterType="String">
+		SELECT  p.production_plan_no
+		        , p.start_date
+		        , p.last_date
+		        , p.delivery_location
+		        ,  (SELECT  company_name
+		            FROM    company
+		            WHERE   company_no = p.delivery_location) AS delivery_location_nm
+		        , p.production_company
+		        ,  (SELECT  company_name
+		            FROM    company
+		            WHERE   company_no = p.production_company) AS production_company_nm
+		        , 'c' || MIN(TO_NUMBER(SUBSTR(d.progress_situation, 2))) AS progress_situation
+		FROM    production_plan p JOIN production_plan_detail d
+		                ON p.production_plan_no = d.production_plan_no
+		WHERE   p.production_plan_no = #{productionPlanNo}
+		GROUP BY p.production_plan_no, p.start_date, p.last_date, p.delivery_location, p.production_company
+	</select>
+	
+	
+	<select id="selectPrdtplanDetailList" parameterType="PrdtplanVO">
+		SELECT  production_detail_no
+		        , product_code
+		        , plan_quantity
+		        , unit
+		        , other
+		FROM    production_plan_detail
+		WHERE   production_plan_no = #{productionPlanNo}
+	</select>
+	
 	<!-- 생산계획(production_plan)단건입력 -->
 	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">
@@ -69,6 +100,15 @@
 	) d
 	ON p.production_plan_no = d.production_plan_no
 	</select>
+	
+	
+	<!-- 생산관리 디테일 특정 id의 progress-situation 갱신 -->
+	<update id="updatedetailForProgress" parameterType="PrdtplanVO">
+		UPDATE  production_plan_detail
+		SET     progress_situation = 'c3'
+		WHERE   production_plan_no = #{productionPlanNo}
+	</update>
+	
 	
 
 </mapper>

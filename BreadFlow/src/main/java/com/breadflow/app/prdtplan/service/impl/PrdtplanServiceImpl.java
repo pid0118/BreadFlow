@@ -39,5 +39,21 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		return result;
 	}
 
+	@Override
+	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.selectPrdtplan(prdtplanVO);
+		
+	}
+
+	@Override
+	public List<PrdtplanVO> selectPrdtplanDetailList(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.selectPrdtplanDetailList(prdtplanVO);
+	}
+
+	@Override
+	public int updatedetailForProgress(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.updatedetailForProgress(prdtplanVO);
+	}
+
 	
 }
