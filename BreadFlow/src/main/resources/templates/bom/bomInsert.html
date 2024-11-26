@@ -5,192 +5,492 @@
       layout:fragment="Content">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOM 등록/수정</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>BOM등록</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <style>
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .page-title {
+            font-size: 24px;
+            margin: 40px 0;
+            padding-left: 20px;
+        }
+        .image-section {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        .image-placeholder {
+            width: 300px;
+            height: 300px;
+            background-color: #E6E9FF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .product-name-input {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .grid-section {
+            flex: 1;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 500px;
+        }
+        .grid-header {
+		    display: flex;
+		    justify-content: space-between; /* 좌우 정렬 */
+		    margin-bottom: 10px;
+		}
+		
+		.grid-header-right {
+		    display: flex;
+		    gap: 10px; /* 버튼 간격 */
+		    margin-left: auto;
+		}
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #0052CC;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+        .tui-pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+	    .btn-danger {
+	   		background-color: #ff4d4d;
+	   		color: white;
+	   		border: none;
+		}
+    </style>
 </head>
 <body>
-    <div class="container mx-auto p-6">
-        <div class="bg-[#f8f9fa] rounded-lg shadow-md">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold mb-6">BOM 등록/수정</h2>
-            </div>
-            <div class="p-6 space-y-6">
-                <div class="flex space-x-6 items-start">
-                    <!-- 제품명 및 이미지 -->
-                    <div class="flex flex-col items-center space-y-2">
-                        <div class="w-48 h-48 bg-[#E6E9FF] flex items-center justify-center border rounded">
-                            이미지
-                        </div>
-                        <input type="text" id="productName" placeholder="제품명" class="w-48 px-3 py-2 border rounded text-center">
-                    </div>
-
-                    <!-- 테이블 섹션 -->
-                    <div class="flex-grow">
-                        <div class="flex justify-between mb-4">
-                            <!-- 원재료 추가 버튼 오른쪽 상단에 배치 -->
-                            <button id="addMaterial" class="px-4 py-2 bg-btn btn-primary action-buttons-500 text-white rounded hover:bg-blue-600">
-                                원재료 추가
-                            </button>
-                        </div>
-                        <!-- 테이블 -->
-                        <table class="w-full border-collapse border border-gray-300 text-center">
-                            <thead>
-                                <tr class="bg-gray-100">
-                                    <th class="border border-gray-300 p-2">
-                                        <input type="checkbox" id="selectAll">
-                                    </th>
-                                    <th class="border border-gray-300 p-2">원재료 코드</th>
-                                    <th class="border border-gray-300 p-2">제품명</th>
-                                    <th class="border border-gray-300 p-2">소모량</th>
-                                    <th class="border border-gray-300 p-2">단위</th>
-                                    <th class="border border-gray-300 p-2">비고</th>
-                                    <th class="border border-gray-300 p-2">
-                                        <button id="deleteSelected" disabled>
-                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
-                                            </svg>
-                                        </button>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="entriesBody">
-                                <!-- Entries will be dynamically inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-2">
-                    <button id="saveButton" class="px-4 py-2 bg-btn btn-primary action-buttons-500 text-white rounded hover:bg-blue-600">저장</button>
-                    <button id="cancelButton" class="px-4 py-2 border border-btn btn-secondary action-buttons-300 ">취소</button>
-                </div>
+    <h2 class="page-title">BOM등록</h2>
+    
+    <div class="container">
+        <div class="image-section">
+            <div class="image-placeholder">이미지</div>
+            <input type="text" class="product-name-input" placeholder="제품명">
+        </div>
+        
+        <div class="grid-section">
+            <div class="grid-header">
+   				<div class="grid-header-right">
+        			<button class="btn btn-primary" data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
+        			<button id="deleteMaterial" class="btn btn-danger">삭제</button>
+    			</div>
+			</div>
+            <div id="grid"></div>
+            <div class="tui-pagination" id="pagination"></div>
+            <div class="button-container">
+                <button id="saveButton" class="btn btn-primary">저장</button>
+                <button id="cancelButton" class="btn btn-secondary">취소</button>
             </div>
         </div>
     </div>
+	<!-- 원재료 추가 모달창 -->
+	<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
+		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
+					<button type="button" class="close" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12 sm-12 text-left">
+							<div class="form-group">
+								<label>품목 종류</label> <select
+									class="custom-select2 form-control second" multiple="multiple"
+									style="width: 100%;">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-9 col-sm-12">
+							<input type="text" class="form-control" id="iname"
+								placeholder="품목명">
+						</div>
+						<div class="col-md-3 col-sm-12">
+							<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
+						</div>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th><div class="custom-control custom-checkbox mb-5">
+										<input type="checkbox" class="custom-control-input checkAll"
+											id="customCheck"> <label class="custom-control-label"
+											for="customCheck"></label>
+									</div></th>
+								<th>품목코드</th>
+								<th>품목명</th>
+								<th>단위</th>
+								<th>규격</th>
+								<th>가격</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<ul class="pagination justify-content-center">
+						<li class="paginate_button page-item previous disabled"
+							id="DataTables_Table_0_previous"><a href="#"
+							aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0"
+							class="page-link"> <i class="ion-chevron-left"></i>
+						</a></li>
+						<li class="paginate_button page-item next disabled"
+							id="DataTables_Table_0_next"><a href="#"
+							aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0"
+							class="page-link"> <i class="ion-chevron-right"></i>
+						</a></li>
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="itemAdd"
+						data-dismiss="modal">추가</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
+	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
     <script>
-        $(document).ready(function() {
-            // 초기 데이터
-            let entries = [
-                { id: 1, code: 'OB00001', name: '밀가루', quantity: '', unit: '', notes: '' },
-                { id: 2, code: 'OB00002', name: '빵다', quantity: '', unit: '', notes: '' },
-                { id: 3, code: 'OB00003', name: '크림', quantity: '', unit: '', notes: '' },
-                { id: 4, code: 'OB00004', name: '금편기', quantity: '', unit: '', notes: '' },
-            ];
-            let selectedEntries = [];
-            let nextId = 5;
+	    $(document).ready(function () {
+	        const gridData = [
+	            { code: 'OB00001', name: '밀가루', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00002', name: '빵다', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00003', name: '크림', quantity: '', unit: '', notes: '' },
+	            { code: 'OB00004', name: '금편기', quantity: '', unit: '', notes: '' }
+	        ];
+	
+	        const grid = new tui.Grid({
+	            el: document.getElementById('grid'),
+	            data: gridData,
+	            bodyHeight: 300,
+	            rowHeaders: ['checkbox'],
+	            pageOptions: {
+	                useClient: true,
+	                perPage: 5
+	            },
+	            columns: [
+	                { header: '원재료 코드', name: 'code', width: 150, align: 'center' },
+	                { header: '제품명', name: 'name', width: 200 },
+	                { header: '소모량', name: 'quantity', width: 150, editor: 'text' },
+	                { header: '단위', name: 'unit', width: 150, editor: 'text' },
+	                { header: '비고', name: 'notes', editor: 'text' }
+	            ]
+	        });
+	
+	        // 원재료 추가 버튼
+	        $('#addMaterial').on('click', function () {
+	            const newRow = {
+	                code: `OB${String(grid.getRowCount() + 1).padStart(5, '0')}`,
+	                name: '새 재료',
+	                quantity: '',
+	                unit: '',
+	                notes: ''
+	            };
+	            grid.appendRow(newRow);
+	        });
+	
+	        // 삭제 버튼
+	        $('#deleteMaterial').on('click', function () {
+		    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
+		    if (selectedRows.length > 0) {
+		        // 확인 메시지를 추가해 사용자 확인 요청
+		        if (confirm(`${selectedRows.length}개의 항목을 삭제하시겠습니까?`)) {
+		            selectedRows.forEach(row => grid.removeRow(row.rowKey)); // 체크된 행 삭제
+		            alert(`${selectedRows.length}개의 항목이 삭제되었습니다.`);
+		        }
+		    } else {
+		        // 체크된 항목이 없을 경우
+		        alert('삭제할 항목을 선택해주세요.');
+		    }
+		});
+	
+	        // 저장 버튼
+	        $('#saveButton').on('click', function () {
+	            const updatedData = grid.getData();
+	            console.log('저장된 데이터:', updatedData);
+	            alert('저장되었습니다.');
+	        });
+	
+	        // 취소 버튼
+	        $('#cancelButton').on('click', function () {
+	            if (confirm('변경사항을 취소하시겠습니까?')) {
+	                location.reload();
+	            }
+	        });
+	    });
+	    
+	   /*=====================================================모달 script================================================================= */ 
+	   $(document).ready(function() {
+			// 옵션값 초기화
+			$('.custom-select2').select2();
+			$('#coFilterModal.modal.fade').remove();
+			disabledDate();
+		});
+		
+		// 품목 종류 카테고리 생성
+		fetch("../category/list")
+		.then(result => result.json())
+		.then(datas => makeCategory(datas))
+		.catch(err => console.log());
+		
+		// 카테고리 생성
+		function makeCategory(datas) {
+			datas = datas.filter((cate) => cate.major == '원재료' || cate.major == '부재료');
+			
+			let major = datas[0];
+			let element = '';
+			for(let data in datas){
+				if(major == datas[data].major){
+					element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+				} else {
+					element += '</optgroup>';
+					$('.custom-select2.second').append(element);
+					element = `<optgroup label="${datas[data].major}">
+						<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+					major = datas[data].major;	
+				}
+			}
+			element += '</optgroup>';
+			$('.custom-select2.second').append(element);
+		}
+		
+		// 품목 추가 (발주 신청 테이블)
+		itemAdd.addEventListener('click', function() {
+			let checktd = document.querySelectorAll('table .custom-checkbox input.check');
+			let checkbool = false; // 체크박스 여부
+			let checktable = true; // 품목코드 중복 여부
+			let element = '';
+			checktd.forEach(td => {
+				if(td.checked == true){
+					checkbool = true;
+					checktable = true;
+					element += '<tr>';
+					let datas = td.closest('tr').querySelectorAll('td');
+					document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
+						if(ele.innerText == datas[1].innerText){
+							checktable = false;
+						}
+					})
+					
+					if(checktable == true){
+						for(let i=1; i<datas.length; i++){
+							element += `<td>${datas[i].innerText}</td>`;
+						} 
+						element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
+					}
+					
+				}
+			})
+			if(checktable == false || checkbool == false){
+				event.stopPropagation();
+				if(checktable == false){
+					alert("중복된 품목이 있습니다.");	
+				} else {
+					alert("품목을 선택해주세요!");
+				}
+			} else {
+				$('.datatable tbody').append(element);
+				$('.datatable tbody tr#total').remove();
+				$('.datatable tbody').append(`<tr id="total">
+						<td colspan="5" style="text-align: center;">합계</td>
+						<td></td>
+						<td></td>
+					</tr>`);
+				itemSum();
+			}
+		})
+		
+		// 페이징 버튼 이벤트
+		document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
+		
+		// 페이지 버튼 클릭 시 페이지 계산 및 페이지 이동
+		function pageEvent(){
+			if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
+				let page;
+				if(event.target.closest('li').classList.contains('next')){
+					page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
+				} else if(event.target.closest('li').classList.contains('previous')) {
+					page = Number(document.querySelector('.paginate_button.active').innerText) - 1;
+				} else {
+					page = event.target.innerText;
+				}
+				itemClick(page);
+			}
+		}
+		
+		// 품목 검색 이벤트
+		itemSearch.addEventListener('click', itemClick);
+	
+		function itemClick(page) {
+			let val = $('.custom-select2.second').val();
+			let searchOpt = $('.custom-select2.second')[0];
+			let ingredients = [];
+			let products = [];
+			let pages = 1;
+			let lastPage;
+			
+			if(page != '[object PointerEvent]') {
+				pages = page;
+			}
 
-            // 테이블 렌더링 함수
-            function renderEntries() {
-                $('#entriesBody').html(entries.map(entry => `
-                    <tr>
-                        <td class="border border-gray-300 p-2">
-                            <input type="checkbox" class="entry-checkbox" data-id="${entry.id}" ${selectedEntries.includes(entry.id) ? 'checked' : ''}>
-                        </td>
-                        <td class="border border-gray-300 p-2">${entry.code}</td>
-                        <td class="border border-gray-300 p-2">${entry.name}</td>
-                        <td class="border border-gray-300 p-2">
-                            <input type="text" value="${entry.quantity}" class="w-16 px-2 py-1 border rounded quantity-input" data-id="${entry.id}">
-                        </td>
-                        <td class="border border-gray-300 p-2">
-                            <input type="text" value="${entry.unit}" class="w-16 px-2 py-1 border rounded unit-input" data-id="${entry.id}">
-                        </td>
-                        <td class="border border-gray-300 p-2">
-                            <input type="text" value="${entry.notes}" class="w-16 px-2 py-1 border rounded notes-input" data-id="${entry.id}">
-                        </td>
-                        <td class="border border-gray-300 p-2">
-                            <button class="delete-entry" data-id="${entry.id}">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
-                `).join(''));
-            }
+			for(let opt of searchOpt) {
+				if(val.indexOf(opt.value) != -1){
+					if(opt.dataset.name.substring(1) == '재료'){
+						ingredients.push(val[val.indexOf(opt.value)]);
+					} else {
+						products.push(val[val.indexOf(opt.value)]);
+					}
+				}
+			}
+			
+			// 검색 조건이 아무것도 없을 때 
+			if(val.length == 0 && iname.value == '' || val.length == 0) {
+				alert("검색 조건이 없습니다.");
+			} 
+			else {
+				fetch('../search/itempage', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					$('.paginate_button.page-item#addcol').remove()
+					lastPage = Math.ceil(data / 5);
+					for(let i = 1; i <= lastPage; i++) {
+						if(i == 1){
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item active" id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);
+						} else {
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item " id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);	
+						}
+					}
+					if(pages == 1 && pages == lastPage) {
+						document.querySelector('li.page-item.next').classList.add("disabled");
+						document.querySelector('li.page-item.previous').classList.add("disabled");
+					} else if(pages == 1) {
+						document.querySelector('li.page-item.previous').classList.add("disabled");
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+					} else if(pages == lastPage) {
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+						document.querySelector('li.page-item.next').classList.add("disabled");
+					} else {
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+					}
+					
+					document.querySelectorAll('#addcol').forEach(data => {
+						if(data.children[0].dataset.name == pages){
+							data.classList.add('active');
+						} else{
+							data.classList.remove('active');
+						}
+					})
 
-            // 초기 렌더링
-            renderEntries();
-
-            // 전체 선택/해제 토글
-            $('#selectAll').on('change', function() {
-                const isChecked = $(this).prop('checked');
-                selectedEntries = isChecked ? entries.map(entry => entry.id) : [];
-                renderEntries();
-                updateDeleteButtonState();
-            });
-
-            // 개별 항목 선택/해제 토글
-            $(document).on('change', '.entry-checkbox', function() {
-                const id = parseInt($(this).data('id'));
-                selectedEntries = $(this).prop('checked')
-                    ? [...selectedEntries, id]
-                    : selectedEntries.filter(entryId => entryId !== id);
-                $('#selectAll').prop('checked', selectedEntries.length === entries.length);
-                updateDeleteButtonState();
-            });
-
-            // 삭제 버튼 상태 업데이트
-            function updateDeleteButtonState() {
-                $('#deleteSelected').prop('disabled', selectedEntries.length === 0);
-            }
-
-            // 선택된 항목 삭제
-            $('#deleteSelected').on('click', function() {
-                entries = entries.filter(entry => !selectedEntries.includes(entry.id));
-                selectedEntries = [];
-                renderEntries();
-                updateDeleteButtonState();
-            });
-
-            // 개별 항목 삭제
-            $(document).on('click', '.delete-entry', function() {
-                const id = parseInt($(this).data('id'));
-                entries = entries.filter(entry => entry.id !== id);
-                selectedEntries = selectedEntries.filter(entryId => entryId !== id);
-                renderEntries();
-                updateDeleteButtonState();
-            });
-
-            // 소모량, 단위, 비고 업데이트
-            $(document).on('change', '.quantity-input, .unit-input, .notes-input', function() {
-                const id = parseInt($(this).data('id'));
-                const field = $(this).hasClass('quantity-input') ? 'quantity' : 
-                              $(this).hasClass('unit-input') ? 'unit' : 'notes';
-                const value = $(this).val();
-                entries = entries.map(entry =>
-                    entry.id === id ? { ...entry, [field]: value } : entry
-                );
-            });
-
-            // 새로운 재료 추가
-            $('#addMaterial').on('click', function() {
-                const newEntry = {
-                    id: nextId++,
-                    code: `OB${String(nextId).padStart(5, '0')}`,
-                    name: '새 재료',
-                    quantity: '',
-                    unit: '',
-                    notes: ''
-                };
-                entries.push(newEntry);
-                renderEntries();
-            });
-
-            // 저장 버튼 (실제 저장 로직은 구현되지 않음)
-            $('#saveButton').on('click', function() {
-                alert('저장 기능이 구현되지 않았습니다.');
-            });
-
-            // 취소 버튼
-            $('#cancelButton').on('click', function() {
-                if (confirm('변경사항을 취소하시겠습니까?')) {
-                    location.reload();
-                }
-            });
-        });
+				})
+				.catch(err => console.log(err));
+				
+				
+				fetch('../search/item', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products,
+						'page': pages
+					})
+				})
+				.then(response => response.json())
+				.then(data => makeItems(data))
+				.catch(err => console.log(err));
+			}
+		}
+		
+		// 품목 검색 테이블 생성
+		function makeItems(data) {
+			$('.modal-body table tbody tr').remove();
+			data.forEach(td => {
+				$('.modal-body table tbody').append(`<tr>
+						<td>
+						<div class="custom-control custom-checkbox mb-5">
+							<input type="checkbox" class="custom-control-input check"
+								id="customCheck${td.itemCode}"> <label
+								class="custom-control-label" for="customCheck${td.itemCode}"></label>
+						</div>
+					</td>
+					<td>${td.itemCode}</td>
+					<td>${td.itemName}</td>
+					<td>${td.unit}</td>
+					<td>${td.standard}</td>
+					<td>${td.purchasePrice}</td>
+				</tr>`)
+			})
+		}
+		// 품목 체크막스 전체 선택
+		$('input.checkAll').click(function(){
+		    if($('input.checkAll').prop("checked")){
+		        $('input.check').prop("checked",true);
+		    }else{
+		    	$('input.check').prop("checked",false); 
+		    }
+		});
+	   /*====================================================================================================================== */ 
     </script>
 </body>
 </html>
