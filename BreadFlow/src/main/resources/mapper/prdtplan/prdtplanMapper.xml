@@ -101,6 +101,16 @@
 	ON p.production_plan_no = d.production_plan_no
 	</select>
 	
+	<!--  -->
+	<select id="selectPrdtList" resultType="PrdtplanVO">
+	SELECT  major
+	        , sub
+	        , product_code
+	        , product_name
+	        , FIND_CD(unit) AS unit
+	FROM product
+	</select>
+	
 	
 	<!-- 생산관리 디테일 특정 id의 progress-situation 갱신 -->
 	<update id="updatedetailForProgress" parameterType="PrdtplanVO">

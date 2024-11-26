@@ -80,10 +80,19 @@ public class PrdtplanController {
 	
 	@PostMapping("updateDetailForProgress")
 	@ResponseBody
-	
 	public int updatedetailForProgress(@RequestBody PrdtplanVO prdtplanVO) {
 		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
 		int result = prdtplanService.updatedetailForProgress(prdtplanVO);
 		return result;
 	}
+	
+	@GetMapping("getProducts")
+	@ResponseBody
+	public List<PrdtplanVO> selectProductList(Model model) {
+		List<PrdtplanVO> list = prdtplanService.selectPrdtList();
+		model.addAttribute("products", list);
+		return list;
+	}
+	
+	
 }

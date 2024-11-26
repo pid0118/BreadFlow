@@ -24,4 +24,7 @@ public interface PrdtplanMapper {
 	// 생산관리 디테일 특정 id의 progress_situation 갱신
 	public int updatedetailForProgress(PrdtplanVO prdtplanVO);
 
+	// 모달창에 쓰일 생산품 리스트 조회
+	public List<PrdtplanVO> selectPrdtList();
+
 }

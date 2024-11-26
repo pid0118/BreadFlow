@@ -16,4 +16,6 @@ public interface PrdtplanService {
 
 	public int updatedetailForProgress(PrdtplanVO prdtplanVO);
 
+	public List<PrdtplanVO> selectPrdtList();
+
 }

@@ -107,19 +107,6 @@
 									id="updLastDate" name="lastDate" readonly>
 							</div>
 						</div>
-						
-						<!-- 
-						<div class="col-md-4 col-sm-12">
-							<div class="form-group">
-								<label>생산업체</label> <input type="text" class="form-control"
-									id="updPrdtComNm">
-							</div>
-						</div>
-						<div class="col-md-2 col-sm-12">
-							<label>&nbsp;</label> <button type="button" id="updPrdtcomSerachBtn" data-toggle="modal" data-target="#Prdtcom-modal"
-								class="form-control btn btn-light"><i class="icon-copy bi bi-search"></i></button>
-						</div>
-						 -->
 						<div class="col-md-6 col-sm-12">
 							<label for="updPrdtComNm">생산업체</label>
 							<div class="input-group mb-3">
@@ -136,19 +123,6 @@
 									id="updProductionCompany" name="productionCompany">
 							</div>
 						</div>
-						<!-- 
-						<div class="col-md-4 col-sm-12">
-							<div class="form-group">
-								<label>납품위치</label> <input type="text" class="form-control"
-									id="updDlvryLocNm">
-							</div>
-						</div>
-						<div class="col-md-2 col-sm-12">
-							<label>&nbsp;</label> <button type="button" id="updDlvrycomSerachBtn" data-toggle="modal" data-target="#dlvryCom-modal"
-								class="form-control btn btn-light"><i class="icon-copy bi bi-search"></i></button>
-						</div>
-						 -->
-						
 						<div class="col-md-6 col-sm-12">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
@@ -196,6 +170,8 @@
 		</div>
 	</div>
 </div>
+
+<button type="button" id="prdtSerachBtn" data-toggle="modal" data-target="#prdt-modal" hidden="hidden">제품모달보기</button>
 
 <!-- 생산 업체검색 모달창 -->
 <div
@@ -358,7 +334,7 @@
 </div>
 <!-- 납품 업체검색 모달창 끝 -->
 
-<button type
+
 
 
 
@@ -587,7 +563,7 @@ $(document).ready( function () {
     
     $('#products').DataTable({		// 제품 모달 테이블
     	info: false,
-    	paging: false,
+    	paging: true,
     	ajax: {
    			url: 'getProducts',
    			type: "GET",
@@ -682,18 +658,39 @@ function dlvryComModalConfirm() {
 //========================================================================
 // [24.11.26] toastGrid 자식테이블 모달 클릭 이벤트 걸기
 let currentTarget = null;
+let prdtNm = "";
+let prdtCd = "";
 
 grid.on('click', function (ev) {
 	console.log(ev.columnName);
 	if (ev.columnName == "productNm" || ev.columnName == "productCode") {
 		currentTarget = ev;
-		console.log("dddddd");
+		$("#prdtSerachBtn").click();
 		
-		$("#prdt-modal").show()
-		$("#prdt-modal").toggleClass("show")
-		$("body").toggleClass("modal-open")
+		let prdtsTblTrs = document.querySelectorAll("#products tr");
+
+		for(let i = 1; i < prdtsTblTrs.length; i++) {
+			prdtsTblTrs[i].addEventListener("click", getPrdtInfo);
+			console.log("ddddd");
+		}
 	}
 })
+
+function getPrdtInfo(e) {
+	console.log(e);
+	
+	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
+	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
+	
+	document.querySelector("#selectedPrdtNm").value = prdtNm;
+	document.querySelector("#selectedPrdtCd").value = prdtCd;
+}
+
+function prdtModalConfirm() {
+	console.log(currentTarget);
+	grid.setValue(currentTarget.rowKey, 'productCode', prdtCd);
+	grid.setValue(currentTarget.rowKey, 'productNm', prdtNm);
+}
 
 
 // 자식테이블 모달 클릭이벤트 끝
