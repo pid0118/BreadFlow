@@ -67,4 +67,23 @@ public class PrdtplanController {
 		System.out.println("\n[PrdtplanController.java] selectPrdtplan - PrdtplanVO: " + pVO + "\n");
 		return pVO;
 	}
+	
+	@GetMapping("selectPrdtplanDetail")
+	@ResponseBody
+	public List<PrdtplanVO> selectPrdtplanDetail(@RequestParam String id) {
+		PrdtplanVO prdtplanVO = new PrdtplanVO();
+		prdtplanVO.setProductionPlanNo(id);
+		
+		List<PrdtplanVO> list = prdtplanService.selectPrdtplanDetailList(prdtplanVO);
+		return list;
+	}
+	
+	@PostMapping("updateDetailForProgress")
+	@ResponseBody
+	
+	public int updatedetailForProgress(@RequestBody PrdtplanVO prdtplanVO) {
+		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
+		int result = prdtplanService.updatedetailForProgress(prdtplanVO);
+		return result;
+	}
 }

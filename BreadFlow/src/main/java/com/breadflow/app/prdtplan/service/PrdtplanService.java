@@ -12,4 +12,8 @@ public interface PrdtplanService {
 
 	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO);
 
+	public List<PrdtplanVO> selectPrdtplanDetailList(PrdtplanVO prdtplanVO);
+
+	public int updatedetailForProgress(PrdtplanVO prdtplanVO);
+
 }

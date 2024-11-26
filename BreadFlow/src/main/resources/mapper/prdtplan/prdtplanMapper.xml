@@ -23,6 +23,16 @@
 	</select>
 	
 	
+	<select id="selectPrdtplanDetailList" parameterType="PrdtplanVO">
+		SELECT  production_detail_no
+		        , product_code
+		        , plan_quantity
+		        , unit
+		        , other
+		FROM    production_plan_detail
+		WHERE   production_plan_no = #{productionPlanNo}
+	</select>
+	
 	<!-- 생산계획(production_plan)단건입력 -->
 	<insert id="insertPrdtplan" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionPlanNo" order="BEFORE">
@@ -90,6 +100,15 @@
 	) d
 	ON p.production_plan_no = d.production_plan_no
 	</select>
+	
+	
+	<!-- 생산관리 디테일 특정 id의 progress-situation 갱신 -->
+	<update id="updatedetailForProgress" parameterType="PrdtplanVO">
+		UPDATE  production_plan_detail
+		SET     progress_situation = 'c3'
+		WHERE   production_plan_no = #{productionPlanNo}
+	</update>
+	
 	
 
 </mapper>

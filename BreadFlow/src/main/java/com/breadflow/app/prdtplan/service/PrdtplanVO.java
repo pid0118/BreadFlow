@@ -23,6 +23,11 @@ public class PrdtplanVO {
 	private String	other;					// 기타사항
 	private String	progressSituation;		// 진행상태
 	
+	//== 제품(product) 테이블 관련 VO ==//
+	private String  major;					// 대분류
+	private String  sub;					// 소분류
+	private String	productName;			// 제품 이름
+	
 	//== 파생되어진 VO ==//
 	private String deliveryLocationNm;		// 납품위치 업체의 이름
 	private String productionCompanyNm;		// 생산업체의 이름

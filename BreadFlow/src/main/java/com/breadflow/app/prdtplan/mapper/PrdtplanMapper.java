@@ -17,5 +17,11 @@ public interface PrdtplanMapper {
 	
 	// 생산관리 단건 조회
 	public PrdtplanVO selectPrdtplan(PrdtplanVO prdtplanVO);
+	
+	// 생산관리 디테일 id에 맞는 여러건 조회
+	public List<PrdtplanVO> selectPrdtplanDetailList(PrdtplanVO prdtplanVO);
+
+	// 생산관리 디테일 특정 id의 progress_situation 갱신
+	public int updatedetailForProgress(PrdtplanVO prdtplanVO);
 
 }
