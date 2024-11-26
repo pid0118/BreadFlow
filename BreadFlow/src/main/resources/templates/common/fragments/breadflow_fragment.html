@@ -35,9 +35,12 @@
 	</div>
 
 	<script>
+	if (document.querySelector("#logoutBtn")){
 		document.querySelector("#logoutBtn").addEventListener('click', function(event) {
 			window.location.href = "logout.do";
 		});
+	}
+		
 	</script>
 
 
@@ -380,9 +383,9 @@
 									><span class="mtext">매출 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">매출 내역 조회</a></li>
+									<li><a th:href="@{/daySale}">매출 내역 조회</a></li>
 									<li><a th:href="@{/welcome}">매출 상세 내역 조회</a></li>
-									<li><a th:href="@{/welcome}">POS</a></li>
+									<li><a th:href="@{/pos}">POS</a></li>
 								</ul>
 							</li>
 					    </ul>

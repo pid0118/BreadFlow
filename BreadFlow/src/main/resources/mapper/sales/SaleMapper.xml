@@ -2,24 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.sale.mapper.SaleMapper">
 	<select id="selectSaleList" resultType="SaleVO">
+	with sa as  ( SELECT company_name, SUM(day_sales) AS total FROM sales GROUP BY company_name )
 		SELECT 
 		    co.region,
-		    sa.company_name,
+		    sa.company_no,
 		    co.brn,
 		    mem.name,
 		    mem.contract_date,
-		    SUM(sa.day_sales) AS total,
+		    total,
 		    mem.other
+		    
 		FROM member mem
 		JOIN company co ON mem.company_no = co.company_no
-		JOIN sales sa ON co.company_name = sa.company_name
-		GROUP BY 
-		    co.region,
-		    sa.company_name,
-		    co.brn,
-		    mem.name,
-		    mem.contract_date,
-		    mem.other
+		JOIN sa ON co.company_no = sa.company_no
+		WHERE sa.company_name = 'test'
+
 		ORDER BY total
 	</select>
 	
@@ -40,31 +37,20 @@
 										,product_code
 										,sale_price
 										,quantity
-										,company_name
-										,last)
+										,company_no
+										,last
+										,sales_date)
 		VALUES ('PA' || (SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
 		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})
 		        ,#{salePrice}
 		        ,#{quantity}
 		        ,'test'
-		        ,'주문')
+		        ,'주문'
+		        , sysdate)
 	</insert>
 	
 	<insert id="insertSales" parameterType="PosVO">
-		INSERT INTO sales(sales_no
-                 ,sales_date
-                 ,total_quantity
-                 ,day_sales
-                 ,company_name)
-		VALUES('MA' || GETSEQ('sales','sales_no')
-		       ,current_date
-		       ,(SELECT SUM(sale_price)*SUM(quantity) AS day_sales
-		        FROM sale_detail_history
-		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
-		      ,(SELECT SUM(quantity) AS total
-		        FROM sale_detail_history
-		        WHERE SUBSTR(sale_no,4,8) = TO_CHAR(sysdate, 'yyyyMMdd'))
-		      ,'test')
+		CALL SALES_PROD()
 	</insert>
 	
 	<select id="selectSales" resultType="PosVO" parameterType="String">
@@ -73,4 +59,22 @@
 		FROM sales
 		WHERE TO_CHAR(sales_date, 'yyyyMM') = #{salesDate}
 	</select>
+	
+	<select id="selectDetailSale" resultType="PosVO">
+		SELECT NVL(PRO_NAME(product_code), '삭제예정제품') AS productCode
+			  , quantity
+			  , sale_price
+			  , TO_CHAR(sales_date, 'yy') || '년' || TO_CHAR(sales_date, 'MM') || '월' || TO_CHAR(sales_date, 'dd') || '일 ' || TO_CHAR(sales_date, 'HH') || '시' || TO_CHAR(sales_date, 'mi') || '분' || TO_CHAR(sales_date, 'ss') AS saleDate
+		FROM sale_detail_history
+		WHERE last = '주문'
+	</select>
+	
+	<select id="selectSaleChart" resultType="PosVO">
+		SELECT TO_CHAR(sales_date, 'yyyyMMdd') AS saleDate
+		      ,total_quantity
+		      ,day_sales
+		FROM  sales
+	</select>
+	
+
 </mapper>

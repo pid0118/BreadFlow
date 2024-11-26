@@ -15,6 +15,7 @@
 							<table class="table table-striped hover multiple-select-row nowrap" id="compTble">
 								<thead>
 									<tr>
+										<th></th>
 										<th class="table-plus">업체구분</th>
 										<th class="datatable-nosort">업체명</th>
 										<th class="datatable-nosort">업체주소</th>
@@ -39,7 +40,7 @@
 		$(document).ready(function() {
 			
         loadCompanyList();
-        
+
         function initDataTable() {
 			if ($.fn.dataTable.isDataTable('#compTble')) {
 	            $('#compTble').DataTable().destroy();
@@ -66,11 +67,13 @@
 	    
 	    var selectedCompany = null;
 	    
-	    $("#companyTableBody").on('click', 'tr', function() {
-			$("#companyTableBody tr").removeClass('selected');
-			$(this).addClass('selected');
-		});
-
+	    $("#compTble").on('click', '.form-check-input', function() {
+            $("#compTble .form-check-input").prop('checked', false);
+            $(this).prop('checked', true);
+            $("#compTble tbody tr").removeClass('selected');
+            $(this).closest('tr').addClass('selected');
+        });
+	    
 	    function filterCompanyTable(keyword) {
 	        $("#companyTableBody tr").each(function() {
 	            var rowText = $(this).text().toLowerCase();
@@ -101,6 +104,11 @@
             tbody.empty();
             data.forEach(function(item) {
                 var row = "<tr>";
+	                row += `<td>
+								<div class="form-check">
+										<input class="form-check-input check" type="checkbox">
+								</div>
+							</td>`
                     row += "<td class='table-plus'>" + item.div + "</td>";
                     row += "<td>" + item.companyName + "</td>";
                     row += "<td>" + item.companyAddress + "</td>";
@@ -110,7 +118,7 @@
         }
 
 	    $("#selectCompanyBtn").click(function() {
-			var selectedCompanyName = $("#companyTableBody .selected").find("td:nth-child(2)").text();
+			var selectedCompanyName = $("#companyTableBody .selected").find("td:nth-child(3)").text();
 	        if (selectedCompanyName) {
 	            console.log(selectedCompanyName);
 	            $("#companyName").val(selectedCompanyName); 
@@ -118,7 +126,7 @@
 				selectedCompany = selectedCompanyName;
 	            $("#coFilterModal").modal('hide');
 	        } else {
-	            alert("회사를 선택하세요.");
+	            alert("업체가 선택되지 않았습니다.");
 	        }
 	    });
 	});

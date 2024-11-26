@@ -34,8 +34,10 @@
 	<div class="parentArea">
 		<div class="insertButtons">
 			<h2>생산 계획 관리</h2>
-			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">날짜 선택</button>
-			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">생산계획 신규 작성</button>
+			<div>
+				<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn" hidden="hideen">날짜 선택</button>
+				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>			
+			</div>
 		</div>
 		<div>
 		
@@ -66,7 +68,8 @@
 									<td id="parentPrdtplanCd">[[ ${pl.productCode} ]]</td>
 									<td id="parentPlanQuantity" >[[ ${pl.planQuantity} ]]</td>
 									<td id="parentPrdtCom">[[ ${pl.productionCompany} ]]</td>
-									<td id="parentProgressSituation" >[[ ${pl.progressSituation} ]]</td>									
+									<td id="parentProgressSituation" 
+										th:text="${pl.progressSituation == 'c1' ? '작성중' : (pl.progressSituation == 'c2' ? '확인' : (pl.progressSituation == 'c3' ? '미확인' : (pl.progressSituation == 'c4' ? '진행중' : '완료')))}"></td>									
 									<td id="parentStartDt" th:text="${#dates.format(pl.startDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentLastDt" th:text="${#dates.format(pl.lastDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentOther">[[ ${pl.other}]] </td>
@@ -177,13 +180,16 @@
 		</div>
 		
 		<div class="detailTableArea">
-		<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
-		<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
-		<!-- 자식 테이블 시작 -->
-		<div id="grid"></div>
-			<!-- 자식 테이블 끝 -->
+			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
+			<!-- 자식 테이블 시작 -->
+			<div id="grid"></div>
+				<!-- 자식 테이블 끝 -->
+			<div style="float: left;">
+				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
+			</div>
 		
-			<div class="updateButtons">
+			<div class="updateButtons" style="float: right;">
 				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
 				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">저장</button>
 			</div>
@@ -299,35 +305,210 @@
 
 
 
+<!-- 제품검색 모달창 -->
+<div
+	class="modal fade bs-example-modal-lg"
+	id="prdt-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					제품 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="products" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>대분류</th>
+							<th>소분류</th>
+							<th>제품코드</th>
+							<th>제품명</th>
+							<th>단위</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 제품명:</b>
+					<input id="selectedPrdtCd" class="form-control" hidden="hidden">
+					<input id="selectedPrdtNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="prdtModalConfirm()">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 납품 업체검색 모달창 끝 -->
+
+<button type
+
+
 
 <script>
 //========================================================================
+// [박진석|241125] 공통변수 
+let mode = 'insert';	// insert => 생산계획 신규작성 모드 / update => 생산계획 수정 모드
+// 변수 끝
+//========================================================================
+
+
+//========================================================================
 // [박진석|241122] 이벤트 걸기
-let udtFormBtn = document.querySelector("#udtFormBtn");			// 저장
-udtFormBtn.addEventListener('click', insertPrdPlanAjax);
+let udtFormBtn = document.querySelector("#udtFormBtn");							// 저장
+udtFormBtn.addEventListener('click', insertOrUpdatePrdPlanAjax);
 
 
-let appendRowBtn = document.querySelector("#childTblNewRow");	// 행 추가
+let appendRowBtn = document.querySelector("#childTblNewRow");					// 행 추가
 appendRowBtn.addEventListener('click', function() {
 	grid.appendRow();
 })
 
-let deleteRowBtn = document.querySelector("#childTblDelRow");	// 행 삭제
+let deleteRowBtn = document.querySelector("#childTblDelRow");					// 행 삭제
 deleteRowBtn.addEventListener('click', function() {
 	grid.removeRow(grid.getFocusedCell().rowKey);
 })
 
-let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");		// 생산업체 검색
+let sharePrdplanBtn = document.querySelector("#sharePrdplanBtn");				// 업체공유
+sharePrdplanBtn.addEventListener('click', updatePrdtplanSituation)
+
+let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
 PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
 
-let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색
+let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색 모달
 DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow)
+
+let newPrdtPlanBtn = document.querySelector("#newPrdtPlanBtn");					// 생산계획 신규 작성 버튼
+newPrdtPlanBtn.addEventListener('click', function() {
+	mode = "insert"
+	$('#updatePrdtplanForm')[0].reset();
+	grid.clear();
+})
 
 // 이벤트 걸기 끝
 // ========================================================================
 
 	
 	
+// ========================================================================
+// [박진석|241122] 부모 데이터 테이블 생성
+$(document).ready( function () {
+    $('#prdtPlan').DataTable({
+	   pageLength: 5,
+	   paging: true,
+       searching: true,
+       ordering: true,
+       info: true,
+       autoWidth: false,
+       language: {
+           lengthMenu: "_MENU_ 개씩 보기",
+           zeroRecords: "데이터가 없습니다.",
+           info: "총 _TOTAL_개의 데이터 중 _START_ - _END_",
+           infoEmpty: "데이터가 없습니다.",
+           search: "검색:",
+           paginate: {
+               first: "처음",
+               last: "마지막",
+               next: "다음",
+               previous: "이전"
+           }
+       }
+    });
+} );
+// 데이터 테이블 생성
+// ========================================================================
+
+	
+	
+// ========================================================================
+// [24.11.25] 부모 테이블 행 클릭 이벤트 걸기
+let accTblTrs = document.querySelectorAll("#prdtPlan tr");
+let prdtplanNo;	
+
+for (let i = 1; i < accTblTrs.length; i++) {
+	accTblTrs[i].addEventListener("click", getTargetInfo);
+}
+
+function getTargetInfo(e) {
+	mode = 'update';
+	grid.clear();
+	prdtplanNo = e.target.parentElement.querySelector('#parentPrdtplanNo').innerText;
+	getPrdtplanInfo(prdtplanNo);
+	getPrdtplanDetailInfo(prdtplanNo);
+}
+// 행 클릭 이벤트 끝
+// ========================================================================
+	
+
+	
+// ========================================================================
+// [24.11.25] 단건조회 AJAX
+function getPrdtplanInfo(no) {
+	$.ajax({
+	    url: "selectPrdtplan?id=" + no,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	        $('#updProductionPlanNo').val(data.productionPlanNo);
+	        $("#updStartDate").val( formatDate(data.startDate) );
+	        $('#updLastDate').val( formatDate(data.lastDate) );
+	        $('#updPrdtComNm').val(data.productionCompanyNm);
+	        $('#updProductionCompany').val(data.productionCompany)
+	        $('#updDlvryLocNm').val(data.deliveryLocationNm)
+	        $('#updDeliveryLocation').val(data.deliveryLocation)
+	        $('#updProgressSituation').val( formatSituation(data.progressSituation))
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+}
+// 단건조회 AJAX 끝
+// ========================================================================
+	
+
+	
+// ========================================================================
+// [박진석|24.11.26] 디테일 단건조회 AJAX
+function getPrdtplanDetailInfo(no) {
+	console.log(no);
+	$.ajax({
+	    url: "selectPrdtplanDetail?id=" + no,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	    	console.log(data);
+	    	grid.appendRows(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+}
+// 디테일 단건조회 AJAX 끝
+// ========================================================================
+	
+	
+		
 // ========================================================================
 // [박진석|241122] 자식 테이블 생성
 var Grid = tui.Grid;
@@ -366,7 +547,7 @@ const grid = new Grid({
 })
 // 테이블 생성 끝
 //========================================================================
-
+	
 	
 	
 //========================================================================
@@ -403,10 +584,29 @@ $(document).ready( function () {
    			{data: "name"},
    		]
     })
+    
+    $('#products').DataTable({		// 제품 모달 테이블
+    	info: false,
+    	paging: false,
+    	ajax: {
+   			url: 'getProducts',
+   			type: "GET",
+   			dataSrc: ''
+   		},
+   		columns:[
+   			{data: "major"},
+   			{data: "sub"},
+   			{data: "productCode"},
+   			{data: "productName"},
+   			{data: "unit"},
+   		]
+    })
 } );
 // 모달창 테이블 끝
 // ========================================================================
 
+	
+	
 // =======================================================
 // [박진석|24.11.25] 생산업체 모달 테이블 행 클릭 시 input출력 및 선택
 function PrdtcomListShow() {
@@ -477,43 +677,69 @@ function dlvryComModalConfirm() {
 // 납품업체 모달 테이블 행 클릭시 input 출력 선택 끝
 // =======================================================	
 	
+
+	
+//========================================================================
+// [24.11.26] toastGrid 자식테이블 모달 클릭 이벤트 걸기
+let currentTarget = null;
+
+grid.on('click', function (ev) {
+	console.log(ev.columnName);
+	if (ev.columnName == "productNm" || ev.columnName == "productCode") {
+		currentTarget = ev;
+		console.log("dddddd");
+		
+		$("#prdt-modal").show()
+		$("#prdt-modal").toggleClass("show")
+		$("body").toggleClass("modal-open")
+	}
+})
+
+
+// 자식테이블 모달 클릭이벤트 끝
+//========================================================================
+		
 	
 
 // ========================================================================
-// [박진석|241122] 생산계획 저장하는 AJAX
-function insertPrdPlanAjax() {
-	let updStartDate = document.querySelector("#updStartDate").value
-	let updLastDate = document.querySelector("#updLastDate").value
-	let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
-	let updProductionCompany = document.querySelector("#updProductionCompany").value
-	
-	if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
-		alert("날짜 또는 업체를 선택했는지 확인하세요.");
-		return false;
+// [박진석|241122] 생산계획 신규/수정 저장하는 AJAX
+function insertOrUpdatePrdPlanAjax() {
+	if(mode == "insert") {		// 신규 작성 모드일 경우
+		let updStartDate = document.querySelector("#updStartDate").value
+		let updLastDate = document.querySelector("#updLastDate").value
+		let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
+		let updProductionCompany = document.querySelector("#updProductionCompany").value
+		
+		if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
+			alert("날짜 또는 업체를 선택했는지 확인하세요.");
+			return false;
+		}
+		
+		if(confirm("생산을 저장 하시겠습니까?")) {
+			$.ajax({
+	           url: "insertPrdtplan.do",
+	           type: "POST",
+	           data:  $('#updatePrdtplanForm').serialize(),
+	           success: function(data){
+	               alert("성공적으로 저장되었습니다.");
+	               console.log(data);
+	               if (data != '')
+	               		insertPrdPlanDetailAjax(data);
+	               location.reload(true);
+	           },
+	           error: function(result){
+	        	   alert("저장에 실패하였습니다.");
+	        	   console.log(result);
+	        	}
+	       });
+		} else {
+			alert("취소하였습니다.");
+		}
+	} else if (mode == "update") {		// 신규작성이 아닌 수정 모드인 경우
+		
 	}
-	
-	if(confirm("생산을 저장 하시겠습니까?")) {
-		$.ajax({
-           url: "insertPrdtplan.do",
-           type: "POST",
-           data:  $('#updatePrdtplanForm').serialize(),
-           success: function(data){
-               alert("성공적으로 저장되었습니다.");
-               console.log(data);
-               if (data != '')
-               	insertPrdPlanDetailAjax(data);
-           },
-           error: function(result){
-        	   alert("저장에 실패하였습니다.");
-        	   console.log(result);
-        	}
-       });
-	} else {
-		alert("취소하였습니다.");
-	}
-	
 }
-// ajax 걸기 끝
+// 저장 ajax 걸기 끝
 // ========================================================================
 
 	
@@ -544,16 +770,91 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
      	   console.log(result);
      	}
 	});
-	
-	
 }	
-	
-	
-	
 // ajax 걸기 끝
 //========================================================================	
-	
 
 	
 	
+//========================================================================	
+// [박진석|241126] 업체 공유(progress_situation Update) AJAX 걸기
+function updatePrdtplanSituation() {
+	if(mode == 'insert') {
+		alert("생산계획을 공유할 행을 선택해주세요.")
+	} else if ($("#updProgressSituation").val() != "작성중") {
+		alert("이미 공유된 생산계획입니다.")
+	} else {
+		if(confirm(`생산계획을 ${ $("#updPrdtComNm").val() } 업체에게 공유하시겠습니까?`)) {
+			jsonData = {
+					productionPlanNo: $("#updProductionPlanNo").val()
+			}
+			
+			$.ajax({
+				url: "updateDetailForProgress",
+		        type: "post",
+		        contentType: "application/json",
+		        data:  JSON.stringify(jsonData),
+		        success: function(data){
+		            alert("성공적으로 저장되었습니다.");
+		            console.log(data);
+		            location.reload(true);
+		        },
+		        error: function(result){
+		     	   alert("저장에 실패하였습니다.");
+		     	   console.log(result);
+		     	}
+			});
+			
+		} else {
+			alert("취소하였습니다.")
+		}
+	}
+}
+// ajax 걸기 끝
+//========================================================================	
+
+	
+	
+//========================================================================	
+// [박진석|241126] 생산상태 변환 함수
+function formatSituation(value) {
+	let result = "";
+	if(value == "c1") {
+		result = "작성중";
+	} else if(value == "c2") {
+		result = "확인";
+	} else if (value == "c3") {
+		result = "미확인";
+	} else if(value == "c4") {
+		result = "진행중";
+	} else {
+		result ="완료";
+	}
+	
+	return result;
+}
+// 생산상태 변환 함수 끝
+//========================================================================	
+	
+	
+	
+// =======================================================	
+// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 11 September 2025 )
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const day = date.getUTCDate(); // UTC 기준 일
+  const month = monthNames[date.getUTCMonth()]; // 월 이름
+  const year = date.getUTCFullYear(); // 연도
+
+  return `${day} ${month} ${year}`;
+}
+
+// 날짜 변환함수 끝
+// =======================================================	
 </script>

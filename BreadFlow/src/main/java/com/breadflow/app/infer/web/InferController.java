@@ -52,7 +52,9 @@ public class InferController {
 	@GetMapping("inferListDetail/{inferNo}")
 	public String inferListDetail(@PathVariable String inferNo, Model model) {
 		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
+		InferAnswerVO answer = inferService.inferAnswerDetail(inferNo);
 		model.addAttribute("infer", list);
+		model.addAttribute("answer", answer);
 		return "infer/detail";
 	}
 	

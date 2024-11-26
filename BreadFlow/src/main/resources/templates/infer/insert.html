@@ -20,22 +20,6 @@
 						<input class="form-control" type="date" name="inferDate" id="inferDate">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
-					<label>처분</label>
-						<div class="form-group">
-							<div class="btn-group btn-group-toggle" data-toggle="buttons">
-								<label class="btn btn-outline-secondary active">
-									<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-								</label>
-								<label class="btn btn-outline-secondary">
-									<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-								</label>
-								<label class="btn btn-outline-secondary">
-									<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-								</label>
-							</div>
-						</div>
-				</div>
 			</div>
 			<div class="pd-20 row">
 				<div class="col-md-6 col-sm-12">
@@ -63,6 +47,11 @@
 			<table class="table stripe hover multiple-select-row nowrap">
 				<thead>
 					<tr>
+						<th>
+							<div class="form-check">
+  								<input class="form-check-input" type="checkbox" id="checkAll">
+							</div>
+						</th>
 						<th class="table-plus">입고 일자</th>
 						<th class="datatable-nosort">품목</th>
 						<th>전체 수량</th>
@@ -131,14 +120,14 @@
 	        	
 	            // 선택된 행 추출
 	            var selectedRows = [];
-	            $("#inOutTable tr.selected").each(function() {
+	            $("#inferTable tr.selected").each(function() {
 		            var row = $(this);
 			        var data = {
-				        inferItem: row.find("td:nth-child(2)").text(),
-				        totalQuantity: row.find("td:nth-child(3)").val(),
-				        inferQuantity: row.find("td:nth-child(4) input").text(),
-				        inferType: row.find("td:nth-child(5)").text(),
-				        instoreNo: row.find("td:nth-child(6)").text(),
+				        inferItem: row.find("td:nth-child(3)").text(),
+				        totalQuantity: row.find("td:nth-child(4)").val(),
+				        inferQuantity: row.find("td:nth-child(5) input").text(),
+				        inferType: row.find("td:nth-child(6)").text(),
+				        instoreNo: row.find("td:nth-child(7)").text(),
 				        confirmLocation: $("#companyName").val()
 			        };
 			        selectedRows.push(data);
@@ -187,6 +176,11 @@
 	        tbody.empty();
 	        data.forEach(function(item) {
 	            var row = "<tr>";
+		            row += `<td>
+								<div class="form-check">
+									<input class="form-check-input check" type="checkbox">
+								</div>
+							</td>`
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                row += "<td>" + item.itemName + "</td>";
 	                row += "<td>" + item.instoreQuantity + "</td>";
@@ -215,7 +209,7 @@
 	    
 	 	// 검색
         function searchData(keyword) {
-            $("#inOutTable tr").each(function() {
+            $("#inferTable tr").each(function() {
                 var rowText = $(this).text().toLowerCase();
                 if (rowText.includes(keyword)) {
                     $(this).show();
@@ -225,9 +219,15 @@
             });
         }
 	 	
-        // 테이블에서 행 클릭 시 선택 처리
-        $("#inferTable").on('click', 'tr', function() {
-            $(this).toggleClass('selected');
+     	// 테이블에서 행 클릭 시 선택 처리
+        $("#inferTable").on('click', '.form-check-input', function() {
+            var row = $(this).closest('tr');
+            
+            if ($(this).prop('checked')) {
+                row.addClass('selected');
+            } else {
+                row.removeClass('selected');
+            }
         });
         
 	</script>

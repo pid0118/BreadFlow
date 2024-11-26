@@ -11,6 +11,7 @@ import com.breadflow.app.inout.service.FilterVO;
 public interface InferMapper {
 	public List<InferHistoryVO> selectInferList(FilterVO filterVO);
 	public List<InferDetailVO> selectInferListDetail(String inferNo);
+	public InferAnswerVO selectInferAnswerDetail(String inferNo);
 	public int insertInferDetail(InferDetailVO inferDetailVO);
 	public int insertInferHistory(InferHistoryVO inferHistoryVO);
 	public int updateInferHistory(InferAnswerVO inferAnswerVO);

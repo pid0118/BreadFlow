@@ -65,4 +65,24 @@ public class InOutServiceImpl implements InOutService {
 	public List<ItemListVO> itemList() {
 		return inOutMapper.selectItemList();
 	}
+
+	@Override
+	public int countInstore(FilterVO filterVO) {
+		return inOutMapper.countInstoreList(filterVO);
+	}
+
+	@Override
+	public int countOutstore(FilterVO filterVO) {
+		return inOutMapper.countOutstoreList(filterVO);
+	}
+
+	@Override
+	public int countOrderInsert(FilterVO filterVO) {
+		return inOutMapper.countOrderListForInsert(filterVO);
+	}
+
+	@Override
+	public int countInstoreInsert(FilterVO filterVO) {
+		return inOutMapper.countInstoreListForInsert(filterVO);
+	}
 }

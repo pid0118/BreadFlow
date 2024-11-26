@@ -45,6 +45,19 @@
 			<if test="unchecked != null and unchecked != ''">
 			AND IH.CONFIRM_WHETHER = #{unchecked}
 			</if>
+			<if test="disposal != null and disposal != ''">
+			AND IA.DISPOSAL_WHETHER = #{disposal}
+			</if>
+			<if test="startDt != null and startDt != ''">
+			<![CDATA[
+			AND IH.INFER_APPLICATION_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 
+			]]>
+			</if>
+			<if test="endDt != null and endDt != ''">
+			<![CDATA[
+			AND IH.INFER_APPLICATION_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+			]]>
+			</if>
 		</if>		    
 		ORDER BY
 		    INFER_NO
@@ -138,12 +151,14 @@
 		        );
 	</insert>
 	<select id="selectInferAnswer" resultType="InferAnswerVO" parameterType="String">
-		SELECT 	DISPOSAL_WHETHER,
-				ANSWER,
-				MANAGER,
-				ANSWERER
-		FROM	INFER_ANSWER
-		WHERE	INFER_NO = #{inferNo}
+		SELECT 	IA.DISPOSAL_WHETHER,
+				IA.ANSWER,
+				IA.MANAGER,
+				IA.ANSWERER,
+				IH.INFER_APPLICATION_DATE,
+				IH.CONFIRM_LOCATION
+		FROM	INFER_ANSWER IA LEFT JOIN INFER_HISTORY IH ON IA.INFER_NO = IH.INFER_NO
+		WHERE	IA.INFER_NO = #{inferNo}
 	</select>
 	<select id="selectCompany" resultType="CompanyVO">
 		SELECT		COMPANY_NO

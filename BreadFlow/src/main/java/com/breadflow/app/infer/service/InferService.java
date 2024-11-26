@@ -10,6 +10,7 @@ public interface InferService {
 	
 	// 본사 외
 	public List<InferDetailVO> inferListDetail(String inferNo);
+	public InferAnswerVO inferAnswerDetail(String inferNo);
 	
 	// 본사 외
 	public int inferInsert(List<InferDetailVO> inferDetailVO); // 입고 내역 선택해서 INSERT
