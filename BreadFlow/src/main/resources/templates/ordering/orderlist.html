@@ -54,9 +54,6 @@
 									</select>
 								</div>
 							</div>
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#coFilterModal" type="button">
-								<button type="button">버튼</button>
-							</a>
 						</div>
 					</div>
 					<div class="table-responsive">
@@ -192,7 +189,7 @@
 	</div>
 </div>		
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>		
-	<script>
+<script>
 	let status = 'd3,d4';
 	let sort = '';
 	let page = 1;
@@ -281,7 +278,7 @@
 		    success : function(result) {
 		        let resultData = JSON.parse(result);
 		        if(resultData.result == true){
-		        	// window.location.href = 'http://localhost:8099/order/list';
+		        	window.location.href = 'http://localhost:8099/order/list';
 		        } else {
 		        	alert("잘못된 접근입니다.");	
 		        }
@@ -393,7 +390,7 @@
 				$('#bd-example-modal-lg textarea').val('');
 			})
 			
-			//
+			// 발주 코드 클릭 이벤트
 			$('table td:first-child .btn-block').on('click', function() {
 				$.ajax('/ordering/detailList?orderingCode=' + $(this).text())
 				.done(result => {

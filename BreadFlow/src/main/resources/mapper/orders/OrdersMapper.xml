@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.orders.mapper.OrdersMapper">
+	<select id="selectOrdersList">
+		SELECT ordering_code
+		       , ordering_date
+		       , delivery_desire_date
+		       , (SELECT company_name
+		         FROM company
+		         WHERE company_no = o.company_no) company_name
+		       , total_price
+		FROM ordering o
+		WHERE approval_whether = 'd1'
+	</select>
+	
+	<select id="selectOrdersDetailList">
+		SELECT od.ordering_detail_code
+		       , NVL(p.product_name, i.ingredient_name) item_name
+		       , NVL(p.amount || FIND_CD(p.unit), i.amount || FIND_CD(i.unit)) unit
+		       , NVL(p.standard, i.standard) standard
+		       , od.quantity
+		FROM ordering o LEFT JOIN ordering_detail od 
+		ON o.ordering_code = od.ordering_code 
+		LEFT JOIN product p 
+		ON od.ordering_product = p.product_code
+		LEFT JOIN ingredient i
+		ON od.ordering_ingredient = i.ingredient_code
+		WHERE approval_whether = 'd1'
+		AND o.ordering_code = #{code}
+	</select>
+
+</mapper>

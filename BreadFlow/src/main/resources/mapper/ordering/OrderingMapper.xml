@@ -69,8 +69,8 @@
 			SELECT 'BW'|| GETSEQ('ordering', 'orderform_no')
 			FROM dual
 		</selectKey>
-		INSERT INTO ordering (ordering_code, ordering_date, ordering_request_manager, total_price, approval_whether, orderform_no, delivery_desire_date)
-		VALUES (#{code}, sysdate, #{orderingVO.orderingRequestManager}, #{orderingVO.totalPrice}, 'd3', #{orderformNo}, #{orderingVO.deliveryDesireDate})
+		INSERT INTO ordering (ordering_code, ordering_date, ordering_request_manager, total_price, approval_whether, orderform_no, delivery_desire_date, company_no)
+		VALUES (#{code}, sysdate, #{orderingVO.orderingRequestManager}, #{orderingVO.totalPrice}, 'd3', #{orderformNo}, #{orderingVO.deliveryDesireDate}, #{orderingVO.companyNo})
 	</insert>
 	
 	<insert id="insertOrderingDetail">
@@ -99,10 +99,8 @@
 		CALL ordercancel_prod(#{no}, #{reason}, #{result, mode = OUT, jdbcType=VARCHAR})
 	</update>
 	
-	<update id="updateOrderingAccept">
-		UPDATE ordering
-		SET approval_whether = 'd1'
-		WHERE ordering_code = #{orderingCode}
+	<update id="updateOrderingAccept" statementType="CALLABLE">
+		CALL orderaccept_prod(#{orderingCode}, #{result, mode = OUT, jdbcType=VARCHAR})
 	</update>
 	
 	<select id="selectOrderingDetailList">
