@@ -1,132 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{common/layouts/breadflow_layout}"
-      layout:fragment="Content">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
 <head>
-    <meta charset="UTF-8">
-    <title>BOM등록</title>
-    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-    <style>
-        .container {
-            display: flex;
-            padding: 20px;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .page-title {
-            font-size: 24px;
-            margin: 40px 0;
-            padding-left: 20px;
-        }
-        .image-section {
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-        .image-placeholder {
-            width: 300px;
-            height: 300px;
-            background-color: #E6E9FF;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .product-name-input {
-            width: 200px;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
-            margin-top: 10px;
-        }
-        .grid-section {
-            flex: 1;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            min-height: 500px;
-        }
-        .grid-header {
-		    display: flex;
-		    justify-content: space-between; /* 좌우 정렬 */
-		    margin-bottom: 10px;
-		}
-		
-		.grid-header-right {
-		    display: flex;
-		    gap: 10px; /* 버튼 간격 */
-		    margin-left: auto;
-		}
-        .button-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .btn {
-            padding: 6px 16px;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-primary {
-            background-color: #0052CC;
-            color: white;
-            border: none;
-        }
-        .btn-secondary {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            color: #333;
-        }
-        .tui-pagination {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-	    .btn-danger {
-	   		background-color: #ff4d4d;
-	   		color: white;
-	   		border: none;
-		}
-    </style>
+<meta charset="UTF-8">
+<title>BOM등록</title>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+	<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+	<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+<style>
+.container {
+	display: flex;
+	padding: 20px;
+	gap: 20px;
+	max-width: 1400px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.page-title {
+	font-size: 24px;
+	margin: 40px 0;
+	padding-left: 20px;
+}
+
+.image-section {
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+}
+
+.image-placeholder {
+	width: 300px;
+	height: 300px;
+	background-color: #E6E9FF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.product-name-input {
+	width: 200px;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	text-align: center;
+	margin-top: 10px;
+}
+
+.grid-section {
+	flex: 1;
+	background: white;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	min-height: 500px;
+}
+
+.grid-header {
+	display: flex;
+	justify-content: space-between; /* 좌우 정렬 */
+	margin-bottom: 10px;
+}
+
+.grid-header-right {
+	display: flex;
+	gap: 10px; /* 버튼 간격 */
+	margin-left: auto;
+}
+
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.btn {
+	padding: 6px 16px;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.btn-primary {
+	background-color: #0052CC;
+	color: white;
+	border: none;
+}
+
+.btn-secondary {
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	color: #333;
+}
+
+.tui-pagination {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+}
+
+.btn-danger {
+	background-color: #ff4d4d;
+	color: white;
+	border: none;
+}
+</style>
 </head>
 <body>
-    <h2 class="page-title">BOM등록</h2>
-    
-    <div class="container">
-        <div class="image-section">
-            <div class="image-placeholder" id="imagePreview">
-            	<img th:src="'/imgs/' + ${product.productImage}" id="img">
-            </div>
-            <input type="text" class="product-name-input" th:value="${product.productName}" readonly>
-        </div>
-        
-        <div class="grid-section">
-            <div class="grid-header">
-   				<div class="grid-header-right">
-        			<button class="btn btn-primary" data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
-        			<button id="deleteMaterial" class="btn btn-danger">삭제</button>
-    			</div>
+	<h2 class="page-title">BOM등록</h2>
+
+	<div class="container">
+		<div class="image-section">
+			<div class="image-placeholder" id="imagePreview">
+				<img th:src="'/imgs/' + ${product.productImage}" id="img">
 			</div>
-            <div id="grid"></div>
-            <div class="tui-pagination" id="pagination"></div>
-            <div class="button-container">
-                <button id="saveButton" class="btn btn-primary">저장</button>
-                <button id="cancelButton" class="btn btn-secondary">취소</button>
-            </div>
-        </div>
-    </div>
+			<input type="text" class="product-name-input"
+				th:value="${product.productName}" readonly>
+		</div>
+
+		<div class="grid-section">
+			<div class="grid-header">
+				<div class="grid-header-right">
+					<button class="btn btn-primary" data-toggle="modal"
+						data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
+					<button id="deleteMaterial" class="btn btn-danger">삭제</button>
+				</div>
+			</div>
+			<div id="grid"></div>
+			<div class="tui-pagination" id="pagination"></div>
+			<div class="button-container">
+				<button id="saveButton" class="btn btn-primary">저장</button>
+				<button id="cancelButton" class="btn btn-secondary"
+					th:onclick="|location.href='@{/bomProductList}'|">취소</button>
+			</div>
+		</div>
+	</div>
 	<!-- 원재료 추가 모달창 -->
 	<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
 		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -196,7 +214,7 @@
 	</div>
 
 	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-    <script>
+	<script>
 	    $(document).ready(function () {
 	    	// 이미지 미리보기 기능
             $('#imagePreview').click(function() {
@@ -244,13 +262,13 @@
 	            pageOptions: {
 	                useClient: true,
 	                perPage: 5
-	            },
+	            }, 
 	            columns: [
-	                { header: '원재료 코드', name: 'code', width: 150, align: 'center' },
-	                { header: '제품명', name: 'name', width: 200 },
-	                { header: '소모량', name: 'quantity', width: 150, editor: 'text' },
+	                { header: '원재료 코드', name: 'ingredientCode', width: 150, align: 'center' },
+	                { header: '재료명', name: 'ingredientName', width: 200 },
+	                { header: '소모량', name: 'consumption', width: 150, editor: 'text' },
 	                { header: '단위', name: 'unit', width: 150, editor: 'text' },
-	                { header: '비고', name: 'notes', editor: 'text' }
+	                { header: '비고', name: 'note', editor: 'text' }
 	            ]
 	        });
 	
@@ -268,25 +286,25 @@
 			
 	        // 삭제 버튼
 	        $('#deleteMaterial').on('click', function () {
-		    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
-		    if (selectedRows.length > 0) {
-		        // 확인 메시지를 추가해 사용자 확인 요청
-		        if (confirm(`${selectedRows.length}개의 항목을 삭제하시겠습니까?`)) {
-		            selectedRows.forEach(row => grid.removeRow(row.rowKey)); // 체크된 행 삭제
-		            alert(`${selectedRows.length}개의 항목이 삭제되었습니다.`);
-		        }
-		    } else {
-		        // 체크된 항목이 없을 경우
-		        alert('삭제할 항목을 선택해주세요.');
-		    }
-		});
+			    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
+			    if (selectedRows.length > 0) {
+			        // 확인 메시지를 추가해 사용자 확인 요청
+			        if (confirm(`${selectedRows.length}개의 항목을 삭제하시겠습니까?`)) {
+			            selectedRows.forEach(row => grid.removeRow(row.rowKey)); // 체크된 행 삭제
+			            alert(`${selectedRows.length}개의 항목이 삭제되었습니다.`);
+			        }
+			    } else {
+			        // 체크된 항목이 없을 경우
+			        alert('삭제할 항목을 선택해주세요.');
+			    }
+			});
 	
-	        // 저장 버튼
-	        $('#saveButton').on('click', function () {
-	            const updatedData = grid.getData();
-	            console.log('저장된 데이터:', updatedData);
-	            alert('저장되었습니다.');
-	        });
+			// 저장 버튼
+		    $('#saveButton').on('click', function () {
+		         const updatedData = grid.getData();
+		         console.log('저장된 데이터:', updatedData);
+		         alert('저장되었습니다.');
+		    });
 	
 	        // 취소 버튼
 	        $('#cancelButton').on('click', function () {
@@ -294,6 +312,33 @@
 	                location.reload();
 	            }
 	        });
+	        
+	     	// 품목 추가 (발주 신청 테이블)
+			itemAdd.addEventListener('click', function() {
+				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
+				//check 된것만큼 반복
+				checktd.forEach(td => {
+					//데이터 읽기
+					let datas = td.closest('tr').querySelectorAll('td');
+					const ingredientName = datas[2].innerText
+					const ingredientCode = datas[1].innerText
+					const unit = datas[3].innerText
+					
+					let checktable = true; // 품목코드 중복 여부
+					//grid에 있는지 중복체크 필요
+					grid.getData().forEach(ele => {
+						if(ele.ingredientCode == ingredientCode){
+							checktable = false;
+						}
+					})
+					// grid에 추가
+					if(checktable == true){
+						grid.appendRow(  {ingredientName, ingredientCode, unit} )
+					}	
+				})
+				
+			})
+	        
 	    });
 	    
 	   /*=====================================================모달 script================================================================= */ 
@@ -331,18 +376,16 @@
 			$('.custom-select2.second').append(element);
 		}
 		
-		// 품목 추가 (발주 신청 테이블)
-		itemAdd.addEventListener('click', function() {
-			let checktd = document.querySelectorAll('table .custom-checkbox input.check');
+		/* 	let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
 			let checkbool = false; // 체크박스 여부
 			let checktable = true; // 품목코드 중복 여부
 			let element = '';
 			checktd.forEach(td => {
-				if(td.checked == true){
+			
 					checkbool = true;
 					checktable = true;
-					element += '<tr>';
-					let datas = td.closest('tr').querySelectorAll('td');
+					//element += '<tr>';
+					//let datas = td.closest('tr').querySelectorAll('td');
 					document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
 						if(ele.innerText == datas[1].innerText){
 							checktable = false;
@@ -356,8 +399,9 @@
 						element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
 					}
 					
-				}
+				
 			})
+			
 			if(checktable == false || checkbool == false){
 				event.stopPropagation();
 				if(checktable == false){
@@ -374,8 +418,8 @@
 						<td></td>
 					</tr>`);
 				itemSum();
-			}
-		})
+			} */
+		
 		
 		// 페이징 버튼 이벤트
 		document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
@@ -525,6 +569,6 @@
 		});
 	   /*======================================================modal end================================================================ */ 
     </script>
-    
+
 </body>
 </html>
