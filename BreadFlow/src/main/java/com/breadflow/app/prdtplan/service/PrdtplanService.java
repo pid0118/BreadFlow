@@ -18,4 +18,12 @@ public interface PrdtplanService {
 
 	public List<PrdtplanVO> selectPrdtList();
 
+	public List<PrdtplanVO> selectPrdtplanListForCom(String companyNo);
+
+	public int updateDetailForProgressToC4(PrdtplanVO prdtplanVO);
+
+	public int updateDetailForProgressToC5(PrdtplanVO prdtplanVO);
+
+	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list);
+
 }

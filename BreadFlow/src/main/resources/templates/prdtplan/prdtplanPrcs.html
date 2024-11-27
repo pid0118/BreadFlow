@@ -52,9 +52,7 @@
 								<th>생산계획 고유번호</th>
 								<th>제품명</th>
 								<th>계획량</th>
-								<th>공유업체</th>
 								<th>진행여부</th>
-								<th>시작일</th>
 								<th>마감일</th>
 								<th>기타사항</th>
 
@@ -67,10 +65,8 @@
 									<td id="parentPrdtplanNo">[[ ${pl.productionPlanNo} ]]</td>
 									<td id="parentPrdtplanCd">[[ ${pl.productCode} ]]</td>
 									<td id="parentPlanQuantity" >[[ ${pl.planQuantity} ]]</td>
-									<td id="parentPrdtCom">[[ ${pl.productionCompany} ]]</td>
 									<td id="parentProgressSituation" 
 										th:text="${pl.progressSituation == 'c1' ? '작성중' : (pl.progressSituation == 'c2' ? '확인' : (pl.progressSituation == 'c3' ? '미확인' : (pl.progressSituation == 'c4' ? '진행중' : '완료')))}"></td>									
-									<td id="parentStartDt" th:text="${#dates.format(pl.startDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentLastDt" th:text="${#dates.format(pl.lastDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentOther">[[ ${pl.other}]] </td>
 								</tr>
@@ -89,25 +85,25 @@
 			<div class="updateAccounts">
 				<form id="updatePrdtplanForm" method="post">
 					<div class="row">
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
-								<label>생산계획 고유번호</label> <input type="text" class="form-control"
+								<label>생산계획 고유번호h</label> <input type="text" class="form-control"
 									id="updProductionPlanNo" name="productionPlanNo" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-12 col-sm-12">
 							<div class="form-group">
 								<label>시작일자</label> <input type="text" class="form-control date-picker" 
 									id="updStartDate" name="startDate" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-12 col-sm-12">
 							<div class="form-group">
 								<label>마감일자</label> <input type="text" class="form-control date-picker"  
 									id="updLastDate" name="lastDate" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<label for="updPrdtComNm">생산업체</label>
 							<div class="input-group mb-3">
 							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -120,10 +116,10 @@
 						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>생산업체코드h</label> <input type="text" class="form-control"
-									id="updProductionCompany" name="productionCompany">
+									id="updProductionCompany" name="productionCompany" th:value="${session.companyNo}">
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-12 col-sm-12">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
 							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -140,7 +136,7 @@
 									id="updDeliveryLocation" name="deliveryLocation">
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-12 col-sm-12">
 							<div class="form-group">
 								<label>생산상태</label> <input type="text" class="form-control"
 									id="updProgressSituation" readonly>
@@ -150,7 +146,11 @@
 				</form>
 			</div>
 		<!-- 상세보기 폼 끝 -->
-		
+		<div class="updateButtons" style="float: left;">
+				<button type="button" class="btn btn-primary btn-lg" id="planProgressBtn">진행 처리</button>
+				<button type="button" class="btn btn-primary btn-lg" id="planCompleteBtn">완료 처리</button>
+				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn">취소 처리</button>
+			</div>
 		</div>
 		
 		<div class="detailTableArea">
@@ -159,7 +159,7 @@
 			<!-- 자식 테이블 시작 -->
 			<div id="grid"></div>
 				<!-- 자식 테이블 끝 -->
-			<div style="float: left;">
+			<div style="float: left;" hidden="hidden">
 				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
 			</div>
 		
@@ -335,17 +335,15 @@
 </div>
 <!-- 납품 업체검색 모달창 끝 -->
 
-
-
-
-
 <script>
 //========================================================================
 // [박진석|241125] 공통변수 
+const currentComNo = $("#updProductionCompany").val(); 	// 현재 접속중인 제조공장 코드
 let mode = 'insert';	// insert => 생산계획 신규작성 모드 / update => 생산계획 수정 모드
 // 변수 끝
 //========================================================================
 
+	
 
 //========================================================================
 // [박진석|241122] 이벤트 걸기
@@ -363,8 +361,14 @@ deleteRowBtn.addEventListener('click', function() {
 	grid.removeRow(grid.getFocusedCell().rowKey);
 })
 
-let sharePrdplanBtn = document.querySelector("#sharePrdplanBtn");				// 업체공유
-sharePrdplanBtn.addEventListener('click', updatePrdtplanSituation)
+let planProgressBtn = document.querySelector("#planProgressBtn");				// 진행 처리
+planProgressBtn.addEventListener('click', updatePrdtplanSituProgress);
+
+let planCompleteBtn = document.querySelector("#planCompleteBtn");				// 완료 처리
+planCompleteBtn.addEventListener('click', updatePrdtplanSituComplete);
+
+let planCancelBtn = document.querySelector("#planCancelBtn");					// 취소 처리
+//planCancelBtn.addEventListener('click', updatePrdtplanSituCancel);
 
 let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
 PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
@@ -673,7 +677,6 @@ grid.on('click', function (ev) {
 
 		for(let i = 1; i < prdtsTblTrs.length; i++) {
 			prdtsTblTrs[i].addEventListener("click", getPrdtInfo);
-			console.log("ddddd");
 		}
 	}
 })
@@ -725,7 +728,7 @@ function insertOrUpdatePrdPlanAjax() {
 	               alert("성공적으로 저장되었습니다.");
 	               console.log(data);
 	               if (data != '')
-	               		insertPrdPlanDetailAjax(data);
+	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장
 	               location.reload(true);
 	           },
 	           error: function(result){
@@ -758,7 +761,7 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 	
 	
 	$.ajax({
-		url: "insertPrdtplanDetails.do",
+		url: "insertPrdtplanDetailsForSelf",
         type: "post",
         contentType: "application/json",
         data:  JSON.stringify(jsonData),
@@ -778,20 +781,59 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 	
 	
 //========================================================================	
-// [박진석|241126] 업체 공유(progress_situation Update) AJAX 걸기
-function updatePrdtplanSituation() {
+// [박진석|241126] 진행 처리(progress_situation Update -> c4) AJAX 걸기
+function updatePrdtplanSituProgress() {
 	if(mode == 'insert') {
-		alert("생산계획을 공유할 행을 선택해주세요.")
-	} else if ($("#updProgressSituation").val() != "작성중") {
-		alert("이미 공유된 생산계획입니다.")
+		alert("생산계획을 진행할 행을 선택해주세요.")
+	} else if ($("#updProgressSituation").val() != "미확인") {
+		alert("이미 진행중이거나 완료된 생산계획입니다.")
 	} else {
-		if(confirm(`생산계획을 ${ $("#updPrdtComNm").val() } 업체에게 공유하시겠습니까?`)) {
+		if(confirm('생산계획을 진행하시겠습니까?')) {
 			jsonData = {
 					productionPlanNo: $("#updProductionPlanNo").val()
 			}
 			
 			$.ajax({
-				url: "updateDetailForProgress",
+				url: "updateDetailForProgressToC4",
+		        type: "post",
+		        contentType: "application/json",
+		        data:  JSON.stringify(jsonData),
+		        success: function(data){
+		            alert("성공적으로 저장되었습니다.");
+		            console.log(data);
+		            location.reload(true);
+		        },
+		        error: function(result){
+		     	   alert("저장에 실패하였습니다.");
+		     	   console.log(result);
+		     	}
+			});
+			
+		} else {
+			alert("취소하였습니다.")
+		}
+	}
+}
+// ajax 걸기 끝
+//========================================================================	
+	
+	
+	
+//========================================================================	
+// [박진석|241126] 진행 처리(progress_situation Update -> c5) AJAX 걸기
+function updatePrdtplanSituComplete() {
+	if(mode == 'insert') {
+		alert("생산계획을 진행할 행을 선택해주세요.")
+	} else if ($("#updProgressSituation").val() != "진행중") {
+		alert("생산상태가 '진행중'인 계획만 완료처리를 할 수 있습니다.")
+	} else {
+		if(confirm('생산계획을 완료 처리하시겠습니까?')) {
+			jsonData = {
+					productionPlanNo: $("#updProductionPlanNo").val()
+			}
+			
+			$.ajax({
+				url: "updateDetailForProgressToC5",
 		        type: "post",
 		        contentType: "application/json",
 		        data:  JSON.stringify(jsonData),

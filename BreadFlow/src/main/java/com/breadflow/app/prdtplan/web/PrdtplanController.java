@@ -95,4 +95,38 @@ public class PrdtplanController {
 	}
 	
 	
+	//== 생산관리계획(제조공장) 페이지에서 사용되는 컨트롤러 ==//
+	
+	@GetMapping("prdtplanPrcs")
+	public String prdtplanPrcs(Model model, HttpSession session) {
+		String CompanyNo = (String) session.getAttribute("companyNo");
+		List<PrdtplanVO> list = prdtplanService.selectPrdtplanListForCom(CompanyNo);
+		System.out.println("\n[PrdtplanController.java] prdtplanPrcs - CompanyNo: " + CompanyNo + "\n");
+		model.addAttribute("plans", list);
+		return "prdtplan/prdtplanPrcs";
+	}
+	
+	@PostMapping("updateDetailForProgressToC4")
+	@ResponseBody
+	public int updateDetailForProgressToC4(@RequestBody PrdtplanVO prdtplanVO) {
+		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
+		int result = prdtplanService.updateDetailForProgressToC4(prdtplanVO);
+		return result;
+	}
+	
+	@PostMapping("updateDetailForProgressToC5")
+	@ResponseBody
+	public int updateDetailForProgressToC5(@RequestBody PrdtplanVO prdtplanVO) {
+		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
+		int result = prdtplanService.updateDetailForProgressToC5(prdtplanVO);
+		return result;
+	}
+	
+	@PostMapping("insertPrdtplanDetailsForSelf")
+	@ResponseBody
+	public int insertPrdtplanDetailsForSelf(@RequestBody List<PrdtplanVO> list) {
+		System.out.println("\n[PrdtplanController.java] insertPrdtplanDetails.do - prdtplanVO: " + list + "\n");
+		int result = prdtplanService.insertPrdtplanDetailsForSelf(list);
+		return result;
+	}
 }

@@ -25,11 +25,14 @@
 	
 	<select id="selectPrdtplanDetailList" parameterType="PrdtplanVO">
 		SELECT  production_detail_no
-		        , product_code
-		        , plan_quantity
-		        , unit
-		        , other
-		FROM    production_plan_detail
+		        , d.product_code
+		        , ( SELECT  product_name
+		            FROM    product
+		            WHERE   product_code = d.product_code) AS product_name
+		        , d.plan_quantity
+		        , d.unit
+		        , d.other
+		FROM    production_plan_detail d
 		WHERE   production_plan_no = #{productionPlanNo}
 	</select>
 	
@@ -60,7 +63,7 @@
 	<!-- 생산계획 상세(production_plan_detail) 단건 여러개 입력 -->
 	<insert id="insertPrdtplanDetail" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionDetailNo" order="BEFORE">
-		    SELECT  'SPD' || PLANSEQ('production_plan_detail','production_detail_no') AS production_detail_no
+		    SELECT  'SP' || PLANSEQ('production_plan_detail','production_detail_no') AS production_detail_no
 			FROM    dual
 	    </selectKey>
 	    
@@ -101,7 +104,7 @@
 	ON p.production_plan_no = d.production_plan_no
 	</select>
 	
-	<!--  -->
+	<!-- 제품 모달 조회 -->
 	<select id="selectPrdtList" resultType="PrdtplanVO">
 	SELECT  major
 	        , sub
@@ -112,7 +115,7 @@
 	</select>
 	
 	
-	<!-- 생산관리 디테일 특정 id의 progress-situation 갱신 -->
+	<!-- 생산관리 디테일 특정 id의 progress-situation 갱신 ('미확인') -->
 	<update id="updatedetailForProgress" parameterType="PrdtplanVO">
 		UPDATE  production_plan_detail
 		SET     progress_situation = 'c3'
@@ -120,5 +123,62 @@
 	</update>
 	
 	
+	<!-- ==== 생산관리(제조공장) 페이지에서 사용되는 매퍼 ==== -->
+	<!--  -->
+	<select id="selectPrdtplanListForCom" parameterType="String" resultType="PrdtplanVO">
+		SELECT 	*
+		FROM 	production_plan p
+			JOIN (
+			    SELECT d.production_plan_no, d.production_detail_no, d.product_code, d.plan_quantity, d.unit, d.other, d.progress_situation
+			    FROM (
+			        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.production_plan_no ORDER BY d.production_detail_no ASC) AS rn
+			        FROM production_plan_detail d
+			    ) d
+			    WHERE d.rn = 1
+			) d
+			ON p.production_plan_no = d.production_plan_no
+		WHERE production_company = #{companyNo}
+		  AND progress_situation != 'c1'
+	</select>
+	
+	<update id="updateDetailForProgressToC4" parameterType="PrdtplanVO">
+		UPDATE  production_plan_detail
+		SET     progress_situation = 'c4'
+		WHERE   production_plan_no = #{productionPlanNo}
+	</update>
+	
+	<update id="updateDetailForProgressToC5" parameterType="PrdtplanVO">
+		UPDATE  production_plan_detail
+		SET     progress_situation = 'c5'
+		WHERE   production_plan_no = #{productionPlanNo}
+	</update>
+	
+	<!-- 생산계획 상세(production_plan_detail) 단건 여러개 입력 -->
+	<insert id="insertPrdtplanDetailsForSelf" parameterType="PrdtplanVO">
+		<selectKey resultType="string" keyProperty="productionDetailNo" order="BEFORE">
+		    SELECT  'SP' || PLANSEQ('production_plan_detail','production_detail_no') AS production_detail_no
+			FROM    dual
+	    </selectKey>
+	    
+	    INSERT INTO production_plan_detail
+	    (
+	    	production_detail_no
+	    	, product_code
+	    	, plan_quantity
+	    	, unit
+	    	, other
+	    	, progress_situation
+	    	, production_plan_no
+	    ) VALUES (
+	    	#{productionDetailNo}
+	    	, #{productCode}
+	    	, #{planQuantity}
+	    	, #{unit}
+	    	, #{other}
+	    	, 'c2'
+	    	, #{productionPlanNo}
+	    )
+    
+	</insert>
 
 </mapper>

@@ -12,7 +12,7 @@ import com.breadflow.app.account.service.Encryptor;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	private final Encryptor encryptor;	// 암호화하는 JBcrypt 가져옴
+	//private final Encryptor encryptor;	// 암호화하는 JBcrypt 가져옴
 	private AccountMapper accountMapper;
 	
 	public AccountServiceImpl(AccountMapper accountMapper) {
