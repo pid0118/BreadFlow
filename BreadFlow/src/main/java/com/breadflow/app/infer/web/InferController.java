@@ -1,7 +1,9 @@
 package com.breadflow.app.infer.web;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.infer.service.InferAnswerVO;
 import com.breadflow.app.infer.service.InferDetailVO;
-import com.breadflow.app.infer.service.InferHistoryVO;
 import com.breadflow.app.infer.service.InferService;
 import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
@@ -44,8 +45,12 @@ public class InferController {
 	// 불량 내역 반환
 	@GetMapping("infer/getInferList")
 	@ResponseBody
-	public List<InferHistoryVO> getInferList(FilterVO filterVO) {
-		return inferService.inferList(filterVO);
+	public Map<String, Object> getInferList(FilterVO filterVO) {
+		Map<String, Object> inferMap = new HashMap<String, Object>();
+		Integer countInfer = inferService.inferListCount(filterVO);
+		inferMap.put("count", countInfer);
+		inferMap.put("list", inferService.inferList(filterVO));
+		return inferMap;
 	}
 	
 	// 불량 내역 상세 조회

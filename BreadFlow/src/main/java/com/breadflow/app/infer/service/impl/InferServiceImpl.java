@@ -13,14 +13,13 @@ import com.breadflow.app.infer.service.InferHistoryVO;
 import com.breadflow.app.infer.service.InferService;
 import com.breadflow.app.inout.service.FilterVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class InferServiceImpl implements InferService {
 	public InferMapper inferMapper;
 	
-	public InferServiceImpl(InferMapper inferMapper) {
-		this.inferMapper = inferMapper;
-	}
-
 	@Override
 	public List<InferHistoryVO> inferList(FilterVO filterVO) {
 		return inferMapper.selectInferList(filterVO);
@@ -76,4 +75,8 @@ public class InferServiceImpl implements InferService {
 		return inferMapper.selectCompany();
 	}
 
+	@Override
+	public int inferListCount(FilterVO filterVO) {
+		return inferMapper.countInferList(filterVO);
+	}
 }
