@@ -16,6 +16,7 @@ import com.breadflow.app.product.service.ProductVO;
 import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
 import com.breadflow.app.sale.service.SaleVO;
+
 @Controller
 public class SaleController {
 	
@@ -40,7 +41,7 @@ public class SaleController {
 
 	// POS 카테고리 검색(AJAX) - 다른 URL 사용
     @ResponseBody
-    @GetMapping("/pos/menu")					  // 파라미터를 매개변수로 받음(category 매개변수를 선택안해도 응답함)
+    @PostMapping("/pos/menu")					  // 파라미터를 매개변수로 받음(category 매개변수를 선택안해도 응답함)
     public ResponseEntity<List<ProductVO>> getMenu(@RequestParam(required = false) String category) {
         List<ProductVO> products = saleService.selectProductList(category);
         
@@ -62,7 +63,7 @@ public class SaleController {
     }
     
     // 매출조회 데이터 (월 조건)
-    @GetMapping("/daySale/getSale")
+    @PostMapping("/daySale")
     @ResponseBody
     public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate) {
     	List<PosVO> list = saleService.selectSales(saDate);
@@ -78,6 +79,12 @@ public class SaleController {
     
     // 매출 차트 조회 (가맹점) << 일,월매출 / 제품별 상세매출 그래프 표시
     @GetMapping("/saleChart")
+    public String saleChart() {
+    	return "sale/chart";
+    }
+    
+    // 차트 ajax호출
+    @PostMapping("/saleChart")
     @ResponseBody
     public ResponseEntity<List<PosVO>> saleChartList() {
     	List<PosVO> list = saleService.selectSaleChart();

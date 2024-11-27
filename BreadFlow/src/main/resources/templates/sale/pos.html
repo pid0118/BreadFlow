@@ -436,7 +436,7 @@ footer {
 				});
 				selectedMenu = [];
 				arrayPrint();
-				selectItemList.innerHTML = '';
+				location.reload(true);;
 				
 			});
 		});
@@ -548,7 +548,9 @@ footer {
 		    let url = category ? `/pos/menu?category=${category}` : '/pos/menu';
 		    
 		    // /pos/menu로 변경
-		    fetch(url)
+		    fetch(url, {
+		    	method: "POST"
+		    })
 		        .then(response => response.json())
 		        .then(data => {
 		        	menuData = data;
@@ -628,6 +630,7 @@ footer {
 			.then(res => res.text())
 			.then(date => {
 				alert("마감정산 완료!");
+				location.reload(true);
 			})
 		})
 		

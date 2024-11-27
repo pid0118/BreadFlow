@@ -291,6 +291,7 @@ var options5 = {
 var chart = new ApexCharts(document.querySelector("#chart5"), options5);
 chart.render();
 
+
 var options6 = {
 	series: [
 	{
