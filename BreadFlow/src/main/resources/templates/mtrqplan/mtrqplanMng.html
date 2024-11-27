@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+<!-- [박진석|241122] toast grid 사용하기 위한 CDN -->
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<!-- toast grid CDN 끝 -->
+
+<style>
+.parentArea {
+	display: inline-block;
+	float: left;
+	width: 35%;
+}
+
+.childArea {
+	display: inline-block;
+	float: right; 
+	width: 60%;
+}
+
+.form-control.date-picker[readonly] {
+    background-color: #ffffff;
+}
+
+</style>
+
+<div class="container">
+	<div class="parentArea">
+		<div class="insertButtons">
+			<h2>자재소요 계획 관리</h2>
+			<h4>생산계획 정보</h4>
+			<div id="grid1"></div>
+		</div>
+	</div>
+	<div class="childArea">
+		<h4>생산계획 정보 상세</h4>
+		<div id="grid2"></div>
+		
+		
+		
+		<h4>자재소요 내역</h4>
+		<div>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
+		</div>
+		<div id="grid3"></div>
+	
+		<div class="detailInputArea">
+			<!-- 상세보기 폼 시작 -->
+			<div class="updateAccounts">
+				<form id="updatePrdtplanForm" method="post">
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>자재소요계획 고유번호</label> <input type="text" class="form-control"
+									id="updProductionPlanNo" name="productionPlanNo" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<label for="updPrdtComNm">공유업체명</label>
+							<div class="input-group mb-3">
+							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
+							  	<div class="input-group-append">
+							    	<button class="btn btn-outline-secondary" type="button" id="updPrdtcomSerachBtn" data-toggle="modal" data-target="#Prdtcom-modal"><i class="icon-copy bi bi-search"></i></button>
+						  		</div>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12" hidden="hidden">
+							<div class="form-group">
+								<label>공유업체코드h</label> <input type="text" class="form-control"
+									id="updProductionCompany" name="productionCompany">
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>시작일자</label> <input type="text" class="form-control date-picker" 
+									id="updStartDate" name="startDate" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<label for="updDlvryLocNm">납품위치</label>
+							<div class="input-group mb-3">
+							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
+							  	<div class="input-group-append">
+							    	<button class="btn btn-outline-secondary" type="button" id="updDlvrycomSerachBtn" data-toggle="modal" data-target="#dlvryCom-modal"><i class="icon-copy bi bi-search"></i></button>
+						  		</div>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>마감일자</label> <input type="text" class="form-control date-picker"  
+									id="updLastDate" name="lastDate" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12" hidden="hidden">
+							<div class="form-group">
+								<label>납품위치코드h</label> <input type="text" class="form-control"
+									id="updDeliveryLocation" name="deliveryLocation">
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>생산상태</label> <input type="text" class="form-control"
+									id="updProgressSituation" readonly>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		<!-- 상세보기 폼 끝 -->
+		
+		</div>
+		
+		<div class="detailTableArea">
+			<div style=" float:left">
+				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
+			</div>
+		
+			<div class="updateButtons" style="float: right;">
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">확인</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+//========================================================================
+//[박진석|241127] 테이블 1, 2, 3 생성
+var Grid = tui.Grid;
+
+const grid1 = new Grid({
+	el: document.getElementById('grid1'),
+	columns: [
+		{
+			header: '생산계획 고유번호',
+			name: '',
+		},
+		{
+			header: '제품명',
+			name: '',
+		},
+		{
+			header: '계획량',
+			name: '',
+		},
+		{
+			header: '마감일',
+			name: '',
+		}
+	]
+})
+
+const grid2 = new Grid({
+	el: document.getElementById('grid2'),
+	columns: [
+		{
+			header: '제품코드',
+			name: '',
+		},
+		{
+			header: '제품명',
+			name: '',
+		},
+		{
+			header: '계획수량',
+			name: '',
+		},
+		{
+			header: '단위',
+			name: '',
+		},
+		{
+			header: '기타사항',
+			name: '',
+		},
+		
+	]
+})
+
+const grid3 = new Grid({
+	el: document.getElementById('grid3'),
+	columns: [
+		{
+			header: '재료코드',
+			name: '',
+		},
+		{
+			header: '재료명',
+			name: '',
+		},
+		{
+			header: '계획수량',
+			name: '',
+		},
+		{
+			header: '단위',
+			name: '',
+		},
+		{
+			header: '기타사항',
+			name: '',
+		},
+	]
+})
+
+// Toast Grid 테이블 생성 끝
+//========================================================================
+</script>
+

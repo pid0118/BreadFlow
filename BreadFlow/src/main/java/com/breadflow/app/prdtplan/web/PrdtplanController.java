@@ -14,7 +14,7 @@ import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
 
 import jakarta.servlet.http.HttpSession;
-//@RestController   <= 
+
 @Controller
 public class PrdtplanController {
 
