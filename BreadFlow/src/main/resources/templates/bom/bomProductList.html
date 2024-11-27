@@ -118,7 +118,7 @@
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
-                        <td> <button type="submit" class="btn btn-secondary btn-sm" th:onclick="|location.href='@{/bomInsert}'|">등록</button></td>
+                        <td> <button type="submit" class="btn btn-secondary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
                     </tr>
                 </th:block>
             </tbody>
