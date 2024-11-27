@@ -50,23 +50,22 @@ public class FileUploadUtil {
 		
 		return datePath;
 	}
+	
 	// 디렉토리 생성 
-		private static void makeDir(String uploadPath, String... paths) {
-			// String... 은 가변 사이즈 매개변수(배열의 요소가 몇개든 상관없이 처리)
-			// 디렉토리가 존재하면 skip
-			if(new File(paths[paths.length -1]).exists()) {	// 존재하면
-				return;
-			}
-			for(String path : paths) {
-				File dirPath = new File(uploadPath + path);
-				if(!dirPath.exists()) {
-					dirPath.mkdir(); // 디렉토리 생성
-				}
-			}
-			
+	
+	private static void makeDir(String uploadPath, String... paths) {
+		// String... 은 가변 사이즈 매개변수(배열의 요소가 몇개든 상관없이 처리)
+		// 디렉토리가 존재하면 skip
+		if(new File(paths[paths.length -1]).exists()) {	// 존재하면
+			return;
 		}
+		for(String path : paths) {
+			File dirPath = new File(uploadPath + path);
+			if(!dirPath.exists()) {
+				dirPath.mkdir(); // 디렉토리 생성
+			}
+		}
+			
+	}
 	
-}	
-	
-	
-
+}

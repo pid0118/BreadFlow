@@ -31,7 +31,7 @@ public class OrderingServiceImpl implements OrderingService{
 	
 		int totalPage = orderingMapper.selectOrderingPage(list, sort, page);
 		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page);
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("data", oList);
 		map.put("page", totalPage);
 		return map;

@@ -46,7 +46,10 @@ public class InOutServiceImpl implements InOutService {
 	public int instoreInsert(List<InstoreVO> list) {
 		int result = 0;
 		for (InstoreVO instoreVO : list) {
+			// 입고 등록
 			result += inOutMapper.insertInstoreInfo(instoreVO);
+			// 입고 등록 후 주문 상태 갱신
+			result += inOutMapper.updateInstoreOrdering(instoreVO);
 		}
 		return result;
 	}
@@ -56,7 +59,10 @@ public class InOutServiceImpl implements InOutService {
 	public int outstoreInsert(List<OutstoreVO> list) {
 		int result = 0;
 		for (OutstoreVO outstoreVO : list) {
+			// 출고 등록
 			result += inOutMapper.insertOutstoreInfo(outstoreVO);
+			// 출고 등록 후 주문 상태 갱신
+			result += inOutMapper.updateOutstoreOrdering(outstoreVO);
 		}
 		return result;
 	}
