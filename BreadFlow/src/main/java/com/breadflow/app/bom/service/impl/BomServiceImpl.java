@@ -40,11 +40,11 @@ public class BomServiceImpl implements BomService{
 		return 0;
 	}
 
-	@Override
-	public int deleteBom(BomVO bomVO) {
-		
-		return 0;
-	}
+//	@Override
+//	public int deleteBom(BomVO bomVO) {
+//		
+//		return 0;
+//	}
 	
 	
 }

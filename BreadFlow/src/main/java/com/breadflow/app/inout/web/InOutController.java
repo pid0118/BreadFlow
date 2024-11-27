@@ -2,6 +2,7 @@
 package com.breadflow.app.inout.web;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class InOutController {
 	private final InOutService inOutService;
 	
+	// 입출고 내역 조회
     @GetMapping("inOutList")
     public String inOutList(Model model) {
     	Calendar cal = Calendar.getInstance();
@@ -39,7 +41,8 @@ public class InOutController {
     // 입고 내역 반환
     @GetMapping("inOut/instores")
     @ResponseBody
-    public Map<String, Object> getInstoreList(Map<String, Object> inMap, FilterVO filterVO) {
+    public Map<String, Object> getInstoreList(FilterVO filterVO) {
+    	Map<String, Object> inMap = new HashMap<String, Object>();
     	Integer countIn = inOutService.countInstore(filterVO);
     	inMap.put("count", countIn);
     	inMap.put("list", inOutService.instoreList(filterVO));
@@ -49,7 +52,8 @@ public class InOutController {
     // 출고 내역 반환
     @GetMapping("inOut/outstores")
     @ResponseBody
-    public Map<String, Object> getOutstoreList(Map<String, Object> outMap, FilterVO filterVO) {
+    public Map<String, Object> getOutstoreList(FilterVO filterVO) {
+    	Map<String, Object> outMap = new HashMap<String, Object>();
     	Integer countOut = inOutService.countOutstore(filterVO);
     	outMap.put("count", countOut);
     	outMap.put("list", inOutService.outstoreList(filterVO));
@@ -59,7 +63,8 @@ public class InOutController {
     // 등록용 발주 내역 반환
     @GetMapping("inOut/ordersInsert")
     @ResponseBody
-    public Map<String, Object> getOrderListForInsert(Map<String, Object> orderMap, FilterVO filterVO) {
+    public Map<String, Object> getOrderListForInsert(FilterVO filterVO) {
+    	Map<String, Object> orderMap = new HashMap<String, Object>();
     	Integer countOr = inOutService.countOrderInsert(filterVO);
     	orderMap.put("count", countOr);
     	orderMap.put("list", inOutService.orderListForInsert(filterVO));
@@ -69,7 +74,8 @@ public class InOutController {
     // 등록용 입고 내역 반환
     @GetMapping("inOut/instoresInsert")
     @ResponseBody
-    public Map<String, Object> getInstoreListForInsert(Map<String, Object> inMap, FilterVO filterVO) {
+    public Map<String, Object> getInstoreListForInsert(FilterVO filterVO) {
+    	Map<String, Object> inMap = new HashMap<String, Object>();
     	Integer countIn = inOutService.countInstoreInsert(filterVO);
     	inMap.put("count", countIn);
     	inMap.put("list", inOutService.instoreListForInsert(filterVO));

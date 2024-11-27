@@ -31,9 +31,11 @@ public class OrderingServiceImpl implements OrderingService{
 	public Map<String, Object> selectOrderingList(String status, String sort, int page) {
 		List<String> list = Arrays.asList(status.split(",")); // 상태 배열 , 기준으로 나누어 list
 	
+
 		int totalPage = orderingMapper.selectOrderingPage(list, sort, page);	// 총 페이지
 		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page);	// 전체 발주 조회
 		Map<String, Object> map = new HashMap<>();
+
 		map.put("data", oList);
 		map.put("page", totalPage);
 		return map;

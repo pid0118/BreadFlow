@@ -21,4 +21,6 @@ public interface InferService {
 	public int inferAnswerInsert(InferAnswerVO inferAnswerVO); // 확인 후 답변 INSERT
 	
 	public List<CompanyVO> companyList();
+	
+	public int inferListCount(FilterVO filterVO);
 }

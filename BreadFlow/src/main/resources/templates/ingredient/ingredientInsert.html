@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제품 등록</title>
+    <title>원/부재료 등록</title>
     <style>
         .content-area {
             min-height: calc(100vh - 60px);
@@ -59,7 +59,7 @@
 <body>
     <div class="content-area">
         <div class="form-container">
-            <h4 class="mb-4">제품 등록</h4>
+            <h4 class="mb-4">원/부재료 등록</h4>
 
             <form>
                 <div class="row g-4">
@@ -68,7 +68,7 @@
 				            <span>이미지</span>
 				        </div>
 				        <input type="file" class="d-none" id="image" accept="image/*">
-				        <input type="hidden" id="productImage">
+				        <input type="hidden" id="ingredientImage">
 				    </div>
 				
 				    <!-- 나머지 항목들을 3개씩 배치 -->
@@ -76,12 +76,12 @@
 				        <div class="row g-3">
 				            <!-- 1번째 줄 -->
 				            <div class="col-md-4">
-				                <label class="form-label">제품코드</label>
-				                <input type="text" class="form-control form-control-sm" id="productCode" th:value="${productCode}" readonly>
+				                <label class="form-label">재료코드</label>
+				                <input type="text" class="form-control form-control-sm" id="ingredientCode" th:value="${ingredientCode}" readonly>
 				            </div>
 				            <div class="col-md-4">
-				                <label class="form-label">제품명</label>
-				                <input type="text" class="form-control form-control-sm" id="productName">
+				                <label class="form-label">재료명</label>
+				                <input type="text" class="form-control form-control-sm" id="ingredientName">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">규격</label>
@@ -97,8 +97,8 @@
 				                <input type="text" class="form-control form-control-sm" id="purchasePrice">
 				            </div>
 				            <div class="col-md-4">
-				                <label class="form-label">판매가</label>
-				                <input type="text" class="form-control form-control-sm" id="salePrice">
+				                <label class="form-label">원산지</label>
+				                <input type="text" class="form-control form-control-sm" id="origin">
 				            </div>
 				            <!-- 3번째 줄 -->
 				            <div class="col-md-4">
@@ -106,12 +106,17 @@
 				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity">
 				            </div>
 				            <div class="col-md-4">
-				                <label class="form-label">생산지</label>
-				                <input type="text" class="form-control form-control-sm" id="proplace">
-				            </div>
-				            <div class="col-md-4">
 				                <label class="form-label">용량</label>
 				                <input type="text" class="form-control form-control-sm" id="amount">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">단위</label>
+				                <select class="form-select form-select-sm" id="unit">
+				                    <option selected>선택하세요</option>
+				                    <th:block th:each="code : ${codeVal}">
+				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}"></option>
+				                    </th:block>
+				                </select>
 				            </div>
 				            <!-- 4번째 줄 -->
 				            <div class="col-md-4">
@@ -129,21 +134,12 @@
 				                    <option selected>선택하세요</option>
 				                </select>
 				            </div>
-				            <div class="col-md-4">
-				                <label class="form-label">단위</label>
-				                <select class="form-select form-select-sm" id="unit">
-				                    <option selected>선택하세요</option>
-				                    <th:block th:each="code : ${codeVal}">
-				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}"></option>
-				                    </th:block>
-				                </select>
-				            </div>
 				        </div>
 				    </div>
 				</div>
 				
                 <div class="text-end mt-4">
-                    <button type="button" class="btn btn-primary action-buttons" onclick="insertProduct()">등록</button>
+                    <button type="button" class="btn btn-primary action-buttons" onclick="insertIngredient()">등록</button>
                     <button type="button" class="btn btn-secondary action-buttons" id="cancelBtn">취소</button>
                 </div>
             </form>
@@ -182,7 +178,7 @@
         			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
         			success: function(data, status,req) {
         			
-        			$("#productImage").val(data);
+        			$("#ingredientImage").val(data);
         			}
         		});
         	});
@@ -230,9 +226,9 @@
          
 	     	// 제품등록
 	     	// NOT NULL값 미입력시 알림 및 등록 불가
-	     	function insertProduct() {
+	     	function insertIngredient() {
 	     		
-	     		if($("#productName").val()==''){
+	     		if($("#ingredientName").val()==''){
 	     			alert("제품명을 입력해주세요")
 	     			return;
 	     		}
@@ -240,16 +236,12 @@
 	     			alert("구매가를 입력해주세요")
 	     			return;
 	     		}
-	     		if($("#salePrice").val() == ''){
-	     			alert("판매가를 입력해주세요")
-	     			return;
-	     		}
 	     		if($("#safeStockQuantity").val() == ''){
 	     			alert("안전재고 수량을 입력주세요")
 	     			return;
 	     		}
-	     		if($("#proplace").val() == ''){
-	     			alert("생산지를 입력해주세요")
+	     		if($("#origin").val() == ''){
+	     			alert("원산지를 입력해주세요")
 	     			return;
 	     		}
 	     		if($("#amount").val() == ''){
@@ -269,35 +261,34 @@
 	     			return;
 	     		}
 	     		if(sameCheck == false){
-	     			alert("제품명이 중복되거나 상품이 등록되어있습니다")
+	     			alert("재료명이 중복되거나 재료가 등록되어있습니다")
 	     			return;
 	     		}
 	     		
-	     		if (confirm("제품을 등록하시겟습니까?")) {
+	     		if (confirm("재료를 등록하시겟습니까?")) {
 	     			$.ajax({
-		     			url : "/product",
+		     			url : "/ingredient",
 		     			method : "post",
 		     			data : JSON.stringify({
-		     				"productCode" : $("#productCode").val(),
-		     				"productName" : $("#productName").val(),
+		     				"ingredientCode" : $("#ingredientCode").val(),
+		     				"ingredientName" : $("#ingredientName").val(),
 		     				"standard" : $("#standard").val(),
 		     				"expirationDeadline" : $("#expirationDeadline").val(),
 		     				"purchasePrice" : $("#purchasePrice").val(),
-		     				"salePrice" : $("#salePrice").val(),
+		     				"origin" : $("#origin").val(),
 		     				"safeStockQuantity" : $("#safeStockQuantity").val(),
-		     				"proplace" : $("#proplace").val(),
 		     				"unit" : $("#unit option:selected").val(),
 		     				"major" : $("#mainCategory option:selected").val(),
 		     				"sub" : $("#subCategory option:selected").val(),
 		     				"amount" : $("#amount").val(),
-		     				"productImage" : $("#productImage").val()
+		     				"ingredientImage" : $("#ingredientImage").val()
 		     			}),
 		     			contentType : 'application/json',
 		     			dataType : "json",
 		     			success : function (data) {
 		     				if (data == 1) {
-		     					alert("제품 등록에 성공하였습니다.");
-		     					location.href = "/productListAll";
+		     					alert("재료 등록에 성공하였습니다.");
+		     					location.href = "/inredientList";
 		     				} else {
 		     					alert("등록에 실패했습니다.");
 		     				}
@@ -314,18 +305,18 @@
         	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
         	let sameCheck = false;
         	
-        	$("#productName").on('change', function(){
-        		let data = { productName: $('#productName').val() };
+        	$("#ingredientName").on('change', function(){
+        		let data = { productName: $('#ingredientName').val() };
         		
         		$.ajax({
-        			url:"/productNameCheck",
+        			url:"/ingredientNameCheck",
         			type: "post",
         			data: data,
         		}).done((res)=> {
         			console.log(res);
         			sameCheck = true;
         		}).fail((err)=>{
-        			alert("이미등록된 상품이거나 상품명이 중복되었습니다")
+        			alert("이미등록된 재품이거나 재품명이 중복되었습니다")
         			console.log(err);
         			sameCheck = false;
         		});
@@ -338,10 +329,9 @@
 	     	
 	     	 // 취소 버튼 처리
             $('#cancelBtn').click(function() {
-                window.location.href = '/productListAll';
+                window.location.href = '/inredientList';
             });
 	     	
-        // 등록 버튼클릭시 데이터 DB 에 입력하기까지 END
     </script>
 </body>
 </html>

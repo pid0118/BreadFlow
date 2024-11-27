@@ -6,6 +6,7 @@ import lombok.Data;
 public class FilterVO {
 	private String companyInput;
 	private String clearTable;
+	
 	private String comp;
 	private String prd;
 	private String ing;
@@ -19,7 +20,6 @@ public class FilterVO {
 	private String checked;
 	private String unchecked;
 	private String confirmComp;
-	
 	private String div;
 	
 	private Integer page;

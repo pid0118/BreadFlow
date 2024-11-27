@@ -17,4 +17,6 @@ public interface InferMapper {
 	public int updateInferHistory(InferAnswerVO inferAnswerVO);
 	public int insertInferAnswer(InferAnswerVO inferAnswerVO);
 	public List<CompanyVO> selectCompany();
+	
+	public int countInferList(FilterVO filterVO);
 }
