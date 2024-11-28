@@ -19,5 +19,11 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 		return mtrqplanMapper.selectIngrdntList();
 	}
 
+	@Override
+	public String insertMtrqplan(MtrqplanVO mtrqplanVO) {
+		int result = mtrqplanMapper.insertMtrqplan(mtrqplanVO);
+		return result == 1 ? mtrqplanVO.getMatrequiredPlanNo() : "";
+	}
+
 
 }

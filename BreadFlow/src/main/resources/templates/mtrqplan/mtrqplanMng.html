@@ -687,15 +687,32 @@ function insertMtrqPlanAjax() {
 		 return false;
 	}
 	
-	/*if($("#updPrdtComNm").val() = "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
+	if($("#updPrdtComNm").val() == "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
 		alert("날짜 또는 업체를 선택했는지 확인하세요.");
 		return false;
-	}*/
+	}
 	
-	console.log("인서트인서트");
-	
+	if(confirm("자재소요계획을 저장 하시겠습니까?")) {
+		$.ajax({
+           url: "insertMtrqplan",
+           type: "POST",
+           data:  $('#updateMtrqplanForm').serialize(),
+           success: function(data){
+               alert("성공적으로 저장되었습니다.");
+               console.log(data);
+               //if (data != '')
+               		//insertPrdPlanDetailAjax(data);
+               location.reload(true);
+           },
+           error: function(result){
+        	   alert("저장에 실패하였습니다.");
+        	   console.log(result);
+        	}
+       });
+	} else {
+		alert("취소하였습니다.");
+	}
 }
-	
 // [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
 //========================================================================
 	

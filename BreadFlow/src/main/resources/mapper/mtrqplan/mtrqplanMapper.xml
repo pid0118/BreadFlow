@@ -14,5 +14,27 @@
 	ORDER BY ingredient_code
 </select>
 
-
+<insert id="insertMtrqplan" parameterType="MtrqplanVO">
+	<selectKey resultType="string" keyProperty="matrequiredPlanNo" order="BEFORE">
+		SELECT 'JP' || PLANSEQ('MATREQUIRED_PLAN','MATREQUIRED_PLAN_NO') FROM dual
+	</selectKey>
+	INSERT INTO matrequired_plan
+	(
+	    matrequired_plan_no
+	    , production_plan_no
+	    , start_date
+	    , last_date
+	    , delivery_location
+	    , supply_company
+	    , writer
+	) VALUES (
+	    #{matrequiredPlanNo}
+	    , #{productionPlanNo}
+	    , #{startDate}
+	    , #{lastDate}
+	    , #{deliveryLocation}
+	    , #{supplyCompany}
+	    , #{writer}
+	)
+</insert>
 </mapper>
