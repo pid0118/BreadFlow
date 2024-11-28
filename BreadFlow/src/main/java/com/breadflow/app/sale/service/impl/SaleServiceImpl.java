@@ -13,6 +13,8 @@ import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
 import com.breadflow.app.sale.service.SaleVO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Service
 public class SaleServiceImpl implements SaleService {
 	
@@ -41,27 +43,31 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public int insertSales() {
-		return saleMapper.insertSales();
+	public int insertSales(PosVO name) {
+		return saleMapper.insertSales(name);
 	}
 
 	@Override
-	public List<PosVO> selectSales(String salesDate) {
+	public List<PosVO> selectSales(String salesDate, HttpSession name) {
 		if(salesDate.equals("undefined")) {
 			salesDate = DateUtil.dashFormatDate(null, "yyyyMM");
-			System.out.println(salesDate);
 		}
-		return saleMapper.selectSales(salesDate);			
+		return saleMapper.selectSales(salesDate, (String)name.getAttribute("companyNo"));			
 	}
 
 	@Override
-	public List<PosVO> selectDetailSale() {
-		return saleMapper.selectDetailSale();
+	public List<PosVO> selectDetailSale(HttpSession companyNo) {
+		return saleMapper.selectDetailSale((String)companyNo.getAttribute("companyNo"));
 	}
 
 	@Override
-	public List<PosVO> selectSaleChart() {
-		return saleMapper.selectSaleChart();
+	public List<PosVO> selectSaleChart(HttpSession companyNo) {
+		return saleMapper.selectSaleChart((String)companyNo.getAttribute("companyNo"));
+	}
+
+	@Override
+	public List<PosVO> selectSaleProduct(HttpSession companyNo) {
+		return saleMapper.selectSaleProduct((String)companyNo.getAttribute("companyNo"));
 	}
 
 }

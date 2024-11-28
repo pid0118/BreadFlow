@@ -16,5 +16,5 @@ public class PosVO {
 	private String saleDate; // 매출일 문자열
 	private Integer daySales; // 매출
 	private Integer totalQuantity;
-	
+	private String name; // 가맹점주 성함
 }

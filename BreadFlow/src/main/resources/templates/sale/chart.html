@@ -4,29 +4,11 @@
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
   <body>
- 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart1"></div>
-	</div>
-	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart2"></div>
-	</div>
- 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart3"></div>
-	</div>
 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
 		<div id="chart4"></div>
 	</div>
 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
 		<div id="chart5"></div>
-	</div>
-	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart6"></div>
-	</div>
-	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart7"></div>
-	</div>
-	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart8"></div>
 	</div>
 		
 	<script src="/plugins/highcharts-6.0.7/code/highcharts.js"></script>
@@ -34,45 +16,72 @@
 	<script src="/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
 	<script>
 		sales();
-		let curYear = 2024;
+		productAjax();
+		let today = new Date();
+		let curYear = today.getFullYear();
 		
 		let chartAry = [];
+		//chart4 데이터 ajax 호출 ( 월별 매출 )
 		function sales(){
 			fetch("/saleChart", {
 				method: "POST"
 			})
 			.then(res => res.json())
 			.then(data => {
-				let monSales = {};
+				let monSales = {};    // 현재 연도 매출
+				let prevMonSales = {}; // 전년도 매출
 				data.forEach(ele => {
 					let saleDate = ele.saleDate;
 					let yearMon = saleDate.substring(0, 6);
+					let year = saleDate.substring(0, 4);
 					let daySales = ele.daySales;
-					
-					if(monSales[yearMon]){
-						monSales[yearMon] += daySales;
+					if(year === curYear.toString()){
+						if(monSales[yearMon]){
+							monSales[yearMon] += daySales;
+						
+						}
+						else{
+							monSales[yearMon] = daySales;
+						}
 					}
-					else{
-						monSales[yearMon] = daySales;
+					else if (year === (curYear - 1).toString()){
+		                if(prevMonSales[yearMon]) {
+		                	prevMonSales[yearMon] += daySales;
+		                }
+		                else {
+		                	prevMonSales[yearMon] = daySales;
+		                }
 					}
 				});
+				
 				let months = [];
 				let salesData = [];
+				let prevSalesData = [];
 	            for (let i = 1; i <= 12; i++) {
 	                let month = i < 10 ? '0' + i : i.toString();
-	                let yearMon = curYear + month;
-
+	                
 	                months.push(month); // 월 추가
-	                salesData.push(monSales[yearMon] || 0);
+	                salesData.push(monSales[curYear + month] || 0)
+	                prevSalesData.push(prevMonSales[(curYear-1) + month] || 0);
 	            }
 
-	            // 차트 함수 호출
-	            chartist(months, salesData);
+	            chartist(months, salesData, prevSalesData);
 			})
 		}
-
-		// chart3
-		function chartist(months, salesData){
+		
+		// chart5 데이터 ajax 호출 ( 월별 제품 매출 상세 조회 )\
+		function productAjax(){
+			fetch("/saleChart/product", {
+				method: "POST",
+			})
+			.then(res => res.json())
+			.then(data => {
+				console.log(data);
+			})
+		}
+		
+		// 차트 함수
+		function chartist(months, salesData, prevSalesData){
 			Highcharts.chart('chart4', {
 				chart: {
 					type: 'column'
@@ -90,13 +99,13 @@
 				yAxis: {
 					min: 0,
 					title: {
-						text: '매출액 (원)'
+						text: '매출액(원)'
 					}
 				},
 				tooltip: {
 					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
 					pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-					'<td style="padding:0"><b>{point.y:} 원</b></td></tr>',
+								 '<td style="padding:0"><b>{point.y} 원</b></td></tr>',
 					footerFormat: '</table>',
 					shared: true,
 					useHTML: true
@@ -108,12 +117,40 @@
 					}
 				},
 				series: [{
-					name: '매출액',
+					name: '올해',
 					data: salesData
+				},
+				{
+					name: '전년도',
+					data: prevSalesData
 				}]
 			});
-			
 		}
+		
+		Highcharts.chart('chart5', {
+			title: {
+				text: 'Pie point CSS'
+			},
+			xAxis: {
+				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			},
+			series: [{
+				type: 'pie',
+				allowPointSelect: true,
+				keys: ['name', 'y', 'selected', 'sliced'],
+				data: [
+				['Apples', 29.9, false],
+				['Pears', 71.5, false],
+				['Oranges', 106.4, false],
+				['Plums', 129.2, false],
+				['Bananas', 144.0, false],
+				['Peaches', 176.0, false],
+				['Prunes', 135.6, true, true],
+				['Avocados', 148.5, false]
+				],
+				showInLegend: true
+			}]
+		});
 	</script>
   </body>
 </html>

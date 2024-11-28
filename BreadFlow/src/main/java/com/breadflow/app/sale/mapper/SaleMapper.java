@@ -1,7 +1,6 @@
 package com.breadflow.app.sale.mapper;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -19,17 +18,20 @@ public interface SaleMapper {
 	public List<ProductVO> selectProductList(String category);
 	
 	// 주문 버튼 눌렀을시 insert
-	public int insertSale(PosVO saleVO);
+	public int insertSale(PosVO posVO);
 	
 	// 가맹점 일 매출 조회
-	public List<PosVO> selectSales(String salesDate);
+	public List<PosVO> selectSales(String salesDate, String companyNo);
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
-	public int insertSales();
+	public int insertSales(PosVO name);
 	
 	// pos 마감 하기 전 상태 제품 상세보기
-	public List<PosVO> selectDetailSale();
+	public List<PosVO> selectDetailSale(String companyNo);
 	
 	// chart 매출 조회
-	public List<PosVO> selectSaleChart();
+	public List<PosVO> selectSaleChart(String companyNo);
+	
+	// chart 매출
+	public List<PosVO> selectSaleProduct(String companyNo);
 }

@@ -17,6 +17,8 @@ import com.breadflow.app.sale.service.PosVO;
 import com.breadflow.app.sale.service.SaleService;
 import com.breadflow.app.sale.service.SaleVO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class SaleController {
 	
@@ -33,8 +35,8 @@ public class SaleController {
     
     // POS 메인화면 및 상세내역 모달창
     @GetMapping("/pos")
-    public String posPage(Model model) {
-    	List<PosVO> list = saleService.selectDetailSale();
+    public String posPage(Model model, HttpSession name) {
+    	List<PosVO> list = saleService.selectDetailSale(name);
     	model.addAttribute("dList", list);
         return "sale/pos"; // pos.html을 반환
     }
@@ -51,8 +53,8 @@ public class SaleController {
     // 주문 버튼 눌렀을시 insert
     @PostMapping("/pos")
     @ResponseBody
-    public String insertSale(@RequestBody List<PosVO> saleVO) {
-    		saleService.insertSale(saleVO);
+    public String insertSale(@RequestBody List<PosVO> posVO) {
+    		saleService.insertSale(posVO);
     	return "true";
     }
     
@@ -65,15 +67,16 @@ public class SaleController {
     // 매출조회 데이터 (월 조건)
     @PostMapping("/daySale")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate) {
-    	List<PosVO> list = saleService.selectSales(saDate);
+    public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate, HttpSession companyNo) {
+    	List<PosVO> list = saleService.selectSales(saDate, companyNo);
     	return ResponseEntity.ok(list);
     }
     
     // 마감정산
-    @GetMapping("/closeSale")
-    public String closeSale() {
-    	saleService.insertSales();
+    @PostMapping("/closeSale")
+    @ResponseBody
+    public String closeSale(@RequestBody PosVO name) {
+    	saleService.insertSales(name);
         return "sale/pos";
     }
     
@@ -83,11 +86,18 @@ public class SaleController {
     	return "sale/chart";
     }
     
-    // 차트 ajax호출
+    // 차트 월별 매출 ajax호출
     @PostMapping("/saleChart")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> saleChartList() {
-    	List<PosVO> list = saleService.selectSaleChart();
+    public ResponseEntity<List<PosVO>> saleChartList(HttpSession name) {
+    	List<PosVO> list = saleService.selectSaleChart(name);
+    	return ResponseEntity.ok(list);
+    }
+    // 차트 월별 제품 상세 매출 ajax호출
+    @PostMapping("/saleChart/product")
+    @ResponseBody
+    public ResponseEntity<List<PosVO>> saleProductList(HttpSession name) {
+    	List<PosVO> list = saleService.selectSaleProduct(name);
     	return ResponseEntity.ok(list);
     }
 }
