@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class OrdersRequestVO {
 	private String itemName;			// 품목명
+	private String itemCode;			// 품목코드
 	private String unit;				// 단위
 	private String standard;			// 규격
 	private int quantity;				// 수량

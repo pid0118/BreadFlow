@@ -31,6 +31,7 @@
 	
 	<select id="selectOrdersRequestList">
 		SELECT NVL(p.product_name, i.ingredient_name) item_name
+			   , NVL(p.product_code, i.ingredient_code) item_code
 		       , NVL(p.amount || FIND_CD(p.unit), i.amount || FIND_CD(i.unit)) unit
 		       , NVL(p.standard, i.standard) standard
 		       , od.quantity

@@ -48,7 +48,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="myLargeModalLabel">주문 신청</h4>
-				<button type="button" class="btn btn-sm btn-primary" style="margin-left: 75%;">신청</button>
+				<button type="button" class="btn btn-sm btn-primary" style="margin-left: 75%;" id="requestBtn">신청</button>
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			</div>
 			<div class="modal-body">
@@ -284,22 +284,20 @@
 				  columns: columns
 				});
 				
-				
-				
 				// 츨고업체 입력칸 클릭 이벤트
 				newgrid.on('click', function (ev) {
 					if(ev.columnName == 'outCompany' && event.target.tagName != 'TH'){
+						console.log(newgrid.getRow(ev.rowKey).itemCode);
 						eve = ev;
 						ele = newgrid.getElement(ev.rowKey, ev.columnName); // 선택된 요소
 						if(ele != null){
 							ele.dataset.toggle = 'modal';
 							ele.dataset.target = '#Prdtcom-modal';
-							PrdtcomListShow();	
+							PrdtcomListShow();
 						}
 					}
 				})
 				
-				let eve = null;
 				$('#confirmCom').on('click', function(){
 					setCompany(eve, newgrid);
 				})
@@ -309,8 +307,7 @@
 	
 	// 출고업체 값 설정 함수
 	function setCompany(eve, newgrid){
-		newgrid.setValue(eve.rowKey, eve.columnName, comNm);
-		// ele.innerText = comNm // 출고업체 값 변경
+		newgrid.setValue(eve.rowKey, eve.columnName, comNm); // 출고업체 값 변경
 	}
 	
 	// 발주상세 그리드 생성 함수
@@ -389,6 +386,7 @@
 
 	let comNo;
 	let comNm;
+	let eve = null;
 
 	function getCompanyInfo(e) {
 		comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
@@ -397,6 +395,23 @@
 		document.querySelector("#selectedComNm").value = comNm;
 		document.querySelector("#selectedComNo").value = comNo;
 	}
+	
+	// 주문 신청 모달 신청 클릭 이벤트
+	$('#requestBtn').on('click', function() {
+		let datas = document.querySelectorAll('#ordersModal td:last-child');
+		let checked = true;
+		for(let i = 0; i < datas.length; i++){
+			if((datas[i].children[0].innerText == '')){
+				checked = false;
+				break;
+			}
+		}
+		if(checked == true){
+			alert("정상");
+		} else {
+			alert("오류");
+		}
+	})
 	
 </script>
 </body>
