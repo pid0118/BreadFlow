@@ -28,6 +28,11 @@ public class MtrqplanController {
 		return "mtrqplan/mtrqplanMng";
 	}
 	
+	@GetMapping("mtrqplanPrcs")
+	public String mtrqpplanPrsc() {
+		return "mtrqplan/mtrqplanPrcs";
+	}
+	
 	@GetMapping("getPrdtPlanList")
 	@ResponseBody
 	public List<PrdtplanVO> getPrdtPlanList() {
