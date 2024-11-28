@@ -55,5 +55,37 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		return prdtplanMapper.updatedetailForProgress(prdtplanVO);
 	}
 
+
+	@Override
+	public List<PrdtplanVO> selectPrdtList() {
+		return prdtplanMapper.selectPrdtList();
+	}
+
+	@Override
+	public List<PrdtplanVO> selectPrdtplanListForCom(String companyNo) {
+		return prdtplanMapper.selectPrdtplanListForCom(companyNo);
+	}
+
+	@Override
+	public int updateDetailForProgressToC4(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.updateDetailForProgressToC4(prdtplanVO);
+	}
+
+	@Override
+	public int updateDetailForProgressToC5(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.updateDetailForProgressToC5(prdtplanVO);
+	}
+
+	@Override
+	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list) {
+		int result = 0;
+		for(PrdtplanVO pvo : list) {
+			prdtplanMapper.insertPrdtplanDetailsForSelf(pvo);
+			result++;
+		}
+		return result;
+	}
+
+
 	
 }

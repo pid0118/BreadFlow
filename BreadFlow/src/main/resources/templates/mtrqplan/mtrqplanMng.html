@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+
+<!-- [박진석|241122] toast grid 사용하기 위한 CDN -->
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<!-- toast grid CDN 끝 -->
+
+<style>
+.parentArea {
+	display: inline-block;
+	float: left;
+	width: 35%;
+}
+
+.childArea {
+	display: inline-block;
+	float: right; 
+	width: 60%;
+}
+
+.form-control.date-picker[readonly] {
+    background-color: #ffffff;
+}
+
+</style>
+
+<div class="container">
+	<div class="parentArea">
+		<div class="insertButtons">
+			<h2>자재소요 계획 관리</h2>
+			<br>
+			<h5>생산계획 정보</h5>
+			<div id="grid1"></div>
+		</div>
+	</div>
+	<div class="childArea">
+		<h5>생산계획 정보 상세</h5>
+		<div id="grid2"></div>
+		
+		<h5 style="float: left;">자재소요 내역</h5>
+		<div style="float: right;">
+			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
+		</div>
+		<div id="grid3"></div>
+	
+		<div class="detailInputArea">
+			<!-- 상세보기 폼 시작 -->
+			<div class="updateAccounts">
+				<form id="updatePrdtplanForm" method="post">
+					<div class="row">
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>자재소요계획 고유번호</label> <input type="text" class="form-control"
+									id="updProductionPlanNo" name="productionPlanNo" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<label for="updPrdtComNm">공유업체명</label>
+							<div class="input-group mb-3">
+							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
+							  	<div class="input-group-append">
+							    	<button class="btn btn-outline-secondary" type="button" id="updPrdtcomSerachBtn" data-toggle="modal" data-target="#Prdtcom-modal"><i class="icon-copy bi bi-search"></i></button>
+						  		</div>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12" hidden="hidden">
+							<div class="form-group">
+								<label>공유업체코드h</label> <input type="text" class="form-control"
+									id="updProductionCompany" name="productionCompany">
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>시작일자</label> <input type="text" class="form-control date-picker" 
+									id="updStartDate" name="startDate" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<label for="updDlvryLocNm">납품위치</label>
+							<div class="input-group mb-3">
+							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
+							  	<div class="input-group-append">
+							    	<button class="btn btn-outline-secondary" type="button" id="updDlvrycomSerachBtn" data-toggle="modal" data-target="#dlvryCom-modal"><i class="icon-copy bi bi-search"></i></button>
+						  		</div>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>마감일자</label> <input type="text" class="form-control date-picker"  
+									id="updLastDate" name="lastDate" readonly>
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12" hidden="hidden">
+							<div class="form-group">
+								<label>납품위치코드h</label> <input type="text" class="form-control"
+									id="updDeliveryLocation" name="deliveryLocation">
+							</div>
+						</div>
+						
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>생산상태</label> <input type="text" class="form-control"
+									id="updProgressSituation" readonly>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		<!-- 상세보기 폼 끝 -->
+		
+		</div>
+		
+		<div class="detailTableArea">
+			<div style=" float:left">
+				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
+			</div>
+		
+			<div class="updateButtons" style="float: right;">
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">확인</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 공유 업체검색 모달창 -->
+<div
+	class="modal fade bs-example-modal-lg"
+	id="Prdtcom-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					생산업체 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="companys" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>업체코드</th>
+							<th>업체명</th>
+							<th>구분</th>
+							<th>대표자</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 업체명:</b>
+					<input id="selectedComNo" class="form-control" hidden="hidden">
+					<input id="selectedComNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="comModalConfirm()">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 공유 업체검색 모달창 끝 -->
+
+
+
+<!-- 납품 업체검색 모달창 -->
+<div
+	class="modal fade bs-example-modal-lg"
+	id="dlvryCom-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					납품업체 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="dlvryCompanys" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>업체코드</th>
+							<th>업체명</th>
+							<th>구분</th>
+							<th>대표자</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 업체명:</b>
+					<input id="selectedDlvryComNo" class="form-control" hidden="hidden">
+					<input id="selectedDlvryComNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="dlvryComModalConfirm()">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 납품 업체검색 모달창 끝 -->
+
+
+
+<script>
+//========================================================================
+//[박진석|241127] 이벤트 걸기
+let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
+PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
+
+let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색 모달
+DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow)
+
+// 이벤트 걸기 끝
+//========================================================================
+
+	
+	
+// =======================================================
+// [박진석|24.11.25] 생산업체 모달 테이블 행 클릭 시 input출력 및 선택
+function PrdtcomListShow() {
+	let comsTblTrs = document.querySelectorAll("#companys tr");
+
+	for(let i = 1; i < comsTblTrs.length; i++) {
+		comsTblTrs[i].addEventListener("click", getCompanyInfo);
+	}
+}
+
+let comNo;
+let comNm;
+
+function getCompanyInfo(e) {
+	comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+	comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+	
+	document.querySelector("#selectedComNm").value = comNm;
+	document.querySelector("#selectedComNo").value = comNo;
+}
+
+//document.querySelector("#comModalConfirm").addEventListener("click", comModalOk)
+
+function comModalConfirm() {
+	document.querySelector("#updPrdtComNm").value = comNm;
+	document.querySelector("#updProductionCompany").value = comNo;
+	
+	comNm = "";
+	comNo = "";	
+}
+
+// 생산업체 모달 테이블 행 클릭시 input 출력 선택 끝
+// =======================================================		
+		
+//========================================================================
+// [박진석|241125] 모달창 DataTable 가져오기
+$(document).ready( function () {
+	$('#companys').DataTable({			// 생산업체 모달 테이블
+    	info: false,
+    	paging: false,
+    	ajax: {
+   			url: 'getCompanys.do',
+   			type: "GET",
+   			dataSrc: ''
+   		},
+   		columns:[
+   			{data: "companyNo"},
+   			{data: "companyName"},
+   			{data: "div"},
+   			{data: "name"},
+   		]
+    })
+	
+    $('#dlvryCompanys').DataTable({		// 납품업체 모달 테이블
+    	info: false,
+    	paging: false,
+    	ajax: {
+   			url: 'getCompanys.do',
+   			type: "GET",
+   			dataSrc: ''
+   		},
+   		columns:[
+   			{data: "companyNo"},
+   			{data: "companyName"},
+   			{data: "div"},
+   			{data: "name"},
+   		]
+    })
+} );
+// 모달창 테이블 끝
+// ========================================================================	
+	
+// =======================================================
+// [박진석|24.11.25] 납품업체 모달 테이블 행 클릭 시 input출력 및 선택
+function DlvrycomListShow() {
+	let comsTblTrs = document.querySelectorAll("#dlvryCompanys tr");
+
+	for(let i = 1; i < comsTblTrs.length; i++) {
+		comsTblTrs[i].addEventListener("click", getDlvryCompanyInfo);
+	}
+}
+
+let dlvryComNo;
+let dlvryComNm;
+
+function getDlvryCompanyInfo(e) {
+	dlvryComNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+	dlvryComNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+	
+	document.querySelector("#selectedDlvryComNm").value = dlvryComNm;
+	document.querySelector("#selectedDlvryComNo").value = dlvryComNo;
+}
+
+//document.querySelector("#comModalConfirm").addEventListener("click", comModalOk)
+
+function dlvryComModalConfirm() {
+	document.querySelector("#updDlvryLocNm").value = dlvryComNm;
+	document.querySelector("#updDeliveryLocation").value = dlvryComNo;
+	
+	dlvryComNm = "";
+	dlvryComNo = "";	
+}
+
+// 납품업체 모달 테이블 행 클릭시 input 출력 선택 끝
+// =======================================================	
+	
+	
+
+//========================================================================
+//[박진석|241127] 테이블 1, 2, 3 생성
+var Grid = tui.Grid;
+
+const grid1 = new Grid({
+	el: document.getElementById('grid1'),
+	columns: [
+		{
+			header: '생산계획 고유번호',
+			name: 'productionPlanNo',
+		},
+		{
+			header: '제품명',
+			name: 'productCode',
+		},
+		{
+			header: '계획량',
+			name: 'planQuantity',
+		},
+		{
+			header: '마감일',
+			name: 'lastDate',
+		}
+	]
+})
+
+// 생산계획 데이터 가져와서 grid1에 뿌림	
+$.ajax({
+	url: "getPrdtPlanList",
+    type: "GET",
+    data: {},
+    success: function(data){
+        console.log(data);
+        grid1.resetData(data);
+        
+    },
+    error: function(result){
+ 	   alert("조회에 실패하였습니다.");
+ 	   console.log(result);
+ 	}
+});
+
+
+const grid2 = new Grid({
+	el: document.getElementById('grid2'),
+	columns: [
+		{
+			header: '제품코드',
+			name: 'productionDetailNo',
+		},
+		{
+			header: '제품명',
+			name: 'productCode',
+		},
+		{
+			header: '계획수량',
+			name: 'planQuantity',
+		},
+		{
+			header: '단위',
+			name: 'unit',
+		},
+		{
+			header: '기타사항',
+			name: 'other',
+		},
+		
+	]
+})
+
+const grid3 = new Grid({
+	el: document.getElementById('grid3'),
+	columns: [
+		{
+			header: '재료코드',
+			name: '',
+		},
+		{
+			header: '재료명',
+			name: '',
+		},
+		{
+			header: '계획수량',
+			name: '',
+		},
+		{
+			header: '단위',
+			name: '',
+		},
+		{
+			header: '기타사항',
+			name: '',
+		},
+	]
+})
+
+// Toast Grid 테이블 생성 끝
+//========================================================================
+	
+	
+	
+//========================================================================
+// [박진석|241128] grid1 클릭이벤트 설정 및 grid2에 관련 데이터 뿌림
+grid1.on('click', function (ev) {
+	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
+	console.log(prdPlanNo);
+	
+	$.ajax({
+	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	    	console.log(data);
+	    	grid2.resetData(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+	
+})
+// toast grid 클릭이벤트, 데이터 읽기 끝
+//========================================================================
+</script>
+

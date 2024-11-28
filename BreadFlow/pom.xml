@@ -91,6 +91,14 @@
 			<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
 			<version>1.16</version>
 		</dependency>
+		
+		<!-- Bcrypt -->
+		<dependency>
+		    <groupId>org.mindrot</groupId>
+		    <artifactId>jbcrypt</artifactId>
+		    <version>0.4</version>
+		</dependency>
+
 		<!-- Spring Security -->
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
