@@ -410,19 +410,19 @@
             		data : JSON.stringify(checkBoxArr),
             		success : function(result){
             			if (result == 0) {
-            				alert("선택하신 제품삭제가 완료되었습니다.")
+            				alert("선택하신 재료삭제가 완료되었습니다.")
             				location.reload(true);
             			} else {
-            				alert("현제 선택하신 제품이 주문중이어서 삭제가 불가능합니다."); 
+            				alert("현재 선택하신 재료가 주문품목에 등록되어 삭제가 불가능합니다."); 
             			}
             		},
             		error : function(xhr, status, error){
-            			alert("제품 삭제에 실패했습니다.");
+            			alert("재료 삭제에 실패했습니다.");
             		}
             		
             	});
     	  	} else {
-    	  		alert("삭제하실 제품을 선택해주세요")
+    	  		alert("삭제하실 재료를 선택해주세요")
     	  	}
         }			
         

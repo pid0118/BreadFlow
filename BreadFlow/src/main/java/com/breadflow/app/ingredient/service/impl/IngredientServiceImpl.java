@@ -3,6 +3,7 @@ package com.breadflow.app.ingredient.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.ingredient.mapper.IngredientMapper;
 import com.breadflow.app.ingredient.service.IngredientService;
@@ -45,10 +46,19 @@ public class IngredientServiceImpl implements IngredientService{
 	}
 	
 	// 원부재료 삭제
+	@Transactional
 	@Override
-	public int deleteIngredient(IngredientVO ingredientVO) {
+	public int deleteIngredient(List<String> ingredientCode) {
 		
-		return ingredientMapper.deleteIngredient(ingredientVO);
+	int count = ingredientMapper.selectOrderingIngredientCnt(ingredientCode);
+			
+			if (count == 0) {
+				for(int i = 0;i < ingredientCode.size();i++ ) {
+					ingredientMapper.deleteIngredient(ingredientCode.get(i));
+				}	
+			}
+		
+		return count;
 	}
 
 	@Override

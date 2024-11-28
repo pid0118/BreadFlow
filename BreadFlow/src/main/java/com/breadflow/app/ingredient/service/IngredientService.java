@@ -17,12 +17,12 @@ public interface IngredientService {
 	public int updateIngredient(IngredientVO ingredientVO);
 		
 	// 원부재료 삭제
-	public int deleteIngredient(IngredientVO ingredientVO);
+	public int deleteIngredient(List<String> ingredientCode);
 	
 	//재료코드 불러오기
 	public String selectIngredientCode();
 	
 	// 제품명 단건조회 / 중복값 제거위해
 	public String selectIngredientName(String productName, String productCode);
-	
+
 }
