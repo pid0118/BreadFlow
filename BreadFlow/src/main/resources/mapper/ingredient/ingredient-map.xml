@@ -24,6 +24,7 @@
 			   major,
 			   sub,
 			   origin,
+			   unit,
 			   find_cd(unit) as unit_name,
 			   standard,
 			   safe_stock_quantity,
@@ -92,6 +93,16 @@
 		DELETE FROM ingredient
 		Where ingredient_code = #{ingredientCode}
 	</delete>
+	
+	<!-- 삭제 조건 주문중 재품찾기 -->
+	<select id="selectOrderingIngredientCnt" resultType="int">
+		SELECT  COUNT(ordering_ingredient)
+		FROM	ordering_detail
+		WHERE	ordering_ingredient IN 
+		<foreach item="ingredientCode" index="index" collection="list" open="(" separator="," close=")">
+			#{ingredientCode}
+		</foreach>
+	</select>
 	
 	<!-- 제품명 단건조회 -->
 	<select id="selectIngredientName" resultType="IngredientVO">

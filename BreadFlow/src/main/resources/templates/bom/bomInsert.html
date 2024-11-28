@@ -306,13 +306,6 @@
 		         alert('저장되었습니다.');
 		    });
 	
-	        // 취소 버튼
-	        $('#cancelButton').on('click', function () {
-	            if (confirm('변경사항을 취소하시겠습니까?')) {
-	                location.reload();
-	            }
-	        });
-	        
 	     	// 품목 추가 (발주 신청 테이블)
 			itemAdd.addEventListener('click', function() {
 				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');

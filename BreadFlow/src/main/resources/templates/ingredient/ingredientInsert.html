@@ -288,7 +288,7 @@
 		     			success : function (data) {
 		     				if (data == 1) {
 		     					alert("재료 등록에 성공하였습니다.");
-		     					location.href = "/inredientList";
+		     					location.href = "/ingredientList";
 		     				} else {
 		     					alert("등록에 실패했습니다.");
 		     				}
@@ -316,7 +316,7 @@
         			console.log(res);
         			sameCheck = true;
         		}).fail((err)=>{
-        			alert("이미등록된 재품이거나 재품명이 중복되었습니다")
+        			alert("이미등록된 재료이거나 재료명이 중복되었습니다")
         			console.log(err);
         			sameCheck = false;
         		});
@@ -329,7 +329,7 @@
 	     	
 	     	 // 취소 버튼 처리
             $('#cancelBtn').click(function() {
-                window.location.href = '/inredientList';
+                window.location.href = '/ingredientList';
             });
 	     	
     </script>

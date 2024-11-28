@@ -6,10 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.common.service.CategoryService;
@@ -36,18 +39,17 @@ public class IngredientController {
 	private final ComCodeService comCodeService;
 	
 	// 전체 조회
-	@GetMapping("inredientList")
+	@GetMapping("ingredientList")
 	public String selectIngredientList(IngredientVO ingredientVO, Model model) {
 		// 제품 리스트
 		List<IngredientVO> list = ingredientService.selectIngredientList(ingredientVO);
-				
 		// 카테고리
 		List<CategoryVO> category = categoryService.selectCategorySub("재료");
-				
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		
 		model.addAttribute("ingredients", list);
 		model.addAttribute("category", category);
-				
-		
+		model.addAttribute("codeVal" , codeVal);		
 		return "ingredient/ingredientList";
 	}
 	
@@ -57,6 +59,7 @@ public class IngredientController {
 	public IngredientVO selectProduct(@PathVariable String ingredientCode, Model model) {
 		
 		IngredientVO ingredientVO = ingredientService.selectIngredient(ingredientCode);
+		
 		
 		return ingredientVO;
 	}
@@ -71,15 +74,31 @@ public class IngredientController {
 		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
 		
 		model.addAttribute("ingredientCode", ingredientCode);
-		
 		model.addAttribute("category", category);
 		model.addAttribute("codeVal", codeVal);
 		
 		return "ingredient/ingredientInsert";
 	}
 	
-	// 원/부재료 수정/삭제(공용사용) 페이지
-
+//	// 원/부재료 수정/삭제(공용사용) 페이지
+//	@GetMapping("ingredientUpdate")
+//	public String ingredientUpdateForm(@RequestParam String ingredientCode, Model model) {
+//		
+//		IngredientVO ingredient =  ingredientService.selectIngredient(ingredientCode);
+//		
+//		String major = ingredient.getMajor();
+//		
+//		List<CategoryVO> category = categoryService.selectCategorySub("재료");
+//		List<CategoryVO> sub = categoryService.selectCategorySub(major);
+//		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+//		
+//		model.addAttribute("ing", ingredient);
+//		model.addAttribute("category" , category);
+//		model.addAttribute("sub" , sub);
+//		model.addAttribute("codeVal" , codeVal);
+//		
+//		return "ingredient/ingredientUpdate";
+//	}
 	
 
 	// 상품명 중복체크
@@ -107,10 +126,20 @@ public class IngredientController {
 	
 	
 	// 수정 기능처리
+	@ResponseBody
+	@PutMapping("ingredient")
+	public int ingredientUpdateProcess(@RequestBody IngredientVO ingredientVO) {
+		return ingredientService.updateIngredient(ingredientVO);
+	}
 	
 	
 	// 삭제 기능처리
-	
+	@DeleteMapping("ingredient")
+	@ResponseBody
+	public int ingredientDelete(@RequestBody List<String> checkBoxArr) {
+		
+		return ingredientService.deleteIngredient(checkBoxArr);
+	}
 	
 	
 }
