@@ -13,33 +13,6 @@
 			<h2 class="text-black">불량 내역 상세 조회</h2>
 		</div>
 		<form>
-		<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
-			<label class="btn btn-outline-secondary active">
-				<input type="radio" name="options" value="전체" id="seeAll" autocomplete="off" checked>전체
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="미확인" id="seeUnchecked" autocomplete="off">미확인
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="확인" id="seeChecked" autocomplete="off">확인
-			</label>
-		</div>
-		<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
-			<label class="btn btn-outline-secondary active">
-				<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-			</label>
-			<label class="btn btn-outline-secondary">
-				<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-			</label>
-		</div>
-		<div class="pd-20 input-group">
-			<input class="form-control" type="date" id="startDate">
-			<input class="form-control" type="date" id="endDate">
-			<button type="button" class="btn btn-primary input-group-button" id="dateFilterBtn">검색</button>
-		</div>
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
@@ -58,14 +31,11 @@
 						<td style="display:none;" th:text="${infer.inferDetailCode}"></td>
 						<td th:text="${infer.instoreDate}"></td>
 						<td th:text="${infer.confirmLocation}"></td>
-						<td th:text="${infer.inferImage}"></td>
+						<td><img id="inferImage" src="/imgs/${infer.inferImage}" alt="" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
 						<td th:text="${infer.disposalWhether}"></td>
 						<td th:text="${infer.confirmWhether}"></td>
-						<!-- <td style="display:none;" th:text="${infer.inferApplicationDate}"></td>
-						<td style="display:none;" th:text="${infer.manager}"></td>
-						<td style="display:none;" th:text="${infer.answerer}"></td> -->
 					</tr>
 				</tbody>
 			</table>
@@ -74,116 +44,39 @@
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>불량 일자</label>
-					<input class="form-control" type="date" name="inferDate" id="inferDate" readonly>
+					<input class="form-control" type="date" name="inferDate" id="inferDate" th:value="${answer.inferApplicationDate}" readonly>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>처분</label>
-					<input class="form-control" type="text" name="disposalType" id="disposalType" readonly>
+					<input class="form-control" type="text" name="disposalType" id="disposalType" th:value="${answer.disposalWhether}" readonly>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>담당자</label>
-					<input class="form-control" type="text" name="inferMember" id="inferMember" readonly>
+					<input class="form-control" type="text" name="inferMember" id="inferMember" th:value="${answer.manager}" readonly>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>확인 위치</label>
-					<input class="form-control" type="text" name="confirmLocation" id="confirmLocation" readonly>
+					<input class="form-control" type="text" name="confirmLocation" id="confirmLocation" th:value="${answer.confirmLocation}" readonly>
 				</div>
 			</div>
 			<div class="form-group">
 				<label>답변자</label>
-				<input class="form-control" type="text" name="writerMember" id="writerMember" readonly>
+				<input class="form-control" type="text" name="writerMember" id="writerMember" th:value="${answer.answerer}" readonly>
 			</div>
 			<input id="inferNo" th:value="${inferNo}" style="display:none;" readonly>
 		</div>
 		<div class="pd-20">
 			<div class="form-group">
-				<textarea class="form-control" name="answer" id="answer" readonly></textarea>
+				<textarea class="form-control" name="answer" id="answer" th:value="${answer.answer}" readonly></textarea>
 			</div>
 		</div>
 		</form>
 	</div>
-	
-	<script>
-	
-	 	// 조건
-	 	var clearTable = null;
-		var checked = null;
-		var unchecked = null;
-		var confirmComp = null;
-   	
-        $(document).ready(function() {
-
-            // 기본 내역 출력
-            changeFilter();
-            
-            function clear() {
-            	clearTable = null;
-    			checked = null;
-    			unchecked =  null;
-    			confirmComp = null;
-            }
-            
-            function confirmExClear() {
-    			confirmComp = null;
-            }
-            
-            // 전체 내역 버튼 클릭
-            $("#seeAll").click(function() {
-            	$("#confirmCompBtn").text('확인 위치');
-            	clear();
-            	changeFilter();
-            });
-            
-            // 미확인 내역 버튼 클릭
-            $("#seeUnchecked").click(function() {
-            	$("#confirmCompBtn").text('확인 위치');
-            	unchecked = '미확인';
-            	checked = null;
-            	clearTable = 'notClear';
-            	confirmExClear();
-            	changeFilter();
-            });
-
-            // 확인 내역 버튼 클릭
-            $("#seeChecked").click(function() {
-            	$("#confirmCompBtn").text('확인 위치');
-            	checked = '확인';
-            	unchecked = null;
-            	clearTable = 'notClear';
-            	confirmExClear();
-            	changeFilter();
-            });
-
-            // 날짜 필터 버튼 클릭
-            $("#dateFilterBtn").click(function() {
-                var startDate = $("#startDate").val();
-                var endDate = $("#endDate").val();
-                filterData(startDate, endDate);
-            });
-
-        });
-        
-        // 기간 검색
-        function filterData(startDate, endDate) {
-            var start = new Date(startDate);
-            var end = new Date(endDate);
-            $("#inferHistoryTable tr").each(function() {
-                var rowDate = $(this).find(".date").text().trim();
-                var rowDateObj = new Date(rowDate);
-                if (rowDateObj >= start && rowDateObj <= end) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-        
-    </script>
 </body>
 </html>

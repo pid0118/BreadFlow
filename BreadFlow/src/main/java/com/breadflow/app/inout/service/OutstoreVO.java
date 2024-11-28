@@ -19,6 +19,7 @@ public class OutstoreVO {
 	private String ordersDetailNo;
 	private String instoreNo;
 	private String salesNo;
+	private String orderingDetailCode;
 	
 	private String unit;
 	private String standard;

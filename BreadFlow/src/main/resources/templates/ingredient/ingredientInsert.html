@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/breadflow_layout}"
+      layout:fragment="Content">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>원/부재료 등록</title>
+    <style>
+        .content-area {
+            min-height: calc(100vh - 60px);
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        
+        .form-container {
+            background-color: white;
+            height: 100%;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #e6e6fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .form-control-sm, .form-select-sm {
+            height: 30px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        .form-label {
+            margin-bottom: 0.2rem;
+            font-size: 0.875rem;
+        }
+
+        .action-buttons {
+            padding: 4px 16px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-area">
+        <div class="form-container">
+            <h4 class="mb-4">원/부재료 등록</h4>
+
+            <form>
+                <div class="row g-4">
+				    <div class="col-md-4">
+				        <div class="image-placeholder" id="imagePreview">
+				            <span>이미지</span>
+				        </div>
+				        <input type="file" class="d-none" id="image" accept="image/*">
+				        <input type="hidden" id="ingredientImage">
+				    </div>
+				
+				    <!-- 나머지 항목들을 3개씩 배치 -->
+				    <div class="col-md-8">
+				        <div class="row g-3">
+				            <!-- 1번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">재료코드</label>
+				                <input type="text" class="form-control form-control-sm" id="ingredientCode" th:value="${ingredientCode}" readonly>
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">재료명</label>
+				                <input type="text" class="form-control form-control-sm" id="ingredientName">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">규격</label>
+				                <input type="text" class="form-control form-control-sm" id="standard">
+				            </div>
+				            <!-- 2번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">소비기한</label>
+				                <input type="text" class="form-control form-control-sm" id="expirationDeadline">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">구매가</label>
+				                <input type="text" class="form-control form-control-sm" id="purchasePrice">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">원산지</label>
+				                <input type="text" class="form-control form-control-sm" id="origin">
+				            </div>
+				            <!-- 3번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">안전재고 수량</label>
+				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">용량</label>
+				                <input type="text" class="form-control form-control-sm" id="amount">
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">단위</label>
+				                <select class="form-select form-select-sm" id="unit">
+				                    <option selected>선택하세요</option>
+				                    <th:block th:each="code : ${codeVal}">
+				                        <option th:value="${code.codeRule}" th:text="${code.codeVal}"></option>
+				                    </th:block>
+				                </select>
+				            </div>
+				            <!-- 4번째 줄 -->
+				            <div class="col-md-4">
+				                <label class="form-label">대분류</label>
+				                <select class="form-select form-select-sm" id="mainCategory">
+				                    <option selected>선택하세요</option>
+				                    <th:block th:each="cate : ${category}">
+				                        <option th:value="${cate.sub}" th:text="${cate.sub}"></option>
+				                    </th:block>
+				                </select>
+				            </div>
+				            <div class="col-md-4">
+				                <label class="form-label">소분류</label>
+				                <select class="form-select form-select-sm" id="subCategory">
+				                    <option selected>선택하세요</option>
+				                </select>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+				
+                <div class="text-end mt-4">
+                    <button type="button" class="btn btn-primary action-buttons" onclick="insertIngredient()">등록</button>
+                    <button type="button" class="btn btn-secondary action-buttons" id="cancelBtn">취소</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+        	
+            // 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
+
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = $('<img>').attr('src', e.target.result);
+                        $('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+        	// 이미지 업로드    
+        		
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        			
+        			$("#ingredientImage").val(data);
+        			}
+        		});
+        	});
+        
+        	
+        	
+            });
+    	        
+	            
+            
+         	// 카테고리 변경 처리
+        	var subCategory = $('#subCategory');
+    
+            $("#mainCategory").change(function() {
+                const category = this.value;
+                
+                /* $.ajax({
+                	url : "/category/subList?major="+ category,
+                	method : "get",
+                	success : function (data) {
+                		console.log(data)
+                	},
+                	error : function (err) {
+                		console.log(err)
+                	}
+                	
+                }); */
+               // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
+                if (category === "") {
+                    subCategory.empty().append('<option selected>선택하세요</option>');
+                    return;
+                }
+
+                fetch("/category/subList?major=" + category)
+                    .then(response => response.json())
+                    .then(response => {
+                        // 기존 옵션을 지운 후 새로운 옵션 추가
+                        subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
+                        for (let item of response) {
+                            subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error)); // 오류 처리 
+            });
+         
+	     	// 제품등록
+	     	// NOT NULL값 미입력시 알림 및 등록 불가
+	     	function insertIngredient() {
+	     		
+	     		if($("#ingredientName").val()==''){
+	     			alert("제품명을 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#purchasePrice").val() == ''){
+	     			alert("구매가를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#safeStockQuantity").val() == ''){
+	     			alert("안전재고 수량을 입력주세요")
+	     			return;
+	     		}
+	     		if($("#origin").val() == ''){
+	     			alert("원산지를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#amount").val() == ''){
+	     			alert("양를 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#unit option:selected").val() == '선택하세요'){
+	     			alert("단위를 선택해주세요")
+	     			return;
+	     		}
+	     		if($("#mainCategory option:selected").val() == '선택하세요'){
+	     			alert("대분류를 선택해주세요")
+	     			return;
+	     		}
+	     		if($("#subCategory option:selected").val() == '선택하세요'){
+	     			alert("소분류를 선택해주세요")
+	     			return;
+	     		}
+	     		if(sameCheck == false){
+	     			alert("재료명이 중복되거나 재료가 등록되어있습니다")
+	     			return;
+	     		}
+	     		
+	     		if (confirm("재료를 등록하시겟습니까?")) {
+	     			$.ajax({
+		     			url : "/ingredient",
+		     			method : "post",
+		     			data : JSON.stringify({
+		     				"ingredientCode" : $("#ingredientCode").val(),
+		     				"ingredientName" : $("#ingredientName").val(),
+		     				"standard" : $("#standard").val(),
+		     				"expirationDeadline" : $("#expirationDeadline").val(),
+		     				"purchasePrice" : $("#purchasePrice").val(),
+		     				"origin" : $("#origin").val(),
+		     				"safeStockQuantity" : $("#safeStockQuantity").val(),
+		     				"unit" : $("#unit option:selected").val(),
+		     				"major" : $("#mainCategory option:selected").val(),
+		     				"sub" : $("#subCategory option:selected").val(),
+		     				"amount" : $("#amount").val(),
+		     				"ingredientImage" : $("#ingredientImage").val()
+		     			}),
+		     			contentType : 'application/json',
+		     			dataType : "json",
+		     			success : function (data) {
+		     				if (data == 1) {
+		     					alert("재료 등록에 성공하였습니다.");
+		     					location.href = "/inredientList";
+		     				} else {
+		     					alert("등록에 실패했습니다.");
+		     				}
+		     			}, 
+		     			error : function (err) {
+		     				console.log(err);
+		     			}
+		     			
+		     		});
+	     		} else {
+	     			return;
+	     		}
+	     	}  
+        	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
+        	let sameCheck = false;
+        	
+        	$("#ingredientName").on('change', function(){
+        		let data = { productName: $('#ingredientName').val() };
+        		
+        		$.ajax({
+        			url:"/ingredientNameCheck",
+        			type: "post",
+        			data: data,
+        		}).done((res)=> {
+        			console.log(res);
+        			sameCheck = true;
+        		}).fail((err)=>{
+        			alert("이미등록된 재품이거나 재품명이 중복되었습니다")
+        			console.log(err);
+        			sameCheck = false;
+        		});
+        		
+        	});
+	     	
+	     	
+	     	
+	     	
+	     	
+	     	 // 취소 버튼 처리
+            $('#cancelBtn').click(function() {
+                window.location.href = '/inredientList';
+            });
+	     	
+    </script>
+</body>
+</html>

@@ -85,6 +85,7 @@ public class PrdtplanController {
 		int result = prdtplanService.updatedetailForProgress(prdtplanVO);
 		return result;
 	}
+
 	
 	@GetMapping("getProducts")
 	@ResponseBody
@@ -129,4 +130,5 @@ public class PrdtplanController {
 		int result = prdtplanService.insertPrdtplanDetailsForSelf(list);
 		return result;
 	}
+
 }

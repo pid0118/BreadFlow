@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+  <body>
+ 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart1"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart2"></div>
+	</div>
+ 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart3"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart4"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart5"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart6"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart7"></div>
+	</div>
+	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
+		<div id="chart8"></div>
+	</div>
+		
+	<script src="/plugins/highcharts-6.0.7/code/highcharts.js"></script>
+	<script src="https://code.highcharts.com/highcharts-3d.js"></script>
+	<script src="/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
+	<script>
+		sales();
+		let curYear = 2024;
+		
+		let chartAry = [];
+		function sales(){
+			fetch("/saleChart", {
+				method: "POST"
+			})
+			.then(res => res.json())
+			.then(data => {
+				let monSales = {};
+				data.forEach(ele => {
+					let saleDate = ele.saleDate;
+					let yearMon = saleDate.substring(0, 6);
+					let daySales = ele.daySales;
+					
+					if(monSales[yearMon]){
+						monSales[yearMon] += daySales;
+					}
+					else{
+						monSales[yearMon] = daySales;
+					}
+				});
+				let months = [];
+				let salesData = [];
+	            for (let i = 1; i <= 12; i++) {
+	                let month = i < 10 ? '0' + i : i.toString();
+	                let yearMon = curYear + month;
+
+	                months.push(month); // 월 추가
+	                salesData.push(monSales[yearMon] || 0);
+	            }
+
+	            // 차트 함수 호출
+	            chartist(months, salesData);
+			})
+		}
+
+		// chart3
+		function chartist(months, salesData){
+			Highcharts.chart('chart4', {
+				chart: {
+					type: 'column'
+				},
+				title: {
+					text: curYear + '년 월 매출 그래프'
+				},
+				subtitle: {
+					text: 'Oh! Bbang'
+				},
+				xAxis: {
+					categories: months,
+					crosshair: true
+				},
+				yAxis: {
+					min: 0,
+					title: {
+						text: '매출액 (원)'
+					}
+				},
+				tooltip: {
+					headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+					pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:} 원</b></td></tr>',
+					footerFormat: '</table>',
+					shared: true,
+					useHTML: true
+				},
+				plotOptions: {
+					column: {
+						pointPadding: 0.2,
+						borderWidth: 0
+					}
+				},
+				series: [{
+					name: '매출액',
+					data: salesData
+				}]
+			});
+			
+		}
+	</script>
+  </body>
+</html>

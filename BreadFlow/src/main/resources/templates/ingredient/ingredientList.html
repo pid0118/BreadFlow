@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/breadflow_layout}"
+      layout:fragment="Content">
+<head>
+    <meta charset="UTF-8">
+    <title>원/부재료 목록</title>
+    <style>
+        .clickable {
+            cursor: pointer;
+            color: #0d6efd;
+        }
+        .clickable:hover {
+            text-decoration: underline;
+        }
+        /* Remove sort arrows */
+        th.datatable::after,
+        th.datatable::before,
+        th.table-plus::after,
+        th.table-plus::before {
+            display: none !important;
+        }
+        /* Search styling */
+        .search-container {
+            display: flex;
+            gap: 8px;
+        }
+        .search-input {
+            padding: 4px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-button {
+            padding: 4px 16px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .search-button:hover {
+            background-color: #5a6268;
+        }
+			/* 검색 입력 필드 스타일 조정 */
+	    .dataTables_filter input {
+	        height: 31px;
+	        padding: 0.25rem 0.5rem;
+	        font-size: 0.875rem;
+	        line-height: 1.5;
+	        border-radius: 0.2rem;
+	    }
+	    .custom-box {
+		    white-space: nowrap;
+		    display: inline-block;
+		    min-width: 100px; /* 최소 너비 설정 */
+		    width: auto;      /* 내용에 따라 가로로만 크기 조정 */
+		}
+		.tdimgs{
+			width: 40px;
+		}
+    </style>
+</head>
+<body>
+    <h2 class="mb-4">원/부재료 목록</h2>
+    <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
+        <div class="col-md-3">
+            <div class="form-group">
+                <select id="categorylist"
+                	class="selectpicker form-control form-control-sm" data-size="5"
+                    data-style="btn-outline-secondary btn-sm">
+                    <option value="">선택</option>
+                    <th:block th:each="cate : ${category}">
+                    	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
+                    </th:block>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <select id="subList"
+                	class="selectpicker form-control form-control-sm" data-size="5"
+                    data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
+                </select>
+            </div>
+        </div>
+    </div>
+    
+	<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
+    <div id="dtSearch"></div>
+    <div>
+        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/ingredientInsert}'|">등록</button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
+    </div>
+	</div>
+    
+    <!-- 데이터 테이블 시작 -->
+    <div class="pb-20">
+        
+        <table class="data-table table stripe hover wrap" id="ingredientTable">
+            <thead>
+                <tr style="text-align : center;">
+                	<th class="datatable">
+	                	<div class="dt-checkbox">
+	                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
+	                            <span class="dt-checkbox-lable"></span>
+	                    </div>
+                	</th>
+                    <th class="table-plus">재료코드</th>
+                    <th class="datatable">재료명</th>
+                    <th class="datatable">대분류</th>
+                    <th class="datatable">소분류</th>
+                    <th class="datatable">원산지</th>
+                    <th class="datatable">단위</th>
+                    <th class="datatable">규격</th>
+                    <th class="datatable">안전재고량</th>
+                    <th class="datatable">이미지</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <th:block th:each="info : ${ingredients}">
+                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
+                    	<td>
+                    		<div class="dt-checkbox">
+                                <input type="checkbox" id="checkingredientCode" name="checkingredientCode">
+                                <span class="dt-checkbox-lable"></span>
+                        	</div>
+                    	</td>  
+	                    <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientCode}]]</td>
+                        <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientName}]]</td>
+                        <td class="major">[[${info.major}]]</td>
+                        <td class="sub">[[${info.sub}]]</td>
+                        <td>[[${info.origin}]]</td>
+                        <td>[[${info.unitName}]]</td>
+                        <td>[[${info.standard}]]</td>
+                        <td>[[${info.safeStockQuantity}]]</td>
+                        <td>
+                        	<img th:src="|/imgs/${info.ingredientImage}|" class="tdimgs">
+				        </td>
+                    </tr>
+                </th:block>
+            </tbody>
+        </table>
+    </div>
+	
+    <!-- 제품상세보기 모달창 -->
+	<div class="modal fade" id="ingredientDetailModal" tabindex="-1" role="dialog" aria-labelledby="ingredientDetailModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg modal-dialog-centered">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title" id="ingredientDetailModalLabel">제품 상세정보</h4>
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	            </div>
+	            <div class="modal-body">
+	                <div class="row">
+	                    <div class="col-md-4 text-center mb-3">
+	                        <img id="ingredientImage" src="" alt="" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+	                    </div>
+	                    <div class="col-md-8">
+	                        <div class="row row-cols-4">
+	                            <div class="col mb-3">
+	                                    <strong>재료코드</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="ingredientCode"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>재료명</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="ingredientName"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>원산지</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="origin"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>규격</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="standard"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>안전재고수량</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="safeStockQuantity"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>소비기한</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="expirationDeadline"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>매입가격</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="purchasePrice"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>양</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="amount"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>단위</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="unit"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>대분류</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="major"></div>
+	                                </div>
+	                            </div>
+	                            <div class="col mb-3">
+	                                    <strong>소분류</strong>
+	                                <div class="border rounded p-2 h-80 custom-box">
+	                                    <div id="sub"></div>
+	                                </div>
+	                            </div>
+	                            <input type="hidden" id="ingredientCodes"/>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="updatePage()">수정</button>
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+
+	<script>
+	// 가격에 , 찍기
+	  
+    
+    // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
+		function showingredientDetail(ingredientCode) {
+		    $.ajax({
+		        url: '/ingredient/' + ingredientCode,
+		        method: 'GET',
+		        success: function(ingredient) {
+		        	
+		            document.getElementById('ingredientImage').src = '/imgs/' + ingredient.ingredientImage;
+		            document.getElementById('ingredientImage').alt = ingredient.ingredientName;
+		            document.getElementById('ingredientCode').textContent = ingredient.ingredientCode;
+		            document.getElementById('ingredientName').textContent = ingredient.ingredientName;
+		            document.getElementById('origin').textContent = ingredient.origin;
+		            document.getElementById('standard').textContent = ingredient.standard;
+		            document.getElementById('safeStockQuantity').textContent = formatNumber(ingredient.safeStockQuantity);
+		            document.getElementById('expirationDeadline').textContent = formatNumber(ingredient.expirationDeadline) + '일';
+		            document.getElementById('purchasePrice').textContent = formatNumber(ingredient.purchasePrice);
+		            document.getElementById('amount').textContent = formatNumber(ingredient.amount);
+		            document.getElementById('unit').textContent = ingredient.unitName;
+		            document.getElementById('major').textContent = ingredient.major;
+		            document.getElementById('sub').textContent = ingredient.sub;
+		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
+		            $('#ingredientDetailModal').modal('show');
+		        },
+		        error: function(xhr, status, error) {
+		            alert('제품 정보를 불러오는데 실패했습니다.');
+		        }
+		    });
+		}
+		
+		function formatNumber(number) {
+		    return number.toLocaleString(); // 숫자에 콤마 추가
+		}	
+	
+        let myTable ;
+        // 모달 close handlers
+        $(document).ready(function() {
+            // Close on X button
+            $('.close').on('click', function() {
+                $('#ingredientDetailModal').modal('hide');
+            });
+            
+            // Close on close button
+            $('.btn-secondary[data-dismiss="modal"]').on('click', function() {
+                $('#ingredientDetailModal').modal('hide');
+            });
+            
+            // Close on outside click
+            $('#ingredientDetailModal').on('click', function(e) {
+                if ($(e.target).hasClass('modal')) {
+                    $('#ingredientDetailModal').modal('hide');
+                }
+            });
+
+           // Initialize DataTable without sorting 데이터테이블 사용 설정
+           myTable = $('.data-table').DataTable({
+                "ordering": false,
+                "info": false,         
+                "lengthChange": false ,
+                language: {
+                    search: "검색:",
+                    paginate: {
+                        first: "처음",
+                        last: "마지막",
+                        next: "다음",
+                        previous: "이전"
+                    }                    
+                }
+            });
+            
+            
+           var mySelect = $('#categorylist');
+           var mySelect2 = $('#subList');
+           
+           $('#categorylist').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+     			const category = e.target.options[clickedIndex].value
+     			mySelect2.empty()
+     			
+     	        	// ajax
+     	        	fetch("category/subList?major="+category)
+     	        	.then(response => response.json())
+     	        	.then(response => {
+     	        		
+     	        		for(item of response){
+     	        			mySelect2.append(`<option>${item.sub}</option>`)
+     	        		}
+     	        		mySelect2.selectpicker('refresh');
+     	        	})
+     	        myTable.draw();
+     	   });
+   		
+           $('#subList').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+     			myTable.draw()
+           });
+           
+        });
+        
+        // 카테고리 선택시 테이블에 카테고리 선택항목만 열람
+        $.fn.dataTable.ext.search.push(function(setting, data, dataIndex){
+        	
+        	var trNode = setting.aoData[dataIndex].nTr;
+            var attr1 = trNode.getAttribute("data-major");
+            var attr2 = trNode.getAttribute("data-sub");
+        	
+        	var val1 = $('#categorylist').val();
+        	var val2 = [];
+        	
+        	$('#subList option:selected').each((idx, element) => val2.push(element.value))
+        	console.log(attr2, val2)
+        	if((val1 === "" || val1 === attr1) &&
+        	 (val2.length == 0 || val2.includes(attr2))){
+        		return true;
+        	}
+        	return false;
+        });
+        	
+        
+        // 체크박스 체크후 삭제버튼 클릭시 해당품목을 삭제하시겠습니까? 작은모달창 질문후 예 버튼 클릭시 해당 품목삭제기능 
+        $(document).ready(function() {
+		    // 전체 선택 체크박스 클릭 시
+		    $('#example-select-all').on('click', function() {
+		        var isChecked = $(this).prop('checked');  // 체크 여부 확인
+		        // tbody의 모든 체크박스에 동일한 상태 적용
+		        $('#ingredientTable tbody input[type="checkbox"]').prop('checked', isChecked);
+		    });
+		
+		    // 개별 체크박스 클릭 시
+		    $('#ingredientTable tbody').on('change', 'input[type="checkbox"]', function() {
+		        // 모든 체크박스가 선택되었으면 thead의 체크박스를 체크
+		        var totalCheckboxes = $('#ingredientTable tbody input[type="checkbox"]').length;
+		        var checkedCheckboxes = $('#ingredientTable tbody input[type="checkbox"]:checked').length;
+		
+		        // 전체 체크박스가 다 선택되었으면 thead 체크박스를 체크
+		        if (totalCheckboxes === checkedCheckboxes) {
+		            $('#example-select-all').prop('checked', true);
+		        } else {
+		            // 하나라도 선택되지 않으면 thead 체크박스를 해제
+		            $('#example-select-all').prop('checked', false);
+		        }
+		    });
+            
+		    
+		    
+		    
+		});
+        
+      //체크박스 클릭시 삭제하기 기능 전체삭제까지
+		function checkBoxDeleteClick(){
+    	  
+    	  	var checked = $("[name='checkingredientCode']").is(':checked');
+    	  	
+    	  	if (checked){
+    	  		let delcheck = confirm("선택하신 제품을 삭제하시겠습니까?")
+        	  	if(delcheck == false){
+        	  		return
+        	  	}
+            	var checkBoxArr = [];
+            	$("[name='checkingredientCode']:checked").each(function(){
+            		checkBoxArr.push($(this).closest('td').next().text()); // 체크된 항목 값 배열에 push
+            	})
+            	$.ajax({
+            		url : "ingredient",
+            		type : "DELETE",
+            		contentType : 'application/json',
+            		data : JSON.stringify(checkBoxArr),
+            		success : function(result){
+            			if (result == 0) {
+            				alert("선택하신 제품삭제가 완료되었습니다.")
+            				location.reload(true);
+            			} else {
+            				alert("현제 선택하신 제품이 주문중이어서 삭제가 불가능합니다."); 
+            			}
+            		},
+            		error : function(xhr, status, error){
+            			alert("제품 삭제에 실패했습니다.");
+            		}
+            		
+            	});
+    	  	} else {
+    	  		alert("삭제하실 제품을 선택해주세요")
+    	  	}
+        }			
+        
+        function updatePage() {
+        	const ingredientCode = $('#ingredientCodes').val();
+        	
+        	location.href = "ingredientUpdate?ingredientCode=" + productCode;
+        }
+            // 검색 입력 필드를 새로운 위치로 이동
+            $('.dataTables_filter').detach().appendTo('#dtSearch');
+       
+        		
+    </script>
+</body>
+</html>

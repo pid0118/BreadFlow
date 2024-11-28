@@ -23,6 +23,6 @@ public class InferAnswerVO {
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
 	private String inferApplicationDate;
-	private String confrimLocation;
+	private String confirmLocation;
 	private String confirmWhether;
 }

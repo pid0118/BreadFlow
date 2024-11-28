@@ -11,4 +11,9 @@ public interface InOutService {
 	public int instoreInsert(List<InstoreVO> instoreVO);
 	public int outstoreInsert(List<OutstoreVO> outstoreVO);
 	public List<ItemListVO> itemList();
+	
+	public int countInstore(FilterVO filterVO);
+	public int countOutstore(FilterVO filterVO);
+	public int countOrderInsert(FilterVO filterVO);
+	public int countInstoreInsert(FilterVO filterVO);
 }

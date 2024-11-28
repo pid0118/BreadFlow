@@ -79,6 +79,8 @@ public class AccountController {
 		session.setAttribute("div", acVO.getDiv());						// 권한
 		session.setAttribute("companyName", acVO.getCompanyName());		// 업체명
 		session.setAttribute("companyNo", acVO.getCompanyNo());			// 업체코드
+		session.setAttribute("companyAddress", acVO.getCompanyAddress());
+		session.setAttribute("companyTel", acVO.getCompanyTel());
 
 		return 1;		// 로그인 성공
 	}

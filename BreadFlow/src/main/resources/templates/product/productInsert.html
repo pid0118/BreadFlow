@@ -275,7 +275,7 @@
 	     		
 	     		if (confirm("제품을 등록하시겟습니까?")) {
 	     			$.ajax({
-		     			url : "/product/Insert",
+		     			url : "/product",
 		     			method : "post",
 		     			data : JSON.stringify({
 		     				"productCode" : $("#productCode").val(),

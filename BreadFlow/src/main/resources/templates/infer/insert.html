@@ -20,22 +20,6 @@
 						<input class="form-control" type="date" name="inferDate" id="inferDate">
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
-					<label>처분</label>
-						<div class="form-group">
-							<div class="btn-group btn-group-toggle" data-toggle="buttons">
-								<label class="btn btn-outline-secondary active">
-									<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-								</label>
-								<label class="btn btn-outline-secondary">
-									<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-								</label>
-								<label class="btn btn-outline-secondary">
-									<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-								</label>
-							</div>
-						</div>
-				</div>
 			</div>
 			<div class="pd-20 row">
 				<div class="col-md-6 col-sm-12">
@@ -63,6 +47,11 @@
 			<table class="table stripe hover multiple-select-row nowrap">
 				<thead>
 					<tr>
+						<th>
+							<div class="form-check">
+  								<input class="form-check-input" type="checkbox" id="checkAll">
+							</div>
+						</th>
 						<th class="table-plus">입고 일자</th>
 						<th class="datatable-nosort">품목</th>
 						<th>전체 수량</th>
@@ -125,20 +114,54 @@
                 companyInput = selectedCompanyName;
                 changeFilter();
             });
+         	
+         	// 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
+
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = $('<img>').attr('src', e.target.result);
+                        $('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+                
+        		// 이미지 업로드    
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        				$("#productImage").val(data);
+        			}
+        		});
+        	});
 
 	     	// 등록 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
 	        	
 	            // 선택된 행 추출
 	            var selectedRows = [];
-	            $("#inOutTable tr.selected").each(function() {
+	            $("#inferTable tr.selected").each(function() {
 		            var row = $(this);
 			        var data = {
-				        inferItem: row.find("td:nth-child(2)").text(),
-				        totalQuantity: row.find("td:nth-child(3)").val(),
-				        inferQuantity: row.find("td:nth-child(4) input").text(),
-				        inferType: row.find("td:nth-child(5)").text(),
-				        instoreNo: row.find("td:nth-child(6)").text(),
+				        inferItem: row.find("td:nth-child(3)").text(),
+				        totalQuantity: row.find("td:nth-child(4)").val(),
+				        inferQuantity: row.find("td:nth-child(5) input").text(),
+				        inferType: row.find("td:nth-child(6)").text(),
+				        instoreNo: row.find("td:nth-child(7)").val(),
+				        inferImage: $("#productImage").val(),
 				        confirmLocation: $("#companyName").val()
 			        };
 			        selectedRows.push(data);
@@ -187,6 +210,11 @@
 	        tbody.empty();
 	        data.forEach(function(item) {
 	            var row = "<tr>";
+		            row += `<td>
+								<div class="form-check">
+									<input class="form-check-input check" type="checkbox">
+								</div>
+							</td>`
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                row += "<td>" + item.itemName + "</td>";
 	                row += "<td>" + item.instoreQuantity + "</td>";
@@ -198,6 +226,11 @@
 										<option value="h3">파손</option>
 									 </select>` + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
+	                row += `<div class="image-placeholder" id="imagePreview">
+				            	<span>이미지</span>
+				        	</div>
+				        	<input type="file" class="d-none" id="image" accept="image/*">
+				        	<input type="hidden" id="productImage">`;
 	            	row += "</tr>";
 	            tbody.append(row);
 	        });
@@ -215,7 +248,7 @@
 	    
 	 	// 검색
         function searchData(keyword) {
-            $("#inOutTable tr").each(function() {
+            $("#inferTable tr").each(function() {
                 var rowText = $(this).text().toLowerCase();
                 if (rowText.includes(keyword)) {
                     $(this).show();
@@ -225,9 +258,15 @@
             });
         }
 	 	
-        // 테이블에서 행 클릭 시 선택 처리
-        $("#inferTable").on('click', 'tr', function() {
-            $(this).toggleClass('selected');
+     	// 테이블에서 행 클릭 시 선택 처리
+        $("#inferTable").on('click', '.form-check-input', function() {
+            var row = $(this).closest('tr');
+            
+            if ($(this).prop('checked')) {
+                row.addClass('selected');
+            } else {
+                row.removeClass('selected');
+            }
         });
         
 	</script>

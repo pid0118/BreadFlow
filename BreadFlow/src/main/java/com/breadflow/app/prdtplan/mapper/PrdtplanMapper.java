@@ -6,6 +6,7 @@ import com.breadflow.app.prdtplan.service.PrdtplanVO;
 
 public interface PrdtplanMapper {
 
+
 	//== 생산관리(본사) 페이지에서 사용하는 매퍼 ==//
 	// 생산관리 단건 입력
 	public int insertPrdtplan(PrdtplanVO prdtplanVO);
@@ -21,6 +22,7 @@ public interface PrdtplanMapper {
 	
 	// 생산관리 디테일 id에 맞는 여러건 조회
 	public List<PrdtplanVO> selectPrdtplanDetailList(PrdtplanVO prdtplanVO);
+
 
 	// 생산관리 디테일 특정 id의 progress_situation 갱신(c1 -> c3)
 	public int updatedetailForProgress(PrdtplanVO prdtplanVO);

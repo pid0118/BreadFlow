@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.infer.mapper.InferMapper">
 	<select id="selectInferList" resultType="InferHistoryVO">
+		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
+	
 		SELECT
 		    IH.INFER_NO,
 		    IH.INFER_APPLICATION_DATE,
@@ -45,10 +47,26 @@
 			<if test="unchecked != null and unchecked != ''">
 			AND IH.CONFIRM_WHETHER = #{unchecked}
 			</if>
+			<if test="disposal != null and disposal != ''">
+			AND IA.DISPOSAL_WHETHER = #{disposal}
+			</if>
+			<if test="startDt != null and startDt != ''">
+			<![CDATA[
+			AND IH.INFER_APPLICATION_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 
+			]]>
+			</if>
+			<if test="endDt != null and endDt != ''">
+			<![CDATA[
+			AND IH.INFER_APPLICATION_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+			]]>
+			</if>
 		</if>		    
 		ORDER BY
 		    INFER_NO
+		    
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
+	
 	<select id="selectInferListDetail" resultType="InferDetailVO" parameterType="String">
 		SELECT
 		    IDH.INFER_DETAIL_CODE,
@@ -72,6 +90,7 @@
 		ORDER BY
 		    IDH.INFER_DETAIL_CODE
 	</select>
+	
 	<insert id="insertInferDetail" parameterType="InferDetailVO">
 		INSERT INTO INFER_DETAIL_HISTORY 
 				(
@@ -80,6 +99,7 @@
 		        total_quantity,
 		        infer_quantity,
 		        infer_type,
+		        infer_image,
 		        infer_no,
 		        instore_no
 		    	)
@@ -89,10 +109,12 @@
 		        , #{totalQuantity}
 		        , #{inferQuantity}
 		        , #{inferType}
+		        , #{inferImage}
 		        , #{inferNo}
 		        , #{instoreNo}
 		        )
 	</insert>
+	
 	<insert id="insertInferHistory" parameterType="InferHistoryVO">
 		<selectKey resultType="String" keyProperty="inferNo" order="BEFORE">
 			'BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual)
@@ -111,11 +133,13 @@
                 , '미확인'
                 )
 	</insert>
+	
 	<update id="updateInferHistory" parameterType="InferAnswerVO">
 		UPDATE 	INFER_HISTORY
 		SET		CONFIRM_WHETHER = '확인'
 		WHERE	INFER_NO = #{inferNo};
 	</update>
+	
 	<insert id="insertInferAnswer" parameterType="InferAnswerVO">
 		INSERT INTO INFER_ANSWER 
 		    	(
@@ -137,14 +161,18 @@
 		        , #{inferNo}
 		        );
 	</insert>
+	
 	<select id="selectInferAnswer" resultType="InferAnswerVO" parameterType="String">
-		SELECT 	DISPOSAL_WHETHER,
-				ANSWER,
-				MANAGER,
-				ANSWERER
-		FROM	INFER_ANSWER
-		WHERE	INFER_NO = #{inferNo}
+		SELECT 	IA.DISPOSAL_WHETHER,
+				IA.ANSWER,
+				IA.MANAGER,
+				IA.ANSWERER,
+				IH.INFER_APPLICATION_DATE,
+				IH.CONFIRM_LOCATION
+		FROM	INFER_ANSWER IA LEFT JOIN INFER_HISTORY IH ON IA.INFER_NO = IH.INFER_NO
+		WHERE	IA.INFER_NO = #{inferNo}
 	</select>
+	
 	<select id="selectCompany" resultType="CompanyVO">
 		SELECT		COMPANY_NO
 					, DIV
@@ -155,5 +183,46 @@
 					, REGION
 		FROM		COMPANY
 		ORDER BY 	COMPANY_NO
+	</select>
+	
+	<select id="countInferList" resultType="int">
+	    SELECT
+	        COUNT(*) 
+	    FROM
+	        INFER_HISTORY IH JOIN INFER_ANSWER IA ON IH.INFER_NO = IA.INFER_NO
+	    <if test="clearTable != null and clearTable != ''">
+	    WHERE 1 = 1
+	        <if test="div != '본사'">
+	            AND IH.CONFIRM_LOCATION = #{companyInput}
+	        </if>
+	        <if test="confirmComp != null and confirmComp != '' and div == '본사'">
+	            AND IH.CONFIRM_LOCATION = #{confirmComp}
+	        </if>
+	        <if test="year != null and year != ''">
+	            AND EXTRACT(YEAR FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{year})
+	        </if>
+	        <if test="month != null and month != ''">
+	            AND EXTRACT(MONTH FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
+	        </if>
+	        <if test="checked != null and checked != ''">
+	            AND IH.CONFIRM_WHETHER = #{checked}
+	        </if>
+	        <if test="unchecked != null and unchecked != ''">
+	            AND IH.CONFIRM_WHETHER = #{unchecked}
+	        </if>
+	        <if test="disposal != null and disposal != ''">
+	            AND IA.DISPOSAL_WHETHER = #{disposal}
+	        </if>
+	        <if test="startDt != null and startDt != ''">
+	        <![CDATA[
+	            AND IH.INFER_APPLICATION_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 
+	        ]]>
+	        </if>
+	        <if test="endDt != null and endDt != ''">
+	        <![CDATA[
+	            AND IH.INFER_APPLICATION_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
+	        ]]>
+	        </if>
+	    </if>
 	</select>
 </mapper>

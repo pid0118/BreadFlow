@@ -118,17 +118,15 @@
     </div>
     <script>
 	    let currentDate = new Date();
-	    updateCalendar();
 		loadDaySale();
+	    updateCalendar();
 		
 	    function updateCalendar() {
 	        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
 	            "7월", "8월", "9월", "10월", "11월", "12월"];
-	        
 	        document.getElementById('currentMonth').textContent = `${currentDate.getFullYear()}-${monthNames[currentDate.getMonth()]}`;
-	
 	        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-	        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+	        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1 , 0);
 	
 	        const calendarBody = document.getElementById('calendarBody');
 	        calendarBody.innerHTML = '';
@@ -184,44 +182,48 @@
 	        currentDate.setMonth(currentDate.getMonth() - 1);
 	        updateCalendar();
 	    });
-	
+
 	    document.getElementById('nextMonth').addEventListener('click', () => {
 	        currentDate.setMonth(currentDate.getMonth() + 1);
 	        updateCalendar();
 	    });
 
-		
-		
-		function loadDaySale(){
-			let url = `daySale/getSale`;
-			fetch(url)
+		function loadDaySale(saDate){
+			let url = `/daySale?saDate=${saDate}`;
+			fetch(url, {
+				method: "POST"
+			})
 			.then(response => response.json())
 			.then(data => {
-				saleMenu(data);
-			});
-		}
-		
-		function saleMenu(saleData){
-
-			saleData.forEach(ele => {
 				const cells = document.querySelectorAll('.date');
-				const saleDate = ele.salesDate;
-				const saleAmt = ele.daySales;
-				
-				cells.forEach(man => {
-					const cellDate = man.dataset.date;
-					
-					if(cellDate === saleDate){
+				cells.forEach(cel => {
+					const date = cel.dataset.date;
+					const mat = data.find(ele => ele.salesDate == date);
+
+					if(mat){
+						const sales = mat.daySales;
 						const saleDiv = document.createElement('div');
-						saleDiv.textContent = saleAmt.toLocaleString() + '원'; 
-						man.appendChild(saleDiv);
+						saleDiv.textContent = sales.toLocaleString() + '원'; 
+						cel.appendChild(saleDiv);
 					}
 				})
+				
 			})
 		}
 		
-		
+		$('.calendar-header button').on('click', function(){
+		    if($(this).attr("id") == 'prevMonth'){
+		    	let day = $(this).next().text().substring(5,7).includes('월') ? "0" + $(this).next().text().substring(5,6) : $(this).next().text().substring(5,7);
+		    	let prev = $(this).next().text().substring(0,4) + day;
+		    	loadDaySale(prev);
+		    }
+		    else{
+		    	let day = $(this).prev().text().substring(5,7).includes('월') ? "0" + $(this).prev().text().substring(5,6) : $(this).prev().text().substring(5,7);
+		    	let next = $(this).prev().text().substring(0,4) + day;
+		    	loadDaySale(next);
+		    }
+		})
+
     </script>
 </body>
 </html>
-
