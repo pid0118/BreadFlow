@@ -62,6 +62,14 @@ public class BomController {
 		return "bom/bomInsert"; 
 	}
 	
+	@ResponseBody
+	@PostMapping("bomInsert")
+	public int insertBomProcess(List<BomVO> bmoList) {
+		
+		return 0;
+	}
+	
+	
 	// BOM 등록 처리
 	/*
 	 * @PostMapping("bomInsert") public List<>

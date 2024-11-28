@@ -126,6 +126,7 @@
 			</div>
 			<input type="text" class="product-name-input"
 				th:value="${product.productName}" readonly>
+			<input type="hidden" id="productCode" th:value="${product.productCode}">
 		</div>
 
 		<div class="grid-section">
@@ -139,7 +140,7 @@
 			<div id="grid"></div>
 			<div class="tui-pagination" id="pagination"></div>
 			<div class="button-container">
-				<button id="saveButton" class="btn btn-primary">저장</button>
+				<button id="saveButton" class="btn btn-primary" onclick="insertBom()">저장</button>
 				<button id="cancelButton" class="btn btn-secondary"
 					th:onclick="|location.href='@{/bomProductList}'|">취소</button>
 			</div>
@@ -206,8 +207,7 @@
 					</ul>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" id="itemAdd"
-						data-dismiss="modal">추가</button>
+					<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal">추가</button>
 				</div>
 			</div>
 		</div>
@@ -298,13 +298,6 @@
 			        alert('삭제할 항목을 선택해주세요.');
 			    }
 			});
-	
-			// 저장 버튼
-		    $('#saveButton').on('click', function () {
-		         const updatedData = grid.getData();
-		         console.log('저장된 데이터:', updatedData);
-		         alert('저장되었습니다.');
-		    });
 	
 	     	// 품목 추가 (발주 신청 테이블)
 			itemAdd.addEventListener('click', function() {
@@ -561,6 +554,13 @@
 		    }
 		});
 	   /*======================================================modal end================================================================ */ 
+	   
+	   // bom 저장
+	   function insertBom() {
+			var gridData = $("#grid").gridGetRowData();
+			
+			alert(gridData);
+	   }
     </script>
 
 </body>

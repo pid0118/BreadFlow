@@ -46,9 +46,11 @@ public class ProductController {
 		
 		// 카테고리
 		List<CategoryVO> category = categoryService.selectCategorySub("제품");
+		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
 		
 		model.addAttribute("products", list);
 		model.addAttribute("category", category);
+		model.addAttribute("codeVal" , codeVal);
 		
 		return "product/prodctListAll";
 	}
@@ -86,27 +88,6 @@ public class ProductController {
 	    return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
-	
-	//수정 페이지
-	@GetMapping("productUpdate")
-	public String productUpdateForm(@RequestParam String productCode, Model model) {
-		
-		ProductVO product =  productService.selectProduct(productCode);
-		
-		String major = product.getMajor();
-		
-		List<CategoryVO> category = categoryService.selectCategorySub("제품");
-		List<CategoryVO> sub = categoryService.selectCategorySub(major);
-		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
-		
-		model.addAttribute("pd", product);
-		model.addAttribute("category" , category);
-		model.addAttribute("sub" , sub);
-		model.addAttribute("codeVal" , codeVal);
-		
-		return "product/productUpdate";
-	}
-
 
 	// 단건조회
 	@ResponseBody
