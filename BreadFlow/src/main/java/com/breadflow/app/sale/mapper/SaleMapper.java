@@ -24,7 +24,7 @@ public interface SaleMapper {
 	public List<PosVO> selectSales(String salesDate, String companyNo);
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
-	public int insertSales(PosVO name);
+	public int insertSales(String companyNo);
 	
 	// pos 마감 하기 전 상태 제품 상세보기
 	public List<PosVO> selectDetailSale(String companyNo);

@@ -51,8 +51,8 @@
 		        , sysdate)
 	</insert>
 	
-	<insert id="insertSales" parameterType="PosVO">
-		CALL SALES_PROD(#{name})
+	<insert id="insertSales" parameterType="String">
+		CALL SALES_PROD(#{companyNo})
 	</insert>
 	
 	<select id="selectSales" resultType="PosVO" parameterType="String">
@@ -91,5 +91,5 @@
 		FROM sale_detail_history
 		WHERE company_no = #{companyNo}
 	</select>
-
+	
 </mapper>

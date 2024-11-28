@@ -75,7 +75,7 @@ public class SaleController {
     // 마감정산
     @PostMapping("/closeSale")
     @ResponseBody
-    public String closeSale(@RequestBody PosVO name) {
+    public String closeSale(HttpSession name) {
     	saleService.insertSales(name);
         return "sale/pos";
     }
@@ -89,10 +89,11 @@ public class SaleController {
     // 차트 월별 매출 ajax호출
     @PostMapping("/saleChart")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> saleChartList(HttpSession name) {
-    	List<PosVO> list = saleService.selectSaleChart(name);
+    public ResponseEntity<List<PosVO>> saleChartList(HttpSession companyNo) {
+    	List<PosVO> list = saleService.selectSaleChart(companyNo);
     	return ResponseEntity.ok(list);
     }
+    
     // 차트 월별 제품 상세 매출 ajax호출
     @PostMapping("/saleChart/product")
     @ResponseBody

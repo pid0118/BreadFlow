@@ -43,8 +43,8 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public int insertSales(PosVO name) {
-		return saleMapper.insertSales(name);
+	public int insertSales(HttpSession companyNo) {
+		return saleMapper.insertSales((String)companyNo.getAttribute("companyNo"));
 	}
 
 	@Override
