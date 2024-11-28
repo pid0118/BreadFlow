@@ -44,21 +44,12 @@
                     <a class="dropdown-item company">[[ ${company.companyName} ]]</a>
                 </li>
             </ul>
-		</div>
-		<div class="pd-20">
-			<div class="form-group">
-				<div class="btn-group btn-group-toggle" data-toggle="buttons">
-					<label class="btn btn-outline-secondary active">
-						<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-					</label>
-					<label class="btn btn-outline-secondary">
-						<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-					</label>
-					<label class="btn btn-outline-secondary">
-						<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-					</label>
-				</div>
-			</div>
+            <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
+			<ul class="dropdown-menu" id="disposal">
+ 				<li class="dropdown-item disposal" value="i1">반품</li>
+ 				<li class="dropdown-item disposal" value="i2">폐기</li>
+ 				<li class="dropdown-item disposal" value="i3">철회</li>
+            </ul>
 		</div>
 		<div class="pd-20 input-group mb-3">
 			<input class="form-control" type="text" id="searchKeyword">
@@ -85,19 +76,31 @@
 
 				</tbody>
 			</table>
+			<div class="pagination-container">
+			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			    <span id="currentPage">1 페이지</span>
+			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			</div>
 		</div>
 	</div>
 	
     <script>
+    
 	 	// 조건
 	 	var companyInput = null;
 	 	var div = null;
 	 	var clearTable = null;
 		var year = null;
 		var month = null;
+		var disposal = null;
 		var checked = null;
 		var unchecked = null;
 		var confirmComp = null;
+		var startDt = null;
+		var endDt = null;
+		
+		var page = 1;
+		var pageSize = 10;
    	
         $(document).ready(function() {
         	
@@ -114,16 +117,30 @@
             	clearTable = null;
     			year = null;
     			month = null;
+    			disposal = null;
     			checked = null;
     			unchecked =  null;
     			confirmComp = null;
+    			startDt = null;
+    			endDt = null;
+    			pageClear();
             }
             
             function confirmExClear() {
     			year = null;
     			month = null;
+    			disposal = null;
     			confirmComp = null;
+    			startDt = null;
+    			endDt = null;
+    			pageClear();
             }
+            
+            function pageClear() {
+	        	page = 1;
+    			pageSize = 10;
+    			$("#currentPage").text(page + " 페이지");
+	        }
             
             if (div !== '본사') {
             	$("#confirmCompBtn").css("display", "none");
@@ -168,6 +185,7 @@
                 year = $(this).text().trim();
                 clearTable = 'notClear';
                 $("#yearlyBtn").text(year);
+                pageClear();
                 changeFilter();
             });
 
@@ -176,6 +194,7 @@
                 month = $(this).text().trim();
                 clearTable = 'notClear';
                 $("#monthlyBtn").text(month);
+                pageClear();
                 changeFilter();
             });
             
@@ -184,6 +203,16 @@
                 confirmComp = $(this).text().trim();
                 clearTable = 'notClear';
                 $("#confirmCompBtn").text(confirmComp);
+                pageClear();
+                changeFilter();
+            });
+            
+        	// 처분별 필터 클릭
+            $(document).on('click', '.disposal', function() {
+                disposal = $(this).text().trim();
+                clearTable = 'notClear';
+                $("#disposalBtn").text(disposal);
+                pageClear();
                 changeFilter();
             });
             
@@ -201,9 +230,11 @@
 
             // 날짜 필터 버튼 클릭
             $("#dateFilterBtn").click(function() {
-                var startDate = $("#startDate").val();
-                var endDate = $("#endDate").val();
-                filterData(startDate, endDate);
+                startDt = $("#startDate").val();
+                endDt = $("#endDate").val();
+                clearTable = 'notClear';
+                pageClear();
+                changeFilter();
             });
 
         });
@@ -217,13 +248,28 @@
             			clearTable,
             			year,
             			month,
+            			disposal,
             			checked,
             			unchecked,
             			confirmComp,
-            			div},
+            			div,
+            			startDt,
+            			endDt,
+            			page,
+                        pageSize},
             	success : function(data) {
-            		updateTable(data);
-            		console.log(data);
+            		updateTable(data.list, type);
+            		var lastPage = Math.ceil(data.count / pageSize);
+            		if (page == lastPage) {
+            			$("#nextPageBtn").hide();
+            		} else {
+            			$("#nextPageBtn").show();
+            		}
+            		if (page > 1) {
+            			$("#prevPageBtn").show();
+            		} else {
+            			$("#prevPageBtn").hide();
+            		}
             	},
             	error : function() {
 	                alert("내역을 불러오는 데 실패했습니다.");
@@ -273,20 +319,6 @@
             });
         }
 
-        // 기간 검색
-        function filterData(startDate, endDate) {
-            var start = new Date(startDate);
-            var end = new Date(endDate);
-            $("#inferHistoryTable tr").each(function() {
-                var rowDate = $(this).find(".date").text().trim();
-                var rowDateObj = new Date(rowDate);
-                if (rowDateObj >= start && rowDateObj <= end) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
     </script>
 </body>
 </html>

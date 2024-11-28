@@ -18,6 +18,7 @@ public class OrderListVO {
 	private String productName;
 	private String itemName;
 	private String expirationDeadline;
+	private Integer purchasePrice;
 	
 	private Integer outstoreQuantity;
 	

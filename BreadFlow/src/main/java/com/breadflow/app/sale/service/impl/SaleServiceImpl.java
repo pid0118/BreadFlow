@@ -1,13 +1,12 @@
 package com.breadflow.app.sale.service.impl;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.breadflow.app.common.service.DateUtil;
 import com.breadflow.app.product.service.ProductVO;
 import com.breadflow.app.sale.mapper.SaleMapper;
 import com.breadflow.app.sale.service.PosVO;
@@ -49,14 +48,20 @@ public class SaleServiceImpl implements SaleService {
 	@Override
 	public List<PosVO> selectSales(String salesDate) {
 		if(salesDate.equals("undefined")) {
-			Date ndate = new Date();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMM"); 
-			salesDate = simpleDateFormat.format(ndate);
+			salesDate = DateUtil.dashFormatDate(null, "yyyyMM");
 			System.out.println(salesDate);
 		}
 		return saleMapper.selectSales(salesDate);			
 	}
 
+	@Override
+	public List<PosVO> selectDetailSale() {
+		return saleMapper.selectDetailSale();
+	}
 
+	@Override
+	public List<PosVO> selectSaleChart() {
+		return saleMapper.selectSaleChart();
+	}
 
 }

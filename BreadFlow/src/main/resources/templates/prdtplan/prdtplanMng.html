@@ -321,9 +321,11 @@
 			<div class="modal-footer justify-content-between">
 				<div>
 					<b>선택한 제품명:</b>
+
 					<input id="selectedPrdtNm" class="form-control" readonly>
 					<input id="selectedPrdtCd" class="form-control" hidden="hidden">
 					<input id="selectedPrdtUnit" class="form-control" hidden="hidden">
+
 				</div>
 				<div>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
@@ -334,8 +336,6 @@
 	</div>
 </div>
 <!-- 제품검색 모달창 끝 -->
-
-
 
 
 
@@ -565,6 +565,7 @@ $(document).ready( function () {
     $('#products').DataTable({		// 제품 모달 테이블
     	info: false,
     	paging: true,
+
     	ajax: {
    			url: 'getProducts',
    			type: "GET",
@@ -655,6 +656,7 @@ function dlvryComModalConfirm() {
 // =======================================================	
 	
 
+
 	
 //========================================================================
 // [24.11.26] toastGrid 자식테이블 모달 클릭 이벤트 걸기
@@ -739,6 +741,7 @@ function insertOrUpdatePrdPlanAjax() {
 		
 	}
 }
+
 // 저장 ajax 걸기 끝
 // ========================================================================
 

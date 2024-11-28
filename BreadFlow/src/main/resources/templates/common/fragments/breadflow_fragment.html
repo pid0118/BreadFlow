@@ -17,17 +17,17 @@
 			
 		</div>
 		<div class="header-right">
-			<div class="user-info-dropdown">
+			<div class="user-info-dropdown" style="margin-top: 17px;">
 				<span class="user-name" th:text="${session.name}"></span>
 				<span th:text="${session.div}"></span>
 				<span th:text="${session.position}"></span>
 				<th:block th:if="${session.memNo == null}">
 					<span>비회원</span>
 				</th:block>
-				<span class="user-name" >님 환영합니다</span>
+				<span class="user-name">님 환영합니다</span>
 			</div>
 			<th:block th:if="${session.memNo != null}">
-				<div>
+				<div style="margin-top: 12px; margin-right: 10px">
 					<button type="button" class="btn btn-secondary btm-sm" id="logoutBtn">로그아웃</button>
 				</div>
 			</th:block>
@@ -383,9 +383,9 @@
 									><span class="mtext">매출 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">매출 내역 조회</a></li>
+									<li><a th:href="@{/daySale}">매출 내역 조회</a></li>
 									<li><a th:href="@{/welcome}">매출 상세 내역 조회</a></li>
-									<li><a th:href="@{/welcome}">POS</a></li>
+									<li><a th:href="@{/pos}">POS</a></li>
 								</ul>
 							</li>
 					    </ul>

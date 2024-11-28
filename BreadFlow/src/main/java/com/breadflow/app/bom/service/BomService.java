@@ -18,7 +18,7 @@ public interface BomService {
 	public int updateBom(BomVO bomVO);
 	
 	// BOM 삭제
-	public int deleteBom(BomVO bomVO);
+	//public int deleteBom(BomVO bomVO);
 	
 	
 }

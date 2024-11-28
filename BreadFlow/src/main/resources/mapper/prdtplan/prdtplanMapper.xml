@@ -33,6 +33,7 @@
 		        , d.unit
 		        , d.other
 		FROM    production_plan_detail d
+
 		WHERE   production_plan_no = #{productionPlanNo}
 	</select>
 	
@@ -104,6 +105,7 @@
 	ON p.production_plan_no = d.production_plan_no
 	</select>
 	
+
 	<!-- 제품 모달 조회 -->
 	<select id="selectPrdtList" resultType="PrdtplanVO">
 	SELECT  major
@@ -123,6 +125,7 @@
 	</update>
 	
 	
+
 	<!-- ==== 생산관리(제조공장) 페이지에서 사용되는 매퍼 ==== -->
 	<!--  -->
 	<select id="selectPrdtplanListForCom" parameterType="String" resultType="PrdtplanVO">
@@ -180,5 +183,6 @@
 	    )
     
 	</insert>
+
 
 </mapper>

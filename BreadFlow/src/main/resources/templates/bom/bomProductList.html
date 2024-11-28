@@ -80,14 +80,10 @@
     
 	<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
     <div id="dtSearch"></div>
-    <div>
-        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/product/Insert}'|">등록</button>
-    </div>
 	</div>
     
     <!-- 데이터 테이블 시작 -->
     <div class="pb-20">
-        
         <table class="data-table table stripe hover wrap" id="productTable">
             <thead>
                 <tr style="text-align : center;">
@@ -103,10 +99,10 @@
                     <th class="datatable">매입가</th>
                     <th class="datatable">판매가</th>
                     <th class="datatable">규격</th>
+                    <th class="datatable">동록</th>
                 </tr>
             </thead>
             <tbody>
-
                 <th:block th:each="info : ${products}">
                     <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
                     	<td>
@@ -122,12 +118,12 @@
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
+                        <td> <button type="submit" class="btn btn-secondary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
                     </tr>
                 </th:block>
             </tbody>
         </table>
     </div>
-    
     
   <script>
   

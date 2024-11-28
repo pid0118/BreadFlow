@@ -10,4 +10,5 @@ public class SearchOptionVO {
 	private List<String> products;
 	private String name;
 	private int page;
+	private String sort;
 }

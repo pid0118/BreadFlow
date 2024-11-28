@@ -89,6 +89,23 @@ public class DateUtil {
 		return sdf.format(cal.getTime());
 	}
 
+	public static String dashFormatDate(String bseDt, String pattern) {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		if(bseDt != null) {
+			cal = getCalendar(bseDt); 
+		}
+
+		return sdf.format(cal.getTime());
+	}
+	
+	/**
+	 * String > Date로 변경
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return Date
+	 */
 	private static Calendar getCalendar(String year, String month, String day) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, Integer.parseInt(year));

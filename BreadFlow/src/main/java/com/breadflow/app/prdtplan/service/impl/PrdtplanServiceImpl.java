@@ -55,6 +55,7 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		return prdtplanMapper.updatedetailForProgress(prdtplanVO);
 	}
 
+
 	@Override
 	public List<PrdtplanVO> selectPrdtList() {
 		return prdtplanMapper.selectPrdtList();
@@ -84,6 +85,7 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		}
 		return result;
 	}
+
 
 	
 }

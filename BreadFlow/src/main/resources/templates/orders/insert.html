@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div class="pd-20 card-box mb-30">
+	<div class="clearfix mb-20">
+		<div class="tab-content">
+			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
+				<div class="pd-20">
+					<div class="pull-left">
+						<h4 class="text-blue h2">주문 신청</h4>
+					</div>
+					<div class="pull-right">
+						<button type="button" class="btn btn-primary btn-sm" id="addOrders">주문 신청</button>
+					</div>
+					<div id="grid"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="ordersDetailModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">주문 상세정보</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			</div>
+			<div class="modal-body">
+				<div id="detailGrid"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>	
+<script>
+	$('#ordersDetailModal').modal('hide');
+	function showModal(code){
+		$('#ordersDetailModal').on('shown.bs.modal', function (event) {
+			$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
+			makeDetailGrid(code);
+		})
+	}
+	
+	
+	//#region 그리드 column
+	/* 
+	* header => 헤더 값
+	* name => 받을 데이터 name
+	* formatter => 데이터 포맷팅
+	*/
+	const columns = [
+		{
+          header: '발주코드',
+          name: 'orderingCode'
+        },
+        {
+          header: '발주일자',
+          name: 'orderingDate',
+          formatter: function(data) {
+        	  let date = data.value;
+              return date.substring(0,10);
+          }
+        },
+        {
+          header: '납기 희망일자',
+          name: 'deliveryDesireDate',
+          formatter: function(data) {
+        	  let date = data.value;
+              return date.substring(0,10);
+          }
+        },
+        {
+          header: '발주처',
+          name: 'companyName'
+        },
+        {
+          header: '총 금액',
+          name: 'totalPrice',
+          formatter: function(data) {
+        	  let price = data.value;
+              return price.toLocaleString('ko-KR');
+          }
+        }
+	];
+	//#endregion
+	
+	// #region 그리드 생성
+	/**
+	* el => 생성될 element
+	* data => api 데이터 값
+	* width => 너비 자동 조절
+	* columnOptions => resize
+	* rowHeaders => 체크박스 생성
+	* bodyHeight => 높이 지정
+	* column => column 값
+	*/
+	const grid = new tui.Grid({
+	  el: document.getElementById('grid'),
+	  data: {
+        api: {
+          readData: { url: '/orders/list', method: 'GET' }
+        }
+      },
+	  width: 'auto',
+	  columnOptions: {
+		resizable: true  
+	  },
+	  rowHeaders: ['checkbox'],
+	  bodyHeight: 600,
+	  columns: columns
+	});
+	//#endregion
+	
+	// 그리드 클릭시 이벤트
+	grid.on('click', function() {
+	  if(event.target.parentElement.dataset.columnName == 'orderingCode'){
+		event.target.parentElement.dataset.toggle = 'modal';
+		event.target.parentElement.dataset.target = '#ordersDetailModal';
+		let code = event.target.innerText;
+		showModal(code);
+	  }
+	});
+	
+	$('#addOrders').on('click', function() {
+		let codeArr = [];
+		grid.getCheckedRows().forEach(data => {
+			codeArr.push(data.orderingCode);
+		})	
+		console.log(codeArr);
+	})
+	
+	// 발주상세 그리드 생성 함수
+	function makeDetailGrid(code){
+		const detailColumns = [
+			{
+	          header: '발주상세코드',
+	          name: 'orderingDetailCode'
+	        },
+	        {
+	          header: '품목명',
+	          name: 'itemName'
+	        },
+	        {
+	          header: '단위',
+	          name: 'unit'
+	        },
+	        {
+	          header: '규격',
+	          name: 'standard'
+	        },
+	        {
+	          header: '수량',
+	          name: 'quantity',
+	          formatter: function(data) {
+	        	  let quantity = data.value;
+	              return quantity.toLocaleString('ko-KR');
+	          }
+	        }
+		];
+		
+		const grid = new tui.Grid({
+		  el: document.getElementById('detailGrid'),
+		  data: {
+	        api: {
+	          readData: { url: '/orders/detailList?code=' + code, method: 'GET' }
+	        }
+	      },
+		  width: 'auto',
+		  columnOptions: {
+			resizable: true  
+		  },
+		  bodyHeight: 'fitToParent',
+		  minBodyHeight: 600,
+		  columns: detailColumns
+		});
+	}
+	
+</script>
+</body>
+</html>
