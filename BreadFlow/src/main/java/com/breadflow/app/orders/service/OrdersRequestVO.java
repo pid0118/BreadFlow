@@ -8,6 +8,6 @@ public class OrdersRequestVO {
 	private String unit;				// 단위
 	private String standard;			// 규격
 	private int quantity;				// 수량
-	private String companyName;			// 입고업체
+	private String inCompany;			// 입고업체
 	private String orderingDetailCode;	// 발주 상세 코드
 }

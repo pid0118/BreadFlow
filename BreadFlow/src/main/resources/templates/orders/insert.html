@@ -4,6 +4,8 @@
 	layout:decorate="~{common/layouts/breadflow_layout}"
 	layout:fragment="Content">
 <head>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <meta charset="UTF-8">
 <title></title>
@@ -26,6 +28,7 @@
 		</div>
 	</div>
 </div>
+
 <div class="modal fade" id="ordersDetailModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
@@ -39,6 +42,7 @@
 		</div>
 	</div>
 </div>
+
 <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
@@ -53,15 +57,72 @@
 		</div>
 	</div>
 </div>
+
+<button class="btn btn-outline-secondary" type="button" id="updPrdtcomSerachBtn" data-toggle="modal" data-target="#Prdtcom-modal"><i class="icon-copy bi bi-search"></i></button>
+
+<div
+	class="modal fade bs-example-modal-lg"
+	id="Prdtcom-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-md modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					출고업체 선택
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="companys" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>업체코드</th>
+							<th>업체명</th>
+							<th>구분</th>
+							<th>대표자</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 업체명:</b>
+					<input id="selectedComNo" class="form-control" hidden="hidden">
+					<input id="selectedComNm" class="form-control" readonly>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmCom">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>	
 <script>
-	// 상세 모달을 숨길때 기존에 있는 데이터 내용 삭제 이벤트
+	// 모달을 숨길때 기존에 있는 데이터 내용 삭제 이벤트
 	$('#ordersDetailModal').modal('hide');
 	$('#ordersDetailModal').on('hidden.bs.modal', function (event) {
 		$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
 	})
+	$('#ordersModal').modal('hide');
+	$('#ordersModal').on('hidden.bs.modal', function (event) {
+		$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
+	})
 	
-	// 상세 모달 보여질때 이벤트
+	// 모달 보여질때 이벤트
 	function showModal(code){
 		$('#ordersDetailModal').on('shown.bs.modal', function (event) {
 			$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
@@ -150,6 +211,7 @@
 	});
 	
 	// 발주 신청 클릭 이벤트
+	
 	$('#addOrders').on('click', function() {
 		let codeArr = [];
 		
@@ -159,79 +221,97 @@
 		
 		if(codeArr.length == 0){
 			alert("선택된 주문건이 없습니다.");
-			return;
+			event.stopPropagation();
 		}
 		else {
-			event.target.parentElement.dataset.toggle = 'modal';
-			event.target.parentElement.dataset.target = '#ordersModal';
-			console.log(codeArr);
-			let codes = '';
-			codeArr.forEach(code => {
-				codes += code + ',';
+			event.target.dataset.toggle = 'modal';
+			event.target.dataset.target = '#ordersModal';
+			$('#ordersModal').modal('hide');
+			$('#ordersModal').on('shown.bs.modal', function (event) {
+				$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
+				let codes = '';
+				codeArr.forEach(code => {
+					codes += code + ',';
+				})
+				const columns = [
+					{
+				          header: '품목명',
+				          name: 'itemName',
+				          rowSpan: true
+				        },
+				        {
+				          header: '단위',
+				          name: 'unit',
+				          rowSpan: true
+				        },
+				        {
+				          header: '규격',
+				          name: 'standard',
+				          rowSpan: true
+				        },
+				        {
+				          header: '수량',
+				          name: 'quantity',
+				          formatter: function(data) {
+				        	  let price = data.value;
+				              return price.toLocaleString('ko-KR');
+				          }
+				        },
+				        {
+				          header: '입고업체',
+				          name: 'inCompany',
+				          rowSpan: true
+				        },
+				        {
+			        	  header: '출고업체',
+				          name: 'outCompany'
+				        }
+					];
+				
+				const newgrid = new tui.Grid({
+				  el: document.getElementById('ordersGrid'),
+				  data: {
+				  	api: {
+			          readData: { url: '/orders/reqDetailList?codes=' + codes, method: 'GET' }
+			        }
+			      },
+				  width: 'auto',
+				  columnOptions: {
+					resizable: true  
+				  },
+				  bodyHeight: 'fitToParent',
+				  minBodyHeight: 600,
+				  columns: columns
+				});
+				
+				
+				
+				// 츨고업체 입력칸 클릭 이벤트
+				newgrid.on('click', function (ev) {
+					if(ev.columnName == 'outCompany' && event.target.tagName != 'TH'){
+						eve = ev;
+						ele = newgrid.getElement(ev.rowKey, ev.columnName); // 선택된 요소
+						if(ele != null){
+							ele.dataset.toggle = 'modal';
+							ele.dataset.target = '#Prdtcom-modal';
+							PrdtcomListShow();	
+						}
+					}
+				})
+				
+				let eve = null;
+				$('#confirmCom').on('click', function(){
+					setCompany(eve, newgrid);
+				})
 			})
-			const columns = [
-				{
-			          header: '품목명',
-			          name: 'itemName',
-			          rowSpan: true
-			        },
-			        {
-			          header: '단위',
-			          name: 'unit',
-			          rowSpan: true
-			        },
-			        {
-			          header: '규격',
-			          name: 'standard',
-			          rowSpan: true
-			        },
-			        {
-			          header: '수량',
-			          name: 'quantity',
-			          formatter: function(data) {
-			        	  let price = data.value;
-			              return price.toLocaleString('ko-KR');
-			          }
-			        },
-			        {
-			          header: '입고업체',
-			          name: 'companyName',
-			          rowSpan: true
-			        },
-			        {
-		        	  header: '출고업체',
-			          name: 'companyName2',
-		        	  rowSpan: true,
-			          editor: {
-			              type: 'select',
-			              options: {
-			                listItems: [
-			                  { text: 'Deluxe', value: 'Deluxe' },
-			                  { text: 'EP', value: 'EP' },
-			                  { text: 'Single', value: 'Single' }
-			                ]
-			              }
-			            }
-			        },
-				];
-			
-			const newgrid = new tui.Grid({
-			  el: document.getElementById('ordersGrid'),
-			  data: {
-			  	api: {
-		          readData: { url: '/orders/reqDetailList?codes=' + codes, method: 'GET' }
-		        }
-		      },
-			  width: 'auto',
-			  columnOptions: {
-				resizable: true  
-			  },
-			  bodyHeight: 'fitToParent',
-			  minBodyHeight: 600,
-			  columns: columns
-			});
 		}
-	})
+	});
+	
+	// 출고업체 값 설정 함수
+	function setCompany(eve, newgrid){
+		newgrid.setValue(eve.rowKey, eve.columnName, comNm);
+		// ele.innerText = comNm // 출고업체 값 변경
+	}
 	
 	// 발주상세 그리드 생성 함수
 	function makeDetailGrid(code){
@@ -278,6 +358,46 @@
 		  columns: detailColumns
 		});
 	}
+	
+	// 출고업체 데이터 테이블 생성
+	$(document).ready( function () {
+	    $('#companys').DataTable({			// 출고업체 모달 테이블
+	    	info: false,
+	    	paging: false,
+	    	ajax: {
+	   			url: '/getCompanys.do',
+	   			type: "GET",
+	   			dataSrc: ''
+	   		},
+	   		columns:[
+	   			{data: "companyNo"},
+	   			{data: "companyName"},
+	   			{data: "div"},
+	   			{data: "name"},
+	   		]
+	    })
+	});
+	
+	// 출고업체 클릭 시 
+	function PrdtcomListShow() {
+		let comsTblTrs = document.querySelectorAll("#companys tr");
+
+		for(let i = 1; i < comsTblTrs.length; i++) {
+			comsTblTrs[i].addEventListener("click", getCompanyInfo);
+		}
+	}
+
+	let comNo;
+	let comNm;
+
+	function getCompanyInfo(e) {
+		comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+		comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
+		
+		document.querySelector("#selectedComNm").value = comNm;
+		document.querySelector("#selectedComNo").value = comNo;
+	}
+	
 </script>
 </body>
 </html>

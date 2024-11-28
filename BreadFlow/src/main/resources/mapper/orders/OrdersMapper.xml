@@ -36,7 +36,7 @@
 		       , od.quantity
 		       , (SELECT company_name
 		          FROM company
-		          WHERE company_no = o.company_no) company_name
+		          WHERE company_no = o.company_no) in_company
 		       , od.ordering_detail_code
 		FROM ordering o LEFT JOIN ordering_detail od 
 		ON o.ordering_code = od.ordering_code 
@@ -50,7 +50,7 @@
 			#{item}
 		</foreach>
 		)
-		ORDER BY item_name, company_name
+		ORDER BY item_name, in_company
 	</select>
 
 </mapper>
