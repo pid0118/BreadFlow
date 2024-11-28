@@ -33,14 +33,16 @@ body {
 	width: 400px;
 	padding: 20px;
 	margin: 10px;
+	margin-right: 0px;
 	background-color: #f9f9f9;
 }
 
 header {
 	display: flex;
 	justify-content: space-between;
+	margin-top: 10px;
 	padding: 10px;
-	background-color: #4a4a4a;
+	background-color: rgb(1, 69, 71);
 	color: white;
 }
 
@@ -74,8 +76,9 @@ nav {
 }
 
 .menu-item {
-	background-color: #fff;
+	background-color: rgb(242, 255, 232);
 	border: 1px solid #ddd;
+	border-radius: 15px;
 	height: 82px;
 	padding: 10px;
 	text-align: center;
@@ -224,7 +227,7 @@ footer {
 	width: 100%;
 }
 .btn.amount {
-    font-size: 24px;  /* 글씨 크기를 24px로 설정 */
+    font-size: 15px;  /* 글씨 크기를 24px로 설정 */
     padding: 5px 10px;
     background-color: rgb(228, 240, 237);
     border: 1px solid #ddd;
@@ -404,6 +407,30 @@ footer {
 				}
 			});
 			
+			
+			// 모달창 열고 닫기
+			document.querySelector(".details-button").addEventListener("click", function() {
+		        openModal();
+		    });
+
+		    function openModal() {
+		        let modal = document.getElementById("detailsModal");
+		        modal.style.display = "block";
+		    }
+
+		    function closeModal() {
+		        let modal = document.getElementById("detailsModal");
+		        modal.style.display = "none";
+		    }
+
+		    document.querySelector(".close-button").addEventListener("click", closeModal);
+			    window.addEventListener("click", function(event) {
+			        let modal = document.getElementById("detailsModal");
+			        if (event.target === modal) {
+			            closeModal();
+			        }
+		    });
+			
 			// 주문 등록 ( 매출 상세 저장 )
 			document.querySelector("#menuSub").addEventListener('click', function(){
 				
@@ -413,7 +440,8 @@ footer {
 						let data = {
 							productCode: item.querySelector(".my-0").innerText,
 							salePrice: item.querySelector(".pri").innerText.replace(',',''),
-							quantity: item.querySelector(".su").innerText.split(" ")[1]
+							quantity: item.querySelector(".su").innerText.split(" ")[1],
+							name: document.querySelector(".user-name").innerText
 						}
 						aryMenu.push(data);
 				});
@@ -429,6 +457,7 @@ footer {
 				.then(response => response.text())
 				.then(data => {
 					alert("주문완료!");
+					location.reload(true); // 새로고침
 				})
 				.catch(error => {
 					console.error(error);
@@ -436,7 +465,7 @@ footer {
 				});
 				selectedMenu = [];
 				arrayPrint();
-				location.reload(true);;
+				
 				
 			});
 		});
@@ -625,8 +654,16 @@ footer {
 		}
 
 		document.getElementById("salesSub").addEventListener('click', function(){
+			let dName = document.querySelector('.user-name').innerHTML;
+			let nameData = { name: dName };
 			let url = `/closeSale`
-			fetch(url)
+			fetch(url,{
+				method: "POST",
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(nameData)
+			})
 			.then(res => res.text())
 			.then(date => {
 				alert("마감정산 완료!");
@@ -634,28 +671,7 @@ footer {
 			})
 		})
 		
-		// 모달창 열고 닫기
-		document.querySelector(".details-button").addEventListener("click", function() {
-	        openModal();
-	    });
 
-	    function openModal() {
-	        let modal = document.getElementById("detailsModal");
-	        modal.style.display = "block";
-	    }
-
-	    function closeModal() {
-	        let modal = document.getElementById("detailsModal");
-	        modal.style.display = "none";
-	    }
-
-	    document.querySelector(".close-button").addEventListener("click", closeModal);
-		    window.addEventListener("click", function(event) {
-		        let modal = document.getElementById("detailsModal");
-		        if (event.target === modal) {
-		            closeModal();
-		        }
-	    });
 
     </script>
 </body>

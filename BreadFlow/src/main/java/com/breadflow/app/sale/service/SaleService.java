@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.breadflow.app.product.service.ProductVO;
 
+import jakarta.servlet.http.HttpSession;
+
 public interface SaleService {
 	// 본사 가맹점 정보 / 매출 조회
 	public List<SaleVO> selectSaleList();
@@ -16,14 +18,18 @@ public interface SaleService {
 	public int insertSale(List<PosVO> saleVO);
 	
 	// 가맹점 : 일매출 조회
-	public List<PosVO> selectSales(String salesDate);
+	public List<PosVO> selectSales(String salesDate, HttpSession name);
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
-	public int insertSales();
+	public int insertSales(PosVO name);
 	
 	// pos 마감 하기 전 상태 제품 상세보기
-	public List<PosVO> selectDetailSale();
+	public List<PosVO> selectDetailSale(HttpSession name);
 	
 	// chart 매출 조회
-	public List<PosVO> selectSaleChart();
+	public List<PosVO> selectSaleChart(HttpSession name);
+	
+	// chart 매출
+	public List<PosVO> selectSaleProduct(HttpSession companyNo);
+
 }
