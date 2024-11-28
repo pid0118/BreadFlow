@@ -18,6 +18,7 @@ public class InferDetailVO {
 	private String inferImage;
 	private String inferNo;
 	private String instoreNo;
+	private String inferManager;
 	
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")

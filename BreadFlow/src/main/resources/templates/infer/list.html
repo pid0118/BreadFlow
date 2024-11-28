@@ -44,8 +44,9 @@
                     <a class="dropdown-item company">[[ ${company.companyName} ]]</a>
                 </li>
             </ul>
-            <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
+            <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">처분</button>
 			<ul class="dropdown-menu" id="disposal">
+				<li class="dropdown-item disposal">처분 대기</li>
  				<li class="dropdown-item disposal" value="i1">반품</li>
  				<li class="dropdown-item disposal" value="i2">폐기</li>
  				<li class="dropdown-item disposal" value="i3">철회</li>
@@ -89,7 +90,6 @@
 	 	// 조건
 	 	var companyInput = null;
 	 	var div = null;
-	 	var clearTable = null;
 		var year = null;
 		var month = null;
 		var disposal = null;
@@ -114,7 +114,6 @@
             changeFilter();
             
             function clear() {
-            	clearTable = null;
     			year = null;
     			month = null;
     			disposal = null;
@@ -152,6 +151,7 @@
             	$("#yearlyBtn").text('연도');
             	$("#monthlyBtn").text('월');
             	$("#confirmCompBtn").text('확인 위치');
+            	$("#disposalBtn").text('처분');
             	clear();
             	changeFilter();
             });
@@ -161,9 +161,9 @@
             	$("#yearlyBtn").text('연도');
             	$("#monthlyBtn").text('월');
             	$("#confirmCompBtn").text('확인 위치');
+            	$("#disposalBtn").text('처분');
             	unchecked = '미확인';
             	checked = null;
-            	clearTable = 'notClear';
             	confirmExClear();
             	changeFilter();
             });
@@ -173,9 +173,9 @@
             	$("#yearlyBtn").text('연도');
             	$("#monthlyBtn").text('월');
             	$("#confirmCompBtn").text('확인 위치');
+            	$("#disposalBtn").text('처분');
             	checked = '확인';
             	unchecked = null;
-            	clearTable = 'notClear';
             	confirmExClear();
             	changeFilter();
             });
@@ -183,25 +183,20 @@
             // 연도별 필터 클릭
             $(document).on('click', '.year', function() {
                 year = $(this).text().trim();
-                clearTable = 'notClear';
                 $("#yearlyBtn").text(year);
-                pageClear();
                 changeFilter();
             });
 
             // 월별 필터 클릭
             $(document).on('click', '.month', function() {
                 month = $(this).text().trim();
-                clearTable = 'notClear';
                 $("#monthlyBtn").text(month);
-                pageClear();
                 changeFilter();
             });
             
             // 확인 위치별 필터 클릭
             $(document).on('click', '.company', function() {
                 confirmComp = $(this).text().trim();
-                clearTable = 'notClear';
                 $("#confirmCompBtn").text(confirmComp);
                 pageClear();
                 changeFilter();
@@ -209,11 +204,14 @@
             
         	// 처분별 필터 클릭
             $(document).on('click', '.disposal', function() {
-                disposal = $(this).text().trim();
-                clearTable = 'notClear';
-                $("#disposalBtn").text(disposal);
-                pageClear();
-                changeFilter();
+                if ($(this).text().trim() != '처분 대기') {
+	            	disposal = $(this).val();
+                } else {
+                	disposal = null;
+                }
+	            pageClear();
+	            changeFilter();
+                $("#disposalBtn").text($(this).text().trim());
             });
             
             // 입력시 검색
@@ -232,7 +230,6 @@
             $("#dateFilterBtn").click(function() {
                 startDt = $("#startDate").val();
                 endDt = $("#endDate").val();
-                clearTable = 'notClear';
                 pageClear();
                 changeFilter();
             });
@@ -245,7 +242,6 @@
             	url : '/infer/getInferList',
             	method : 'GET',
             	data : {companyInput,
-            			clearTable,
             			year,
             			month,
             			disposal,
@@ -258,7 +254,7 @@
             			page,
                         pageSize},
             	success : function(data) {
-            		updateTable(data.list, type);
+            		updateTable(data.list);
             		var lastPage = Math.ceil(data.count / pageSize);
             		if (page == lastPage) {
             			$("#nextPageBtn").hide();
@@ -286,14 +282,22 @@
                 	if (div !== '본사') {
                 		row += "<tr onclick='window.location = \"/inferListDetail/" + item.inferNo + "\"'>";
                 	} else {
-                		row += "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+                		if (item.confirmWhether != '미확인') {
+                			row += "<tr onclick='window.location = \"/inferListDetail/" + item.inferNo + "\"'>";
+                		} else {
+	                		row += "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+                		}
                 	}
                 	row += "<td style='display:none;'>" + item.inferNo + "</td>";
                     row += "<td class='table-plus date'>" + item.inferApplicationDate + "</td>";
                     row += "<td>" + item.confirmLocation + "</td>";
                     row += "<td>" + item.inferItem + "</td>";
                     row += "<td>" + item.inferQuantity + "</td>";
-                    row += "<td>" + item.disposalWhether + "</td>";
+                    if (item.disposalWhether != null) {
+                		row += "<td>" + item.disposalWhether + "</td>";
+                	} else {
+                		row += "<td>처분 대기</td>";
+                	}
                     row += "<td>" + item.confirmWhether + "</td>";
                     if (div !== '본사') {
                     	if (item.answerDate != null) {

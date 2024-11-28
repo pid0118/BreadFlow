@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -98,11 +97,5 @@ public class InferController {
 	public int insertInferAnswer(@RequestBody InferAnswerVO inferAnswerVO) {
 		return inferService.inferAnswerInsert(inferAnswerVO);
 	}
-	
-	// 불량 답변 등록 반환
-	@PutMapping("infer/updateInferHistory")
-	@ResponseBody
-	public int updateInferHistory(@RequestBody InferAnswerVO inferAnswerVO) {
-		return inferService.inferUpdate(inferAnswerVO);
-	}
+
 }

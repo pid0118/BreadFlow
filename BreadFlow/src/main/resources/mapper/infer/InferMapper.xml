@@ -13,7 +13,7 @@
 		     FROM
 		            INFER_DETAIL_HISTORY
 		     WHERE
-		            INFER_NO = IH.INFER_NO AND ROWNUM = 1) AS INFER_ITEM,
+		            INFER_NO = IH.INFER_NO AND ROWNUM = 1) || ' 외' AS INFER_ITEM,
 		    (SELECT
 		            SUM(INFER_QUANTITY)
 		     FROM
@@ -26,8 +26,7 @@
 		    IA.ANSWER_DATE,
 		    IA.DISPOSAL_WHETHER
 		FROM
-		    INFER_HISTORY IH JOIN INFER_ANSWER IA ON IH.INFER_NO = IA.INFER_NO
-		<if test="clearTable != null and clearTable != ''">
+		    INFER_HISTORY IH LEFT JOIN INFER_ANSWER IA ON IH.INFER_NO = IA.INFER_NO
 		WHERE 1 = 1
 			<if test="div != '본사'">
 			AND IH.CONFIRM_LOCATION = #{companyInput}
@@ -60,7 +59,6 @@
 			AND IH.INFER_APPLICATION_DATE < TO_DATE(#{endDt}, 'yy/MM/dd') + 1
 			]]>
 			</if>
-		</if>		    
 		ORDER BY
 		    INFER_NO
 		    
@@ -80,11 +78,14 @@
 		    IH.INFER_APPLICATION_DATE,
 		    IH.CONFIRM_LOCATION,
 		    IH.CONFIRM_WHETHER,
+		    IH.INFER_MANAGER,
+		    IA.DISPOSAL_WHETHER,
 		    I.INSTORE_DATE
 		FROM
 		         INFER_DETAIL_HISTORY IDH
 		    LEFT JOIN INFER_HISTORY IH ON IDH.INFER_NO = IH.INFER_NO
 		    LEFT JOIN INSTORE I ON I.INSTORE_NO = IDH.INSTORE_NO
+		    LEFT JOIN INFER_ANSWER IA ON IA.INFER_NO = IDH.INFER_NO
 		WHERE
 		    IDH.INFER_NO = #{inferNo}
 		ORDER BY
@@ -104,7 +105,7 @@
 		        instore_no
 		    	)
 		VALUES 	(
-				('BUA' || (SELECT GETSEQ('infer_detail_history','infer_detail_code') FROM dual))
+				('BUD' || (SELECT GETSEQ('infer_detail_history','infer_detail_code') FROM dual))
 		        , #{inferItem}
 		        , #{totalQuantity}
 		        , #{inferQuantity}
@@ -124,20 +125,22 @@
 			  	infer_no,
                 infer_application_date,
                 confirm_location,
-                confirm_whether
+                confirm_whether,
+                infer_manager
                 )
 		VALUES  (
         	    #{inferNo}
         	    , sysdate
                 , #{confirmLocation}
                 , '미확인'
+                , #{inferManager}
                 )
 	</insert>
 	
 	<update id="updateInferHistory" parameterType="InferAnswerVO">
 		UPDATE 	INFER_HISTORY
 		SET		CONFIRM_WHETHER = '확인'
-		WHERE	INFER_NO = #{inferNo};
+		WHERE	INFER_NO = #{inferNo}
 	</update>
 	
 	<insert id="insertInferAnswer" parameterType="InferAnswerVO">
@@ -152,17 +155,17 @@
 		        infer_no
 		    	)
 		VALUES  (
-		        ('BUA' || (SELECT GETSEQ('infer_answer','infer_answer_no') FROM dual)
+		        ('BUA' || (SELECT GETSEQ('infer_answer','infer_answer_no') FROM dual))
 		        , #{disposalWhether}
 		        , #{answer}
 		        , #{manager}
 		        , #{answerer}
 		        , sysdate
 		        , #{inferNo}
-		        );
+		        )
 	</insert>
 	
-	<select id="selectInferAnswer" resultType="InferAnswerVO" parameterType="String">
+	<select id="selectInferAnswerDetail" resultType="InferAnswerVO" parameterType="String">
 		SELECT 	IA.DISPOSAL_WHETHER,
 				IA.ANSWER,
 				IA.MANAGER,

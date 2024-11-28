@@ -153,6 +153,7 @@
 		        , c.company_no
 		        , c.company_address
 		        , c.company_tel
+		        , c.brn
 		FROM    member m JOIN company c
 		            ON (m.company_no = c.company_no)
 		WHERE	m.id = #{id}

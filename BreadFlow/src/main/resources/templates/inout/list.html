@@ -113,7 +113,11 @@
     			month = null;
     			startDt = null;
     			endDt = null;
-    			page = 1;
+    			pageClear();
+            }
+            
+            function pageClear() {
+            	page = 1;
     			pageSize = 10;
     			$("#currentPage").text(page + " 페이지");
             }
@@ -140,9 +144,7 @@
             $("#rawmatBtn").click(function() {
             	prd = null;
             	ing = 'ing';
-            	page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
+            	pageClear();
             	changeFilter();
             });
 
@@ -150,9 +152,7 @@
             $("#finprdBtn").click(function() {
             	ing = null;
             	prd = 'prd';
-            	page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
+            	pageClear();
             	changeFilter();
             });
             
@@ -160,9 +160,6 @@
             $(document).on('click', '.year', function() {
                 year = $(this).text().trim();
                 $("#yearlyBtn").text(year);
-                page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
                 changeFilter();
             });
 
@@ -170,9 +167,6 @@
             $(document).on('click', '.month', function() {
                 month = $(this).text().trim();
                 $("#monthlyBtn").text(month);
-                page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
                 changeFilter();
             });
             
@@ -202,9 +196,7 @@
             $("#dateFilterBtn").click(function() {
             	startDt = $("#startDate").val();
                 endDt = $("#endDate").val();
-                page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
+                pageClear();
                 changeFilter();
             });
             
