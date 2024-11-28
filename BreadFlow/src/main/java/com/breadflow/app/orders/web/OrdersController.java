@@ -1,5 +1,6 @@
 package com.breadflow.app.orders.web;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -29,11 +30,18 @@ public class OrdersController {
 		return ordersService.selectOrdersList();
 	}
 	
-	// 주문 신청
+	// 주문 신청 상세 목록
 	@GetMapping("/orders/detailList")
 	@ResponseBody
 	public Map<String, Object> ordersDetailList(@RequestParam String code){
 		return ordersService.selectOrdersDetailList(code);
+	}
+	
+	// 선택된 주문 신청 상세 리스트
+	@GetMapping("/orders/reqDetailList")
+	@ResponseBody
+	public Map<String, Object> ordersReqDetailList(@RequestParam String codes){
+		return ordersService.selectOrdersRequestList(codes);
 	}
 	
 }

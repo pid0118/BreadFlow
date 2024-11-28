@@ -28,5 +28,29 @@
 		WHERE approval_whether = 'd1'
 		AND o.ordering_code = #{code}
 	</select>
+	
+	<select id="selectOrdersRequestList">
+		SELECT NVL(p.product_name, i.ingredient_name) item_name
+		       , NVL(p.amount || FIND_CD(p.unit), i.amount || FIND_CD(i.unit)) unit
+		       , NVL(p.standard, i.standard) standard
+		       , od.quantity
+		       , (SELECT company_name
+		          FROM company
+		          WHERE company_no = o.company_no) company_name
+		       , od.ordering_detail_code
+		FROM ordering o LEFT JOIN ordering_detail od 
+		ON o.ordering_code = od.ordering_code 
+		LEFT JOIN product p 
+		ON od.ordering_product = p.product_code
+		LEFT JOIN ingredient i
+		ON od.ordering_ingredient = i.ingredient_code
+		WHERE approval_whether = 'd1'
+		AND o.ordering_code IN (
+		<foreach collection="array" item="item" separator=",">
+			#{item}
+		</foreach>
+		)
+		ORDER BY item_name, company_name
+	</select>
 
 </mapper>
