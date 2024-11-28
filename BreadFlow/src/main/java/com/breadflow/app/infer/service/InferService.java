@@ -17,7 +17,6 @@ public interface InferService {
 	public int inferHistoryInsert(InferHistoryVO inferHistoryVO);
 	
 	// 본사
-	public int inferUpdate(InferAnswerVO inferAnswerVO); // 확인 시 확인 여부 UPDATE
 	public int inferAnswerInsert(InferAnswerVO inferAnswerVO); // 확인 후 답변 INSERT
 	
 	public List<CompanyVO> companyList();

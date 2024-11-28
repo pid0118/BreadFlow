@@ -81,7 +81,7 @@ public class AccountController {
 		session.setAttribute("companyNo", acVO.getCompanyNo());			// 업체코드
 		session.setAttribute("companyAddress", acVO.getCompanyAddress());
 		session.setAttribute("companyTel", acVO.getCompanyTel());
-
+		session.setAttribute("brn", acVO.getBrn());
 		return 1;		// 로그인 성공
 	}
 	

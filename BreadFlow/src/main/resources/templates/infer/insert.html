@@ -12,6 +12,7 @@
 		<div class="pd-20">
 			<h2 class="text-black">불량 내역 등록</h2>
 		</div>
+		<input class="form-control" type="text" name="inferManager" id="inferManager" th:value="${session.memNo}" style="display:none;" readonly>
 		<form>
 			<div class="pd-20 row">
 				<div class="col-md-6 col-sm-12">
@@ -63,6 +64,11 @@
 					
 				</tbody>
 			</table>
+			<div class="pagination-container">
+			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			    <span id="currentPage">1 페이지</span>
+			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			</div>
 		</div>
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
@@ -72,8 +78,11 @@
 	
 	<script>
 	
-		// 업체 이름 조건 생성
+		// 조건 생성
 		var companyInput = null;
+		
+		var page = 1;
+		var pageSize = 10;
 		
 		// 페이지 실행
 		$(document).ready(function() {
@@ -86,6 +95,13 @@
 			
 	        // 현 날짜 출력
 	        loadTodayDate();
+	        
+	        // 페이징 초기화
+	        function pageClear() {
+	        	page = 1;
+    			pageSize = 10;
+    			$("#currentPage").text(page + " 페이지");
+	        }
 
 	        // 품목별 필터 클릭
             $(document).on('click', '.item', function() {
@@ -133,7 +149,7 @@
                 
         		// 이미지 업로드    
         		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
-        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		formData.append("file", file); /* 폼에 file 변수 추가 */
         		//서버에 파일 업로드(백그라운드에서 실행)
         		$.ajax({
         			type:"post",
@@ -150,7 +166,7 @@
 
 	     	// 등록 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
-	        	
+	        	var checkNull = false;
 	            // 선택된 행 추출
 	            var selectedRows = [];
 	            $("#inferTable tr.selected").each(function() {
@@ -158,45 +174,83 @@
 			        var data = {
 				        inferItem: row.find("td:nth-child(3)").text(),
 				        totalQuantity: row.find("td:nth-child(4)").val(),
-				        inferQuantity: row.find("td:nth-child(5) input").text(),
+				        inferQuantity: row.find("td:nth-child(5) input").val(),
 				        inferType: row.find("td:nth-child(6)").text(),
 				        instoreNo: row.find("td:nth-child(7)").val(),
 				        inferImage: $("#productImage").val(),
-				        confirmLocation: $("#companyName").val()
+				        confirmLocation: $("#companyName").val(),
+				        inferManager: $("#inferManager").val()
 			        };
+			        if (data.inferQuantity = null) {
+		            	checkNull = true;
+		            }
+			        if (data.inferImage = null) {
+		            	checkNull = true;
+		            }
 			        selectedRows.push(data);
 	            });
 	            
 	            console.log(selectedRows);
 	            
-	         	// 불량 내역 등록
-	            $.ajax({
-	                url: '/infer/insertInfer',
-	                method: 'POST',
-	                data: JSON.stringify(selectedRows),
-	                contentType: 'application/json',
-	                success: function(response) {
-	                	console.log(selectedRows);
-	                	alert("등록되었습니다.");
-	                },
-	                error: function() {
-	                    alert("불량 내역을 등록하는 데 실패했습니다.");
-	                }
-	            });
+	            if (checkNull) {
+	            	alert("필수 항목이 입력되지 않았습니다.")
+	            } else {
+		         	// 불량 내역 등록
+		            $.ajax({
+		                url: '/infer/insertInfer',
+		                method: 'POST',
+		                data: JSON.stringify(selectedRows),
+		                contentType: 'application/json',
+		                success: function(response) {
+		                	console.log(selectedRows);
+		                	alert("등록되었습니다.");
+		                },
+		                error: function() {
+		                    alert("불량 내역을 등록하는 데 실패했습니다.");
+		                }
+		            });
+	            }
 	         	
 	        });
 			
 	    });
+		
+		// 이전 버튼 클릭시 동작
+		$("#prevPageBtn").click(function() {
+		    if (page > 1) {
+		        page--;
+		        changeFilter();
+		        $("#currentPage").text(page + " 페이지");
+		    }
+		});
+		
+		// 다음 버튼 클릭시 동작
+		$("#nextPageBtn").click(function() {
+		    page++;
+		    changeFilter();
+		    $("#currentPage").text(page + " 페이지");
+		});
 		
 		// 필터값 전송
         function changeFilter() {
         	$.ajax({
             	url : '/infer/getInstore',
             	method : 'GET',
-            	data : {companyInput},
+            	data : {companyInput, page, pageSize},
             	success : function(data) {
-            		updateTable(data);
             		console.log(data);
+            		updateTable(data.list);
+            		var lastPage = Math.ceil(data.count / pageSize);
+            		if (page == lastPage) {
+            			$("#nextPageBtn").hide();
+            		} else {
+            			$("#nextPageBtn").show();
+            		}
+            		if (page > 1) {
+            			$("#prevPageBtn").show();
+            		} else {
+            			$("#prevPageBtn").hide();
+            		}
             	},
             	error : function() {
 	                alert("내역을 불러오는 데 실패했습니다.");
@@ -214,7 +268,7 @@
 								<div class="form-check">
 									<input class="form-check-input check" type="checkbox">
 								</div>
-							</td>`
+							</td>`;
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                row += "<td>" + item.itemName + "</td>";
 	                row += "<td>" + item.instoreQuantity + "</td>";
@@ -242,8 +296,8 @@
 	    	var day = objectDate.getDate();
 	    	var month = objectDate.getMonth();
 	    	var year = objectDate.getFullYear();
-	    	var todayDate = year + "/" + (month + 1) + "/" + day;
-	 		$("#inferDate").val(todayDate.slice(2, 10));
+	    	var todayDate = year + "-" + (month + 1) + "-" + day;
+	 		$("#inferDate").val(todayDate);
 	 	}
 	    
 	 	// 검색

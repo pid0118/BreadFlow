@@ -19,4 +19,5 @@ public class InferHistoryVO {
 	private Integer inferQuantity;
 	private String confirmWhether;
 	private String disposalWhether;
+	private String inferManager;
 }

@@ -26,8 +26,9 @@ public class InstoreVO {
 	private String orderingDetailCode;
 	private String instoreDiv;
 	private String instoreDivNo;
-	private Integer expirationDeadline;
+	private Date expirationDeadline;
 	private Integer purchasePrice;
+	private Integer price;
 	
 	private String unit;
 	private String standard;

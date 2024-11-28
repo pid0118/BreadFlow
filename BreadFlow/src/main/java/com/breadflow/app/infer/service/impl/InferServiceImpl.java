@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class InferServiceImpl implements InferService {
-	public InferMapper inferMapper;
+	public final InferMapper inferMapper;
 	
 	@Override
 	public List<InferHistoryVO> inferList(FilterVO filterVO) {
@@ -57,17 +57,14 @@ public class InferServiceImpl implements InferService {
 	public int inferHistoryInsert(InferHistoryVO inferHistoryVO) {
 		return inferMapper.insertInferHistory(inferHistoryVO);
 	}
-	
-	@Transactional
-	@Override
-	public int inferUpdate(InferAnswerVO inferAnswerVO) {
-		return inferMapper.updateInferHistory(inferAnswerVO);
-	}
-	
+
 	@Transactional
 	@Override
 	public int inferAnswerInsert(InferAnswerVO inferAnswerVO) {
-		return inferMapper.insertInferAnswer(inferAnswerVO);
+		int result = 0;
+		result += inferMapper.insertInferAnswer(inferAnswerVO);
+		result += inferMapper.updateInferHistory(inferAnswerVO);
+		return result;
 	}
 
 	@Override

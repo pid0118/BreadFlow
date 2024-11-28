@@ -39,13 +39,13 @@
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>담당자</label>
-					<input class="form-control" type="text" name="inferMember" id="inferMember" th:value="${inferMember}" readonly>
+					<input class="form-control" type="text" name="inferMember" id="inferMember" th:value="${session.name}" readonly>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>확인 위치</label>
-					<input class="form-control" type="text" name="confirmLocation" id="confirmLocation" th:value="${confirmLocation}" readonly>
+					<input class="form-control" type="text" name="confirmLocation" id="confirmLocation" th:value="${session.companyNo}" readonly>
 				</div>
 			</div>
 			<div class="form-group">
@@ -58,7 +58,7 @@
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
 					<tr>
-						<th class="table-plus">입고 일자</th>
+						<th class="table-plus">불량 등록 일자</th>
 						<th class="datatable-nosort">확인 위치</th>
 						<th class="datatable-nosort">품목 이미지</th>
 						<th class="datatable-nosort">품목</th>
@@ -70,13 +70,14 @@
 				<tbody id="inferDetailTable">
 					<tr th:each="infer : ${infer}">
 						<td style="display:none;" th:text="${infer.inferDetailCode}"></td>
-						<td th:text="${infer.instoreDate}"></td>
+						<td th:text="${infer.inferApplicationDate}"></td>
 						<td th:text="${infer.confirmLocation}"></td>
 						<td><img id="inferImage" src="/imgs/${infer.inferImage}" alt="" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
 						<td th:text="${infer.inferType}"></td>
 						<td th:text="${infer.confirmWhether}"></td>
+						<td style="display:none;" th:text="${infer.inferManager}"></td>
 					</tr>
 				</tbody>
 			</table>
@@ -88,67 +89,65 @@
 		</div>
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
+			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>취소</button>
 		</div>
 		</form>
 	</div>
 	
     <script>
+    
+		$(document).ready(function() {
+			
+			var inferApplicationDate = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(2)").text().trim();
+			var inferMember = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(9)").text().trim();
+			var confirmLocation = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(3)").text().trim();
+	
+			$("#inferDate").val(inferApplicationDate);
+			$("#inferMember").val(inferMember);
+			$("#confirmLocation").val(confirmLocation);
+			
+		});
 
 		// 등록 버튼 클릭 시 실행
 		$("#submitBtn").click(function() {
 			
-			// 등록 정보 추출
-			var insertData = [];
-			var row = $(this);
-            var data = {
+			var inferNo = $("#inferNo").val();
+			
+			var checkNull = false;
+            var insertData = {
                 disposalWhether : $("input[name='options']:checked").val(),
-            	answer : $("#answer").text(),
+            	answer : $("#answer").value,
             	manager : $("#inferMember").val(),
             	answerer : $("#loginMember").val(),
-            	inferNo : $("#inferNo").val()
+            	inferNo
             };
-            insertData.push(data);
+            if (insertData.answer = null || insertData.answer == '') {
+				checkNull = true;
+			}
+
             console.log(insertData);
-            
-         	// 갱신 정보 추출
-			var updateData = [];
-			var row = $(this);
-            var upData = {
-            	inferNo : $("#inferNo").val()
-            };
-            updateData.push(upData);
-            console.log(updateData);
-			
-			// 답변 등록
-			$.ajax({
-                url: '/infer/insertInferAnswer',
-                method: 'POST',
-                async: false,
-                data: JSON.stringify(insertData),
-                contentType: 'application/json',
-                success: function(response) {
-                	console.log(insertData);
-                    alert("등록되었습니다.");
-                },
-                error: function() {
-                    alert("등록하는 데 실패했습니다.");
-                }
-            });
-			
-			// 확인 여부 갱신
-			$.ajax({
-                url: '/infer/updateInferHistory',
-                method: 'PUT',
-                data: JSON.stringify(updateData),
-                contentType: 'application/json',
-                success: function(response) {
-                	console.log(updateData);
-                },
-                error: function() {
-                	console.log('확인 여부 갱신에 실패했습니다.');
-                }
-            });
+
+            if (checkNull) {
+            	alert("답변이 입력되지 않았습니다.");
+            } else {
+				// 답변 등록
+				$.ajax({
+	                url: '/infer/insertInferAnswer',
+	                method: 'POST',
+	                async: false,
+	                data: JSON.stringify(insertData),
+	                contentType: 'application/json',
+	                success: function(response) {
+	                	console.log(insertData);
+	                    alert("등록되었습니다.");
+	                    window.location.href = "/inferList";
+	                },
+	                error: function() {
+	                    alert("등록하는 데 실패했습니다.");
+	                }
+	            });
+
+            }
 			
 		});
 		
