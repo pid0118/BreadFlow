@@ -146,104 +146,116 @@
     </div>
 	
     <!-- 제품상세보기 모달창 -->
-	<div class="modal fade" id="ingredientDetailModal" tabindex="-1" role="dialog" aria-labelledby="ingredientDetailModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg modal-dialog-centered">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h4 class="modal-title" id="ingredientDetailModalLabel">제품 상세정보</h4>
-	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-	            </div>
-	            <div class="modal-body">
-	                <div class="row">
-	                    <div class="col-md-4 text-center mb-3">
-	                        <img id="ingredientImage" src="" alt="" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: cover;">
-	                    </div>
-	                    <div class="col-md-8">
-	                        <div class="row row-cols-4">
-	                            <div class="col mb-3">
-	                                    <strong>재료코드</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="ingredientCode"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>재료명</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="ingredientName"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>원산지</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="origin"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>규격</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="standard"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>안전재고수량</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="safeStockQuantity"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>소비기한</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="expirationDeadline"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>매입가격</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="purchasePrice"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>양</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="amount"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>단위</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="unit"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>대분류</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="major"></div>
-	                                </div>
-	                            </div>
-	                            <div class="col mb-3">
-	                                    <strong>소분류</strong>
-	                                <div class="border rounded p-2 h-80 custom-box">
-	                                    <div id="sub"></div>
-	                                </div>
-	                            </div>
-	                            <input type="hidden" id="ingredientCodes"/>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="updatePage()">수정</button>
-	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-
+	<form>
+		<div class="modal fade" id="ingredientDetailModal" tabindex="-1"
+			role="dialog" aria-labelledby="ingredientDetailModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="ingredientDetailModalLabel">제품
+							상세정보</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-4 text-center mb-3">
+								<div class="image-placeholder" id="imagePreview">
+						            <img th:src="'/imgs/' + ${ingredientImage}" id="ingredientImage">
+						        </div>
+						        <input type="file" class="d-none" id="image" accept="image/*">
+							</div>
+							<div class="col-md-8">
+								<div class="row row-cols-4">
+									<div class="col mb-3">
+										<strong>재료코드</strong> <input type="text"
+											class="form-control form-control-sm" id="ingredientCode"
+											th:value="${ingredientCode}" readonly>
+									</div>
+									<div class="col mb-3">
+										<strong>재료명</strong> <input type="text"
+											class="form-control form-control-sm" id="ingredientName"
+											th:value="${ingredientName}">
+									</div>
+									<div class="col mb-3">
+										<strong>원산지</strong> <input type="text"
+											class="form-control form-control-sm" id="origin"
+											th:value="${origin}">
+									</div>
+									<div class="col mb-3">
+										<strong>규격</strong> <input type="text"
+											class="form-control form-control-sm" id="standard"
+											th:value="${standard}">
+									</div>
+									<div class="col mb-3">
+										<strong>안전재고수량</strong> <input type="text"
+											class="form-control form-control-sm" id="safeStockQuantity"
+											th:value="${safeStockQuantity}">
+									</div>
+									<div class="col mb-3">
+										<strong>소비기한</strong> <input type="text"
+											class="form-control form-control-sm" id="expirationDeadline"
+											th:value="${expirationDeadline}">
+									</div>
+									<div class="col mb-3">
+										<strong>매입가격</strong> <input type="text"
+											class="form-control form-control-sm" id="purchasePrice"
+											th:value="${purchasePrice}">
+									</div>
+									<div class="col mb-3">
+										<strong>용량</strong> <input type="text"
+											class="form-control form-control-sm" id="amount"
+											th:value="${amount}">
+									</div>
+									<div class="col mb-3">
+										<strong>단위</strong> <select class="form-select form-select-sm"
+											id="unit">
+											<option selected>선택하세요</option>
+											<th:block th:each="code : ${codeVal}">
+												<option th:value="${code.codeRule}"
+													th:text="${code.codeVal}"
+													th:selected="${code.codeRule} == ${unit}"></option>
+											</th:block>
+										</select>
+									</div>
+									<div class="col mb-3">
+										<strong>대분류</strong> <select
+											class="form-select form-select-sm" id="mainCategory">
+											<option selected>선택하세요</option>
+											<th:block th:each="cate : ${category}">
+												<option th:value="${cate.sub}" th:text="${cate.sub}"
+													th:selected="${cate.sub} == ${major}"></option>
+											</th:block>
+										</select>
+									</div>
+									<div class="col mb-3">
+										<strong>소분류</strong> <select
+											class="form-select form-select-sm" id="subCategory">
+											<option selected>선택하세요</option>
+											<th:block th:each="sb : ${sub}">
+												<option th:value="${sb.sub}" th:text="${sb.sub}"
+													th:selected="${sb.sub} == ${sub}"></option>
+											</th:block>
+										</select> <input type="hidden" id="ingredientCodes" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal" onclick="updatePage()">수정</button>
+							<button type="button" class="btn btn-secondary"
+								data-dismiss="modal">닫기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 
 	<script>
-	// 가격에 , 찍기
-	  
-    
+    let sub = ''
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showingredientDetail(ingredientCode) {
 		    $.ajax({
@@ -253,29 +265,73 @@
 		        	
 		            document.getElementById('ingredientImage').src = '/imgs/' + ingredient.ingredientImage;
 		            document.getElementById('ingredientImage').alt = ingredient.ingredientName;
-		            document.getElementById('ingredientCode').textContent = ingredient.ingredientCode;
-		            document.getElementById('ingredientName').textContent = ingredient.ingredientName;
-		            document.getElementById('origin').textContent = ingredient.origin;
-		            document.getElementById('standard').textContent = ingredient.standard;
-		            document.getElementById('safeStockQuantity').textContent = formatNumber(ingredient.safeStockQuantity);
-		            document.getElementById('expirationDeadline').textContent = formatNumber(ingredient.expirationDeadline) + '일';
-		            document.getElementById('purchasePrice').textContent = formatNumber(ingredient.purchasePrice);
-		            document.getElementById('amount').textContent = formatNumber(ingredient.amount);
-		            document.getElementById('unit').textContent = ingredient.unitName;
-		            document.getElementById('major').textContent = ingredient.major;
-		            document.getElementById('sub').textContent = ingredient.sub;
+		            document.getElementById('ingredientCode').value = ingredient.ingredientCode;
+		            document.getElementById('ingredientName').value = ingredient.ingredientName;
+		            document.getElementById('origin').value = ingredient.origin;
+		            document.getElementById('standard').value = ingredient.standard;
+		            document.getElementById('safeStockQuantity').value = formatNumber(ingredient.safeStockQuantity);
+		            document.getElementById('expirationDeadline').value = formatNumber(ingredient.expirationDeadline) + "일";
+		            document.getElementById('purchasePrice').value = formatNumber(ingredient.purchasePrice) + "원";
+		            document.getElementById('amount').value = formatNumber(ingredient.amount);
+		            document.getElementById('unit').value = ingredient.unit;
+		            document.getElementById('mainCategory').value = ingredient.major;
+		            sub = ingredient.sub;     
 		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
 		            $('#ingredientDetailModal').modal('show');
+		            $("#mainCategory").change()
 		        },
 		        error: function(xhr, status, error) {
 		            alert('제품 정보를 불러오는데 실패했습니다.');
 		        }
 		    });
+		    
+		 // 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
+
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#ingredientImage').attr('src', e.target.result);
+                        //$('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+        	// 이미지 업로드    
+        		
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        			
+        			$("#ingredientImage").val(data);
+        			}
+        		});
+        	});
+            
 		}
 		
 		function formatNumber(number) {
 		    return number.toLocaleString(); // 숫자에 콤마 추가
 		}	
+		
+		function commadel(number){
+			return number.replace(/,/g, "");
+		}
+		
+		function strdel(number){
+		 return number.slice(0, -1);	
+		}
 	
         let myTable ;
         // 모달 close handlers
@@ -313,7 +369,7 @@
                 }
             });
             
-            
+           // 검색 폼에있는 selectpiker 카테고리=========================================================================
            var mySelect = $('#categorylist');
            var mySelect2 = $('#subList');
            
@@ -339,7 +395,9 @@
            });
            
         });
-        
+        // 검색 폼에있는 selectpiker 카테고리=========================================================================
+        	
+        	
         // 카테고리 선택시 테이블에 카테고리 선택항목만 열람
         $.fn.dataTable.ext.search.push(function(setting, data, dataIndex){
         	
@@ -358,8 +416,36 @@
         	}
         	return false;
         });
-        	
         
+     	// modal 카테고리 변경 처리 =================================================================================
+    	var subCategory = $('#subCategory');
+
+        $("#mainCategory").change(function() {
+            const category = this.value;
+ 
+           // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
+            if (category === "") {
+                subCategory.empty().append('<option selected>선택하세요</option>');
+                return;
+            }
+
+            fetch("/category/subList?major=" + category)
+                .then(response => response.json())
+                .then(response => {
+                    // 기존 옵션을 지운 후 새로운 옵션 추가
+                    subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
+                    for (let item of response) {
+                        subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
+                    }
+                    document.getElementById('subCategory').value = sub;
+                })
+                .catch(error => console.error('Error:', error)); // 오류 처리 
+        });
+        
+        // modal 카테고리 변경 처리 =================================================================================
+        
+        	
+        	
         // 체크박스 체크후 삭제버튼 클릭시 해당품목을 삭제하시겠습니까? 작은모달창 질문후 예 버튼 클릭시 해당 품목삭제기능 
         $(document).ready(function() {
 		    // 전체 선택 체크박스 클릭 시
@@ -395,7 +481,7 @@
     	  	var checked = $("[name='checkingredientCode']").is(':checked');
     	  	
     	  	if (checked){
-    	  		let delcheck = confirm("선택하신 제품을 삭제하시겠습니까?")
+    	  		let delcheck = confirm("선택하신 재료를 삭제하시겠습니까?")
         	  	if(delcheck == false){
         	  		return
         	  	}
@@ -426,13 +512,108 @@
     	  	}
         }			
         
+		      
+      
+      
         function updatePage() {
-        	const ingredientCode = $('#ingredientCodes').val();
-        	
-        	location.href = "ingredientUpdate?ingredientCode=" + productCode;
-        }
-            // 검색 입력 필드를 새로운 위치로 이동
-            $('.dataTables_filter').detach().appendTo('#dtSearch');
+        	if($("#ingredientName").val()==''){
+     			alert("재료명을 입력해주세요")
+     			return;
+     		}
+     		if($("#purchasePrice").val() == ''){
+     			alert("매입가를 입력해주세요")
+     			return;
+     		}
+     		if($("#safeStockQuantity").val() == ''){
+     			alert("안전재고 수량을 입력주세요")
+     			return;
+     		}
+     		if($("#origin").val() == ''){
+     			alert("원산지를 입력해주세요")
+     			return;
+     		}
+     		if($("#amount").val() == ''){
+     			alert("용량를 입력해주세요")
+     			return;
+     		}
+     		if($("#unit option:selected").val() == '선택하세요'){
+     			alert("단위를 선택해주세요")
+     			return;
+     		}
+     		if($("#mainCategory option:selected").val() == '선택하세요'){
+     			alert("대분류를 선택해주세요")
+     			return;
+     		}
+     		if($("#subCategory option:selected").val() == '선택하세요'){
+     			alert("소분류를 선택해주세요")
+     			return;
+     		}
+     		if(sameCheck == false){
+     			alert("재료명이 중복되거나 재료가 등록되어있습니다")
+     			return;
+     		}
+     		$.ajax({
+     			url : "/ingredient",
+     			method : "put",
+     			data : JSON.stringify({
+     				"ingredientCode" : $("#ingredientCode").val(),
+     				"ingredientName" : $("#ingredientName").val(),
+     				"standard" : $("#standard").val(),
+     				"expirationDeadline" : strdel(commadel($("#expirationDeadline").val())),
+     				"purchasePrice" : strdel(commadel($("#purchasePrice").val())),
+     				"safeStockQuantity" : commadel($("#safeStockQuantity").val()),
+     				"origin" : $("#origin").val(),
+     				"unit" : $("#unit option:selected").val(),
+     				"major" : $("#mainCategory option:selected").val(),
+     				"sub" : $("#subCategory option:selected").val(),
+     				"amount" : commadel($("#amount").val()),
+     				"ingredientImage" : $("#ingredientImage").val()
+     			}),
+     			contentType : 'application/json',
+     			dataType : "json",
+     			success : function (data) {
+     				if (data == 1) {
+     					alert("재료 수정에 성공하였습니다.");
+     					refreshMemList()
+     				} else {
+     					alert("재료 수정에 실패했습니다.");
+     				}
+     			}, 
+     			error : function (err) {
+     				console.log(err);
+     			}
+     			
+     		});
+     	}  
+        
+     // 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
+		let sameCheck = true;
+    	
+    	$("#ingredientName").on('change', function(){
+    		let data = { productName: $('#ingredientName').val(),
+    					 productCode: $('#ingredientCode').val()};
+    		
+    		$.ajax({
+    			url:"/ingredientNameCheck",
+    			type: "post",
+    			data: data,
+    		}).done((res)=> {
+    			console.log(res);
+    			sameCheck = true;
+    		}).fail((err)=>{
+    			alert("이미등록된 재료이거나 재료명이 중복되었습니다")
+    			console.log(err);
+    			sameCheck = false;
+    		});
+    		
+    	});
+        
+    	function refreshMemList(){
+    		location.reload();
+    	}
+        
+        // 검색 입력 필드를 새로운 위치로 이동
+		$('.dataTables_filter').detach().appendTo('#dtSearch');
        
         		
     </script>

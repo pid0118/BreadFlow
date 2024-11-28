@@ -24,6 +24,7 @@
 			   major,
 			   sub,
 			   origin,
+			   unit,
 			   find_cd(unit) as unit_name,
 			   standard,
 			   safe_stock_quantity,
