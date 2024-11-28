@@ -13,7 +13,7 @@ public class MtrqplanVO {
 	Date	startDate;				// 시작 일자
 	Date	lastDate;				// 마감 일자
 	String	deliveryLocation;		// 납품 위치
-	String	supplyCompany;			// 공급 업체
+	String	supplyCompany;			// 공급(공유) 업체
 	String	writer;					// 작성자
 	
 	//== matrequired_plan_detail 테이블 관련 VO ==//

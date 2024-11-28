@@ -58,7 +58,7 @@
 						<div class="col-md-6 col-sm-12">
 							<div class="form-group">
 								<label>자재소요계획 고유번호</label> <input type="text" class="form-control"
-									id="updProductionPlanNo" name="productionPlanNo" readonly>
+									id="updMtrqPlanNo" name="matrequiredPlanNo" readonly>
 							</div>
 						</div>
 						
@@ -75,7 +75,7 @@
 						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>공유업체코드h</label> <input type="text" class="form-control"
-									id="updProductionCompany" name="productionCompany">
+									id="updProductionCompany" name="supplyCompany">
 							</div>
 						</div>
 						
@@ -116,6 +116,18 @@
 									id="updProgressSituation" readonly>
 							</div>
 						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>담당자h</label> <input type="text" class="form-control"
+									id="updwriter" name="writer" th:value="${session.memNo}" readonly>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>생산계획번호h</label> <input type="text" class="form-control"
+									id="updproductionPlanNo" name="productionPlanNo" readonly>
+							</div>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -125,7 +137,7 @@
 		
 		<div class="detailTableArea">
 			<div style=" float:left">
-				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
+				<button type="button" class="btn btn-primary btn-lg" id="shareMtrqPlanBtn">업체 공유</button>
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
@@ -317,10 +329,13 @@ tblDelRow.addEventListener('click', function() {
 })
 
 let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
-PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
+PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow);
 
 let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색 모달
-DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow)
+DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow);
+
+let udtFormBtn = document.querySelector("#udtFormBtn");							// 확인 버튼
+udtFormBtn.addEventListener('click', insertMtrqPlanAjax);
 
 // 이벤트 걸기 끝
 //========================================================================
@@ -575,8 +590,10 @@ const grid3 = new Grid({
 // [박진석|241128] grid1 클릭이벤트 설정 및 grid2에 관련 데이터 뿌림
 grid1.on('click', function (ev) {
 	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
+	
 	console.log(prdPlanNo);
 	resetInfo();
+	$("#updproductionPlanNo").val(prdPlanNo);
 	
 	$.ajax({
 	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
@@ -656,9 +673,36 @@ function ingrdntModalConfirm() {
 //========================================================================
 	
 
+	
+//========================================================================
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+function insertMtrqPlanAjax() {
+	if($("#updwriter").val() == "" || $("#updwriter").val() == null) {
+		alert('로그인을 해주시기 바랍니다.')
+		return false;
+	}
+	
+	if($("#updproductionPlanNo").val() == "" || $("#updproductionPlanNo").val() == null) {
+		 alert("생산계획 정보를 선택해주세요.")
+		 return false;
+	}
+	
+	/*if($("#updPrdtComNm").val() = "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
+		alert("날짜 또는 업체를 선택했는지 확인하세요.");
+		return false;
+	}*/
+	
+	console.log("인서트인서트");
+	
+}
+	
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+//========================================================================
+	
+	
 
 //========================================================================
-// [박진석] 자재소요내역(grid3), form 값 초기화하는 함수
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
 function resetInfo() {
 	grid3.clear();
 	document.querySelector("#updateMtrqplanForm").reset();
