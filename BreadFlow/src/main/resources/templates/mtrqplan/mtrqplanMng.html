@@ -45,20 +45,20 @@
 		
 		<h5 style="float: left;">자재소요 내역</h5>
 		<div style="float: right;">
-			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
-			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
+			<button type="button" class="btn btn-primary btn-sm" id="tblDelRow">행 삭제</button>
+			<button type="button" class="btn btn-primary btn-sm" id="tblNewRow">행 추가</button>
 		</div>
 		<div id="grid3"></div>
 	
 		<div class="detailInputArea">
 			<!-- 상세보기 폼 시작 -->
 			<div class="updateAccounts">
-				<form id="updatePrdtplanForm" method="post">
+				<form id="updateMtrqplanForm" method="post">
 					<div class="row">
 						<div class="col-md-6 col-sm-12">
 							<div class="form-group">
 								<label>자재소요계획 고유번호</label> <input type="text" class="form-control"
-									id="updProductionPlanNo" name="productionPlanNo" readonly>
+									id="updMtrqPlanNo" name="matrequiredPlanNo" readonly>
 							</div>
 						</div>
 						
@@ -75,7 +75,7 @@
 						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>공유업체코드h</label> <input type="text" class="form-control"
-									id="updProductionCompany" name="productionCompany">
+									id="updProductionCompany" name="supplyCompany">
 							</div>
 						</div>
 						
@@ -116,6 +116,18 @@
 									id="updProgressSituation" readonly>
 							</div>
 						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>담당자h</label> <input type="text" class="form-control"
+									id="updwriter" name="writer" th:value="${session.memNo}" readonly>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<label>생산계획번호h</label> <input type="text" class="form-control"
+									id="updproductionPlanNo" name="productionPlanNo" readonly>
+							</div>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -125,7 +137,7 @@
 		
 		<div class="detailTableArea">
 			<div style=" float:left">
-				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
+				<button type="button" class="btn btn-primary btn-lg" id="shareMtrqPlanBtn">업체 공유</button>
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
@@ -243,15 +255,87 @@
 <!-- 납품 업체검색 모달창 끝 -->
 
 
+<!-- 재료검색 모달창 -->
+<div
+	class="modal fade bs-example-modal-lg"
+	id="ingrdnt-modal"
+	tabindex="-1"
+	role="dialog"
+	aria-labelledby="myLargeModalLabel"
+	aria-hidden="true"
+>
+	<div class="modal-dialog modal-lg modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">
+					재료 검색
+				</h4>
+				<button
+					type="button"
+					class="close"
+					data-dismiss="modal"
+					aria-hidden="true"
+				>
+					×
+				</button>
+			</div>
+			<div class="modal-body">
+				<table id="ingrdnts" class="table stripe hover nowrap">
+					<thead>
+						<tr>
+							<th>대분류</th>
+							<th>소분류</th>
+							<th>제품코드</th>
+							<th>제품명</th>
+							<th>단위</th>
+							<th>단위코드</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="modal-footer justify-content-between">
+				<div>
+					<b>선택한 제품명:</b>
+					<input id="selectedPrdtNm" class="form-control" readonly>
+					<input id="selectedPrdtCd" class="form-control" hidden="hidden">
+					<input id="selectedPrdtUnit" class="form-control" hidden="hidden">
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="ingrdntModalConfirm()">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 재료검색 모달창 끝 -->
+
+<button type="button" id="ingrdntSerachBtn" data-toggle="modal" data-target="#ingrdnt-modal" hidden="hidden">제료모달보기</button>
+
+
+
 
 <script>
 //========================================================================
 //[박진석|241127] 이벤트 걸기
+let tblNewRow = document.querySelector("#tblNewRow");							// 행 추가
+tblNewRow.addEventListener('click', function() {
+	grid3.appendRow()
+})
+
+let tblDelRow = document.querySelector("#tblDelRow");							// 행 삭제
+tblDelRow.addEventListener('click', function() {
+	grid3.removeRow(grid3.getFocusedCell().rowKey);
+})
+
 let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
-PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow)
+PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow);
 
 let DlvrycomSerachBtn = document.querySelector("#updDlvrycomSerachBtn");		// 납품위치 업체 검색 모달
-DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow)
+DlvrycomSerachBtn.addEventListener('click', DlvrycomListShow);
+
+let udtFormBtn = document.querySelector("#udtFormBtn");							// 확인 버튼
+udtFormBtn.addEventListener('click', insertMtrqPlanAjax);
 
 // 이벤트 걸기 끝
 //========================================================================
@@ -292,6 +376,8 @@ function comModalConfirm() {
 // 생산업체 모달 테이블 행 클릭시 input 출력 선택 끝
 // =======================================================		
 		
+	
+	
 //========================================================================
 // [박진석|241125] 모달창 DataTable 가져오기
 $(document).ready( function () {
@@ -326,9 +412,29 @@ $(document).ready( function () {
    			{data: "name"},
    		]
     })
+    
+    $('#ingrdnts').DataTable({		// 재료 모달 테이블
+    	info: false,
+    	paging: false,
+    	ajax: {
+   			url: 'getIngrdntsList',
+   			type: "GET",
+   			dataSrc: ''
+   		},
+   		columns:[
+   			{data: "major"},
+   			{data: "sub"},
+   			{data: "ingredientCode"},
+   			{data: "ingredientName"},
+   			{data: "unit"},
+   			{data: "unit_code"}
+   		]
+    });
 } );
 // 모달창 테이블 끝
 // ========================================================================	
+	
+	
 	
 // =======================================================
 // [박진석|24.11.25] 납품업체 모달 테이블 행 클릭 시 input출력 및 선택
@@ -372,22 +478,32 @@ var Grid = tui.Grid;
 
 const grid1 = new Grid({
 	el: document.getElementById('grid1'),
+	scrollX: true,
+	scrollY: true,
 	columns: [
 		{
 			header: '생산계획 고유번호',
 			name: 'productionPlanNo',
+			width: 130
+			
 		},
 		{
 			header: '제품명',
 			name: 'productCode',
+			width: 100
 		},
 		{
 			header: '계획량',
 			name: 'planQuantity',
+			width: 70,
 		},
 		{
 			header: '마감일',
 			name: 'lastDate',
+			width: 80,
+			formatter: function(e) {	// `2024-11-22T15:00:00.000+00:00` 형식의 날짜를 `24-11-22` 으로 변환
+			  return e.value.replace(/(\d{4})-(\d{2})-(\d{2})T.*/, (_, year, month, day) => year.substring(2) + '-' + month + '-' + day);
+			},
 		}
 	]
 })
@@ -398,9 +514,7 @@ $.ajax({
     type: "GET",
     data: {},
     success: function(data){
-        console.log(data);
         grid1.resetData(data);
-        
     },
     error: function(result){
  	   alert("조회에 실패하였습니다.");
@@ -441,23 +555,28 @@ const grid3 = new Grid({
 	columns: [
 		{
 			header: '재료코드',
-			name: '',
+			name: 'ingredientCode',
+			editor: 'text',
 		},
 		{
 			header: '재료명',
-			name: '',
+			name: 'ingredientName',
+			editor: 'text',
 		},
 		{
 			header: '계획수량',
-			name: '',
+			name: 'amount',
+			editor: 'text',
 		},
 		{
 			header: '단위',
-			name: '',
+			name: 'unit',
+			editor: 'text',
 		},
 		{
 			header: '기타사항',
-			name: '',
+			name: 'other',
+			editor: 'text',
 		},
 	]
 })
@@ -471,14 +590,16 @@ const grid3 = new Grid({
 // [박진석|241128] grid1 클릭이벤트 설정 및 grid2에 관련 데이터 뿌림
 grid1.on('click', function (ev) {
 	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
+	
 	console.log(prdPlanNo);
+	resetInfo();
+	$("#updproductionPlanNo").val(prdPlanNo);
 	
 	$.ajax({
 	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
-	    	console.log(data);
 	    	grid2.resetData(data);
 	    },
 	    error: function(result){
@@ -490,5 +611,104 @@ grid1.on('click', function (ev) {
 })
 // toast grid 클릭이벤트, 데이터 읽기 끝
 //========================================================================
+	
+	
+	
+//========================================================================
+// [박진석|241128] grid2 클릭이벤트 설정 및 grid3에 관련 데이터 뿌림
+grid2.on('click', function (ev) {
+	console.log(ev);
+	
+	
+})
+// toast grid 클릭이벤트, 데이터 읽기 끝
+//========================================================================
+	
+
+	
+//========================================================================
+// [24.11.26] grid3 모달 클릭 이벤트 걸기
+let currentTarget = null;
+let prdtNm = "";
+let prdtCd = "";
+let prdUnit = "";
+
+grid3.on('click', function (ev) {
+	if (ev.columnName == "ingredientName" || ev.columnName == "ingredientCode") {
+		currentTarget = ev;
+		
+		console.log(currentTarget);
+		
+		$("#ingrdntSerachBtn").click();
+		
+		let prdtsTblTrs = document.querySelectorAll("#ingrdnts tr");
+		for(let i = 1; i < prdtsTblTrs.length; i++) {
+			prdtsTblTrs[i].addEventListener("click", getingrdntsInfo);
+		}
+	}
+})
+
+function getingrdntsInfo(e) {
+	console.log(e.target);
+	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
+	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
+	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
+	
+	document.querySelector("#selectedPrdtNm").value = prdtNm;
+	document.querySelector("#selectedPrdtCd").value = prdtCd;
+	document.querySelector("#selectedPrdtUnit").value = prdUnit;
+}
+
+
+
+function ingrdntModalConfirm() {
+	console.log(currentTarget);
+	grid3.setValue(currentTarget.rowKey, 'ingredientCode', prdtCd);
+	grid3.setValue(currentTarget.rowKey, 'ingredientName', prdtNm);
+	grid3.setValue(currentTarget.rowKey, 'unit', prdUnit);
+	
+}
+
+// grid3 모달 클릭이벤트 끝
+//========================================================================
+	
+
+	
+//========================================================================
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+function insertMtrqPlanAjax() {
+	if($("#updwriter").val() == "" || $("#updwriter").val() == null) {
+		alert('로그인을 해주시기 바랍니다.')
+		return false;
+	}
+	
+	if($("#updproductionPlanNo").val() == "" || $("#updproductionPlanNo").val() == null) {
+		 alert("생산계획 정보를 선택해주세요.")
+		 return false;
+	}
+	
+	/*if($("#updPrdtComNm").val() = "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
+		alert("날짜 또는 업체를 선택했는지 확인하세요.");
+		return false;
+	}*/
+	
+	console.log("인서트인서트");
+	
+}
+	
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+//========================================================================
+	
+	
+
+//========================================================================
+// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+function resetInfo() {
+	grid3.clear();
+	document.querySelector("#updateMtrqplanForm").reset();
+}
+
+// grid3 모달 클릭이벤트 끝
+//========================================================================	
 </script>
 
