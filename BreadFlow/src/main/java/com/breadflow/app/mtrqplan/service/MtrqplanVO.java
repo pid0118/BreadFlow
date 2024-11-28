@@ -23,4 +23,11 @@ public class MtrqplanVO {
 	String	other;					// 기타사항
 	String	progressSituation;		// 진행 상세
 	String	materialDetailNo;		// 자재 상세 번호
+	
+	//== ingredient(재료) 테이블 관련 VO ==//
+	String	major;					// 대분류
+	String	sub;					// 소분류
+	String	ingredientCode;			// 재료코드
+	String	ingredientName;			// 재료명
+	String	unitName;				// 단위 이름
 }

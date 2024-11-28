@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.mtrqplan.service.MtrqplanService;
+import com.breadflow.app.mtrqplan.service.MtrqplanVO;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
 
@@ -31,6 +32,13 @@ public class MtrqplanController {
 	public List<PrdtplanVO> getPrdtPlanList() {
 		List<PrdtplanVO> list = prdtplanService.selectPrdtplanList();
 		System.out.println("\n[MtrqplanController.java] getPrdtPlanList - list: " + list + "\n");
+		return list;
+	}
+	
+	@GetMapping("getIngrdntsList")
+	@ResponseBody
+	public List<MtrqplanVO> getIngrdntsList() {
+		List<MtrqplanVO> list = mtrqplanService.selectIngrdntList();
 		return list;
 	}
 }
