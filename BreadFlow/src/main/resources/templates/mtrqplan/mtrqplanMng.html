@@ -375,45 +375,62 @@ const grid1 = new Grid({
 	columns: [
 		{
 			header: '생산계획 고유번호',
-			name: '',
+			name: 'productionPlanNo',
 		},
 		{
 			header: '제품명',
-			name: '',
+			name: 'productCode',
 		},
 		{
 			header: '계획량',
-			name: '',
+			name: 'planQuantity',
 		},
 		{
 			header: '마감일',
-			name: '',
+			name: 'lastDate',
 		}
 	]
 })
+
+// 생산계획 데이터 가져와서 grid1에 뿌림	
+$.ajax({
+	url: "getPrdtPlanList",
+    type: "GET",
+    data: {},
+    success: function(data){
+        console.log(data);
+        grid1.resetData(data);
+        
+    },
+    error: function(result){
+ 	   alert("조회에 실패하였습니다.");
+ 	   console.log(result);
+ 	}
+});
+
 
 const grid2 = new Grid({
 	el: document.getElementById('grid2'),
 	columns: [
 		{
 			header: '제품코드',
-			name: '',
+			name: 'productionDetailNo',
 		},
 		{
 			header: '제품명',
-			name: '',
+			name: 'productCode',
 		},
 		{
 			header: '계획수량',
-			name: '',
+			name: 'planQuantity',
 		},
 		{
 			header: '단위',
-			name: '',
+			name: 'unit',
 		},
 		{
 			header: '기타사항',
-			name: '',
+			name: 'other',
 		},
 		
 	]
@@ -446,6 +463,32 @@ const grid3 = new Grid({
 })
 
 // Toast Grid 테이블 생성 끝
+//========================================================================
+	
+	
+	
+//========================================================================
+// [박진석|241128] grid1 클릭이벤트 설정 및 grid2에 관련 데이터 뿌림
+grid1.on('click', function (ev) {
+	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
+	console.log(prdPlanNo);
+	
+	$.ajax({
+	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	    	console.log(data);
+	    	grid2.resetData(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+	
+})
+// toast grid 클릭이벤트, 데이터 읽기 끝
 //========================================================================
 </script>
 

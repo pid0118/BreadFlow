@@ -1,5 +1,7 @@
 package com.breadflow.app.mtrqplan.service;
 
-public interface MtrqService {
+
+public interface MtrqplanService {
+
 
 }
