@@ -12,22 +12,25 @@ public interface SaleService {
 	public List<SaleVO> selectSaleList();
 	
 	// POS 제품 리스트 조회
+	public List<SaleVO> selectSaleOffice(String saleDate, String comNo);
+	
+	// POS 제품 리스트 조회
 	public List<ProductVO> selectProductList(String category);
 	
 	// POS 주문 버튼 클릭시 제품 상세 등록
 	public int insertSale(List<PosVO> saleVO);
 	
 	// 가맹점 : 일매출 조회
-	public List<PosVO> selectSales(String salesDate, HttpSession name);
+	public List<PosVO> selectSales(String salesDate, HttpSession companyNo);
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
-	public int insertSales(PosVO name);
+	public int insertSales(HttpSession companyNo);
 	
 	// pos 마감 하기 전 상태 제품 상세보기
-	public List<PosVO> selectDetailSale(HttpSession name);
+	public List<PosVO> selectDetailSale(HttpSession companyNo);
 	
 	// chart 매출 조회
-	public List<PosVO> selectSaleChart(HttpSession name);
+	public List<PosVO> selectSaleChart(HttpSession companyNo);
 	
 	// chart 매출
 	public List<PosVO> selectSaleProduct(HttpSession companyNo);

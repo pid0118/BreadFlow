@@ -2,22 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.sale.mapper.SaleMapper">
 	<select id="selectSaleList" resultType="SaleVO">
-		with sa as  ( SELECT company_no, SUM(day_sales) AS daySales FROM sales WHERE TO_CHAR(sales_date,'yyyyMMdd') = TO_CHAR(sysdate, 'yyyyMMdd') GROUP BY company_no )
-		SELECT 
-		    co.region,
-		    sa.company_no,
-		    co.company_name,
-		    co.brn,
-		    mem.name,
-		    mem.contract_date,
-		    daySales,
-		    mem.other
+		with sa as  ( SELECT company_no, SUM(day_sales) AS daySales FROM sales GROUP BY company_no )
+		SELECT ROWNUM,
+		       co.region,
+		       sa.company_no,
+		       co.company_name,
+		       co.brn,
+		       mem.name,
+		       mem.contract_date,
+		       daySales,
+		       mem.other
 		    
 		FROM member mem
 		JOIN company co ON mem.company_no = co.company_no
 		JOIN sa ON co.company_no = sa.company_no
 
 		ORDER BY daySales
+	</select>
+	
+	<select id="selectSaleOffice" resultType="SaleVO" parameterType="String">
+		
+		SELECT DISTINCT (SELECT SUM(day_sales) 
+                         FROM sales 
+                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate}) AS daySales
+                       ,(SELECT DISTINCT TO_CHAR(sales_date, 'yyyyMM')
+                         FROM sales
+                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate}) AS salesDate
+		FROM sales
+		WHERE company_no = #{comNo}
+		
 	</select>
 	
 	<select id="selectProductList" resultType="ProductVO" parameterType="String">
@@ -51,13 +64,13 @@
 		        , sysdate)
 	</insert>
 	
-	<insert id="insertSales" parameterType="PosVO">
-		CALL SALES_PROD(#{name})
+	<insert id="insertSales" parameterType="String">
+		CALL SALES_PROD(#{companyNo})
 	</insert>
 	
 	<select id="selectSales" resultType="PosVO" parameterType="String">
 		SELECT day_sales
-		      ,sales_date
+			  ,sales_date
 		FROM sales
 		WHERE TO_CHAR(sales_date, 'yyyyMM') = #{salesDate}
 		AND company_no = #{companyNo}
@@ -91,5 +104,5 @@
 		FROM sale_detail_history
 		WHERE company_no = #{companyNo}
 	</select>
-
+	
 </mapper>

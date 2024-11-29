@@ -43,8 +43,8 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public int insertSales(PosVO name) {
-		return saleMapper.insertSales(name);
+	public int insertSales(HttpSession companyNo) {
+		return saleMapper.insertSales((String)companyNo.getAttribute("companyNo"));
 	}
 
 	@Override
@@ -68,6 +68,14 @@ public class SaleServiceImpl implements SaleService {
 	@Override
 	public List<PosVO> selectSaleProduct(HttpSession companyNo) {
 		return saleMapper.selectSaleProduct((String)companyNo.getAttribute("companyNo"));
+	}
+
+	@Override
+	public List<SaleVO> selectSaleOffice(String saleDate, String comNo) {
+		if(saleDate.equals("undefined")) {
+			saleDate = DateUtil.dashFormatDate(null, "yyyyMM");
+		}
+		return saleMapper.selectSaleOffice(saleDate, comNo);
 	}
 
 }

@@ -14,6 +14,9 @@ public interface SaleMapper {
 	// 본사 가맹점 정보 / 매출 조회
 	public List<SaleVO> selectSaleList();
 	
+	// 본사 : 월별 매출 가져오기
+	public List<SaleVO> selectSaleOffice(String saleDate, String comNo);
+	
 	// POS 제품 리스트 조회
 	public List<ProductVO> selectProductList(String category);
 	
@@ -24,7 +27,7 @@ public interface SaleMapper {
 	public List<PosVO> selectSales(String salesDate, String companyNo);
 	
 	// 마감정산 버튼눌렀을시 일매출 insert
-	public int insertSales(PosVO name);
+	public int insertSales(String companyNo);
 	
 	// pos 마감 하기 전 상태 제품 상세보기
 	public List<PosVO> selectDetailSale(String companyNo);
@@ -34,4 +37,5 @@ public interface SaleMapper {
 	
 	// chart 매출
 	public List<PosVO> selectSaleProduct(String companyNo);
+
 }

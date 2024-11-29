@@ -3,7 +3,6 @@ package com.breadflow.app.sale.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +32,13 @@ public class SaleController {
 		return "sale/toSalList";
     }
     
+    @PostMapping("/toSalList/Month")
+    @ResponseBody
+    public List<SaleVO> saleListOffice(@RequestParam String saDate, @RequestParam String comNo){
+    	List<SaleVO> list = saleService.selectSaleOffice(saDate, comNo);
+    	return list;
+    }
+    
     // POS 메인화면 및 상세내역 모달창
     @GetMapping("/pos")
     public String posPage(Model model, HttpSession name) {
@@ -44,10 +50,10 @@ public class SaleController {
 	// POS 카테고리 검색(AJAX) - 다른 URL 사용
     @ResponseBody
     @PostMapping("/pos/menu")					  // 파라미터를 매개변수로 받음(category 매개변수를 선택안해도 응답함)
-    public ResponseEntity<List<ProductVO>> getMenu(@RequestParam(required = false) String category) {
+    public List<ProductVO> getMenu(@RequestParam(required = false) String category) {
         List<ProductVO> products = saleService.selectProductList(category);
         
-        return ResponseEntity.ok(products);  // 정상적으로 JSON 응답 반환 (요청에 성공적으로 응답)
+        return products;  // 정상적으로 JSON 응답 반환 (요청에 성공적으로 응답)
     }
 
     // 주문 버튼 눌렀을시 insert
@@ -67,15 +73,15 @@ public class SaleController {
     // 매출조회 데이터 (월 조건)
     @PostMapping("/daySale")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> daySaleAjax(@RequestParam(required = false) String saDate, HttpSession companyNo) {
+    public List<PosVO> daySaleAjax(@RequestParam(required = false) String saDate, HttpSession companyNo) {
     	List<PosVO> list = saleService.selectSales(saDate, companyNo);
-    	return ResponseEntity.ok(list);
+    	return list;
     }
     
     // 마감정산
     @PostMapping("/closeSale")
     @ResponseBody
-    public String closeSale(@RequestBody PosVO name) {
+    public String closeSale(HttpSession name) {
     	saleService.insertSales(name);
         return "sale/pos";
     }
@@ -89,15 +95,16 @@ public class SaleController {
     // 차트 월별 매출 ajax호출
     @PostMapping("/saleChart")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> saleChartList(HttpSession name) {
-    	List<PosVO> list = saleService.selectSaleChart(name);
-    	return ResponseEntity.ok(list);
+    public List<PosVO> saleChartList(HttpSession companyNo) {
+    	List<PosVO> list = saleService.selectSaleChart(companyNo);
+    	return list;
     }
+    
     // 차트 월별 제품 상세 매출 ajax호출
     @PostMapping("/saleChart/product")
     @ResponseBody
-    public ResponseEntity<List<PosVO>> saleProductList(HttpSession name) {
+    public List<PosVO> saleProductList(HttpSession name) {
     	List<PosVO> list = saleService.selectSaleProduct(name);
-    	return ResponseEntity.ok(list);
+    	return list;
     }
 }
