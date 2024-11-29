@@ -110,7 +110,10 @@
 
 
 <select id="selectMtrqplanForCom" parameterType="String" resultType="MtrqplanVO">
-
+	SELECT  *
+	FROM    matrequired_plan m JOIN matrequired_plan_detail d
+	            ON m.matrequired_plan_no = d.matrequired_plan_no
+	WHERE   supply_company = #{supplyCompany}
 </select>
 
 </mapper>
