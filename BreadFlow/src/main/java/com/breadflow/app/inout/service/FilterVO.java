@@ -21,6 +21,7 @@ public class FilterVO {
 	private String unchecked;
 	private String confirmComp;
 	private String div;
+	private String check;
 	
 	private Integer page;
 	private Integer pageSize;

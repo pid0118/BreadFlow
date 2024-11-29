@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/breadflow_layout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title>불량 내역 상세 조회</title>
+</head>
+<body>
+	<div class="card-box mb-30">
+		<div class="pd-20">
+			<h2 class="text-black">불량 내역 상세 조회</h2>
+		</div>
+		<form>
+		<div class="pd-20">
+			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
+				<thead>
+					<tr>
+						<th class="table-plus">입고 일자</th>
+						<th class="datatable-nosort">확인 위치</th>
+						<th class="datatable-nosort">품목 이미지</th>
+						<th class="datatable-nosort">품목</th>
+						<th>수량</th>
+						<th class="datatable-nosort">처분</th>
+						<th class="datatable-nosort">확인 여부</th>
+					</tr>
+				</thead>
+				<tbody id="inferDetailTable">
+					<tr th:each="infer : ${infer}">
+						<td style="display:none;" th:text="${infer.inferDetailCode}"></td>
+						<td th:text="${infer.instoreDate}"></td>
+						<td th:text="${infer.confirmLocation}"></td>
+						<td><img id="inferImage" th:src="@{/imgs/} + ${infer.inferImage}" alt="" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
+						<td th:text="${infer.inferItem}"></td>
+						<td th:text="${infer.inferQuantity}"></td>
+						<td th:text="${infer.disposalWhether}"></td>
+						<td th:text="${infer.confirmWhether}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</form>
+	</div>
+</body>
+</html>

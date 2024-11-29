@@ -41,6 +41,7 @@ public class InferServiceImpl implements InferService {
 		// history 등록
 		InferHistoryVO inferHistoryVO = new InferHistoryVO();
 		inferHistoryVO.setConfirmLocation(list.get(0).getConfirmLocation());
+		inferHistoryVO.setInferManager(list.get(0).getInferManager());
 		inferMapper.insertInferHistory(inferHistoryVO);
 		int result = 0;
 		

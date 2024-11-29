@@ -27,6 +27,7 @@ public class InstoreVO {
 	private String instoreDiv;
 	private String instoreDivNo;
 	private Date expirationDeadline;
+	private String deadline;
 	private Integer purchasePrice;
 	private Integer price;
 	

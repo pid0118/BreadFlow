@@ -116,12 +116,12 @@
 			var checkNull = false;
             var insertData = {
                 disposalWhether : $("input[name='options']:checked").val(),
-            	answer : $("#answer").value,
+            	answer : $("#answer").val(),
             	manager : $("#inferMember").val(),
             	answerer : $("#loginMember").val(),
             	inferNo
             };
-            if (insertData.answer = null || insertData.answer == '') {
+            if (insertData.answer == null || insertData.answer == '') {
 				checkNull = true;
 			}
 

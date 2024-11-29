@@ -62,6 +62,14 @@ public class InferController {
 		return "infer/detail";
 	}
 	
+	// 불량 내역 상세 조회
+	@GetMapping("inferDetail/{inferNo}")
+	public String inferDetail(@PathVariable String inferNo, Model model) {
+		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
+		model.addAttribute("infer", list);
+		return "infer/inferDetail";
+	}
+	
 	// 불량 내역 등록
 	@GetMapping("inferInsert")
 	public String inferInsert(Model model, HttpSession session) {
