@@ -8,451 +8,451 @@
 <title>발주 신청</title>
 </head>
 <body>
-	<div class="card-box mb-30">
-		<div class="row">
-			<div class="col-md-3 col-sm-12 pd-30">
-				<h4 class="text-blue h4">발주 신청</h4>
-			</div>
-			<div class="col-md-9 col-sm-12 pd-30 text-right">
-				<div class="row">
-					<div class="col-md-6 form-group">
-						<div class="row justify-content-end">
-							<label class="col-md-3">납기 희망 일자</label>
-							<input class="col-md-4 form-control date-picker" placeholder="Select Date" type="text">
-						</div>
+<div class="card-box mb-30">
+	<div class="row">
+		<div class="col-md-3 col-sm-12 pd-30">
+			<h4 class="text-blue h4">발주 신청</h4>
+		</div>
+		<div class="col-md-9 col-sm-12 pd-30 text-right">
+			<div class="row">
+				<div class="col-md-6 form-group">
+					<div class="row justify-content-end">
+						<label class="col-md-3">납기 희망 일자</label>
+						<input class="col-md-4 form-control date-picker" placeholder="Select Date" type="text">
 					</div>
-					<div class="col-md-6 form-group">
-						<button type="button" class="btn btn-primary"
-							data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">품목
-							추가</button>
-						<button type="button" class="btn btn-primary" form="orderingInsert" id="orderRequest">발주 신청</button>
-					</div>
-					
 				</div>
-				<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
-					tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-					<div class="modal-dialog modal-lg modal-dialog-centered">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
-								<button type="button" class="close" data-dismiss="modal">×</button>
-							</div>
-							<div class="modal-body">
-								<div class="row">
-									<div class="col-md-12 sm-12 text-left">
-										<div class="form-group">
-											<label>품목 종류</label> <select
-												class="custom-select2 form-control second"
-												multiple="multiple" style="width: 100%;">
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-9 col-sm-12">
-										<input type="text" class="form-control" id="iname" placeholder="품목명">
-									</div>
-									<div class="col-md-3 col-sm-12">
-										<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
-									</div>
-								</div>
-								<table class="table">
-									<thead>
-										<tr>
-											<th><div class="custom-control custom-checkbox mb-5">
-												<input type="checkbox" class="custom-control-input checkAll"
-													id="customCheck"> <label
-													class="custom-control-label" for="customCheck"></label>
-											</div></th>
-											<th>품목코드</th>
-											<th>품목명</th>
-											<th>단위</th>
-											<th>규격</th>
-											<th>가격</th>
-										</tr>
-									</thead>
-									<tbody>	
-									</tbody>
-								</table>
-								<ul class="pagination justify-content-center">
-									<li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
-										<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">
-											<i class="ion-chevron-left"></i>
-										</a>
-									</li>
-									<li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
-										<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" class="page-link">
-											<i class="ion-chevron-right"></i>
-										</a>
-									</li>
-								</ul>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal">추가</button>
-							</div>
-						</div>
-					</div>
+				<div class="col-md-6 form-group">
+					<button type="button" class="btn btn-primary"
+						data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">품목
+						추가</button>
+					<button type="button" class="btn btn-primary" form="orderingInsert" id="orderRequest">발주 신청</button>
 				</div>
 				
 			</div>
-		</div>
-		<form id="orderingInsert">
-			<div class="pb-20">
-				<table class="datatable table nowrap" id="DataTables_Table_0">
-					<thead>
-						<tr>
-							<th>품목코드</th>
-							<th>품목명</th>
-							<th>단위</th>
-							<th>규격</th>
-							<th>금액</th>
-							<th>수량</th>
-							<th>총 금액</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
-				</table>
+			<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
+				tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+				<div class="modal-dialog modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
+							<button type="button" class="close" data-dismiss="modal">×</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12 sm-12 text-left">
+									<div class="form-group">
+										<label>품목 종류</label> <select
+											class="custom-select2 form-control second"
+											multiple="multiple" style="width: 100%;">
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-9 col-sm-12">
+									<input type="text" class="form-control" id="iname" placeholder="품목명">
+								</div>
+								<div class="col-md-3 col-sm-12">
+									<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
+								</div>
+							</div>
+							<table class="table">
+								<thead>
+									<tr>
+										<th><div class="custom-control custom-checkbox mb-5">
+											<input type="checkbox" class="custom-control-input checkAll"
+												id="customCheck"> <label
+												class="custom-control-label" for="customCheck"></label>
+										</div></th>
+										<th>품목코드</th>
+										<th>품목명</th>
+										<th>단위</th>
+										<th>규격</th>
+										<th>가격</th>
+									</tr>
+								</thead>
+								<tbody>	
+								</tbody>
+							</table>
+							<ul class="pagination justify-content-center">
+								<li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
+									<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" class="page-link">
+										<i class="ion-chevron-left"></i>
+									</a>
+								</li>
+								<li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
+									<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0" class="page-link">
+										<i class="ion-chevron-right"></i>
+									</a>
+								</li>
+							</ul>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal">추가</button>
+						</div>
+					</div>
+				</div>
 			</div>
-		</form>
+			
+		</div>
 	</div>
-	<!-- buttons for Export datatable -->
-	<script src="/plugins/datatables/js/pdfmake.min.js"></script>
-	<script src="/plugins/datatables/js/vfs_fonts.js"></script>
-	<!-- Datatable Setting js -->
-	<script src="/vendors/scripts/datatable-setting.js"></script>
-	<script>
+	<form id="orderingInsert">
+		<div class="pb-20">
+			<table class="datatable table nowrap" id="DataTables_Table_0">
+				<thead>
+					<tr>
+						<th>품목코드</th>
+						<th>품목명</th>
+						<th>단위</th>
+						<th>규격</th>
+						<th>금액</th>
+						<th>수량</th>
+						<th>총 금액</th>
+					</tr>
+				</thead>
+				<tbody>
+					
+				</tbody>
+			</table>
+		</div>
+	</form>
+</div>
+<!-- buttons for Export datatable -->
+<script src="/plugins/datatables/js/pdfmake.min.js"></script>
+<script src="/plugins/datatables/js/vfs_fonts.js"></script>
+<!-- Datatable Setting js -->
+<script src="/vendors/scripts/datatable-setting.js"></script>
+<script>
 	
-		$(document).ready(function() {
-			// 옵션값 초기화
-			$('.custom-select2').select2();
-			$('#coFilterModal.modal.fade').remove();
-			disabledDate();
-		});
-		
-		// 품목 종류 카테고리 생성
-		fetch("../category/list")
-		.then(result => result.json())
-		.then(datas => makeCategory(datas))
-		.catch(err => console.log());
-		
-		// 카테고리 생성
-		function makeCategory(datas) {
-			let major = datas[0];
-			let element = '';
-			for(let data in datas){
-				if(major == datas[data].major){
-					element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+$(document).ready(function() {
+	// 옵션값 초기화
+	$('.custom-select2').select2();
+	$('#coFilterModal.modal.fade').remove();
+	disabledDate();
+});
+
+// 품목 종류 카테고리 생성
+fetch("../category/list")
+.then(result => result.json())
+.then(datas => makeCategory(datas))
+.catch(err => console.log());
+
+// 품목 추가 (발주 신청 테이블)
+itemAdd.addEventListener('click', function() {
+	let checktd = document.querySelectorAll('table .custom-checkbox input.check');
+	let checkbool = false; // 체크박스 여부
+	let checktable = true; // 품목코드 중복 여부
+	let element = ''; // 품목 요소
+	checktd.forEach(td => {
+		if(td.checked == true){
+			checkbool = true;
+			checktable = true;
+			element += '<tr>';
+			let datas = td.closest('tr').querySelectorAll('td');
+			document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
+				if(ele.innerText == datas[1].innerText){
+					checktable = false;
+				}
+			})
+			
+			if(checktable == true){
+				for(let i=1; i<datas.length; i++){
+					element += `<td>${datas[i].innerText}</td>`;
+				} 
+				element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
+			}
+			
+		}
+	})
+	if(checktable == false || checkbool == false){
+		event.stopPropagation();
+		if(checktable == false){
+			alert("중복된 품목이 있습니다.");	
+		} else {
+			alert("품목을 선택해주세요!");
+		}
+	} else {
+		$('.datatable tbody').append(element);
+		$('.datatable tbody tr#total').remove();
+		$('.datatable tbody').append(`<tr id="total">
+				<td colspan="5" style="text-align: center;">합계</td>
+				<td></td>
+				<td></td>
+			</tr>`);
+		itemSum(); // 품목 합계 계산
+	}
+})
+
+// 페이징 버튼 이벤트
+document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
+
+// 품목 검색 이벤트
+itemSearch.addEventListener('click', itemClick);
+
+// 각 품목 총 금액, 합계 계산 이벤트
+document.querySelector('.datatable').addEventListener('change', itemSum)
+
+// 발주 신청 이벤트
+orderRequest.addEventListener('click', function() {
+	if($('#orderingInsert tbody tr').length == 0){	// 품목이 없을 경우
+		alert('발주 품목이 없습니다.');
+		return false;
+	} else if($('.date-picker').val() == '') {	// 납기 희망 일자를 선택 안했을 경우
+		alert('납기 희망 일자를 선택해주세요.');
+		return false;	
+	}
+	let itemCodes = document.querySelectorAll('#orderingInsert tbody td:first-child');	// 품목코드
+	let itemQuan = document.querySelectorAll('#orderingInsert tbody td:nth-child(6) input'); // 품목수량
+	let items = []; // 품목
+	for(let i = 0; i < itemCodes.length - 1; i++) {
+   		items.push({"itemCode" :itemCodes[i].innerText, 
+   					"itemQuan" :Number(itemQuan[i].value)});
+   	}
+	let list = {
+		    "deliveryDesireDate" : new Date($('.date-picker').val()),
+		    "orderingRequestManger": "test",
+		    "totalPrice": Number($('#total td:last-child').text()),
+		    "itemCodes": items
+		};
+	
+	fetch('../ordering/insert', {
+		method: "POST",
+	 	headers: {
+	    	"Content-Type": "application/json",
+	  	},
+		body: JSON.stringify(list)
+	})
+	.then(response => response.url)
+	.then(data => {
+		window.location.href = data;
+	})
+	.catch(err => console.log(err));
+})
+
+// 수량 입력시 숫자이외 값 방지
+orderingInsert.addEventListener('input', function() {
+    if(event.target.tagName == 'INPUT') {
+   	    if(Number(event.target.value) == 0){ // 숫자가 아닌 값이 들어올 경우
+   	    	event.target.value = 1;
+   	        itemSum(event); // 품목 합계
+   	    }
+    } 
+})
+
+// 품목 체크막스 전체 선택 클릭 이벤트
+$('input.checkAll').click(function(){
+    if($('input.checkAll').prop("checked")){ // 전체 선택 체크박스가 클릭되었을 경우
+        $('input.check').prop("checked",true);
+    } else { // 전체 선택 체크박스가 클릭되지 않았을 경우
+    	$('input.check').prop("checked",false); 
+    }
+});
+
+// 품목 추가 클릭 시 이벤트
+$('#addItems').click(function() {
+	allOptionOff(); // 옵션 초기화
+})
+
+// 품목 추가 옵션 초기화 함수
+function allOptionOff(){
+	$('input.checkAll').prop("checked",false);	
+	$('input.check').prop("checked",false);
+	$('.custom-select2').val('');
+	$('li.select2-selection__choice').remove();
+	iname.value = '';
+	$('.modal-body table tbody tr').remove();
+	$('.page-item#addcol').remove();
+}
+
+// 납기 희망 일자 - 현재 일자 포함 이전 비활성화 함수
+function disabledDate() {
+	let today = new Date();
+	let tomorrow = new Date(today.setDate(today.getDate() + 1));
+	$('.date-picker').datepicker({
+	  minDate: tomorrow
+	});
+}
+
+
+// 합계 계산 합수
+function itemSum() {
+	let priceTotal = 0;	// 총 금액
+	let amountTotal = 0; // 총 수량
+	if(event.target.tagName == 'INPUT'){
+		let datatd = event.target.closest('td');
+		let price = datatd.previousElementSibling.innerText;
+		datatd.nextElementSibling.innerText = price * event.target.value;
+		document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
+			amountTotal += Number(data.value.replace(',', ''));	
+		})
+		document.querySelectorAll('.datatable tbody td:nth-child(7)').forEach(data => {
+			priceTotal += Number(data.innerText.replace(',', ''));
+		})
+		document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
+		document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
+	}
+	if (event.target.tagName == 'BUTTON') {
+		let td = document.querySelectorAll('.datatable tbody tr');
+		for(let i=0; i<td.length - 1; i++){
+			let price = td[i].children[4].innerText;
+			let amount = td[i].children[5].querySelector('input').value;
+			td[i].children[6].innerText = price * amount;
+			amountTotal += Number(amount);	
+			priceTotal += Number(price);
+		}
+		document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
+		document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
+	}
+}
+
+
+// 품목 검색 테이블 생성 함수
+function makeItems(data) {
+	$('.modal-body table tbody tr').remove();
+	data.forEach(td => {
+		$('.modal-body table tbody').append(`<tr>
+				<td>
+				<div class="custom-control custom-checkbox mb-5">
+					<input type="checkbox" class="custom-control-input check"
+						id="customCheck${td.itemCode}"> <label
+						class="custom-control-label" for="customCheck${td.itemCode}"></label>
+				</div>
+			</td>
+			<td>${td.itemCode}</td>
+			<td>${td.itemName}</td>
+			<td>${td.unit}</td>
+			<td>${td.standard}</td>
+			<td>${td.purchasePrice}</td>
+		</tr>`)
+	})
+}
+
+// 검색이나 페이지 버튼 클릭시 나타내는 목록 함수
+function itemClick(page) {
+	let val = $('.custom-select2.second').val();	// 품목 종류 값들
+	let searchOpt = $('.custom-select2.second')[0];	// select 옵션
+	let ingredients = []; // 재료들
+	let products = [];	// 제품들
+	let pages = 1;	// 페이지
+	let lastPage;	// 마지막 페이지
+
+	for(let opt of searchOpt) {
+		if(val.indexOf(opt.value) != -1){
+			if(opt.dataset.name.substring(1) == '재료'){
+				ingredients.push(val[val.indexOf(opt.value)]);
+			} else {
+				products.push(val[val.indexOf(opt.value)]);
+			}
+		}
+	}
+	
+	if(val.length == 0 && iname.value == '' || val.length == 0) { // 검색 조건이 아무것도 없을 때 
+		alert("검색 조건이 없습니다.");
+	} 
+	else {
+		fetch('../search/itempage', {	// 페이징
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				'name': iname.value,	
+				'ingredients': ingredients,
+				'products': products
+			})
+		})
+		.then(response => response.json())
+		.then(data => {
+			$('.paginate_button.page-item#addcol').remove()
+			lastPage = Math.ceil(data / 5);
+			for(let i = 1; i <= lastPage; i++) {
+				if(i == 1){
+					document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item active" id="addcol">
+							<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+						</li>`);
 				} else {
-					element += '</optgroup>';
-					$('.custom-select2.second').append(element);
-					element = `<optgroup label="${datas[data].major}">
-						<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
-					major = datas[data].major;	
+					document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item " id="addcol">
+							<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+						</li>`);	
 				}
 			}
+			if(pages == 1 && pages == lastPage) {
+				document.querySelector('li.page-item.next').classList.add("disabled");
+				document.querySelector('li.page-item.previous').classList.add("disabled");
+			} else if(pages == 1) {
+				document.querySelector('li.page-item.previous').classList.add("disabled");
+				document.querySelector('li.page-item.next').classList.remove("disabled");
+			} else if(pages == lastPage) {
+				document.querySelector('li.page-item.previous').classList.remove("disabled");
+				document.querySelector('li.page-item.next').classList.add("disabled");
+			} else {
+				document.querySelector('li.page-item.next').classList.remove("disabled");
+				document.querySelector('li.page-item.previous').classList.remove("disabled");
+			}
+			
+			document.querySelectorAll('#addcol').forEach(data => {
+				if(data.children[0].dataset.name == pages){
+					data.classList.add('active');
+				} else{
+					data.classList.remove('active');
+				}
+			})
+
+		})
+		.catch(err => console.log(err));
+		
+		
+		fetch('../search/item', { // 품목 목록
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				'name': iname.value,	
+				'ingredients': ingredients,
+				'products': products,
+				'page': pages
+			})
+		})
+		.then(response => response.json())
+		.then(data => makeItems(data))
+		.catch(err => console.log(err));
+	}
+}
+
+// 페이지 버튼 클릭 시 페이지 계산 및 페이지 이동 함수
+function pageEvent(){
+	if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
+		let page;
+		if(event.target.closest('li').classList.contains('next')){ // > 버튼일 경우
+			page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
+		} else if(event.target.closest('li').classList.contains('previous')) { // < 버튼일 경우
+			page = Number(document.querySelector('.paginate_button.active').innerText) - 1;
+		} else {
+			page = event.target.innerText;
+		}
+		itemClick(page); 
+	}
+}
+
+// 카테고리 생성 함수
+function makeCategory(datas) {
+	let major = datas[0];
+	let element = '';
+	for(let data in datas){
+		if(major == datas[data].major){
+			element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+		} else {
 			element += '</optgroup>';
 			$('.custom-select2.second').append(element);
+			element = `<optgroup label="${datas[data].major}">
+				<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+			major = datas[data].major;	
 		}
-		
-		// 품목 추가 (발주 신청 테이블)
-		itemAdd.addEventListener('click', function() {
-			let checktd = document.querySelectorAll('table .custom-checkbox input.check');
-			let checkbool = false; // 체크박스 여부
-			let checktable = true; // 품목코드 중복 여부
-			let element = '';
-			checktd.forEach(td => {
-				if(td.checked == true){
-					checkbool = true;
-					checktable = true;
-					element += '<tr>';
-					let datas = td.closest('tr').querySelectorAll('td');
-					document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
-						if(ele.innerText == datas[1].innerText){
-							checktable = false;
-						}
-					})
-					
-					if(checktable == true){
-						for(let i=1; i<datas.length; i++){
-							element += `<td>${datas[i].innerText}</td>`;
-						} 
-						element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
-					}
-					
-				}
-			})
-			if(checktable == false || checkbool == false){
-				event.stopPropagation();
-				if(checktable == false){
-					alert("중복된 품목이 있습니다.");	
-				} else {
-					alert("품목을 선택해주세요!");
-				}
-			} else {
-				$('.datatable tbody').append(element);
-				$('.datatable tbody tr#total').remove();
-				$('.datatable tbody').append(`<tr id="total">
-						<td colspan="5" style="text-align: center;">합계</td>
-						<td></td>
-						<td></td>
-					</tr>`);
-				itemSum();
-			}
-		})
-		
-		// 페이징 버튼 이벤트
-		document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
-		
-		// 페이지 버튼 클릭 시 페이지 계산 및 페이지 이동
-		function pageEvent(){
-			if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
-				let page;
-				if(event.target.closest('li').classList.contains('next')){
-					page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
-				} else if(event.target.closest('li').classList.contains('previous')) {
-					page = Number(document.querySelector('.paginate_button.active').innerText) - 1;
-				} else {
-					page = event.target.innerText;
-				}
-				itemClick(page);
-			}
-		}
-		
-		// 품목 검색 이벤트
-		itemSearch.addEventListener('click', itemClick);
-	
-		function itemClick(page) {
-			let val = $('.custom-select2.second').val();
-			let searchOpt = $('.custom-select2.second')[0];
-			let ingredients = [];
-			let products = [];
-			let pages = 1;
-			let lastPage;
-			
-			if(page != '[object PointerEvent]') {
-				pages = page;
-			}
-
-			for(let opt of searchOpt) {
-				if(val.indexOf(opt.value) != -1){
-					if(opt.dataset.name.substring(1) == '재료'){
-						ingredients.push(val[val.indexOf(opt.value)]);
-					} else {
-						products.push(val[val.indexOf(opt.value)]);
-					}
-				}
-			}
-			
-			// 검색 조건이 아무것도 없을 때 
-			if(val.length == 0 && iname.value == '' || val.length == 0) {
-				alert("검색 조건이 없습니다.");
-			} 
-			else {
-				fetch('../search/itempage', {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({
-						'name': iname.value,	
-						'ingredients': ingredients,
-						'products': products
-					})
-				})
-				.then(response => response.json())
-				.then(data => {
-					$('.paginate_button.page-item#addcol').remove()
-					lastPage = Math.ceil(data / 5);
-					for(let i = 1; i <= lastPage; i++) {
-						if(i == 1){
-							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item active" id="addcol">
-									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
-								</li>`);
-						} else {
-							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item " id="addcol">
-									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
-								</li>`);	
-						}
-					}
-					if(pages == 1 && pages == lastPage) {
-						document.querySelector('li.page-item.next').classList.add("disabled");
-						document.querySelector('li.page-item.previous').classList.add("disabled");
-					} else if(pages == 1) {
-						document.querySelector('li.page-item.previous').classList.add("disabled");
-						document.querySelector('li.page-item.next').classList.remove("disabled");
-					} else if(pages == lastPage) {
-						document.querySelector('li.page-item.previous').classList.remove("disabled");
-						document.querySelector('li.page-item.next').classList.add("disabled");
-					} else {
-						document.querySelector('li.page-item.next').classList.remove("disabled");
-						document.querySelector('li.page-item.previous').classList.remove("disabled");
-					}
-					
-					document.querySelectorAll('#addcol').forEach(data => {
-						if(data.children[0].dataset.name == pages){
-							data.classList.add('active');
-						} else{
-							data.classList.remove('active');
-						}
-					})
-
-				})
-				.catch(err => console.log(err));
-				
-				
-				fetch('../search/item', {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({
-						'name': iname.value,	
-						'ingredients': ingredients,
-						'products': products,
-						'page': pages
-					})
-				})
-				.then(response => response.json())
-				.then(data => makeItems(data))
-				.catch(err => console.log(err));
-			}
-		}
-		
-		// 품목 검색 테이블 생성
-		function makeItems(data) {
-			$('.modal-body table tbody tr').remove();
-			data.forEach(td => {
-				$('.modal-body table tbody').append(`<tr>
-						<td>
-						<div class="custom-control custom-checkbox mb-5">
-							<input type="checkbox" class="custom-control-input check"
-								id="customCheck${td.itemCode}"> <label
-								class="custom-control-label" for="customCheck${td.itemCode}"></label>
-						</div>
-					</td>
-					<td>${td.itemCode}</td>
-					<td>${td.itemName}</td>
-					<td>${td.unit}</td>
-					<td>${td.standard}</td>
-					<td>${td.purchasePrice}</td>
-				</tr>`)
-			})
-		}
-		
-		// 각 품목 총 금액, 합계 계산 이벤트
-		document.querySelector('.datatable').addEventListener('change', itemSum)
-		
-		// 합계 계산 합수
-		function itemSum() {
-			let priceTotal = 0;
-			let amountTotal = 0;
-			if(event.target.tagName == 'INPUT'){
-				let datatd = event.target.closest('td');
-				let price = datatd.previousElementSibling.innerText;
-				datatd.nextElementSibling.innerText = price * event.target.value;
-				document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
-					amountTotal += Number(data.value.replace(',', ''));	
-				})
-				document.querySelectorAll('.datatable tbody td:nth-child(7)').forEach(data => {
-					priceTotal += Number(data.innerText.replace(',', ''));
-				})
-				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
-				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
-			}
-			if (event.target.tagName == 'BUTTON') {
-				let td = document.querySelectorAll('.datatable tbody tr');
-				for(let i=0; i<td.length - 1; i++){
-					let price = td[i].children[4].innerText;
-					let amount = td[i].children[5].querySelector('input').value;
-					td[i].children[6].innerText = price * amount;
-					amountTotal += Number(amount);	
-					priceTotal += Number(price);
-				}
-				document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
-				document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
-			}
-		}
-
-		// 납기 희망 일자 - 현재 일자 포함 이전 비활성화
-		function disabledDate() {
-			let today = new Date();
-			let tomorrow = new Date(today.setDate(today.getDate() + 1));
-			$('.date-picker').datepicker({
-			  minDate: tomorrow
-			});
-		}
-		
-		// 발주 신청 이벤트
-		orderRequest.addEventListener('click', function() {
-			if($('.date-picker').val() == ''){
-				alert('납기 희망 일자를 선택해주세요.');
-				return false;	
-			}
-			let itemCodes = document.querySelectorAll('#orderingInsert tbody td:first-child');
-			let itemQuan = document.querySelectorAll('#orderingInsert tbody td:nth-child(6) input');
-			let items = [];
-			for(let i = 0; i < itemCodes.length - 1; i++) {
-	    		items.push({"itemCode" :itemCodes[i].innerText, 
-	    					"itemQuan" :Number(itemQuan[i].value)});
-	    	}
-			let list = {
-				    "deliveryDesireDate" : new Date($('.date-picker').val()),
-				    "orderingRequestManger": "test",
-				    "totalPrice": Number($('#total td:last-child').text()),
-				    "itemCodes": items
-				};
-			
-			fetch('../ordering/insert', {
-				method: "POST",
-			 	headers: {
-			    	"Content-Type": "application/json",
-			  	},
-				body: JSON.stringify(list)
-			})
-			.then(response => response.url)
-			.then(data => {
-				window.location.href = data;
-			})
-			.catch(err => console.log(err));
-		})
-		
-		// 수량 입력시 숫자이외 값 방지
-		orderingInsert.addEventListener('input', function() {
-		    if(event.target.tagName == 'INPUT') {
-	    	    if(Number(event.target.value) == 0){
-	    	    	event.target.value = 1;
-	    	        alert('숫자가 아닙니다.');
-	    	        itemSum(event);
-	    	    }
-		    } 
-		})
-		
-		// 품목 추가 옵션 초기화
-		function allOptionOff(){
-			$('input.checkAll').prop("checked",false);	
-			$('input.check').prop("checked",false);
-			$('.custom-select2').val('');
-			$('li.select2-selection__choice').remove();
-			iname.value = '';
-			$('.modal-body table tbody tr').remove();
-			$('.page-item#addcol').remove();
-		}
-		
-		$('#addItems').click(function() {
-			allOptionOff();
-		})
-		
-		// 품목 체크막스 전체 선택
-		$('input.checkAll').click(function(){
-		    if($('input.checkAll').prop("checked")){
-		        $('input.check').prop("checked",true);
-		    }else{
-		    	$('input.check').prop("checked",false); 
-		    }
-		});
-
-	</script>
+	}
+	element += '</optgroup>';
+	$('.custom-select2.second').append(element);
+}
+</script>
 </body>
 </html>

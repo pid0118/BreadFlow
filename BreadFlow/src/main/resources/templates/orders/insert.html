@@ -112,306 +112,337 @@
 
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>	
 <script>
-	// 모달을 숨길때 기존에 있는 데이터 내용 삭제 이벤트
-	$('#ordersDetailModal').modal('hide');
-	$('#ordersDetailModal').on('hidden.bs.modal', function (event) {
-		$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
-	})
-	$('#ordersModal').modal('hide');
-	$('#ordersModal').on('hidden.bs.modal', function (event) {
-		$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
+let comNo; // 회사 번호
+let comNm; // 회사 이름
+let eve = null; // 출고업체 선택 시 발생된 이벤트
+let ordergrid = null;
+
+// 모달을 숨길때 기존에 있는 데이터 내용 삭제 이벤트
+$('#ordersDetailModal').modal('hide');
+$('#ordersDetailModal').on('hidden.bs.modal', function (event) {
+	$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
+})
+$('#ordersModal').modal('hide');
+$('#ordersModal').on('hidden.bs.modal', function (event) {
+	$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
+})
+
+//#region 그리드 column
+/* 
+* header => 헤더 값
+* name => 받을 데이터 name
+* formatter => 데이터 포맷팅
+*/
+const columns = [
+	{
+         header: '발주코드',
+         name: 'orderingCode'
+       },
+       {
+         header: '발주일자',
+         name: 'orderingDate',
+         formatter: function(data) {
+       	  let date = data.value;
+             return date.substring(0,10);
+         }
+       },
+       {
+         header: '납기 희망일자',
+         name: 'deliveryDesireDate',
+         formatter: function(data) {
+       	  let date = data.value;
+             return date.substring(0,10);
+         }
+       },
+       {
+         header: '발주처',
+         name: 'companyName'
+       },
+       {
+         header: '총 금액',
+         name: 'totalPrice',
+         formatter: function(data) {
+       	  let price = data.value;
+             return price.toLocaleString('ko-KR');
+         }
+       }
+];
+//#endregion
+
+// #region 그리드 생성
+/**
+* el => 생성될 element
+* data => api 데이터 값
+* width => 너비 자동 조절
+* columnOptions => resize
+* rowHeaders => 체크박스 생성
+* bodyHeight => 높이 지정
+* column => column 값
+*/
+const grid = new tui.Grid({
+  el: document.getElementById('grid'),
+  data: {
+       api: {
+         readData: { url: '/orders/list', method: 'GET' }
+       }
+     },
+  width: 'auto',
+  columnOptions: {
+	resizable: true  
+  },
+  rowHeaders: ['checkbox'],
+  bodyHeight: 600,
+  columns: columns
+});
+//#endregion
+
+// 그리드 클릭시 이벤트
+grid.on('click', function() {
+  if(event.target.parentElement.dataset.columnName == 'orderingCode'){
+	event.target.parentElement.dataset.toggle = 'modal';
+	event.target.parentElement.dataset.target = '#ordersDetailModal';
+	let code = event.target.innerText;
+	showModal(code);
+  }
+});
+
+// 발주 신청 클릭 이벤트
+
+$('#addOrders').on('click', function() {
+	let codeArr = [];
+	
+	grid.getCheckedRows().forEach(data => {
+		codeArr.push(data.orderingCode);
 	})
 	
-	// 모달 보여질때 이벤트
-	function showModal(code){
-		$('#ordersDetailModal').on('shown.bs.modal', function (event) {
-			$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
-			makeDetailGrid(code);
+	if(codeArr.length == 0){
+		alert("선택된 주문건이 없습니다.");
+		event.stopPropagation();
+	}
+	else {
+		event.target.dataset.toggle = 'modal';
+		event.target.dataset.target = '#ordersModal';
+		$('#ordersModal').modal('hide');
+		$('#ordersModal').on('shown.bs.modal', function (event) {
+			$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
+			let codes = '';
+			codeArr.forEach(code => {
+				codes += code + ',';
+			})
+			const columns = [
+				{
+			          header: '품목명',
+			          name: 'itemName',
+			          rowSpan: true
+			        },
+			        {
+			          header: '단위',
+			          name: 'unit',
+			          rowSpan: true
+			        },
+			        {
+			          header: '규격',
+			          name: 'standard',
+			          rowSpan: true
+			        },
+			        {
+			          header: '수량',
+			          name: 'quantity',
+			          formatter: function(data) {
+			        	  let price = data.value;
+			              return price.toLocaleString('ko-KR');
+			          }
+			        },
+			        {
+			          name: 'price',
+			          hidden: true	
+			        },
+			        {
+			          header: '입고업체',
+			          name: 'inCompany',
+			          rowSpan: true
+			        },
+			        {
+			          name: 'inCompanyNo',
+					  hidden: true			          
+			        },
+			        {
+		        	  header: '출고업체',
+			          name: 'outCompany'
+			        },
+			        {
+			          name: 'outCompanyNo',
+					  hidden: true			          
+			        }
+				];
+			
+			const newgrid = new tui.Grid({
+			  el: document.getElementById('ordersGrid'),
+			  data: {
+			  	api: {
+		          readData: { url: '/orders/reqDetailList?codes=' + codes, method: 'GET' }
+		        }
+		      },
+			  width: 'auto',
+			  columnOptions: {
+				resizable: true  
+			  },
+			  bodyHeight: 'fitToParent',
+			  minBodyHeight: 600,
+			  columns: columns
+			});
+			
+			// 츨고업체 입력칸 클릭 이벤트
+			newgrid.on('click', function (ev) {
+				if(ev.columnName == 'outCompany' && event.target.tagName != 'TH'){
+					console.log(newgrid.getRow(ev.rowKey).itemCode);
+					eve = ev;
+					ele = newgrid.getElement(ev.rowKey, ev.columnName); // 선택된 요소
+					if(ele != null){
+						ele.dataset.toggle = 'modal';
+						ele.dataset.target = '#Prdtcom-modal';
+						PrdtcomListShow();
+					}
+				}
+			})
+			
+			$('#confirmCom').on('click', function(){
+				setCompany(eve, newgrid);
+			})
+			
+			ordergrid = newgrid;
+			
 		})
 	}
-	
-	
-	//#region 그리드 column
-	/* 
-	* header => 헤더 값
-	* name => 받을 데이터 name
-	* formatter => 데이터 포맷팅
-	*/
-	const columns = [
+});
+
+// 출고업체 값 설정 함수
+function setCompany(eve, newgrid){
+	newgrid.setValue(eve.rowKey, eve.columnName, comNm); // 출고업체 값 변경
+	newgrid.setValue(eve.rowKey, 'outCompanyNo', comNo); // 출고업체번호 값 변경
+}
+
+// 발주상세 그리드 생성 함수
+function makeDetailGrid(code){
+	const detailColumns = [
 		{
-          header: '발주코드',
-          name: 'orderingCode'
+          header: '발주상세코드',
+          name: 'orderingDetailCode'
         },
         {
-          header: '발주일자',
-          name: 'orderingDate',
+          header: '품목명',
+          name: 'itemName'
+        },
+        {
+          header: '단위',
+          name: 'unit'
+        },
+        {
+          header: '규격',
+          name: 'standard'
+        },
+        {
+          header: '수량',
+          name: 'quantity',
           formatter: function(data) {
-        	  let date = data.value;
-              return date.substring(0,10);
-          }
-        },
-        {
-          header: '납기 희망일자',
-          name: 'deliveryDesireDate',
-          formatter: function(data) {
-        	  let date = data.value;
-              return date.substring(0,10);
-          }
-        },
-        {
-          header: '발주처',
-          name: 'companyName'
-        },
-        {
-          header: '총 금액',
-          name: 'totalPrice',
-          formatter: function(data) {
-        	  let price = data.value;
-              return price.toLocaleString('ko-KR');
+        	  let quantity = data.value;
+              return quantity.toLocaleString('ko-KR');
           }
         }
 	];
-	//#endregion
 	
-	// #region 그리드 생성
-	/**
-	* el => 생성될 element
-	* data => api 데이터 값
-	* width => 너비 자동 조절
-	* columnOptions => resize
-	* rowHeaders => 체크박스 생성
-	* bodyHeight => 높이 지정
-	* column => column 값
-	*/
 	const grid = new tui.Grid({
-	  el: document.getElementById('grid'),
+	  el: document.getElementById('detailGrid'),
 	  data: {
         api: {
-          readData: { url: '/orders/list', method: 'GET' }
+          readData: { url: '/orders/detailList?code=' + code, method: 'GET' }
         }
       },
 	  width: 'auto',
 	  columnOptions: {
 		resizable: true  
 	  },
-	  rowHeaders: ['checkbox'],
-	  bodyHeight: 600,
-	  columns: columns
+	  bodyHeight: 'fitToParent',
+	  minBodyHeight: 600,
+	  columns: detailColumns
 	});
-	//#endregion
-	
-	// 그리드 클릭시 이벤트
-	grid.on('click', function() {
-	  if(event.target.parentElement.dataset.columnName == 'orderingCode'){
-		event.target.parentElement.dataset.toggle = 'modal';
-		event.target.parentElement.dataset.target = '#ordersDetailModal';
-		let code = event.target.innerText;
-		showModal(code);
-	  }
-	});
-	
-	// 발주 신청 클릭 이벤트
-	
-	$('#addOrders').on('click', function() {
-		let codeArr = [];
-		
-		grid.getCheckedRows().forEach(data => {
-			codeArr.push(data.orderingCode);
-		})
-		
-		if(codeArr.length == 0){
-			alert("선택된 주문건이 없습니다.");
-			event.stopPropagation();
-		}
-		else {
-			event.target.dataset.toggle = 'modal';
-			event.target.dataset.target = '#ordersModal';
-			$('#ordersModal').modal('hide');
-			$('#ordersModal').on('shown.bs.modal', function (event) {
-				$('#ordersModal .modal-body #ordersGrid .tui-grid-container').remove();
-				let codes = '';
-				codeArr.forEach(code => {
-					codes += code + ',';
-				})
-				const columns = [
-					{
-				          header: '품목명',
-				          name: 'itemName',
-				          rowSpan: true
-				        },
-				        {
-				          header: '단위',
-				          name: 'unit',
-				          rowSpan: true
-				        },
-				        {
-				          header: '규격',
-				          name: 'standard',
-				          rowSpan: true
-				        },
-				        {
-				          header: '수량',
-				          name: 'quantity',
-				          formatter: function(data) {
-				        	  let price = data.value;
-				              return price.toLocaleString('ko-KR');
-				          }
-				        },
-				        {
-				          header: '입고업체',
-				          name: 'inCompany',
-				          rowSpan: true
-				        },
-				        {
-			        	  header: '출고업체',
-				          name: 'outCompany'
-				        }
-					];
-				
-				const newgrid = new tui.Grid({
-				  el: document.getElementById('ordersGrid'),
-				  data: {
-				  	api: {
-			          readData: { url: '/orders/reqDetailList?codes=' + codes, method: 'GET' }
-			        }
-			      },
-				  width: 'auto',
-				  columnOptions: {
-					resizable: true  
-				  },
-				  bodyHeight: 'fitToParent',
-				  minBodyHeight: 600,
-				  columns: columns
-				});
-				
-				// 츨고업체 입력칸 클릭 이벤트
-				newgrid.on('click', function (ev) {
-					if(ev.columnName == 'outCompany' && event.target.tagName != 'TH'){
-						console.log(newgrid.getRow(ev.rowKey).itemCode);
-						eve = ev;
-						ele = newgrid.getElement(ev.rowKey, ev.columnName); // 선택된 요소
-						if(ele != null){
-							ele.dataset.toggle = 'modal';
-							ele.dataset.target = '#Prdtcom-modal';
-							PrdtcomListShow();
-						}
-					}
-				})
-				
-				$('#confirmCom').on('click', function(){
-					setCompany(eve, newgrid);
-				})
-			})
-		}
-	});
-	
-	// 출고업체 값 설정 함수
-	function setCompany(eve, newgrid){
-		newgrid.setValue(eve.rowKey, eve.columnName, comNm); // 출고업체 값 변경
-	}
-	
-	// 발주상세 그리드 생성 함수
-	function makeDetailGrid(code){
-		const detailColumns = [
-			{
-	          header: '발주상세코드',
-	          name: 'orderingDetailCode'
-	        },
-	        {
-	          header: '품목명',
-	          name: 'itemName'
-	        },
-	        {
-	          header: '단위',
-	          name: 'unit'
-	        },
-	        {
-	          header: '규격',
-	          name: 'standard'
-	        },
-	        {
-	          header: '수량',
-	          name: 'quantity',
-	          formatter: function(data) {
-	        	  let quantity = data.value;
-	              return quantity.toLocaleString('ko-KR');
-	          }
-	        }
-		];
-		
-		const grid = new tui.Grid({
-		  el: document.getElementById('detailGrid'),
-		  data: {
-	        api: {
-	          readData: { url: '/orders/detailList?code=' + code, method: 'GET' }
-	        }
-	      },
-		  width: 'auto',
-		  columnOptions: {
-			resizable: true  
-		  },
-		  bodyHeight: 'fitToParent',
-		  minBodyHeight: 600,
-		  columns: detailColumns
-		});
-	}
-	
-	// 출고업체 데이터 테이블 생성
-	$(document).ready( function () {
-	    $('#companys').DataTable({			// 출고업체 모달 테이블
-	    	info: false,
-	    	paging: false,
-	    	ajax: {
-	   			url: '/getCompanys.do',
-	   			type: "GET",
-	   			dataSrc: ''
-	   		},
-	   		columns:[
-	   			{data: "companyNo"},
-	   			{data: "companyName"},
-	   			{data: "div"},
-	   			{data: "name"},
-	   		]
-	    })
-	});
-	
-	// 출고업체 클릭 시 
-	function PrdtcomListShow() {
-		let comsTblTrs = document.querySelectorAll("#companys tr");
+}
 
-		for(let i = 1; i < comsTblTrs.length; i++) {
-			comsTblTrs[i].addEventListener("click", getCompanyInfo);
-		}
-	}
+// 출고업체 데이터 테이블 생성
+$(document).ready( function () {
+    $('#companys').DataTable({			// 출고업체 모달 테이블
+    	info: false,
+    	paging: false,
+    	ajax: {
+   			url: '/getCompanys.do',
+   			type: "GET",
+   			dataSrc: ''
+   		},
+   		columns:[
+   			{data: "companyNo"},
+   			{data: "companyName"},
+   			{data: "div"},
+   			{data: "name"},
+   		]
+    })
+});
 
-	let comNo;
-	let comNm;
-	let eve = null;
+// 출고업체 클릭 시 
+function PrdtcomListShow() {
+	let comsTblTrs = document.querySelectorAll("#companys tr");
 
-	function getCompanyInfo(e) {
-		comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
-		comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
-		
-		document.querySelector("#selectedComNm").value = comNm;
-		document.querySelector("#selectedComNo").value = comNo;
+	for(let i = 1; i < comsTblTrs.length; i++) {
+		comsTblTrs[i].addEventListener("click", getCompanyInfo);
 	}
+}
+
+
+
+function getCompanyInfo(e) {
+	comNo = e.target.parentElement.querySelectorAll("td")[0].innerText;
+	comNm = e.target.parentElement.querySelectorAll("td")[1].innerText;
 	
-	// 주문 신청 모달 신청 클릭 이벤트
-	$('#requestBtn').on('click', function() {
-		let datas = document.querySelectorAll('#ordersModal td:last-child');
-		let checked = true;
-		for(let i = 0; i < datas.length; i++){
-			if((datas[i].children[0].innerText == '')){
-				checked = false;
-				break;
-			}
-		}
-		if(checked == true){
-			alert("정상");
-		} else {
-			alert("오류");
-		}
+	document.querySelector("#selectedComNm").value = comNm;
+	document.querySelector("#selectedComNo").value = comNo;
+}
+
+// 모달 보여질때 이벤트
+function showModal(code){
+	$('#ordersDetailModal').on('shown.bs.modal', function (event) {
+		$('#ordersDetailModal .modal-body #detailGrid .tui-grid-container').remove();
+		makeDetailGrid(code);
 	})
+}
+
+//주문 신청 모달 신청 클릭 이벤트
+$('#requestBtn').on('click', function() {
+	let datas = document.querySelectorAll('#ordersModal td:last-child');
+	let checked = true;
+	for(let i = 0; i < datas.length; i++){
+		if((datas[i].children[0].innerText == '')){
+			checked = false;
+			break;
+		}
+	}
+	console.log(ordergrid.getData());
+	if(checked == true){
+		$.ajax({
+			type: 'POST',
+			url: '/orders/request',
+			contentType : "application/json",
+			data: JSON.stringify(ordergrid.getData()),
+			success: function(data) { 
+				window.location.href = data;  
+			},
+			error: function() { 
+				alert('실패');
+			}
+		})
+		alert("주문 완료!");
+	} else {
+		alert("출고업체를 선택해주세요.");
+	}
+})
 	
 </script>
 </body>

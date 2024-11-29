@@ -27,6 +27,7 @@ public class OrderingServiceImpl implements OrderingService{
 	@Autowired
 	public OrderingMapper orderingMapper;
 	
+	// 발주 현황 조회
 	@Override
 	public Map<String, Object> selectOrderingList(String status, String sort, int page) {
 		List<String> list = Arrays.asList(status.split(",")); // 상태 배열 , 기준으로 나누어 list
@@ -40,7 +41,8 @@ public class OrderingServiceImpl implements OrderingService{
 		map.put("page", totalPage);
 		return map;
 	}
-
+	
+	// 발주 신청
 	@Override
 	@Transactional
 	public int insertOrdering(Map<String, Object> ordering, HttpSession session) {

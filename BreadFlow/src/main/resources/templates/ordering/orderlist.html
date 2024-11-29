@@ -78,12 +78,6 @@
 									<i class="ion-chevron-left"></i>
 								</a>
 							</li>
-							<!-- <li class="paginate_button page-item active">
-								<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link">1</a>
-							</li>
-							<li class="paginate_button page-item ">
-								<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" class="page-link">2</a>
-							</li> -->
 							<li class="paginate_button page-item next disabled" id="DataTables_Table_0_next">
 								<a href="#" aria-controls="DataTables_Table_0" tabindex="0" class="page-link">
 									<i class="ion-chevron-right"></i>
@@ -190,218 +184,214 @@
 </div>		
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>		
 <script>
-	let status = 'd3,d4';
-	let sort = '';
-	let page = 1;
-	orderingList(status, sort, page);
-    
-    function makeDetailGrid(datas){
-    	const ROW_COUNT = datas.length;
+let status = 'd3,d4';	// 기본 발주 상태
+let sort = '';	// 기본 정렬 조건
+let page = 1;	// 기본 페이지 수
+orderingList(status, sort, page); // 발주 현황 목록 조회
+   
 
-        const data = [];
-        const columns = [
-        	{name: 'orderingDetailCode', header: '발주 상세코드'},
-        	{name: 'itemname', header: '품목명'},
-        	{name: 'unit', header: '단위'},
-        	{name: 'standard', header: '규격'},
-        	{name: 'quantity', header: '수량'},
-        	{name: 'price', header: '총 금액'}
-        ];
-
-        for (let i = 0; i < ROW_COUNT; i += 1) {
-          const row = { id: i };
-          row['itemname'] = datas[i].itemname;
-          row['orderingDetailCode'] = datas[i].orderingDetailCode;
-          row['price'] = datas[i].price;
-          row['quantity'] = datas[i].quantity;
-          row['standard'] = datas[i].standard;
-          row['unit'] = datas[i].unit;
-          data.push(row);
-        }
-    	
-    	const grid = new tui.Grid({
-  	      el: document.getElementById('grid'),
-  	      data: data,
-  	      bodyHeight: 700,
-  	      columns: columns
-  	    });	
-    }
-    
-	$('#Medium-modal').modal('hide')
-	function showModal(data){
-		$('#Medium-modal').on('shown.bs.modal', function (event) {
-			$('#Medium-modal .modal-body #grid .tui-grid-container').remove();
-			makeDetailGrid(data);
-		})
+// 정렬 조건에 따라 발주 현황 조회
+$('select').on('change', function() {
+	if($(this).attr("id") == 'statusSel'){ // 발주 상태가 바꼈을 때
+		status = $(this).val();
+	} else { // 일자 조건이 바꼈을 때
+		sort = $(this).val();
 	}
-	
-  
-	
-	// 정렬 조건에 따라 발주 현황 조회
-	$('select').on('change', function() {
-		if($(this).attr("id") == 'statusSel'){
-			status = $(this).val();
-		} else {
-			sort = $(this).val();
+	page = 1;
+	orderingList(status, sort, page); // 발주 현황 페이지 재생성
+})
+
+// 페이지 버튼 클릭 이벤트
+$('ul.pagination.justify-content-center').on('click', 'li', function(){
+	if(!$(this).hasClass("disabled")){ // 비활성화 된 버튼을 클릭하지 않았을 때
+		if($(this).hasClass("next")){	// > 버튼을 눌렀을때
+			page = Number($('li.paginate_button.page-item.page.active').children().text()) + 1;
 		}
-		page = 1;
-		orderingList(status, sort, page);
-	})
-	
-	// 페이지 버튼 클릭 이벤트
-	$('ul.pagination.justify-content-center').on('click', 'li', function(){
-		if(!$(this).hasClass("disabled")){
-			if($('select.selectpicker:first').val().length != 0){
-				status = $('select.selectpicker:first').val();
-				sort = $('select.selectpicker:last').val();
-			}
-			if($(this).hasClass("next")){
-				page = Number($('li.paginate_button.page-item.page.active').children().text()) + 1;
-			}
-			else if($(this).hasClass("previous")){
-				page = Number($('li.paginate_button.page-item.page.active').children().text()) - 1;
-			} else{
-				page = $(this).children().text();
-			}
-			orderingList(status, sort, page)
+		else if($(this).hasClass("previous")){ // < 버튼을 눌렀을때
+			page = Number($('li.paginate_button.page-item.page.active').children().text()) - 1;
+		} else{
+			page = $(this).children().text();
 		}
+		orderingList(status, sort, page) // 발주 현황 목록 재생성
+	}
+})
+
+// 발주 취소서 전송 버튼 클릭 이벤트
+$('#cancelBtn').on('click', function() {
+	let no = $('#bd-example-modal-lg input').val(); // 발주 번호
+	let reason = $('#bd-example-modal-lg textarea').val(); // 취소 사유
+	$.ajax({
+	    type : 'post',
+	    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
+	    dataType : 'text',
+	    success : function(result) {
+	        let resultData = JSON.parse(result);
+	        if(resultData.result == true){
+	        	window.location.href = 'http://localhost:8099/order/list';
+	        } else {
+	        	alert("잘못된 접근입니다.");	
+	        }
+	    },
+	    error : function(request, status, error) { 
+	        console.log(error);
+	    }
 	})
-	
-	// 발주 취소서 전송 버튼 클릭 이벤트
-	$('#cancelBtn').on('click', function() {
-		let no = $('#bd-example-modal-lg input').val();
-		let reason = $('#bd-example-modal-lg textarea').val();
-		$.ajax({
-		    type : 'post',
-		    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
-		    dataType : 'text',
-		    success : function(result) {
-		        let resultData = JSON.parse(result);
-		        if(resultData.result == true){
-		        	window.location.href = 'http://localhost:8099/order/list';
-		        } else {
-		        	alert("잘못된 접근입니다.");	
-		        }
-		    },
-		    error : function(request, status, error) { 
-		        console.log(error);
-		    }
-		})
+})
+
+$('#Medium-modal').modal('hide')	// 모달 닫기
+// 모달 보여주는 함수
+function showModal(data){
+	$('#Medium-modal').on('shown.bs.modal', function (event) {	// 모달이 보여졌을 때
+		$('#Medium-modal .modal-body #grid .tui-grid-container').remove(); // 모달 내용 삭제
+		makeDetailGrid(data); // 상세 내용 그리드 생성
 	})
-	
-	// 발주 현황 조회
-	function orderingList(status, sort, page){
-		fetch(`/ordering/list?status=${status}&sort=${sort}&page=${page}`)
-		.then(response => response.json())
-		.then(result => {
-			let totalPage = result.page;
-			let endPage = Math.ceil(totalPage / 10);
-			$('li.paginate_button.page-item.page').remove();
-			for(let i = 0; i < endPage; i++){
-				let ele;
-				if(page == i+1) {
-					ele = `<li class="paginate_button page-item page active">
-						<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
-					</li>`;
-				} else {
-					ele = `<li class="paginate_button page-item page">
-						<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
-					</li>`;
-				}
-				$('ul.pagination.justify-content-center li:last-child').before(ele);
-			}
-			if(totalPage == endPage) {
-				$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
-				$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
-			} else if(page == 1) {
-				$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
-				$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
-			} else if(page == endPage){
-				$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
-				$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
+}
+
+// 발주 현황 조회 함수
+function orderingList(status, sort, page){
+	fetch(`/ordering/list?status=${status}&sort=${sort}&page=${page}`)
+	.then(response => response.json())
+	.then(result => {
+		let totalPage = result.page;
+		let endPage = Math.ceil(totalPage / 10);
+		$('li.paginate_button.page-item.page').remove();
+		for(let i = 0; i < endPage; i++){
+			let ele;
+			if(page == i+1) { // 현재 페이지일 경우
+				ele = `<li class="paginate_button page-item page active">
+					<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+				</li>`;
 			} else {
-				$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
-				$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
+				ele = `<li class="paginate_button page-item page">
+					<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+				</li>`;
 			}
-			
-			$('#orderingTable tbody tr').remove();
-			result.data.forEach(data => {
-				let ele;
-				if(data.approvalWhether == 'd3'){
-					ele = `<tr class="table-light">
-						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
-						</td>
-						<td>${data.orderingDate.substring(0,10)}</td>
-						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
-						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-						<td><span class="badge badge-secondary">요청</span></td>
-						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
-						<td>
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
-							</a>
-						</td>
-					</tr>`
-				} else {
-					ele = `<tr class="table-danger">
-						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
-						</td>
-						<td>${data.orderingDate.substring(0,10)}</td>
-						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
-						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-						<td><span class="badge badge-danger">긴급</span></td>
-						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
-						<td>
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
-							</a>
-						</td>
-					</tr>`
-				}
-				$('#orderingTable tbody').append(ele);
-			})
-			// 승인 버튼 이벤트
-			$('button#acceptBtn').on('click', function() {
-				if(confirm("승인하시겠습니까?")){
-					alert("승인");
-					let code = $(this).closest('tr').children('td:first-child').children().text();
-					$.ajax({
-					    type : 'post',
-					    url : '/ordering/updateOdAccept?code=' + code, 
-					    dataType : 'text',
-					    success : function(result) {
-					        console.log(result);
-					        window.location.href = 'http://localhost:8099/order/list';
-					    },
-					    error : function(request, status, error) { 
-					        console.log(error);
-					    }
-					})
-				}
-			})
-			
-			// 거절 버튼 이벤트
-			$('button#modalCancel').on('click', function() {
-				$('#bd-example-modal-lg input').val($(this).data("id"));
-				$('#bd-example-modal-lg textarea').val('');
-			})
-			
-			// 발주 코드 클릭 이벤트
-			$('table td:first-child .btn-block').on('click', function() {
-				$.ajax('/ordering/detailList?orderingCode=' + $(this).text())
-				.done(result => {
-					showModal(result);
-				})
-			})
-
+			$('ul.pagination.justify-content-center li:last-child').before(ele);
+		}
+		if(totalPage == endPage || Math.ceil(totalPage/10) == 1) { // 페이지 내용이 없거나 1 페이지만 있을 경우 
+			$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
+			$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
+		} else if(page == 1) { // 페이지가 1일 경우
+			$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
+			$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
+		} else if(page == endPage){ // 페이지가 마지막 페이지일 경우
+			$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
+			$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
+		} else {
+			$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
+			$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
+		}
+		
+		$('#orderingTable tbody tr').remove(); // 테이블 데이터 삭제
+		result.data.forEach(data => {
+			let ele;
+			if(data.approvalWhether == 'd3'){ // 요청 상태일 경우
+				ele = `<tr class="table-light">
+					<td data-id="${data.orderformNo}">
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+					</td>
+					<td>${data.orderingDate.substring(0,10)}</td>
+					<td>${data.deliveryDesireDate.substring(0,10)}</td>
+					<td>${data.orderingRequestManager}</td>
+					<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+					<td><span class="badge badge-secondary">요청</span></td>
+					<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+					<td>
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+						<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+						</a>
+					</td>
+				</tr>`
+			} else { // 긴급 상태일 경우
+				ele = `<tr class="table-danger">
+					<td data-id="${data.orderformNo}">
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+					</td>
+					<td>${data.orderingDate.substring(0,10)}</td>
+					<td>${data.deliveryDesireDate.substring(0,10)}</td>
+					<td>${data.orderingRequestManager}</td>
+					<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+					<td><span class="badge badge-danger">긴급</span></td>
+					<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+					<td>
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+						<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+						</a>
+					</td>
+				</tr>`
+			}
+			$('#orderingTable tbody').append(ele); // 테이블 데이터 추가
 		})
-		.catch(err => console.log(err))
-	}
+		// 승인 버튼 이벤트
+		$('button#acceptBtn').on('click', function() {
+			if(confirm("승인하시겠습니까?")){ 
+				alert("승인");
+				let code = $(this).closest('tr').children('td:first-child').children().text();
+				$.ajax({
+				    type : 'post',
+				    url : '/ordering/updateOdAccept?code=' + code, 
+				    dataType : 'text',
+				    success : function(result) {
+				        console.log(result);
+				        window.location.href = 'http://localhost:8099/order/list';
+				    },
+				    error : function(request, status, error) { 
+				        console.log(error);
+				    }
+				})
+			}
+		})
+		
+		// 거절 버튼 이벤트
+		$('button#modalCancel').on('click', function() {
+			// 데이터 값 초기화
+			$('#bd-example-modal-lg input').val($(this).data("id"));
+			$('#bd-example-modal-lg textarea').val('');
+		})
+		
+		// 발주 코드 클릭 이벤트
+		$('table td:first-child .btn-block').on('click', function() {
+			$.ajax('/ordering/detailList?orderingCode=' + $(this).text())
+			.done(result => {
+				showModal(result); // 상세 모달 출력
+			})
+		})
+
+	})
+	.catch(err => console.log(err))
+}
 	
+// 발주 상세 정보 그리드 생성 함수
+function makeDetailGrid(datas){
+	const ROW_COUNT = datas.length;
+    const data = [];
+    const columns = [
+    	{name: 'orderingDetailCode', header: '발주 상세코드'},
+    	{name: 'itemname', header: '품목명'},
+    	{name: 'unit', header: '단위'},
+    	{name: 'standard', header: '규격'},
+    	{name: 'quantity', header: '수량'},
+    	{name: 'price', header: '총 금액'}
+    ];
+
+    for (let i = 0; i < ROW_COUNT; i += 1) {
+      const row = { id: i };
+      row['itemname'] = datas[i].itemname;
+      row['orderingDetailCode'] = datas[i].orderingDetailCode;
+      row['price'] = datas[i].price;
+      row['quantity'] = datas[i].quantity;
+      row['standard'] = datas[i].standard;
+      row['unit'] = datas[i].unit;
+      data.push(row);
+    }
+	
+	const grid = new tui.Grid({
+     el: document.getElementById('grid'),	// 컨테이너 요소
+     data: data,	// 표 데이터
+     bodyHeight: 700,	// 표 크기
+     columns: columns	// 표 헤더 이름
+    });	
+}
 </script>
 </body>
 </html>

@@ -37,7 +37,7 @@
 	<script>
 	if (document.querySelector("#logoutBtn")){
 		document.querySelector("#logoutBtn").addEventListener('click', function(event) {
-			window.location.href = "logout.do";
+			window.location.href = "/logout.do";
 		});
 	}
 		
@@ -90,8 +90,8 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">주문 신청</a></li>
-									<li><a th:href="@{/welcome}">주문/발주 현황 조회</a></li>
+									<li><a th:href="@{/orders/insert}">주문 신청</a></li>
+									<li><a th:href="@{/order/list}">주문/발주 현황 조회</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -172,7 +172,7 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">주문 현황 조회</a></li>
+									<li><a th:href="@{/order/list}">주문 현황 조회</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -229,8 +229,8 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">발주 신청</a></li>
-									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+									<li><a th:href="@{/ordering/insert}">발주 신청</a></li>
+									<li><a th:href="@{/order/list}">주문/발주 현황 조회</a></li>
 								</ul>
 							</li>
 							<li class="dropdown">
@@ -298,8 +298,8 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">발주 신청</a></li>
-									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+									<li><a th:href="@{/ordering/insert}">발주 신청</a></li>
+									<li><a th:href="@{/order/list}">주문/발주 현황 조회</a></li>
 								</ul>
 							</li>
 							<li>
@@ -347,8 +347,8 @@
 									><span class="mtext">주문/발주 관리</span>
 								</a>
 								<ul class="submenu">
-									<li><a th:href="@{/welcome}">발주 신청</a></li>
-									<li><a th:href="@{/welcome}">발주 현황 조회</a></li>
+									<li><a th:href="@{/ordering/insert}">발주 신청</a></li>
+									<li><a th:href="@{/order/list}">발주 현황 조회</a></li>
 								</ul>
 							</li>
 							<li>
