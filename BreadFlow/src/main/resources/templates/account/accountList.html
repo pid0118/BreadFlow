@@ -71,9 +71,8 @@
 
 							</tr>
 						</thead>
-						<tbody>
-							<th:block th:each="acc, sts : ${accounts}">
-								<tr>
+						<tbody>					
+								<tr th:each="acc, sts : ${accounts}">
 									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
 									<td id="parentPosit" th:text="${acc.position == 'b1' ? '담당자' : (acc.position == 'b2' ? '사원' : '기타')}"></td>
 									<td id="parentId">[[ ${acc.id} ]]</td>
@@ -88,7 +87,6 @@
 									<td id="parentContDt"  hidden="hidden">[[ ${acc.contractDate} ]]</td>
 									<td id="parentComNo" hidden="hidden">[[ ${acc.companyNo}]] </td>
 								</tr>
-							</th:block>
 						</tbody>
 					</table>
 				</div>
@@ -409,8 +407,8 @@
 	
 	
 
+	//#region  [박진석|24.11.14] 버튼들 이벤트 걸기
 	//=======================================================
-	// [박진석|24.11.14] 버튼들 이벤트 걸기
 	document.querySelector("#managerInsertFormBtn").addEventListener("click", showMngInsertForm);		// 담당자 계정 생성으로 폼 전환 버튼
 	document.querySelector("#employeeInsertBtn").addEventListener("click", showEmployeeInsertForm);		// 직원 계정 생성으로 폼 전환 버튼
 	
@@ -422,8 +420,8 @@
 	document.querySelector("#brnConfirmBtn").addEventListener("click", confirmBrn);						// 사업자등록증 검증
 	document.querySelector("#comSerachBtn").addEventListener("click", companyListShow);						// 업체 검색 모달
 	
-	// 버튼 이벤트 끝
 	// =======================================================
+	// #endregion 버튼 이벤트 끝
 	
 		
 		
@@ -504,9 +502,8 @@
 	}
 
 	function getTargetInfo(e) {
-		document.querySelector(".insertMngAccount").style.display = 'none';			// 자세히 보기 폼만 활성화
-		document.querySelector(".insertEmployeeAccount").style.display = 'none';
-		document.querySelector(".updateAccounts").style.display = 'block';
+		swtichTab(".updateAccounts"); // 자세히 보기 폼만 활성화
+		
 		let brnChk = 0;
 		
 		let parentInfo = e.target.parentElement;
@@ -535,6 +532,17 @@
 	// 상세정보 출력 코드 끝
 	// =======================================================
 
+		
+		
+	function swtichTab(tabName) {
+		document.querySelector(".insertMngAccount").style.display = 'none';			// 자세히 보기 폼만 활성화
+		document.querySelector(".insertEmployeeAccount").style.display = 'none';
+		document.querySelector(".updateAccounts").style.display = 'none';
+		
+		document.querySelector(tabName).style.display = 'block';
+		
+	}
+		
 		
 		
 	// =======================================================
@@ -662,9 +670,9 @@
 	// =======================================================	
 	// [박진석|24.11.14] 담당자 계정 생성했을 때 DB에 Insert하는 코드
 	function MngInsertAjax() {
-		let nameVal = document.querySelector("#insertMngAccountFrm input[name^='name']");
-		let comNmVal = document.querySelector("#insertMngAccountFrm input[name^='companyName']");
-		let comTelVal = document.querySelector("#insertMngAccountFrm input[name^='companyTel']");
+		let nameVal = document.querySelector("#insertMngAccountFrm input[name='name']");
+		let comNmVal = document.querySelector("#insertMngAccountFrm input[name='companyName']");
+		let comTelVal = document.querySelector("#insertMngAccountFrm input[name='companyTel']");
 		
 		if(nameVal.value == "" || comNmVal.value == "" || comTelVal.value == "") {
 			alert("필수값을 입력해주세요.");
@@ -813,6 +821,7 @@
 			  }
 		});
 	}
+	// TODO: 시간나면 key값 분리시켜보자
 	// 검증코드 끝
 	// =======================================================
 		

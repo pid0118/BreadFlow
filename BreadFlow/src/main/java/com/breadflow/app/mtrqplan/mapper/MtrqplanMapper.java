@@ -13,4 +13,11 @@ public interface MtrqplanMapper {
 	// 자재소요계획 단건 입력
 	public int insertMtrqplan(MtrqplanVO mtrqplanVO);
 
+	// 자재소요계획 디테일 단건 입력
+	public int insertMtrqplanDetail(MtrqplanVO mvo);
+
+	public MtrqplanVO selectMtrqplan(String productionPlanNo);
+
+	public List<MtrqplanVO> selectMtrqplanDetails(String matrequiredPlanNo);
+
 }

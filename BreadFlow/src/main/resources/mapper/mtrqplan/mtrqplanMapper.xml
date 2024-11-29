@@ -14,6 +14,45 @@
 	ORDER BY ingredient_code
 </select>
 
+
+<select id="selectMtrqplan" parameterType="String">
+	SELECT  m.matrequired_plan_no
+	        , m.supply_company
+	        , ( SELECT  company_name
+	            FROM    company
+	            WHERE   company_no = m.supply_company) AS supply_company_nm
+	        , m.start_date
+	        , m.delivery_location
+	        , ( SELECT  company_name
+	            FROM    company
+	            WHERE   company_no = m.delivery_location) AS delivery_location_nm
+	        , m.last_date
+	        , MIN(d.progress_situation) AS progress_situation
+	FROM matrequired_plan m JOIN matrequired_plan_detail d
+	            ON m.matrequired_plan_no = d.matrequired_plan_no
+	WHERE m.production_plan_no = #{productionPlanNo}        
+	GROUP BY m.matrequired_plan_no
+	        , m.supply_company
+	        , m.start_date
+	        , m.delivery_location
+	        , m.last_date
+</select>
+
+
+
+<select id="selectMtrqplanDetails" parameterType="String">
+	SELECT  product_code
+	        , ( SELECT  ingredient_name
+	            FROM    ingredient
+	            WHERE   ingredient_code = product_code) AS product_name
+	        , plan_quantity
+	        , FIND_CD(unit) AS unit
+	        , other
+	FROM    matrequired_plan_detail
+	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
+</select>
+
+
 <insert id="insertMtrqplan" parameterType="MtrqplanVO">
 	<selectKey resultType="string" keyProperty="matrequiredPlanNo" order="BEFORE">
 		SELECT 'JP' || PLANSEQ('MATREQUIRED_PLAN','MATREQUIRED_PLAN_NO') FROM dual
@@ -37,4 +76,32 @@
 	    , #{writer}
 	)
 </insert>
+
+
+<insert id="insertMtrqplanDetail" parameterType="MtrqplanVO">
+	<selectKey resultType="string" keyProperty="materialDetailNo" order="BEFORE">
+		SELECT 'JP' || PLANSEQ('matrequired_plan_DETAIL', 'material_detail_no') FROM dual
+	</selectKey>
+	INSERT INTO matrequired_plan_detail
+	(
+	    product_code
+	    , plan_quantity
+	    , unit
+	    , other
+	    , progress_situation
+	    , material_detail_no
+	    , matrequired_plan_no
+	) VALUES (
+	    #{productCode}
+	    , #{planQuantity}
+	    , #{unit}
+	    , #{other}
+	    , 'c1'
+	    , #{materialDetailNo}
+	    , #{matrequiredPlanNo}
+	)
+
+
+</insert>
+
 </mapper>

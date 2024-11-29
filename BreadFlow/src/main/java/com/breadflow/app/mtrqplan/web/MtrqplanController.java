@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.mtrqplan.service.MtrqplanService;
@@ -56,4 +58,26 @@ public class MtrqplanController {
 		return result;
 	}
 	
+	@PostMapping("insertMtrqplanDetails")
+	@ResponseBody
+	public int insertMtrqplanDetails(@RequestBody List<MtrqplanVO> list) {
+		int result = mtrqplanService.insertMtrqplanDetails(list);
+		return result;
+	}
+	
+	@GetMapping("selectMtrqplan")
+	@ResponseBody
+	public MtrqplanVO selectMtrqplan(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplan - mtrqPlanNo: " + id + "\n");
+		MtrqplanVO mVO = mtrqplanService.selectMtrqplan(id);
+		return mVO;
+	}
+	
+	@GetMapping("selectMtrqplanDetails")
+	@ResponseBody
+	public List<MtrqplanVO> selectMtrqplanDetails(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplanDetails - mtrqPlanNo: " + id + "\n");
+		List<MtrqplanVO> list = mtrqplanService.selectMtrqplanDetails(id);
+		return list;
+	}
 }

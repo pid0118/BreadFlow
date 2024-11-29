@@ -9,5 +9,11 @@ public interface MtrqplanService {
 
 	public String insertMtrqplan(MtrqplanVO mtrqplanVO);
 
+	public int insertMtrqplanDetails(List<MtrqplanVO> list);
+
+	public MtrqplanVO selectMtrqplan(String id);
+
+	public List<MtrqplanVO> selectMtrqplanDetails(String id);
+
 
 }
