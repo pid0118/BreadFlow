@@ -73,9 +73,9 @@
 		<form>
 			<div>
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyName}" readonly>
+					<input class="form-control" type="text" name="companyName" id="companyName" th:value="${session.companyName}" readonly>
 					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.name}" style="display:none;" readonly>
-					<input class="form-control" type="text" name="companyNo" id="companyNo" th:value="${session.companyNo}" style="display:none;" readonly>
+					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyAddr" id="companyAddr" th:value="${session.companyAddress}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyTel" id="companyTel" th:value="${session.companyTel}" style="display:none;" readonly>
@@ -234,15 +234,17 @@
 		var month = null;
 		var div = null;
 		
+		// 페이징 조건
 		var page = 1;
 		var pageSize = 10;
 		
+		// 페이지 로딩 시 기능 실행
 		$(document).ready(function() {
 			
 			// 로그인한 업체 이름 저장
 			companyInput = $("#companyInput").val();
 			
-			// 로그인한 업체 코드 저장
+			// 로그인한 업체 분류 저장
 			div = $("#companyDiv").val();
 			
 			// 기본 내역 출력 (입고)
@@ -251,6 +253,7 @@
 	        // 기본 날짜 출력 (입고/출고)
 	        loadTodayDate();
 	        
+	        // 조건 초기화 (페이징 포함)
 	        function clear() {
             	comp = null;
             	ing = null;
@@ -261,15 +264,19 @@
     			pageClear();
             }
 	        
+	        // 페이징 초기화
 	        function pageClear() {
 	        	page = 1;
     			pageSize = 10;
     			$("#currentPage").text(page + " 페이지");
 	        }
 	        
+	        // 공급업체로 로그인 시 페이지 내용 변경
 	        if (div == '공급업체') {
 	        	$("#instoreBtnLabel").css("display", "none");
             	$("#outstoreBtn").prop("checked", true);
+            	$("#firstQuanTh").text("입고 수량");
+	        	$("#secondQuanTh").text("출고 수량");
             	changeFilter();
             }
 	        
@@ -329,7 +336,7 @@
             
          	// 업체 검색 모달에서 선택
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 comp = selectedCompanyName;
@@ -337,6 +344,7 @@
                 changeFilter();
             });
          	
+         	// 모달 창 데이터
          	var modalData = [];
          	
          	// 모달 창 버튼 클릭 시 처리
@@ -357,7 +365,7 @@
 		                    itemDiv: row.find("td:nth-child(3)").text(),
 		                    itemName: row.find("td:nth-child(4)").text(),
 		                    instoreQuantity: row.find("td:nth-child(6) input").val(),
-		                    companyNo: $("#companyNo").val(),
+		                    companyNo: $("#companyInput").val(),
 		                    instoreManager: $("#manager").val(),
 		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
 		                    instoreDiv: row.find("td:nth-child(9)").text(),
@@ -421,6 +429,7 @@
 			
 	    });
 		
+		// 페이징 이전 버튼 클릭
 		$("#prevPageBtn").click(function() {
 		    if (page > 1) {
 		        page--;
@@ -428,7 +437,8 @@
 		        $("#currentPage").text(page + " 페이지");
 		    }
 		});
-
+		
+		// 페이징 다음 버튼 클릭
 		$("#nextPageBtn").click(function() {
 		    page++;
 		    changeFilter();
@@ -481,6 +491,7 @@
 	 		$("#inOutDate").val(todayDate.slice(2, 10));
 	 	}
 	 	
+	 	// 모달 창 갱신
 	 	function updateModal(data) {
 	 		var tbody = $("#insertedTble");
 	 		tbody.empty();
@@ -612,21 +623,28 @@
         });
      	
      	// 체크박스 일괄 선택 처리
-     	$("#checkAll").on('click', function() {
-     		if ($(this).prop('checked')) {
-     			$("#inOutTable .form-check-input").prop('checked', true);
-                $("#inOutTable tbody tr").addClass('selected');
-            } else {
-            	$("#inOutTable .form-check-input").prop('checked', false);
-                $("#inOutTable tbody tr").removeClass('selected');
-            }
-     		
+     	$("#checkAll").change(function() {
+     	    var isChecked = $(this).prop('checked');
+     	    
+     	    $("#inOutTable tr").each(function() {
+     	        var row = $(this);
+     	        var checkbox = row.find(".form-check-input");
+     	        
+     	        checkbox.prop('checked', isChecked);
+     	        
+     	        if (isChecked) {
+     	            row.addClass('selected');
+     	        } else {
+     	            row.removeClass('selected');
+     	        }
+     	    });
      	});
-     	
+
      	// 모달창 숨기기 처리
      	$("#closeModal").click(function() {
      		$("#getListModal").modal('hide');
 	    });
+     	
      	$("#closeModalX").click(function() {
      		$("#getListModal").modal('hide');
      	});

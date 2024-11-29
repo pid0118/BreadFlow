@@ -210,14 +210,12 @@
 	        <if test="check != null and check != ''">
 			AND IH.CONFIRM_WHETHER = #{check}
 			</if>
-			<choose>
-			<when test="disposal = 'i0'">
-			AND IA.DISPOSAL_WHETHER IS NULL
-			</when>
-			<otherwise>
+			<if test="disposal != null and disposal != ''">
 			AND IA.DISPOSAL_WHETHER = #{disposal}
-			</otherwise>
-			</choose>
+			</if>
+			<if test="disposal == null">
+			AND IA.DISPOSAL_WHETHER IS NULL
+			</if>
 	        <if test="startDt != null and startDt != ''">
 	        <![CDATA[
 	            AND IH.INFER_APPLICATION_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 

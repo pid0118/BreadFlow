@@ -13,6 +13,7 @@
 			<h2 class="text-black">불량 내역 등록</h2>
 		</div>
 		<input class="form-control" type="text" name="inferManager" id="inferManager" th:value="${session.memNo}" style="display:none;" readonly>
+		<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 		<form>
 			<div class="pd-20 row">
 				<div class="col-md-6 col-sm-12">
@@ -79,18 +80,19 @@
 	
 	<script>
 	
-		// 조건 생성
+		// 조건
 		var companyInput = null;
 		var inferManager = null;
 		
+		// 페이징 조건
 		var page = 1;
 		var pageSize = 10;
 		
-		// 페이지 실행
+		// 페이지 로딩 시 기능 실행
 		$(document).ready(function() {
 			
 			// 로그인한 업체 이름 저장
-			companyInput = $("#companyName").val();
+			companyInput = $("#companyInput").val();
 			
 			// 로그인한 사용자 이름 저장
 			inferManager = $("#inferManager").val();
@@ -129,7 +131,7 @@
             
          	// 업체 검색 모달에서 선택 (없어도 될지도)
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 companyInput = selectedCompanyName;
@@ -140,7 +142,7 @@
             $('#imagePreview').click(function() {
                 $('#image').click();
             });
-
+			
             $('#image').change(function(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -155,6 +157,7 @@
         		// 이미지 업로드    
         		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
         		formData.append("file", file); /* 폼에 file 변수 추가 */
+        		
         		//서버에 파일 업로드(백그라운드에서 실행)
         		$.ajax({
         			type:"post",
@@ -327,6 +330,24 @@
                 row.removeClass('selected');
             }
         });
+     	
+     	// 체크박스 일괄 선택 처리
+     	$("#checkAll").change(function() {
+     	    var isChecked = $(this).prop('checked');
+     	    
+     	    $("#inferTable tr").each(function() {
+     	        var row = $(this);
+     	        var checkbox = row.find(".form-check-input");
+     	        
+     	        checkbox.prop('checked', isChecked);
+     	        
+     	        if (isChecked) {
+     	            row.addClass('selected');
+     	        } else {
+     	            row.removeClass('selected');
+     	        }
+     	    });
+     	});
         
 	</script>
 </body>

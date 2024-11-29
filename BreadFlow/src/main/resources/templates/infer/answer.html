@@ -10,7 +10,7 @@
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
-			<h2 class="text-black">불량 답변 등록</h2>
+			<h2 class="text-black" th:text="${inferNo}"></h2>
 		</div>
 		<form>
 		<div class="pd-20 row">
@@ -95,13 +95,16 @@
 	</div>
 	
     <script>
-    
+    	
+    	// 페이지 로딩 시 기능 실행
 		$(document).ready(function() {
 			
+			// 첫 번째 열에서 필수값 추출
 			var inferApplicationDate = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(2)").text().trim();
 			var inferMember = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(9)").text().trim();
 			var confirmLocation = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(3)").text().trim();
-	
+			
+			// 추출한 데이터 값에 삽입
 			$("#inferDate").val(inferApplicationDate);
 			$("#inferMember").val(inferMember);
 			$("#confirmLocation").val(confirmLocation);
@@ -111,6 +114,7 @@
 		// 등록 버튼 클릭 시 실행
 		$("#submitBtn").click(function() {
 			
+			// 현재 해당하는 불량 번호 저장
 			var inferNo = $("#inferNo").val();
 			
 			var checkNull = false;
@@ -121,6 +125,7 @@
             	answerer : $("#loginMember").val(),
             	inferNo
             };
+            
             if (insertData.answer == null || insertData.answer == '') {
 				checkNull = true;
 			}
@@ -130,6 +135,7 @@
             if (checkNull) {
             	alert("답변이 입력되지 않았습니다.");
             } else {
+            	
 				// 답변 등록
 				$.ajax({
 	                url: '/infer/insertInferAnswer',
