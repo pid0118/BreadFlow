@@ -20,4 +20,8 @@ public interface MtrqplanMapper {
 
 	public List<MtrqplanVO> selectMtrqplanDetails(String matrequiredPlanNo);
 
+	public int updateMtrqplanDetailForProgress(MtrqplanVO mtrqplanVO);
+
+	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo);
+
 }

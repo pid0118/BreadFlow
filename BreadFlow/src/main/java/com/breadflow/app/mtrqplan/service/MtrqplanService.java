@@ -15,5 +15,9 @@ public interface MtrqplanService {
 
 	public List<MtrqplanVO> selectMtrqplanDetails(String id);
 
+	public int updateMtrqplanDetailForProgress(MtrqplanVO mtrqplanVO);
+
+	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo);
+
 
 }

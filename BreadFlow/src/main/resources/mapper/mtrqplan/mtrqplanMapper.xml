@@ -100,8 +100,17 @@
 	    , #{materialDetailNo}
 	    , #{matrequiredPlanNo}
 	)
-
-
 </insert>
+
+<update id="updateMtrqplanDetailForProgress" parameterType="MtrqplanVO">
+	UPDATE  matrequired_plan_detail
+	SET     progress_situation = 'c3'
+	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
+</update>
+
+
+<select id="selectMtrqplanForCom" parameterType="String" resultType="MtrqplanVO">
+
+</select>
 
 </mapper>
