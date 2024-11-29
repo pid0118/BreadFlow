@@ -21,16 +21,15 @@
 	</select>
 	
 	<select id="selectSaleOffice" resultType="SaleVO" parameterType="String">
-		
 		SELECT DISTINCT (SELECT SUM(day_sales) 
                          FROM sales 
-                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate}) AS daySales
-                       ,(SELECT DISTINCT TO_CHAR(sales_date, 'yyyyMM')
+                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate}) AS day_sales
+                       , (SELECT DISTINCT TO_CHAR(sales_date, 'yyyyMM')
                          FROM sales
-                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate}) AS salesDate
+                         WHERE TO_CHAR(sales_date,'yyyyMM') = #{saleDate})
 		FROM sales
 		WHERE company_no = #{comNo}
-		
+		AND TO_CHAR(sales_date, 'yyyyMM') = #{saleDate}
 	</select>
 	
 	<select id="selectProductList" resultType="ProductVO" parameterType="String">

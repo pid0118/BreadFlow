@@ -214,18 +214,6 @@
 	            </thead>
 	            <tbody>
 	              <tr id="salMonth" style="pointer-events: none;">
-	                <td data-th="Company name">12345</td>
-	                <td data-th="Customer no">13245</td>
-	                <td data-th="Customer name">12345</td>
-	                <td data-th="Insurance no">12345</td>
-	                <td data-th="Strategy">12345</td>
-	                <td data-th="Start">12345</td>
-	                <td data-th="Current">12345</td>
-	                <td data-th="Diff">12345</td>
-	                <td data-th="Strategy">12345</td>
-	                <td data-th="Start">12345</td>
-	                <td data-th="Current">12345</td>
-	                <td data-th="Diff">12345</td>
 	              </tr>
 	            </tbody>
 	          </table>          
@@ -235,6 +223,9 @@
 	  </tbody>
 	</table>
 	<script>
+		const year =  document.querySelector('h3').innerText;
+		const month = document.querySelectorAll('.small-friendly .visible-big');
+		
 		$(".fold-table tr.view").on("click", function(event){
 			if($(this).hasClass("open")) {
 				$(this).removeClass("open").next(".fold").removeClass("open");
@@ -244,11 +235,9 @@
 				$(this).addClass("open").next(".fold").addClass("open");
 				
 				const companyCd = event.target.closest("tr").children[3].innerText;
-				const year =  document.querySelector('h3').innerText;
-				const month = document.querySelectorAll('.small-friendly .visible-big');
 				month.forEach(mon => {
 					let monNo = year + mon.innerText.substr(0,2);
-					// saleMonthAjax(monNo, companyCd);
+					saleMonthAjax(monNo, companyCd);
 				})
 			}
 		});
@@ -260,8 +249,14 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
-			})
+				const salMonthRow = document.querySelector('#salMonth');
+				let srt = '';
+				data.forEach(ele => {
+					let node = `<td>${ele.daySales}</td>`
+					srt += node;
+				})
+				salMonthRow.insertAdjacentHTML("beforeend", srt);
+		    })
 		}
 	</script>
 </body>
