@@ -53,7 +53,8 @@ public class AccountController {
 	@GetMapping("logout.do")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		return "account/index";
+		
+		return "redirect:/index";
 	}
 	
 	// 로그인 검사

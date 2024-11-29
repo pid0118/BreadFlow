@@ -116,13 +116,13 @@
 									id="updProgressSituation" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>담당자h</label> <input type="text" class="form-control"
 									id="updwriter" name="writer" th:value="${session.memNo}" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>생산계획번호h</label> <input type="text" class="form-control"
 									id="updproductionPlanNo" name="productionPlanNo" readonly>
@@ -136,7 +136,7 @@
 		</div>
 		
 		<div class="detailTableArea">
-			<div style=" float:left">
+			<div style=" float:left;">
 				<button type="button" class="btn btn-primary btn-lg" id="shareMtrqPlanBtn">업체 공유</button>
 			</div>
 		
@@ -288,7 +288,6 @@
 							<th>제품코드</th>
 							<th>제품명</th>
 							<th>단위</th>
-							<th>단위코드</th>
 						</tr>
 					</thead>
 				</table>
@@ -327,6 +326,9 @@ let tblDelRow = document.querySelector("#tblDelRow");							// 행 삭제
 tblDelRow.addEventListener('click', function() {
 	grid3.removeRow(grid3.getFocusedCell().rowKey);
 })
+
+let shareMtrqPlanBtn = document.querySelector("#shareMtrqPlanBtn");				// 업체공유 버튼
+shareMtrqPlanBtn.addEventListener('click', updateMtrqplanSituation);
 
 let PrdtcomSerachBtn = document.querySelector("#updPrdtcomSerachBtn");			// 생산업체 검색 모달
 PrdtcomSerachBtn.addEventListener('click', PrdtcomListShow);
@@ -427,7 +429,6 @@ $(document).ready( function () {
    			{data: "ingredientCode"},
    			{data: "ingredientName"},
    			{data: "unit"},
-   			{data: "unit_code"}
    		]
     });
 } );
@@ -555,17 +556,17 @@ const grid3 = new Grid({
 	columns: [
 		{
 			header: '재료코드',
-			name: 'ingredientCode',
+			name: 'productCode',
 			editor: 'text',
 		},
 		{
 			header: '재료명',
-			name: 'ingredientName',
+			name: 'productName',
 			editor: 'text',
 		},
 		{
 			header: '계획수량',
-			name: 'amount',
+			name: 'planQuantity',
 			editor: 'text',
 		},
 		{
@@ -587,7 +588,7 @@ const grid3 = new Grid({
 	
 	
 //========================================================================
-// [박진석|241128] grid1 클릭이벤트 설정 및 grid2에 관련 데이터 뿌림
+// [박진석|241128] grid1 클릭이벤트 설정 및 관련 데이터 뿌림
 grid1.on('click', function (ev) {
 	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
 	
@@ -595,12 +596,31 @@ grid1.on('click', function (ev) {
 	resetInfo();
 	$("#updproductionPlanNo").val(prdPlanNo);
 	
-	$.ajax({
+	$.ajax({												// grid2에 생산계획 디테일 출력
 	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
 	    	grid2.resetData(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+	
+	$.ajax({												// 상세보기 폼에 출력
+	    url: "selectMtrqplan?id=" + prdPlanNo,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	    	if (data == "") {
+	    		resetInfo();
+	    		$("#updproductionPlanNo").val(prdPlanNo);
+	    	} else {
+	    		setInfoToForm(data);
+	    		getMtrqplanDetailAjax(data.matrequiredPlanNo);
+	    	}
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
@@ -634,7 +654,7 @@ let prdtCd = "";
 let prdUnit = "";
 
 grid3.on('click', function (ev) {
-	if (ev.columnName == "ingredientName" || ev.columnName == "ingredientCode") {
+	if (ev.columnName == "productName" || ev.columnName == "productCode") {
 		currentTarget = ev;
 		
 		console.log(currentTarget);
@@ -663,8 +683,8 @@ function getingrdntsInfo(e) {
 
 function ingrdntModalConfirm() {
 	console.log(currentTarget);
-	grid3.setValue(currentTarget.rowKey, 'ingredientCode', prdtCd);
-	grid3.setValue(currentTarget.rowKey, 'ingredientName', prdtNm);
+	grid3.setValue(currentTarget.rowKey, 'productCode', prdtCd);
+	grid3.setValue(currentTarget.rowKey, 'productName', prdtNm);
 	grid3.setValue(currentTarget.rowKey, 'unit', prdUnit);
 	
 }
@@ -675,8 +695,9 @@ function ingrdntModalConfirm() {
 
 	
 //========================================================================
-// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+// [박진석|241128] 자재소요계획 저장하는 AJAX 함수
 function insertMtrqPlanAjax() {
+	
 	if($("#updwriter").val() == "" || $("#updwriter").val() == null) {
 		alert('로그인을 해주시기 바랍니다.')
 		return false;
@@ -687,28 +708,182 @@ function insertMtrqPlanAjax() {
 		 return false;
 	}
 	
-	/*if($("#updPrdtComNm").val() = "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
+	if($("#updPrdtComNm").val() == "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
 		alert("날짜 또는 업체를 선택했는지 확인하세요.");
 		return false;
-	}*/
+	}
 	
-	console.log("인서트인서트");
-	
+	if(confirm("자재소요계획을 저장 하시겠습니까?")) {
+		$.ajax({
+           url: "insertMtrqplan",
+           type: "POST",
+           data:  $('#updateMtrqplanForm').serialize(),
+           success: function(data){
+               alert("성공적으로 저장되었습니다.");
+               console.log(data);
+               if (data != '')
+            	   insertMtrqplanDetailAjax(data);
+               
+           },
+           error: function(result){
+        	   alert("저장에 실패하였습니다.");
+        	   console.log(result);
+        	}
+       });
+	} else {
+		alert("취소하였습니다.");
+	}
 }
-	
-// [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
+// [박진석|241128] 자재소요계획 저장 AJAX 끝
 //========================================================================
 	
 	
+	
+//========================================================================
+// [박진석|241129] 자재소요계획 디테일정보(grid3) 저장하는 AJAX 함수
+function insertMtrqplanDetailAjax(matrequiredPlanNo) {
+	let jsonData = [];
+	grid3.getData().forEach (element => {
+		jsonData.push({...element, matrequiredPlanNo})
+	})
+	
+	console.log(jsonData);
+	setTimeout(500);
+	
+	$.ajax({
+		url: "insertMtrqplanDetails",
+        type: "POST",
+        contentType: "application/json",
+        data:  JSON.stringify(jsonData),
+        success: function(data){
+            alert("성공적으로 저장되었습니다.");
+            console.log(data);
+        },
+        error: function(result){
+     	   alert("저장에 실패하였습니다.");
+     	   console.log(result);
+     	}
+	});
+}
+// 자재소요 디테일 저장 AJAX 끝
+//========================================================================
 
+	
+	
+//========================================================================
+// [박진석|241128] 가져온 data form에 삽입하는 함수
+function setInfoToForm(data) {
+	$("#updMtrqPlanNo").val(data.matrequiredPlanNo);
+	$("#updProductionCompany").val(data.supplyCompany);
+	$("#updPrdtComNm").val(data.supplyCompanyNm);
+	$("#updStartDate").val(formatDate(data.startDate));
+	$("#updDeliveryLocation").val(data.deliveryLocation);
+	$("#updDlvryLocNm").val(data.deliveryLocationNm);
+	$("#updLastDate").val(formatDate(data.lastDate));
+	$("#updProgressSituation").val(formatSituation(data.progressSituation));
+}
+// form 데이터 삽입 함수 끝
+//========================================================================	
+	
+
+	
+//========================================================================
+// [박진석|241128] 자재소요내역(grid3) 세부내용 가져오는 AJAX 함수
+function getMtrqplanDetailAjax(mtrqPlanNo) {
+	$.ajax({
+		url: "selectMtrqplanDetails?id=" + mtrqPlanNo,
+        type: "GET",
+        data: {},
+        success: function(data){
+            console.log(data);
+            grid3.appendRows(data);
+        },
+        error: function(result){
+     	   alert("조회에 실패하였습니다.");
+     	   console.log(result);
+     	}
+	});
+}
+// 자재소요내역 디테일 AJAX 끝
+//========================================================================		
+	
+
+	
+//========================================================================
+// [박진석|241128] 업체 공유버튼 클릭 시 progress_situation 갱신하는 함수
+function updateMtrqplanSituation() {
+	let mtrqplanNo = $("#updMtrqPlanNo").val();
+	let progress = $("#updProgressSituation").val();
+	
+	if(mtrqplanNo == "" || mtrqplanNo == null) {
+		alert("자재소요계획을 신규입력 후 공유해야 합니다.")
+		return false;
+	}
+	
+	if(progress != "작성중") {
+		alert("이미 공유된 계획입니다.");
+		return false;
+	}
+	
+}
+//
+//========================================================================
+	
+	
+	
 //========================================================================
 // [박진석|241128] 자재소요내역(grid3), form 값 초기화하는 함수
 function resetInfo() {
 	grid3.clear();
 	document.querySelector("#updateMtrqplanForm").reset();
 }
-
 // grid3 모달 클릭이벤트 끝
 //========================================================================	
+	
+	
+
+//========================================================================	
+// [박진석|241126] 생산상태 변환 함수
+function formatSituation(value) {
+	let result = "";
+	if(value == "c1") {
+		result = "작성중";
+	} else if(value == "c2") {
+		result = "확인";
+	} else if (value == "c3") {
+		result = "미확인";
+	} else if(value == "c4") {
+		result = "진행중";
+	} else {
+		result ="완료";
+	}
+	
+	return result;
+}
+// 생산상태 변환 함수 끝
+//========================================================================	
+	
+	
+
+// =======================================================	
+// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 11 September 2025 )
+function formatDate(dateString) {
+  const date = new Date(dateString);
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const day = date.getUTCDate(); // UTC 기준 일
+  const month = monthNames[date.getUTCMonth()]; // 월 이름
+  const year = date.getUTCFullYear(); // 연도
+
+  return `${day} ${month} ${year}`;
+}
+// 날짜 변환함수 끝
+// =======================================================	
+
+
 </script>
 

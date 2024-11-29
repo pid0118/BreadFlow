@@ -17,7 +17,7 @@ public class MtrqplanVO {
 	String	writer;					// 작성자
 	
 	//== matrequired_plan_detail 테이블 관련 VO ==//
-	String	productCode;			// 계획 코드
+	String	productCode;			// 제품 코드
 	Integer	planQuantity;			// 계획 수량
 	String	unit;					// 단위
 	String	other;					// 기타사항
@@ -30,4 +30,9 @@ public class MtrqplanVO {
 	String	ingredientCode;			// 재료코드
 	String	ingredientName;			// 재료명
 	String	unitName;				// 단위 이름
+	
+	//== 기타 VO ==//
+	String supplyCompanyNm;			// 공급업체 이름
+	String deliveryLocationNm;		// 납품업체 이름
+	String productName;				// 재료명
 }
