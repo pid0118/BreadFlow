@@ -40,14 +40,14 @@
 			<if test="month != null and month != ''">
 			AND EXTRACT(MONTH FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
 			</if>
-			<if test="checked != null and checked != ''">
-			AND IH.CONFIRM_WHETHER = #{checked}
-			</if>
-			<if test="unchecked != null and unchecked != ''">
-			AND IH.CONFIRM_WHETHER = #{unchecked}
+			<if test="check != null and check != ''">
+			AND IH.CONFIRM_WHETHER = #{check}
 			</if>
 			<if test="disposal != null and disposal != ''">
 			AND IA.DISPOSAL_WHETHER = #{disposal}
+			</if>
+			<if test="disposal == null">
+			AND IA.DISPOSAL_WHETHER IS NULL
 			</if>
 			<if test="startDt != null and startDt != ''">
 			<![CDATA[
@@ -105,7 +105,7 @@
 		        instore_no
 		    	)
 		VALUES 	(
-				('BUD' || (SELECT GETSEQ('infer_detail_history','infer_detail_code') FROM dual))
+				('BU' || (SELECT GETSEQ('infer_detail_history','infer_detail_code') FROM dual))
 		        , #{inferItem}
 		        , #{totalQuantity}
 		        , #{inferQuantity}
@@ -116,9 +116,9 @@
 		        )
 	</insert>
 	
-	<insert id="insertInferHistory" parameterType="InferHistoryVO">
+	<insert id="insertInferHistory">
 		<selectKey resultType="String" keyProperty="inferNo" order="BEFORE">
-			'BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual)
+			SELECT 'BU' || (SELECT GETSEQ('infer_history','infer_no') FROM dual) FROM dual
 		</selectKey>
 		INSERT INTO INFER_HISTORY
 			  	(
@@ -155,7 +155,7 @@
 		        infer_no
 		    	)
 		VALUES  (
-		        ('BUA' || (SELECT GETSEQ('infer_answer','infer_answer_no') FROM dual))
+		        ('BA' || (SELECT GETSEQ('infer_answer','infer_answer_no') FROM dual))
 		        , #{disposalWhether}
 		        , #{answer}
 		        , #{manager}
@@ -207,15 +207,17 @@
 	        <if test="month != null and month != ''">
 	            AND EXTRACT(MONTH FROM CAST(IH.INFER_APPLICATION_DATE AS DATE)) = TO_NUMBER(#{month})
 	        </if>
-	        <if test="checked != null and checked != ''">
-	            AND IH.CONFIRM_WHETHER = #{checked}
-	        </if>
-	        <if test="unchecked != null and unchecked != ''">
-	            AND IH.CONFIRM_WHETHER = #{unchecked}
-	        </if>
-	        <if test="disposal != null and disposal != ''">
-	            AND IA.DISPOSAL_WHETHER = #{disposal}
-	        </if>
+	        <if test="check != null and check != ''">
+			AND IH.CONFIRM_WHETHER = #{check}
+			</if>
+			<choose>
+			<when test="disposal = 'i0'">
+			AND IA.DISPOSAL_WHETHER IS NULL
+			</when>
+			<otherwise>
+			AND IA.DISPOSAL_WHETHER = #{disposal}
+			</otherwise>
+			</choose>
 	        <if test="startDt != null and startDt != ''">
 	        <![CDATA[
 	            AND IH.INFER_APPLICATION_DATE >= TO_DATE(#{startDt}, 'yy/MM/dd') 

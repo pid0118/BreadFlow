@@ -5,6 +5,7 @@
 		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
 		
 		SELECT
+			I.INSTORE_NO,
 		    I.INSTORE_DATE,
 		    I.INSTORE_QUANTITY,
 		    I.EXPIRATION_DEADLINE,
@@ -184,7 +185,7 @@
 		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
 		WHERE
 			ODS.OUTSTORE_COMPANY = #{companyInput}
-			AND OD.SITUATION_CODE = 'e2'
+
 			<if test="comp != null and comp != ''">
 			AND ODS.INSTORE_COMPANY = #{comp}
 			</if>
@@ -235,7 +236,7 @@
 		            , #{instoreManager}
 		            , #{orderingDetailCode}
 		            , #{instoreDiv}
-		            , (SELECT pp.last_date + #{expirationDeadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode}))
+		            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode}))
 	</insert>
 	
 	<update id="updateInstoreOrdering" parameterType="InstoreVO">

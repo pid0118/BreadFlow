@@ -361,13 +361,13 @@
 		                    instoreManager: $("#manager").val(),
 		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
 		                    instoreDiv: row.find("td:nth-child(9)").text(),
-		                    expirationDeadline: row.find("td:nth-child(10)").text(),
+		                    deadline: row.find("td:nth-child(10)").text(),
 		                    itemCode: row.find("td:nth-child(11)").text(),
 		                    purchasePrice: row.find("td:nth-child(12)").text(),
 		                    price: row.find("td:nth-child(13)").text(),
 		                    companyInput: $("#companyInput").val()
 		                };
-		                if (data.instoreQuantity = null) {
+		                if (data.instoreQuantity == null) {
 	            			checkNull = true;
 	            		}
 		                selectedRows.push(data);
@@ -387,7 +387,7 @@
 		                    price: row.find("td:nth-child(12)").text(),
 		                    companyInput: $("#companyInput").val()
 		                };
-		                if (data.outstoreQuantity = null) {
+		                if (data.outstoreQuantity == null) {
 	            			checkNull = true;
 	            		}
 		                selectedRows.push(data);

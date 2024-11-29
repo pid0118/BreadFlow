@@ -58,6 +58,7 @@
 						<th>전체 수량</th>
 						<th class="datatable-nosort">불량 수량</th>
 						<th class="datatable-nosort">불량 유형</th>
+						<th class="datatable-nosort">이미지 등록</th>
 					</tr>
 				</thead>
 				<tbody id="inferTable">
@@ -80,6 +81,7 @@
 	
 		// 조건 생성
 		var companyInput = null;
+		var inferManager = null;
 		
 		var page = 1;
 		var pageSize = 10;
@@ -89,6 +91,9 @@
 			
 			// 로그인한 업체 이름 저장
 			companyInput = $("#companyName").val();
+			
+			// 로그인한 사용자 이름 저장
+			inferManager = $("#inferManager").val();
 			
 			// 입고 내역 출력
 	        changeFilter();
@@ -124,7 +129,7 @@
             
          	// 업체 검색 모달에서 선택 (없어도 될지도)
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 companyInput = selectedCompanyName;
@@ -158,7 +163,7 @@
         			dataType: "text",
         			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
         			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
-        			success: function(data, status,req) {
+        			success: function(data, status, req) {
         				$("#productImage").val(data);
         			}
         		});
@@ -173,20 +178,17 @@
 		            var row = $(this);
 			        var data = {
 				        inferItem: row.find("td:nth-child(3)").text(),
-				        totalQuantity: row.find("td:nth-child(4)").val(),
-				        inferQuantity: row.find("td:nth-child(5) input").val(),
-				        inferType: row.find("td:nth-child(6)").text(),
-				        instoreNo: row.find("td:nth-child(7)").val(),
-				        inferImage: $("#productImage").val(),
+				        totalQuantity: row.find("td:nth-child(4)").text(),
+				        inferQuantity: row.find("td:nth-child(5) .quant").val(),
+				        inferType: row.find("td:nth-child(6) select").val(),
+				        instoreNo: row.find("td:nth-child(7)").text(),
+				        inferImage: 'test', // $("#productImage").val(),
 				        confirmLocation: $("#companyName").val(),
-				        inferManager: $("#inferManager").val()
+				        inferManager
 			        };
-			        if (data.inferQuantity = null) {
-		            	checkNull = true;
-		            }
-			        if (data.inferImage = null) {
-		            	checkNull = true;
-		            }
+					if ((data.inferQuantity == null || data.inferQuantity == '') || (data.inferImage == null || data.inferImage == '')) {
+						checkNull = true;
+					} 
 			        selectedRows.push(data);
 	            });
 	            
@@ -206,6 +208,7 @@
 		                	alert("등록되었습니다.");
 		                },
 		                error: function() {
+		                	console.log(selectedRows);
 		                    alert("불량 내역을 등록하는 데 실패했습니다.");
 		                }
 		            });
@@ -239,7 +242,7 @@
             	data : {companyInput, page, pageSize},
             	success : function(data) {
             		console.log(data);
-            		updateTable(data.list);
+            		updateTable(data);
             		var lastPage = Math.ceil(data.count / pageSize);
             		if (page == lastPage) {
             			$("#nextPageBtn").hide();
@@ -272,7 +275,7 @@
 	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
 	                row += "<td>" + item.itemName + "</td>";
 	                row += "<td>" + item.instoreQuantity + "</td>";
-	                row += "<td>" + "<input class='form-control' type='text' placeholder='불량 수량을 입력하세요.'></input>" + "</td>";
+	                row += "<td>" + "<input class='form-control quant' type='text' placeholder='불량 수량을 입력하세요.'></input>" + "</td>";
 	                row += "<td>" + `<select class="custom-select col-12">
 									 	<option selected="">불량 유형을 선택하세요.</option>
 										<option value="h1">부패</option>
@@ -280,11 +283,13 @@
 										<option value="h3">파손</option>
 									 </select>` + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
-	                row += `<div class="image-placeholder" id="imagePreview">
-				            	<span>이미지</span>
-				        	</div>
-				        	<input type="file" class="d-none" id="image" accept="image/*">
-				        	<input type="hidden" id="productImage">`;
+	                row += `<td>
+	                			<div class="image-placeholder" id="imagePreview">
+				            		<span>이미지</span>
+				        		</div>
+				        		<input type="file" id="image" accept="image/*">
+				        		<input type="hidden" id="productImage">
+				        	<td>`;
 	            	row += "</tr>";
 	            tbody.append(row);
 	        });
