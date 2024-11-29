@@ -12,6 +12,9 @@ public interface SaleService {
 	public List<SaleVO> selectSaleList();
 	
 	// POS 제품 리스트 조회
+	public List<SaleVO> selectSaleOffice(String saleDate, String comNo);
+	
+	// POS 제품 리스트 조회
 	public List<ProductVO> selectProductList(String category);
 	
 	// POS 주문 버튼 클릭시 제품 상세 등록

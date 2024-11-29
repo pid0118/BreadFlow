@@ -70,4 +70,12 @@ public class SaleServiceImpl implements SaleService {
 		return saleMapper.selectSaleProduct((String)companyNo.getAttribute("companyNo"));
 	}
 
+	@Override
+	public List<SaleVO> selectSaleOffice(String saleDate, String comNo) {
+		if(saleDate.equals("undefined")) {
+			saleDate = DateUtil.dashFormatDate(null, "yyyyMM");
+		}
+		return saleMapper.selectSaleOffice(saleDate, comNo);
+	}
+
 }

@@ -12,9 +12,14 @@ public class SaleVO {
 	private String companyNo; // 가맹점번호
 	private String brn; 
 	private String name; // 점주 성함
-	private Date contractDate; // 계약일
 	private int daySales; // 일매출		
 	private String other; // 특이사항
 	private String companyName; // 가맹점명 
+	private int rownum;
+	@JsonFormat(pattern = "yyyyMMdd", timezone = "Asia/Seoul" )
+	private Date salesDate; // 매출일
+	
+	private String saleDate; // 매출일 문자열(파라미터)
+	private String comNo;
 
 }

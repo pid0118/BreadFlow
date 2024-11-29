@@ -1,108 +1,268 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate="~{common/layouts/breadflow_layout}"
-	  layout:fragment="Content">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
 <title></title>
+<style>
+	@import url("https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
+	@import url(https://fonts.googleapis.com/css?family=Oswald:700);
+	@import url(https://fonts.googleapis.com/css?family=Droid+Serif);
+	.pcs, .cur, .per {
+	    white-space: nowrap;
+	}
+	.pcs:after {
+	    content: " pcs";
+	}
+	.cur:before {
+	    content: "$";
+	}
+	.per:after {
+	    content: "%";
+	}
+	* {
+	    box-sizing: border-box;
+	}
+	body {
+	    position: relative;
+	    padding: .2em 2em;
+	    color: #555;
+	}
+	table {
+	    position: relative;
+	    width: 100%;
+	}
+	table th {
+	    text-align: left;
+	    vertical-align: bottom;
+	    border-bottom: 1px solid #ccc;
+	    text-transform: uppercase;
+	    font: 0.8em "Oswald", sans-serif;
+	}
+	table th, table td {
+	    padding: .4em;
+	}
+	table.fold-table {
+	    background: white;
+	    color: #555;
+	}
+	table.fold-table > tbody > tr.view {
+	    font-family: "Droid Serif", serif;
+	    transition: all .3s ease;
+	}
+	table.fold-table > tbody > tr.view td, table.fold-table > tbody > tr.view th {
+	    cursor: pointer;
+	}
+	table.fold-table > tbody > tr.view td:first-child, table.fold-table > tbody > tr.view th:first-child {
+	    position: relative;
+	    padding-left: 20px;
+	}
+	table.fold-table > tbody > tr.view td:first-child:before, table.fold-table > tbody > tr.view th:first-child:before {
+	    position: absolute;
+	    top: 50%;
+	    left: 5px;
+	    width: 9px;
+	    height: 16px;
+	    margin-top: -8px;
+	    font: 16px fontawesome;
+	    content: "\f0d7";
+	    transition: all .3s ease;
+	}
+	table.fold-table > tbody > tr.view:nth-child(4n-1) {
+	    background: #eee;
+	}
+	table.fold-table > tbody > tr.view:hover {
+	    background: #ddd;
+	}
+	table.fold-table > tbody > tr.view.open {
+	    background: tomato;
+	    color: white;
+	}
+	table.fold-table > tbody > tr.view.open td:first-child:before, table.fold-table > tbody > tr.view.open th:first-child:before {
+	    transform: rotate(-180deg);
+	    color: white;
+	}
+	table.fold-table > tbody > tr.fold {
+	    display: none;
+	}
+	table.fold-table > tbody > tr.fold.open {
+	    display: table-row;
+	}
+	.fold-content {
+	    padding: .5em;
+	}
+	.fold-content h3 {
+	    margin-top: 0;
+	}
+	.fold-content > table {
+	    background: white;
+	    color: #555;
+	    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+	}
+	.fold-content > table > tbody > tr {
+	    font-family: "Droid Serif", serif;
+	    cursor: pointer;
+	}
+	.fold-content > table > tbody > tr:nth-child(even) {
+	    background: #eee;
+	}
+	.fold-content > table > tbody > tr:hover {
+	    background: #ddd;
+	}
+	.visible-small {
+	    display: none;
+	}
+	.visible-big {
+	    display: block;
+	}
+	@media (max-width: 700px) {
+	    body {
+	        font-size: .8em;
+	        padding: 0 10px;
+	    }
+	    table th, table td {
+	        padding: 1em .2em;
+	    }
+	    table th {
+	        vertical-align: bottom;
+	        padding-bottom: 0;
+	    }
+	    table.small-friendly > thead {
+	        display: none;
+	    }
+	    table.small-friendly > tbody > tr > td, table.small-friendly > tbody > tr > th {
+	        position: relative;
+	        padding: 0;
+	        padding-left: 50%;
+	        display: block;
+	        vertical-align: top;
+	        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+	    }
+	    table.small-friendly > tbody > tr > td:before, table.small-friendly > tbody > tr > th:before {
+	        position: absolute;
+	        top: 0;
+	        left: .5em;
+	        max-width: 50%;
+	        content: attr(data-th) ": ";
+	        display: block;
+	        font-weight: bold;
+	    }
+	    table.small-friendly > tbody > tr > td:first-child, table.small-friendly > tbody > tr > th:first-child {
+	        margin-top: 1em;
+	    }
+	    table.small-friendly > tbody > tr > td:last-child, table.small-friendly > tbody > tr > th:last-child {
+	        margin-bottom: 1em;
+	        border: 0;
+	    }
+	    .visible-small {
+	        display: block;
+	    }
+	    .visible-big {
+	        display: none;
+	    }
+	}
+
+</style>
 </head>
 <body>
-	<div class="card-box mb-30">
-		<div class="pd-20">
-			<h4 class="text-blue h4">Data Table with Checkbox select</h4>
-		</div>
-		<div class="pb-20">
-			<div id="DataTables_Table_3_wrapper"
-				class="dataTables_wrapper dt-bootstrap4 no-footer">
-				<div class="row">
-					<div class="col-sm-12 col-md-6">
-						<div class="dataTables_length" id="DataTables_Table_3_length">
-							<label>Show <select name="DataTables_Table_3_length"
-								aria-controls="DataTables_Table_3"
-								class="custom-select custom-select-sm form-control form-control-sm"><option
-										value="10">10</option>
-									<option value="25">25</option>
-									<option value="50">50</option>
-									<option value="-1">All</option></select> entries
-							</label>
-						</div>
-					</div>
-					<div class="col-sm-12 col-md-6">
-						<div id="DataTables_Table_3_filter" class="dataTables_filter">
-							<label>Search:<input type="search"
-								class="form-control form-control-sm" placeholder="Search"
-								aria-controls="DataTables_Table_3"></label>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
-						<table
-							class="checkbox-datatable table nowrap dataTable no-footer dtr-inline"
-							id="DataTables_Table_3" role="grid"
-							aria-describedby="DataTables_Table_3_info">
-							<thead>
-								<tr role="row">
-									<th tabindex="0"
-										aria-controls="DataTables_Table_3" rowspan="1" colspan="1"
-										aria-label="Name: activate to sort column descending">Name</th>
-									<th tabindex="0"
-										aria-controls="DataTables_Table_3" rowspan="1" colspan="1"
-										aria-label=" activate to sort column ascending">Position</th>
-									<th tabindex="0"
-										aria-controls="DataTables_Table_3" rowspan="1" colspan="1"
-										aria-label="Office: activate to sort column ascending">Office</th>
-									<th tabindex="0"
-										aria-controls="DataTables_Table_3" rowspan="1" colspan="1"
-										aria-label="Start date: activate to sort column ascending">Start
-										date</th>
-									<th tabindex="0"
-										aria-controls="DataTables_Table_3" rowspan="1" colspan="1"
-										aria-label="Salary: activate to sort column ascending">Salary</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr role="row" class="odd" th:each="list : ${SList}">
-									<td class="sorting_1">[[ ${list.companyName} ]]</td>
-									<td>[[ ${list.companyNo} ]]</td>
-									<td>[[ ${list.daySales} ]]</td>
-									<td>[[ ${#dates.format(list.contractDate, 'yyyy-MM-dd')} ]]</td>
-									<td>[[ ${list.companyNo} ]]</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12 col-md-5">
-						<div class="dataTables_info" id="DataTables_Table_3_info"
-							role="status" aria-live="polite">1-10 of 14 entries</div>
-					</div>
-					<div class="col-sm-12 col-md-7">
-						<div class="dataTables_paginate paging_simple_numbers"
-							id="DataTables_Table_3_paginate">
-							<ul class="pagination">
-								<li class="paginate_button page-item previous disabled"
-									id="DataTables_Table_3_previous"><a href="#"
-									aria-controls="DataTables_Table_3" data-dt-idx="0" tabindex="0"
-									class="page-link"><i class="ion-chevron-left"></i></a></li>
-								<li class="paginate_button page-item active"><a href="#"
-									aria-controls="DataTables_Table_3" data-dt-idx="1" tabindex="0"
-									class="page-link">1</a></li>
-								<li class="paginate_button page-item "><a href="#"
-									aria-controls="DataTables_Table_3" data-dt-idx="2" tabindex="0"
-									class="page-link">2</a></li>
-								<li class="paginate_button page-item next"
-									id="DataTables_Table_3_next"><a href="#"
-									aria-controls="DataTables_Table_3" data-dt-idx="3" tabindex="0"
-									class="page-link"><i class="ion-chevron-right"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	<h3>2024</h3>
+	<table class="fold-table">
+	  <thead>
+	    <tr>
+	      <th>번호</th>
+	      <th>지역</th>
+	      <th>가맹점명</th>
+	      <th><span class="visible-small" title="Premiumns">Prem.</span><span class="visible-big">코드</span></th>
+	      <th><span class="visible-small" title="Strategy A">Str. A</span><span class="visible-big">성함</span></th>
+	      <th><span class="visible-small" title="Strategy B">Str. B</span><span class="visible-big">매출(년)</span></th>
+	      <th><span class="visible-small" title="Strategy C">Str. C</span><span class="visible-big">비고</span></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr class="view" th:each="list : ${SList}">
+	      <td>[[ ${list.rownum} ]]</td>
+	      <td>[[ ${list.region} ]]</td>
+	      <td>[[ ${list.companyName} ]]</td>
+	      <td>[[ ${list.companyNo} ]]</td>
+	      <td>[[ ${list.name} ]]</td>
+	      <td>[[ ${#numbers.formatInteger(list.daySales, 3, 'COMMA')} + 원 ]]</td>
+	      <td>[[ ${list.other} ]]</td>
+	    </tr>
+	    <tr class="fold">
+	      <td colspan="7">
+	        <div class="fold-content">
+	          <h3>Company Name</h3>
+	          <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+	          <table class="small-friendly">
+	            <thead>
+	              <tr>
+	                <th><span class="visible-big">01월</span></th>
+	                <th><span class="visible-big">02월</span></th>
+	                <th><span class="visible-big">03월</span></th>
+	                <th><span class="visible-big">04월</span></th>
+	                <th><span class="visible-big">05월</span></th>
+	                <th><span class="visible-big">06월</span></th>
+	                <th><span class="visible-big">07월</span></th>
+	                <th><span class="visible-big">08월</span></th>
+	                <th><span class="visible-big">09월</span></th>
+	                <th><span class="visible-big">10월</span></th>
+	                <th><span class="visible-big">11월</span></th>
+	                <th><span class="visible-big">12월</span></th>
+	              </tr>
+	            </thead>
+	            <tbody>
+	              <tr id="salMonth" style="pointer-events: none;">
+	                <td data-th="Company name">12345</td>
+	                <td data-th="Customer no">13245</td>
+	                <td data-th="Customer name">12345</td>
+	                <td data-th="Insurance no">12345</td>
+	                <td data-th="Strategy">12345</td>
+	                <td data-th="Start">12345</td>
+	                <td data-th="Current">12345</td>
+	                <td data-th="Diff">12345</td>
+	                <td data-th="Strategy">12345</td>
+	                <td data-th="Start">12345</td>
+	                <td data-th="Current">12345</td>
+	                <td data-th="Diff">12345</td>
+	              </tr>
+	            </tbody>
+	          </table>          
+	        </div>
+	      </td>
+	    </tr>
+	  </tbody>
+	</table>
+	<script>
+		$(".fold-table tr.view").on("click", function(event){
+			if($(this).hasClass("open")) {
+				$(this).removeClass("open").next(".fold").removeClass("open");
+			} 
+			else {
+				$(".fold-table tr.view").removeClass("open").next(".fold").removeClass("open");
+				$(this).addClass("open").next(".fold").addClass("open");
+				
+				const companyCd = event.target.closest("tr").children[3].innerText;
+				const year =  document.querySelector('h3').innerText;
+				const month = document.querySelectorAll('.small-friendly .visible-big');
+				month.forEach(mon => {
+					let monNo = year + mon.innerText.substr(0,2);
+					// saleMonthAjax(monNo, companyCd);
+				})
+			}
+		});
+	
+		function saleMonthAjax(saDate, comNo){
+			let url = `/toSalList/Month?saDate=${saDate}&comNo=${comNo}`
+			fetch(url,{
+				method: "POST"
+			})
+			.then(res => res.json())
+			.then(data => {
+				console.log(data);
+			})
+		}
+	</script>
 </body>
 </html>
