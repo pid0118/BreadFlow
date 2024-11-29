@@ -140,81 +140,108 @@
 	            <div class="modal-body">
 	                <div class="row">
 	                    <div class="col-md-4 text-center mb-3">
-	                        <img id="productImage" src="" alt="" class="img-fluid" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+	                    	<div class="image-placeholder" id="imagePreview">
+					            <img th:src="'/imgs/' + ${productImage}" id="productImage">
+					        </div>
+					        <input type="file" class="d-none" id="image" accept="image/*">
 	                    </div>
 	                    <div class="col-md-8">
 	                        <div class="row row-cols-4">
 	                            <div class="col mb-3">
-	                                    <strong>제품코드</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="productCode"></div>
-	                                </div>
+	                            	<strong>제품코드</strong>
+	                            	<input type="text"
+										   class="form-control form-control-sm" id="productCode"
+										   th:value="${productCode}" readonly>
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>제품명</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="productName"></div>
-	                                </div>
+	                            	<strong>제품명</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="productName"
+										   th:value="${productName}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>소비기한</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="expirationDeadline"></div>
-	                                </div>
+	                                <strong>소비기한</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="expirationDeadline"
+										   th:value="${expirationDeadline}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>규격</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="standard"></div>
-	                                </div>
+	                                <strong>규격</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="standard"
+										   th:value="${standard}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>매입가</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="purchasePrice"></div>
-	                                </div>
+	                            	<strong>매입가</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="purchasePrice"
+										   th:value="${purchasePrice}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>판매가</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="salePrice"></div>
-	                                </div>
+	                                <strong>판매가</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="salePrice"
+										   th:value="${salePrice}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>안전재고수량</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="safeStockQuantity"></div>
-	                                </div>
+	                                <strong>안전재고수량</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="safeStockQuantity"
+										   th:value="${safeStockQuantity}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>생산지</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="proplace"></div>
-	                                </div>
+	                                <strong>생산지</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="proplace"
+										   th:value="${proplace}">
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>단위</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="unit"></div>
-	                                </div>
+	                                <strong>단위</strong>
+	                                <select class="form-select form-select-sm" id="unit">
+										<option selected>선택하세요</option>
+										<th:block th:each="code : ${codeVal}">
+											<option th:value="${code.codeRule}"
+												th:text="${code.codeVal}"
+												th:selected="${code.codeRule} == ${unit}"></option>
+										</th:block>
+									</select>
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>대분류</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="major"></div>
-	                                </div>
+	                                <strong>대분류</strong>
+	                                <select class="form-select form-select-sm" id="mainCategory">
+										<option selected>선택하세요</option>
+										<th:block th:each="cate : ${category}">
+											<option th:value="${cate.sub}" th:text="${cate.sub}"
+												th:selected="${cate.sub} == ${major}"></option>
+										</th:block>
+									</select>  
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>소분류</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="sub"></div>
-	                                </div>
+	                                <strong>소분류</strong>
+	                                <select class="form-select form-select-sm" id="subCategory">
+										<option selected>선택하세요</option>
+										<th:block th:each="sb : ${sub}">
+											<option th:value="${sb.sub}" th:text="${sb.sub}"
+												th:selected="${sb.sub} == ${sub}"></option>
+										</th:block>
+									</select>
 	                            </div>
+	                            
 	                            <div class="col mb-3">
-	                                    <strong>양</strong>
-	                                <div class="border rounded p-2 h-80">
-	                                    <div id="amount"></div>
-	                                </div>
+	                                <strong>양</strong>
+	                                <input type="text"
+										   class="form-control form-control-sm" id="amount"
+										   th:value="${amount}">    
 	                            </div>
 	                            <input type="hidden" id="productCodes"/>
 	                        </div>
@@ -222,7 +249,7 @@
 	                </div>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="updatePage()">수정</button>
+	                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateProduct()">수정</button>
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 	            </div>
 	        </div>
@@ -231,9 +258,7 @@
 
 
 	<script>
-	// 가격에 , 찍기
-	  
-    
+	let sub = ''
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showProductDetail(productCode) {
 		    $.ajax({
@@ -243,25 +268,72 @@
 		        	
 		            document.getElementById('productImage').src = '/imgs/' + product.productImage;
 		            document.getElementById('productImage').alt = product.productName;
-		            document.getElementById('productCode').textContent = product.productCode;
-		            document.getElementById('productName').textContent = product.productName;
-		            document.getElementById('expirationDeadline').textContent = product.expirationDeadline + '일';
-		            document.getElementById('standard').textContent = product.standard;
-		            document.getElementById('purchasePrice').textContent = product.purchasePrice + '원';
-		            document.getElementById('salePrice').textContent = product.salePrice + '원';
-		            document.getElementById('safeStockQuantity').textContent = product.safeStockQuantity;
-		            document.getElementById('proplace').textContent = product.proplace;
-		            document.getElementById('unit').textContent = product.unitName;
-		            document.getElementById('major').textContent = product.major;
-		            document.getElementById('sub').textContent = product.sub;
-		            document.getElementById('amount').textContent = product.amount + product.unitName;
+		            document.getElementById('productCode').value = product.productCode;
+		            document.getElementById('productName').value = product.productName;
+		            document.getElementById('expirationDeadline').value = product.expirationDeadline + '일';
+		            document.getElementById('standard').value = product.standard;
+		            document.getElementById('purchasePrice').value = formatNumber(product.purchasePrice) + '원';
+		            document.getElementById('salePrice').value = formatNumber(product.salePrice) + '원';
+		            document.getElementById('safeStockQuantity').value = formatNumber(product.safeStockQuantity);
+		            document.getElementById('proplace').value = product.proplace;
+		            document.getElementById('unit').value = product.unit;
+		            document.getElementById('mainCategory').value = product.major;
+		            document.getElementById('amount').value = formatNumber(product.amount) + product.unitName;
 		            document.getElementById('productCodes').value = product.productCode;
+		            sub = product.sub; 
 		            $('#productDetailModal').modal('show');
+		            $("#mainCategory").change()
 		        },
 		        error: function(xhr, status, error) {
 		            alert('제품 정보를 불러오는데 실패했습니다.');
 		        }
 		    });
+		    
+		 	// 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
+
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#productImage').attr('src', e.target.result);
+                        //$('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+        		// 이미지 업로드    
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        			
+        			$("#productImage").val(data);
+        			}
+        		});
+        	});
+		    
+		}
+		
+		function formatNumber(number) {
+		    return number.toLocaleString(); // 숫자에 콤마 추가
+		}	
+		
+		function commadel(number){
+			return number.replace(/,/g, "");
+		}
+		
+		function strdel(number){
+		 return number.slice(0, -1);	
 		}
 	
         let myTable ;
@@ -283,9 +355,6 @@
                     $('#productDetailModal').modal('hide');
                 }
             });
-         // 현제모달이 외부클릭시 닫히게끔하는 기능 -- x 버튼클릭시 닫기가능하게 바꾸기 수정버튼 클릭시 등록하면으로 전환 + 데이터넘겨서 등록화면에서 수정가능하게 만들기까지.
-            
-            
 
            // Initialize DataTable without sorting 데이터테이블 사용 설정
            myTable = $('.data-table').DataTable({
@@ -327,10 +396,35 @@
            $('#subList').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
      			myTable.draw()
            });
-           
         });
         
+     	// modal 카테고리 변경 처리 =================================================================================
+    	var subCategory = $('#subCategory');
+
+        $("#mainCategory").change(function() {
+            const category = this.value;
+ 
+           // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
+            if (category === "") {
+                subCategory.empty().append('<option selected>선택하세요</option>');
+                return;
+            }
+
+            fetch("/category/subList?major=" + category)
+                .then(response => response.json())
+                .then(response => {
+                    // 기존 옵션을 지운 후 새로운 옵션 추가
+                    subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
+                    for (let item of response) {
+                        subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
+                    }
+                    document.getElementById('subCategory').value = sub;
+                })
+                .catch(error => console.error('Error:', error)); // 오류 처리 
+        });
+        // modal 카테고리 변경 처리 =================================================================================        
         
+        	
         // 체크박스 체크후 삭제버튼 클릭시 해당품목을 삭제하시겠습니까? 작은모달창 질문후 예 버튼 클릭시 해당 품목삭제기능 
         $(document).ready(function() {
 		    // 전체 선택 체크박스 클릭 시
@@ -382,7 +476,7 @@
             		success : function(result){
             			if (result == 0) {
             				alert("선택하신 제품삭제가 완료되었습니다.")
-            				location.reload(true);
+            				refreshMemList()
             			} else {
             				alert("현제 선택하신 제품이 주문중이어서 삭제가 불가능합니다."); 
             			}
@@ -415,13 +509,117 @@
         	}
         	return false;
         });
-        	
         
-        function updatePage() {
+     	// 제품수정
+     	// NOT NULL값 미입력시 알림 및 등록 불가
+     	function updateProduct() {
+     		if($("#productName").val()==''){
+     			alert("제품명을 입력해주세요")
+     			return;
+     		}
+     		if($("#purchasePrice").val() == ''){
+     			alert("구매가를 입력해주세요")
+     			return;
+     		}
+     		if($("#salePrice").val() == ''){
+     			alert("판매가를 입력해주세요")
+     			return;
+     		}
+     		if($("#safeStockQuantity").val() == ''){
+     			alert("안전재고 수량을 입력주세요")
+     			return;
+     		}
+     		if($("#proplace").val() == ''){
+     			alert("생산지를 입력해주세요")
+     			return;
+     		}
+     		if($("#amount").val() == ''){
+     			alert("양를 입력해주세요")
+     			return;
+     		}
+     		if($("#unit option:selected").val() == '선택하세요'){
+     			alert("단위를 선택해주세요")
+     			return;
+     		}
+     		if($("#mainCategory option:selected").val() == '선택하세요'){
+     			alert("대분류를 선택해주세요")
+     			return;
+     		}
+     		if($("#subCategory option:selected").val() == '선택하세요'){
+     			alert("소분류를 선택해주세요")
+     			return;
+     		}
+     		if(sameCheck == false){
+     			alert("제품명이 중복되거나 상품이 등록되어있습니다")
+     			return;
+     		}
+     		$.ajax({
+     			url : "/product",
+     			method : "put",
+     			data : JSON.stringify({
+     				"productCode" : $("#productCode").val(),
+     				"productName" : $("#productName").val(),
+     				"standard" : $("#standard").val(),
+     				"expirationDeadline" : strdel(commadel($("#expirationDeadline").val())),
+     				"purchasePrice" : strdel(commadel($("#purchasePrice").val())),
+     				"salePrice" : strdel(commadel($("#salePrice").val())),
+     				"safeStockQuantity" : $("#safeStockQuantity").val(),
+     				"proplace" : $("#proplace").val(),
+     				"unit" : $("#unit option:selected").val(),
+     				"major" : $("#mainCategory option:selected").val(),
+     				"sub" : $("#subCategory option:selected").val(),
+     				"amount" : strdel(commadel($("#amount").val())),
+     				"productImage" : $("#productImage").val()
+     			}),
+     			contentType : 'application/json',
+     			dataType : "json",
+     			success : function (data) {
+     				if (data == 1) {
+     					alert("제품 수정에 성공하였습니다.");
+     					location.href = "/productListAll";
+     				} else {
+     					alert("제품 수정에 실패했습니다.");
+     				}
+     			}, 
+     			error : function (err) {
+     				console.log(err);
+     			}
+     			
+     		});
+     	} 
+        
+     	// 제품등록 제품명 중복체크 NOT NULL값 입력알림창 PART
+		let sameCheck = true;
+    	
+    	$("#productName").on('change', function(){
+    		let data = { productName: $('#productName').val(),
+    					 productCode: $('#productCode').val()};
+    		
+    		$.ajax({
+    			url:"/productNameCheck",
+    			type: "post",
+    			data: data,
+    		}).done((res)=> {
+    			console.log(res);
+    			sameCheck = true;
+    		}).fail((err)=>{
+    			alert("이미등록된 상품이거나 상품명이 중복되었습니다")
+    			console.log(err);
+    			sameCheck = false;
+    		});
+    		
+    	});
+        
+    	function refreshMemList(){
+    		location.reload();
+    	}
+        
+       /*  function updatePage() {
         	const productCode = $('#productCodes').val();
         	
         	location.href = "productUpdate?productCode=" + productCode;
-        }
+        } */
+        
             // 검색 입력 필드를 새로운 위치로 이동
             $('.dataTables_filter').detach().appendTo('#dtSearch');
        

@@ -12,9 +12,12 @@ public interface CategoryMapper {
 	
 	public List<CategoryVO> selectCategorySub(String major);
 
+	// bomPage 모달 unit 수정
+	public List<SearchItemVO> selectItemsBom(SearchOptionVO option);
 	
-	
+	// 발주신청 modal 재료 재품 select 
 	public List<SearchItemVO> selectItems(SearchOptionVO option);
+	
 	public int selectItemPaging(SearchOptionVO option);
 
 }

@@ -43,6 +43,12 @@ public class CategoryController {
 		return categoryService.getItems(option);
 	}
 	
+	@PostMapping("search/items")
+	@ResponseBody
+	public List<SearchItemVO> itemsList(@RequestBody SearchOptionVO option) {
+		return categoryService.selectItemsBom(option);
+	}
+	
 	@PostMapping("search/itempage")
 	@ResponseBody
 	public int itemPage(@RequestBody SearchOptionVO option) {

@@ -12,7 +12,7 @@ public interface BomService {
 	public BomVO selectBom(BomVO bomVO);
 	
 	// BOM 등록 (원재료)
-	public int insertBom(BomVO bomVO);
+	public int insertBom(List<BomVO> list);
 	
 	// BOM 수정
 	public int updateBom(BomVO bomVO);

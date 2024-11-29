@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.bom.mapper.BomMapper">
-<!-- bom 조회 -->
+
+<!-- bom 상세보기 -->	
 	<select id="selectBom" resultType="BomVO">
-	
+		SELECT  bom_code
+			   , consuption
+			   , unit
+			   , note
+			   , ingredient_code
+			   , product_code 
+		FROM   bom
+		WHERE bom_code = #{bomCode}
 	</select>
 
 <!-- bom 등록 -->	
 	<insert id="insertBom" parameterType="BomVO">
-	
+		<selectKey resultType="string" keyProperty="bomCode" order="BEFORE">
+		    SELECT 'BOM' || LPAD(NVL(MAX(SUBSTR(bom_code, 4) +1), 5, 0) FROM bom
+	    </selectKey>
+		INSERT INTO bom
+		(
+			bom_code
+			, consumption
+			, unit
+			, note
+			, ingredient_code
+			<!-- , product_code -->
+		) VALUES (
+			  #{bomCode}
+			, #{consumption}
+			, #{unit}
+			, #{note}
+			, #{ingredientCode}
+			<!-- , (SELECT product_code FROM product WHERE product_name = #{productName}) -->
+		)
 	</insert>
 	
 <!-- bom 수정 -->
 	<update	id="updateBom" parameterType="BomVO">
-	
+		UPDATE bom
+		SET	   
+		WHERE bom_code = #{bomCode}
 	</update>
 </mapper>
