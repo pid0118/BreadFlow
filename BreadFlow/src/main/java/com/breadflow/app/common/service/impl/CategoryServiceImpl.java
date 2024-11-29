@@ -36,5 +36,13 @@ public class CategoryServiceImpl implements CategoryService{
 	public int getItemPages(SearchOptionVO option) {
 		return categoryMapper.selectItemPaging(option);
 	}
+
+	// bomPage 모달 unit 수정
+	@Override
+	public List<SearchItemVO> selectItemsBom(SearchOptionVO option) {
+		return categoryMapper.selectItemsBom(option);
+	}
+	
+	
 	
 }

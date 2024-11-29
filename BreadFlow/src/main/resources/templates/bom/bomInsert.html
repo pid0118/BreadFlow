@@ -6,10 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>BOM등록</title>
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-	<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
-	<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
 <style>
 .container {
 	display: flex;
@@ -122,7 +122,7 @@
 	<div class="container">
 		<div class="image-section">
 			<div class="image-placeholder" id="imagePreview">
-				<img th:src="'/imgs/' + ${product.productImage}" id="img">
+				<img th:src="'/imgs/' + ${product.productImage}" style="width: 300px; height: 300px;" id="img">
 			</div>
 			<input type="text" class="product-name-input"
 				th:value="${product.productName}" readonly>
@@ -140,7 +140,7 @@
 			<div id="grid"></div>
 			<div class="tui-pagination" id="pagination"></div>
 			<div class="button-container">
-				<button id="saveButton" class="btn btn-primary" onclick="insertBom()">저장</button>
+				<button id="saveButton" class="btn btn-primary">저장</button>
 				<button id="cancelButton" class="btn btn-secondary"
 					th:onclick="|location.href='@{/bomProductList}'|">취소</button>
 			</div>
@@ -178,11 +178,13 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th><div class="custom-control custom-checkbox mb-5">
+								<th>
+									<div class="custom-control custom-checkbox mb-5">
 										<input type="checkbox" class="custom-control-input checkAll"
 											id="customCheck"> <label class="custom-control-label"
 											for="customCheck"></label>
-									</div></th>
+									</div>
+								</th>
 								<th>품목코드</th>
 								<th>품목명</th>
 								<th>단위</th>
@@ -213,7 +215,6 @@
 		</div>
 	</div>
 
-	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 	<script>
 	    $(document).ready(function () {
 	    	// 이미지 미리보기 기능
@@ -249,25 +250,21 @@
         			}
         		});
         	});
-	    	
-	        const gridData = [
-	        	
-	        ];
 	
 	        const grid = new tui.Grid({
 	            el: document.getElementById('grid'),
-	            data: gridData,
+	            data: [],
 	            bodyHeight: 300,
 	            rowHeaders: ['checkbox'],
 	            pageOptions: {
 	                useClient: true,
-	                perPage: 5
+	                perPage: 7
 	            }, 
 	            columns: [
 	                { header: '원재료 코드', name: 'ingredientCode', width: 150, align: 'center' },
 	                { header: '재료명', name: 'ingredientName', width: 200 },
 	                { header: '소모량', name: 'consumption', width: 150, editor: 'text' },
-	                { header: '단위', name: 'unit', width: 150, editor: 'text' },
+	                { header: '단위', name: 'unit', width: 150},
 	                { header: '비고', name: 'note', editor: 'text' }
 	            ]
 	        });
@@ -302,6 +299,16 @@
 	     	// 품목 추가 (발주 신청 테이블)
 			itemAdd.addEventListener('click', function() {
 				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
+				
+				if (checktd.length === 0) {
+			        alert('선택된 품목이 없습니다.');
+			        
+			        event.preventDefault();
+			        event.stopPropagation();
+			        
+			        return; // 함수 실행 중단
+			    }
+				
 				//check 된것만큼 반복
 				checktd.forEach(td => {
 					//데이터 읽기
@@ -320,20 +327,23 @@
 					// grid에 추가
 					if(checktable == true){
 						grid.appendRow(  {ingredientName, ingredientCode, unit} )
-					}	
+					}
 				})
 				
 			})
 	        
-	    });
+
 	    
 	   /*=====================================================모달 script================================================================= */ 
-	   $(document).ready(function() {
+
 			// 옵션값 초기화
-			$('.custom-select2').select2();
-			$('#coFilterModal.modal.fade').remove();
-			disabledDate();
-		});
+		   $('#bd-example-modal-lg').on('hidden.bs.modal', function () {
+			    // 모든 입력 필드 초기화
+			    $(this).find('input[type="text"], input[type="number"], input[type="checkbox"], textarea').val('');
+			    $(this).find('select').val('').trigger('change'); // select2 초기화
+			    $(this).find('input[type="checkbox"]').prop('checked', false); // 체크박스 초기화
+			    $(this).find('table tbody tr').remove(); // 테이블 내용 초기화 (필요 시)
+			});
 		
 		// 품목 종류 카테고리 생성
 		fetch("../category/list")
@@ -361,52 +371,7 @@
 			element += '</optgroup>';
 			$('.custom-select2.second').append(element);
 		}
-		
-		/* 	let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
-			let checkbool = false; // 체크박스 여부
-			let checktable = true; // 품목코드 중복 여부
-			let element = '';
-			checktd.forEach(td => {
-			
-					checkbool = true;
-					checktable = true;
-					//element += '<tr>';
-					//let datas = td.closest('tr').querySelectorAll('td');
-					document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
-						if(ele.innerText == datas[1].innerText){
-							checktable = false;
-						}
-					})
-					
-					if(checktable == true){
-						for(let i=1; i<datas.length; i++){
-							element += `<td>${datas[i].innerText}</td>`;
-						} 
-						element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
-					}
-					
-				
-			})
-			
-			if(checktable == false || checkbool == false){
-				event.stopPropagation();
-				if(checktable == false){
-					alert("중복된 품목이 있습니다.");	
-				} else {
-					alert("품목을 선택해주세요!");
-				}
-			} else {
-				$('.datatable tbody').append(element);
-				$('.datatable tbody tr#total').remove();
-				$('.datatable tbody').append(`<tr id="total">
-						<td colspan="5" style="text-align: center;">합계</td>
-						<td></td>
-						<td></td>
-					</tr>`);
-				itemSum();
-			} */
-		
-		
+		//-------------------------------------------------원래위치
 		// 페이징 버튼 이벤트
 		document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
 		
@@ -452,10 +417,10 @@
 			
 			// 검색 조건이 아무것도 없을 때 
 			if(val.length == 0 && iname.value == '' || val.length == 0) {
-				alert("검색 조건이 없습니다.");
+				alert("검색 조건을 설정해주세요.");
 			} 
 			else {
-				fetch('../search/item page', {
+				fetch('../search/itempage', {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -507,7 +472,7 @@
 				.catch(err => console.log(err));
 				
 				
-				fetch('../search/item', {
+				fetch('../search/items', {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -555,12 +520,82 @@
 		});
 	   /*======================================================modal end================================================================ */ 
 	   
-	   // bom 저장
+	   $('#saveButton').click(function(){
+		   insertBom()
+	   })
+	   
+	   // grid로 받은 데이터 insert하기============================================================================
 	   function insertBom() {
-			var gridData = $("#grid").gridGetRowData();
+		   let jsonData = [];
+		   jsonData = grid.getData();
+		   
+		   console.log(jsonData);
+		   $.ajax({
+				url: "bomInsert",
+		        type: "post",
+		        contentType: "application/json",
+		        data:  JSON.stringify(jsonData),
+		        success: function(data){
+		            alert("BOM이 성공적으로 저장되었습니다.");
+		            console.log(data);
+		            location.href = "/bomProductList";
+		        },
+		        error: function(result){
+		     	   alert("저장에 실패하였습니다.");
+		     	   console.log(result);
+		     	}
+			});
 			
-			alert(gridData);
-	   }
+	  	 }
+	   
+	    });
+	   //======================================================================================================
+	   
+	   /* 	let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
+		let checkbool = false; // 체크박스 여부
+		let checktable = true; // 품목코드 중복 여부
+		let element = '';
+		checktd.forEach(td => {
+		
+				checkbool = true;
+				checktable = true;
+				//element += '<tr>';
+				//let datas = td.closest('tr').querySelectorAll('td');
+				document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
+					if(ele.innerText == datas[1].innerText){
+						checktable = false;
+					}
+				})
+				
+				if(checktable == true){
+					for(let i=1; i<datas.length; i++){
+						element += `<td>${datas[i].innerText}</td>`;
+					} 
+					element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
+				}
+				
+			
+		})
+		
+		if(checktable == false || checkbool == false){
+			event.stopPropagation();
+			if(checktable == false){
+				alert("중복된 품목이 있습니다.");	
+			} else {
+				alert("품목을 선택해주세요!");
+			}
+		} else {
+			$('.datatable tbody').append(element);
+			$('.datatable tbody tr#total').remove();
+			$('.datatable tbody').append(`<tr id="total">
+					<td colspan="5" style="text-align: center;">합계</td>
+					<td></td>
+					<td></td>
+				</tr>`);
+			itemSum();
+		} */
+	
+	
     </script>
 
 </body>

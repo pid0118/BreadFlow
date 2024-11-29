@@ -8,8 +8,11 @@ public interface CategoryService {
 	
 	public List<CategoryVO> selectCategorySub(String major);
 
-
+	// 발주신청 모달 아이템 셀렉트
 	public List<SearchItemVO> getItems(SearchOptionVO option);
+	
 	public int getItemPages(SearchOptionVO option);
-
+	
+	// bomPage 모달 unit 수정
+	public List<SearchItemVO> selectItemsBom(SearchOptionVO option);
 }

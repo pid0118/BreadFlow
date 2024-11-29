@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -62,18 +63,34 @@ public class BomController {
 		return "bom/bomInsert"; 
 	}
 	
+	// bom 등록 처리
 	@ResponseBody
 	@PostMapping("bomInsert")
-	public int insertBomProcess(List<BomVO> bmoList) {
-		
-		return 0;
+	public int insertBomProcess(@RequestBody List<BomVO> list) {
+		int result = bomService.insertBom(list);
+		return result;
 	}
 	
 	
-	// BOM 등록 처리
-	/*
-	 * @PostMapping("bomInsert") public List<>
-	 */
+	//bom 수정 페이지
+	@GetMapping("bomUpdate")
+	public String updateBom(@RequestParam String productCode, Model model) {
+		
+		ProductVO product = productService.selectProduct(productCode);
+		
+		model.addAttribute("product", product);
+		
+		return "bom/bomUpdate";
+	}
+	
+	
+	// bom 수정 처리
+	@ResponseBody
+	@PostMapping("bomUpdate")
+	public int updateBomProcess(BomVO bomVO) {
+
+		return bomService.updateBom(bomVO);
+	}
 	
 	
 	
