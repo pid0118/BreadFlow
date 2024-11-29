@@ -53,21 +53,23 @@ public class InferController {
 	}
 	
 	// 불량 내역 상세 조회
-	@GetMapping("inferListDetail/{inferNo}")
-	public String inferListDetail(@PathVariable String inferNo, Model model) {
+	@GetMapping("inferDetailAnswer/{inferNo}")
+	public String inferDetailAnswer(@PathVariable String inferNo, Model model) {
 		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
 		InferAnswerVO answer = inferService.inferAnswerDetail(inferNo);
+		model.addAttribute("inferNo", inferNo);
 		model.addAttribute("infer", list);
 		model.addAttribute("answer", answer);
-		return "infer/detail";
+		return "infer/inferDetailAnswer";
 	}
 	
 	// 불량 내역 상세 조회
-	@GetMapping("inferDetail/{inferNo}")
-	public String inferDetail(@PathVariable String inferNo, Model model) {
+	@GetMapping("inferDetailList/{inferNo}")
+	public String inferDetailList(@PathVariable String inferNo, Model model) {
 		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
+		model.addAttribute("inferNo", inferNo);
 		model.addAttribute("infer", list);
-		return "infer/inferDetail";
+		return "infer/inferDetailList";
 	}
 	
 	// 불량 내역 등록
@@ -94,8 +96,8 @@ public class InferController {
 	@GetMapping("inferAnswerInsert/{inferNo}")
 	public String inferAnswerInsert(@PathVariable String inferNo, Model model) {
 		List<InferDetailVO> list = inferService.inferListDetail(inferNo);
-		model.addAttribute("infer", list);
 		model.addAttribute("inferNo", inferNo);
+		model.addAttribute("infer", list);
 		return "infer/answer";
 	}
 	

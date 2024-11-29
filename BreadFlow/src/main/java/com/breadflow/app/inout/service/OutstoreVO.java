@@ -29,11 +29,10 @@ public class OutstoreVO {
 	private Integer instoreQuantity;
 	
 	private String companyInput;
+	private String div;
 	
 	private String orderingProduct;
 	private String orderingIngredient;
-	
 	private String itemName;
-	
 	private String itemDiv;
 }

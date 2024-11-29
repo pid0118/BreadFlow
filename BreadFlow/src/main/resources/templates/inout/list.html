@@ -13,7 +13,8 @@
 			<h2 class="text-black">입출고 내역</h2>
 		</div>
 		<div>
-			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyName}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 				<label class="btn btn-outline-secondary active">
 					<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
@@ -92,18 +93,25 @@
 		var month = null;
 		var startDt = null;
 		var endDt = null;
+		var div = null;
 		
+		// 페이징 조건
 		var page = 1;
 		var pageSize = 10;
-   	
+   		
+		// 페이지 로딩 시 기능 실행
         $(document).ready(function() {
         	
         	// 로그인한 업체 이름 저장
         	companyInput = $("#companyInput").val();
+        	
+        	// 로그인한 업체 분류 저장
+        	div = $("#companyDiv").val();
 
             // 기본 내역 출력 (입고)
             changeFilter();
             
+            // 조건 초기화 (페이징 포함)
             function clear() {
             	comp = null;
             	ing = null;
@@ -116,6 +124,7 @@
     			pageClear();
             }
             
+            // 페이징 초기화
             function pageClear() {
             	page = 1;
     			pageSize = 10;
@@ -202,7 +211,7 @@
             
          	// 업체 검색 모달에서 선택
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 comp = selectedCompanyName;
@@ -211,6 +220,7 @@
 
         });
         
+		// 페이징 이전 버튼 클릭
         $("#prevPageBtn").click(function() {
 		    if (page > 1) {
 		        page--;
@@ -218,7 +228,8 @@
 		        $("#currentPage").text(page + " 페이지");
 		    }
 		});
-
+		
+		// 페이징 다음 버튼 클릭
 		$("#nextPageBtn").click(function() {
 		    page++;
 		    changeFilter();
@@ -241,6 +252,7 @@
             			ing,
             			startDt,
             			endDt,
+            			div,
             			page,
                         pageSize},
             	success : function(data) {

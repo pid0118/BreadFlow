@@ -13,7 +13,7 @@
 			<h2 class="text-black">불량 내역</h2>
 		</div>
 		<div>
-			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyName}" style=display:none; readonly>
+			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 			<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style=display:none; readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
 				<label class="btn btn-outline-secondary active">
@@ -98,9 +98,11 @@
 		var startDt = null;
 		var endDt = null;
 		
+		// 페이징 조건
 		var page = 1;
 		var pageSize = 10;
-   	
+   		
+		// 페이지 로딩 시 기능 실행
         $(document).ready(function() {
         	
         	// 로그인한 업체 이름 저장
@@ -112,6 +114,7 @@
             // 기본 내역 출력
             changeFilter();
             
+            // 조건 초기화
             function clear() {
     			year = null;
     			month = null;
@@ -123,6 +126,7 @@
     			pageClear();
             }
             
+            // 확인 조건 제외 초기화
             function confirmExClear() {
     			year = null;
     			month = null;
@@ -133,12 +137,14 @@
     			pageClear();
             }
             
+            // 페이징 조건 초기화
             function pageClear() {
 	        	page = 1;
     			pageSize = 10;
     			$("#currentPage").text(page + " 페이지");
 	        }
             
+            // 본사로 로그인 시 페이지 내용 변경
             if (div !== '본사') {
             	$("#confirmCompBtn").css("display", "none");
             	$("#inferHistoryHead").append("<th>답변 일자</th>");
@@ -274,15 +280,15 @@
                 var row = null;
                 	if (div !== '본사') {
                 		if (item.confirmWhether != '확인') {
-                			row += "<tr onclick='window.location = \"/inferDetail/" + item.inferNo + "\"'>";
+                			row += "<tr onclick='window.location = \"/inferDetailList/" + item.inferNo + "\"'>";
                 		} else {
-                			row += "<tr onclick='window.location = \"/inferListDetail/" + item.inferNo + "\"'>";
+                			row += "<tr onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
                 		}
                 	} else {
                 		if (item.confirmWhether != '확인') {
 	                		row += "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
                 		} else {
-                			row += "<tr onclick='window.location = \"/inferListDetail/" + item.inferNo + "\"'>";
+                			row += "<tr onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
                 		}
                 	}
                 	row += "<td style='display:none;'>" + item.inferNo + "</td>";

@@ -22,8 +22,10 @@
 		    LEFT JOIN ORDERS_DETAIL   ODS ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
 		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
 		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
-		WHERE
-			ODS.INSTORE_COMPANY = #{companyInput}
+		WHERE 1 = 1
+			<if test="div != '본사'">
+			AND ODS.INSTORE_COMPANY = #{companyInput}
+			</if>
 			<if test="comp != null and comp != ''">
 			AND ODS.OUTSTORE_COMPANY = #{comp}
 			</if>
@@ -76,8 +78,10 @@
 		    LEFT JOIN ORDERING_DETAIL OD  ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
 		    LEFT JOIN INGREDIENT      ING ON ODS.ORDERS_ITEM = ING.INGREDIENT_CODE
 		    LEFT JOIN PRODUCT         PRD ON ODS.ORDERS_ITEM = PRD.PRODUCT_CODE
-		WHERE
-			ODS.OUTSTORE_COMPANY = #{companyInput}
+		WHERE 1 = 1
+			<if test="div != '본사'">
+			AND ODS.OUTSTORE_COMPANY = #{companyInput}
+			</if>
 			<if test="comp != null and comp != ''">
 			AND ODS.INSTORE_COMPANY = #{comp}
 			</if>
@@ -185,7 +189,7 @@
 		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
 		WHERE
 			ODS.OUTSTORE_COMPANY = #{companyInput}
-
+			AND OD.SITUATION_CODE = 'e2'
 			<if test="comp != null and comp != ''">
 			AND ODS.INSTORE_COMPANY = #{comp}
 			</if>
@@ -231,12 +235,12 @@
 		            , #{instoreQuantity}
 		            , #{companyNo}
 		            , (SELECT SUM(i.instore_quantity) + #{instoreQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{companyNo})
-		            , (SELECT div FROM company WHERE company_name = #{companyInput})
+		            , (SELECT div FROM company WHERE company_no = #{companyInput})
 		            , (SUBSTR(#{itemCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
 		            , #{instoreManager}
 		            , #{orderingDetailCode}
 		            , #{instoreDiv}
-		            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode}))
+		            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode} AND ROWNUM = 1))
 	</insert>
 	
 	<update id="updateInstoreOrdering" parameterType="InstoreVO">
@@ -286,7 +290,10 @@
 	    LEFT JOIN ORDERS_DETAIL   ODS ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
 	    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
 	    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
-	    WHERE ODS.INSTORE_COMPANY = #{companyInput}
+	    WHERE 1 = 1
+	    <if test="div != '본사'">
+			AND ODS.INSTORE_COMPANY = #{companyInput}
+		</if>
 	    <if test="comp != null and comp != ''">
 	        AND ODS.OUTSTORE_COMPANY = #{comp}
 	    </if>
@@ -324,7 +331,10 @@
 	    LEFT JOIN ORDERING_DETAIL OD  ON OD.ORDERING_DETAIL_CODE = ODS.ORDERING_DETAIL_CODE
 	    LEFT JOIN INGREDIENT      ING ON ODS.ORDERS_ITEM = ING.INGREDIENT_CODE
 	    LEFT JOIN PRODUCT         PRD ON ODS.ORDERS_ITEM = PRD.PRODUCT_CODE
-	    WHERE ODS.OUTSTORE_COMPANY = #{companyInput}
+	    WHERE 1 = 1
+	    <if test="div != '본사'">
+			AND ODS.OUTSTORE_COMPANY = #{companyInput}
+		</if>
 	    <if test="comp != null and comp != ''">
 	        AND ODS.INSTORE_COMPANY = #{comp}
 	    </if>

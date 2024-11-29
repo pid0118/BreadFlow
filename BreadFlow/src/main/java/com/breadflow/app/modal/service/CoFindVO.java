@@ -7,4 +7,5 @@ public class CoFindVO {
 	private String div;
 	private String companyName;
 	private String companyAddress;
+	private String companyNo;
 }
