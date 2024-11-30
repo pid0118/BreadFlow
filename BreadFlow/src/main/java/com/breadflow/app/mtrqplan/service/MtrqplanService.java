@@ -19,5 +19,9 @@ public interface MtrqplanService {
 
 	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo);
 
+	public MtrqplanVO selectMtrqplanForForm(String id);
+
+	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String id);
+
 
 }

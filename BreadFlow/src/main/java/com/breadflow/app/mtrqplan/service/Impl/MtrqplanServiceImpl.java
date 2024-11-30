@@ -54,4 +54,14 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo) {
 		return mtrqplanMapper.selectMtrqplanForCom(companyNo);
 	}
+
+	@Override
+	public MtrqplanVO selectMtrqplanForForm(String matrequiredPlanNo) {
+		return mtrqplanMapper.selectMtrqplanForForm(matrequiredPlanNo);
+	}
+
+	@Override
+	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String matrequiredPlanNo) {
+		return mtrqplanMapper.selectMtrqplanDetailForGrid(matrequiredPlanNo);
+	}
 }

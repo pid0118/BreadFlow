@@ -99,6 +99,24 @@ public class MtrqplanController {
 	}
 	
 	
+	@GetMapping("selectMtrqplanForForm")
+	@ResponseBody
+	public MtrqplanVO selectMtrqplanForForm(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplanForForm - id: " + id + "\n");
+		MtrqplanVO mVO = mtrqplanService.selectMtrqplanForForm(id);
+		return mVO;
+	}
+
+	
+	@GetMapping("selectMtrqplanDetailForGrid")
+	@ResponseBody
+	public List<MtrqplanVO> selectMtrqplanDetailForGrid(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplanDetailForGrid - id: " + id + "\n");
+		List<MtrqplanVO> list = mtrqplanService.selectMtrqplanDetailForGrid(id);
+		return list;
+	}
+	
+	
 	
 	
 }

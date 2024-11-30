@@ -24,4 +24,8 @@ public interface MtrqplanMapper {
 
 	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo);
 
+	public MtrqplanVO selectMtrqplanForForm(String matrequiredPlanNo);
+
+	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String matrequiredPlanNo);
+
 }

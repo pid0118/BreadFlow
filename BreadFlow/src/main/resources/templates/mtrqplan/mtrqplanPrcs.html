@@ -36,7 +36,7 @@
 			<h2>자재소요계획 관리</h2>
 			<div>
 				<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn" hidden="hideen">날짜 선택</button>
-				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>			
+				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn" hidden="hideen">생산계획 신규 작성</button>			
 			</div>
 		</div>
 		<div>
@@ -62,11 +62,11 @@
 							<th:block th:each="pl, sts : ${plans}">
 								<tr>
 									<td class="table-plus">[[ ${sts.index + 1} ]]</td>
-									<td id="parentPrdtplanNo">[[ ${pl.productionPlanNo} ]]</td>
+									<td id="parentPrdtplanNo">[[ ${pl.matrequiredPlanNo} ]]</td>
 									<td id="parentPrdtplanCd">[[ ${pl.productCode} ]]</td>
 									<td id="parentPlanQuantity" >[[ ${pl.planQuantity} ]]</td>
 									<td id="parentProgressSituation" 
-										th:text="${pl.progressSituation == 'c1' ? '작성중' : (pl.progressSituation == 'c2' ? '확인' : (pl.progressSituation == 'c3' ? '미확인' : (pl.progressSituation == 'c4' ? '진행중' : '완료')))}"></td>									
+										th:text="${pl.progressSituation}"></td>									
 									<td id="parentLastDt" th:text="${#dates.format(pl.lastDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentOther">[[ ${pl.other}]] </td>
 								</tr>
@@ -87,7 +87,7 @@
 					<div class="row">
 						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
-								<label>생산계획 고유번호h</label> <input type="text" class="form-control"
+								<label>자재소요계획 고유번호h</label> <input type="text" class="form-control"
 									id="updProductionPlanNo" name="productionPlanNo" readonly>
 							</div>
 						</div>
@@ -104,7 +104,7 @@
 							</div>
 						</div>
 						<div class="col-md-6 col-sm-12" hidden="hidden">
-							<label for="updPrdtComNm">생산업체</label>
+							<label for="updPrdtComNm">생산업체h</label>
 							<div class="input-group mb-3">
 							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
 							  	<div class="input-group-append">
@@ -154,8 +154,8 @@
 		</div>
 		
 		<div class="detailTableArea">
-			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
-			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow" hidden="hidden">행 삭제</button>
+			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow" hidden="hidden">행 추가</button>
 			<!-- 자식 테이블 시작 -->
 			<div id="grid"></div>
 				<!-- 자식 테이블 끝 -->
@@ -164,8 +164,8 @@
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
-				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
-				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">저장</button>
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn" hidden="hidden">취소</button>
+				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn" hidden="hidden">저장</button>
 			</div>
 		</div>
 	</div>
@@ -443,18 +443,18 @@ function getTargetInfo(e) {
 // [24.11.25] 단건조회 AJAX
 function getPrdtplanInfo(no) {
 	$.ajax({
-	    url: "selectPrdtplan?id=" + no,
+	    url: "selectMtrqplanForForm?id=" + no,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
-	        $('#updProductionPlanNo').val(data.productionPlanNo);
+	        $('#updProductionPlanNo').val(data.matrequiredPlanNo);
 	        $("#updStartDate").val( formatDate(data.startDate) );
 	        $('#updLastDate').val( formatDate(data.lastDate) );
-	        $('#updPrdtComNm').val(data.productionCompanyNm);
-	        $('#updProductionCompany').val(data.productionCompany)
-	        $('#updDlvryLocNm').val(data.deliveryLocationNm)
-	        $('#updDeliveryLocation').val(data.deliveryLocation)
-	        $('#updProgressSituation').val( formatSituation(data.progressSituation))
+	        $('#updPrdtComNm').val(data.supplyCompanyNm);
+	        $('#updProductionCompany').val(data.supplyCompany);
+	        $('#updDlvryLocNm').val(data.deliveryLocationNm);
+	        $('#updDeliveryLocation').val(data.deliveryLocation);
+	        $('#updProgressSituation').val( formatSituation(data.progressSituation));
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
@@ -472,7 +472,7 @@ function getPrdtplanInfo(no) {
 function getPrdtplanDetailInfo(no) {
 	console.log(no);
 	$.ajax({
-	    url: "selectPrdtplanDetail?id=" + no,
+	    url: "selectMtrqplanDetailForGrid?id=" + no,
 	    type: "GET",
 	    data: {},
 	    success: function(data){

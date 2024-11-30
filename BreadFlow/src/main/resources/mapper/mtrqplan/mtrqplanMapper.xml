@@ -109,11 +109,53 @@
 </update>
 
 
+<!--  ======= 자재소요계획(공급업체) 페이지에서 사용되는 매퍼들 ========= -->
+
 <select id="selectMtrqplanForCom" parameterType="String" resultType="MtrqplanVO">
-	SELECT  *
+	SELECT  m.matrequired_plan_no
+	        , ( SELECT  ingredient_name
+	            FROM    ingredient
+	            WHERE   ingredient_code = d.product_code) AS product_code
+	        , d.plan_quantity
+	        , FIND_CD(d.progress_situation) AS progress_situation
+	        , m.last_date
+	        , d.other
 	FROM    matrequired_plan m JOIN matrequired_plan_detail d
 	            ON m.matrequired_plan_no = d.matrequired_plan_no
 	WHERE   supply_company = #{supplyCompany}
+	  AND   d.progress_situation != 'c1'
+</select>
+
+
+<select id="selectMtrqplanForForm" parameterType="String" resultType="MtrqplanVO">
+	SELECT  matrequired_plan_no
+	        , start_date
+	        , last_date
+	        , ( SELECT  company_name
+	            FROM    company
+	            WHERE   company_no = delivery_location) AS delivery_location_nm
+	        , delivery_location
+	        , ( SELECT  MIN(progress_situation)
+	            FROM    matrequired_plan_detail
+	            WHERE   matrequired_plan_no = #{matrequiredPlanNo}
+	            GROUP BY matrequired_plan_no) AS progress_situation
+	FROM    matrequired_plan
+	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
+</select>
+
+
+
+<select id="selectMtrqplanDetailForGrid" parameterType="String" resultType="MtrqplanVO">
+	SELECT  product_code
+	        , ( SELECT  ingredient_name
+	            FROM    ingredient
+	            WHERE   ingredient_code = product_code ) AS product_name
+	        , plan_quantity
+	        , FIND_CD(unit) AS unit
+	        , other
+	FROM    matrequired_plan_detail
+	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
+
 </select>
 
 </mapper>
