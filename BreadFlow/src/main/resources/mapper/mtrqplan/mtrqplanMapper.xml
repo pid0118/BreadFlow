@@ -110,7 +110,7 @@
 
 
 <!--  ======= 자재소요계획(공급업체) 페이지에서 사용되는 매퍼들 ========= -->
-
+<!-- 부모 테이블에서 쓰이는 자재소요계획 전체 조회 -->
 <select id="selectMtrqplanForCom" parameterType="String" resultType="MtrqplanVO">
 	SELECT  m.matrequired_plan_no
 	        , ( SELECT  ingredient_name
@@ -126,7 +126,7 @@
 	  AND   d.progress_situation != 'c1'
 </select>
 
-
+<!-- 좌측아래 form에 쓰이는 자재소요계획 단건 조회 -->
 <select id="selectMtrqplanForForm" parameterType="String" resultType="MtrqplanVO">
 	SELECT  matrequired_plan_no
 	        , start_date
@@ -143,8 +143,7 @@
 	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
 </select>
 
-
-
+<!-- 자식 테이블에서 쓰이는 자재소요계획 디테일 단건 조회 -->
 <select id="selectMtrqplanDetailForGrid" parameterType="String" resultType="MtrqplanVO">
 	SELECT  product_code
 	        , ( SELECT  ingredient_name

@@ -22,10 +22,14 @@ public interface MtrqplanMapper {
 
 	public int updateMtrqplanDetailForProgress(MtrqplanVO mtrqplanVO);
 
+	//== 자재소요계획(공급업체) 페이지에서 사용하는 매퍼 ==//
+	// 부모 테이블에서 쓰이는 자재소요계획 전체 조회
 	public List<MtrqplanVO> selectMtrqplanForCom(String companyNo);
 
+	// 좌측아래 form에 쓰이는 자재소요계획 단건 조회
 	public MtrqplanVO selectMtrqplanForForm(String matrequiredPlanNo);
 
+	// 자식 테이블에서 쓰이는 자재소요계획 디테일 단건 조회
 	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String matrequiredPlanNo);
 
 }
