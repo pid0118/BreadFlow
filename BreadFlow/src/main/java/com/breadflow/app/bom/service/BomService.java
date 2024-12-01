@@ -9,7 +9,7 @@ public interface BomService {
 	public List<ProductVO> selectProductList(ProductVO productVO);
 	
 	// BOM정보 조회
-	public BomVO selectBom(BomVO bomVO);
+	public BomVO selectBom(String productCode);
 	
 	// BOM 등록 (원재료)
 	public int insertBom(List<BomVO> list);

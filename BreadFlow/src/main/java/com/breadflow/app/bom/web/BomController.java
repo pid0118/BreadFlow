@@ -45,12 +45,12 @@ public class BomController {
 	}
 	
 	// BOM 조회
-	@ResponseBody
 	@GetMapping("bomCheck")
-	public BomVO selectProduct(BomVO bomVO) {
+	public String selectProduct(@RequestParam String productCode, Model model) {
 		
+		bomService.selectBom(productCode);
 		
-		return bomService.selectBom(bomVO);
+		return "bom/bomCheck";
 	}
 	
 	// BOM 등록 페이지 이동

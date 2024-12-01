@@ -112,8 +112,8 @@
                         	</div>
                     	</td>
 
-                        <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productCode}]]</td>
-                        <td class="clickable" th:onclick="showProductDetail([[${info.productCode}]])">[[${info.productName}]]</td>
+                        <td class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productCode}]]</td>
+                        <td class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productName}]]</td>
                         <td>[[${info.expirationDeadline}]]일</td>
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>

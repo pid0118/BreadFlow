@@ -25,7 +25,7 @@ public class BomServiceImpl implements BomService{
 	}
 	// bom조회
 	@Override
-	public BomVO selectBom(BomVO bomVO) {
+	public BomVO selectBom(String productCode) {
 		
 		return null;
 	}
