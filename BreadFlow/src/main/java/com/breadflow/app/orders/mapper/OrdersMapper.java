@@ -2,6 +2,7 @@ package com.breadflow.app.orders.mapper;
 
 import java.util.List;
 
+import com.breadflow.app.orders.service.OrdersComDVO;
 import com.breadflow.app.orders.service.OrdersComVO;
 import com.breadflow.app.orders.service.OrdersDetailVO;
 import com.breadflow.app.orders.service.OrdersRequestVO;
@@ -16,4 +17,5 @@ public interface OrdersMapper {
 	public int insertOrdersDetail(OrdersResponseVO responseVO, String no); // 주문 상세 등록
 	public String selectOrdersNo(); // 주문 번호 조회
 	public List<OrdersComVO> selectOrdersComList(); // 주문 현황 조회
+	public List<OrdersComDVO> selectOrdersComDList(String no); // 주문 
 }

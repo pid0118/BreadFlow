@@ -1,6 +1,5 @@
 package com.breadflow.app.orders.service.impl;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.orders.mapper.OrdersMapper;
+import com.breadflow.app.orders.service.OrdersComDVO;
 import com.breadflow.app.orders.service.OrdersComVO;
 import com.breadflow.app.orders.service.OrdersResponseVO;
 import com.breadflow.app.orders.service.OrdersService;
@@ -80,7 +80,19 @@ public class OrdersServiceImpl implements OrdersService {
 		List<OrdersComVO> oList = ordersMapper.selectOrdersComList();	// 전체 발주 조회
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", oList);
-		return null;
+		return map;
+	}
+	
+	// 주문 상세 현황 조회
+	@Override
+	public Map<String, Object> selectOrdersComDList(String no) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("result", true);
+		
+		Map<String, Object> dataMap = new HashMap<String, Object>();
+		dataMap.put("contents", ordersMapper.selectOrdersComDList(no));
+		map.put("data", dataMap); // 데이터값
+		return map;
 	}
 	
 }
