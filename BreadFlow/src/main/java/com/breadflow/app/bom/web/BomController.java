@@ -43,23 +43,13 @@ public class BomController {
 		
 		return "bom/bomProductList";
 	}
-<<<<<<< HEAD
 	// bom상세보기 페이지
-=======
-	
-	// BOM 조회
->>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	@GetMapping("bomCheck")
-<<<<<<< HEAD
 	public String selectBom(@RequestParam String productCode, Model model) {
 		
 		ProductVO product = productService.selectProduct(productCode);
 		model.addAttribute("product", product);
-=======
-	public String selectProduct(@RequestParam String productCode, Model model) {
->>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 		
-		bomService.selectBom(productCode);
 		
 		return "bom/bomCheck";
 	}

@@ -11,11 +11,7 @@ public interface BomMapper {
 		public List<ProductVO> selectProductList(ProductVO productVO);
 		
 		// BOM정보 조회
-<<<<<<< HEAD
 		public List<BomVO> selectBom(BomVO bomVO);
-=======
-		public BomVO selectBom(String productCode);
->>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 		
 		// BOM 등록 (원재료)
 		public int insertBom(BomVO bomVO);

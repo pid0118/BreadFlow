@@ -20,7 +20,6 @@
 <!-- bom 등록 -->	
 	<insert id="insertBom" parameterType="BomVO">
 		<selectKey resultType="string" keyProperty="bomCode" order="BEFORE">
-<<<<<<< HEAD
 		    SELECT 'BOM' || LPAD(NVL(MAX(SUBSTR(bom_code, 4) + 1), 1), 5, 0) FROM bom
 	    </selectKey>
 		CALL BOM_PROD(#{bomCode}
@@ -29,26 +28,6 @@
 					  , #{note}
 					  , #{ingredientCode}
 					  , #{productCode})
-=======
-			SELECT 'BOM' || LPAD(NVL(MAX(SUBSTR(bom_code, 4) +1), 1), 5, 0) FROM bom
-		</selectKey>
-		INSERT INTO bom
-		(
-			bom_code
-			, consumption
-			, unit
-			, note
-			, ingredient_code
-			, product_code
-		) VALUES (
-			  #{bomCode}
-			, #{consumption}
-			, #{unit}
-			, #{note}
-			, #{ingredientCode}
-			, #{productCode}
-		)
->>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	</insert>
 	
 <!-- bom 수정 -->
