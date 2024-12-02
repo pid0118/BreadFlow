@@ -10,7 +10,8 @@
 			   sale_price,
 			   standard,
 			   major,
-			   sub
+			   sub,
+			   bom_situation
 		FROM product
 		<where>
 			<if test="subList != null and subList.size() > 0">	
@@ -28,9 +29,11 @@
 		SELECT product_name
 		FROM product
 		WHERE product_name = #{productName}
+		<if test="productCode != null and productCode != ''">
 		<![CDATA[
 		  AND product_code <> #{productCode}
 		]]>
+		</if>
 	</select>
 	
 	<!-- 제품 상세조회 -->
@@ -48,7 +51,8 @@
 			   unit,
 			   find_cd(unit) as unit_name,
 			   standard,
-			   amount
+			   amount,
+			   bom_situation
 		FROM  product
 		WHERE product_code = #{productCode}
 	</select>
@@ -115,8 +119,7 @@
 	
 	<!-- 제품 삭제 -->
 	<delete id="deleteProduct" parameterType="String">
-		DELETE FROM product
-		Where product_code = #{productCode}
+		 CALL PRODCUTDEL_PROD(#{productCode})
 	</delete>
 	<!-- 삭제 조건 주문중 상품찾기 -->
 	<select id="selectOrderingProductCnt" resultType="int">

@@ -3,44 +3,42 @@
 <mapper namespace="com.breadflow.app.bom.mapper.BomMapper">
 
 <!-- bom 상세보기 -->	
-	<select id="selectBom" resultType="BomVO">
-		SELECT  bom_code
-			   , consuption
-			   , unit
-			   , note
-			   , ingredient_code
-			   , product_code 
-		FROM   bom
-		WHERE bom_code = #{bomCode}
+	<select id="selectBom" parameterType="BomVO">
+		SELECT  b.bom_code
+			   , b.consumption
+			   , b.unit
+			   , b.note
+			   , b.ingredient_code
+			   , b.product_code
+			   ,(SELECT ingredient_name
+                 FROM   ingredient
+                 WHERE  ingredient_code = b.ingredient_code) AS ingredient_name 
+		FROM   bom b
+		WHERE b.product_code = #{productCode}
 	</select>
 
 <!-- bom 등록 -->	
 	<insert id="insertBom" parameterType="BomVO">
 		<selectKey resultType="string" keyProperty="bomCode" order="BEFORE">
-		    SELECT 'BOM' || LPAD(NVL(MAX(SUBSTR(bom_code, 4) +1), 5, 0) FROM bom
+		    SELECT 'BOM' || LPAD(NVL(MAX(SUBSTR(bom_code, 4) + 1), 1), 5, 0) FROM bom
 	    </selectKey>
-		INSERT INTO bom
-		(
-			bom_code
-			, consumption
-			, unit
-			, note
-			, ingredient_code
-			<!-- , product_code -->
-		) VALUES (
-			  #{bomCode}
-			, #{consumption}
-			, #{unit}
-			, #{note}
-			, #{ingredientCode}
-			<!-- , (SELECT product_code FROM product WHERE product_name = #{productName}) -->
-		)
+		CALL BOM_PROD(#{bomCode}
+					  , #{consumption}
+					  , #{unit}
+					  , #{note}
+					  , #{ingredientCode}
+					  , #{productCode})
 	</insert>
 	
 <!-- bom 수정 -->
 	<update	id="updateBom" parameterType="BomVO">
 		UPDATE bom
-		SET	   
+		SET	   bom_code = #{bomCode}
+			 , consumption = #{consumption}
+			 , unit = #{unit}
+			 , note = #{note}
+			 , ingredient_code = #{ingredientCode}
+			 , product_Code = #{productCode}
 		WHERE bom_code = #{bomCode}
 	</update>
 </mapper>

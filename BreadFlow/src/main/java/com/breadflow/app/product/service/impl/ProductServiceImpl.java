@@ -63,8 +63,12 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int deleteProduct(List<String> productCode) {
 		
+		// 주문상품이 있는지 확인
 		int count = productMapper.selectOrderingProductCnt(productCode);
 		
+		//상품코드에 해당하는 bom도 같이삭제
+		
+		// 주문상태가 아닐시 삭제가능
 		if (count == 0) {
 			for(int i = 0;i < productCode.size();i++ ) {
 				productMapper.deleteProduct(productCode.get(i));
