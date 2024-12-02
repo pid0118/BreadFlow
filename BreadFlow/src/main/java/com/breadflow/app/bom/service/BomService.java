@@ -17,8 +17,8 @@ public interface BomService {
 	// BOM 수정
 	public int updateBom(List<BomVO> list);
 	
-	// BOM 삭제
-	//public int deleteBom(BomVO bomVO);
+	// BOM 원재료 삭제
+	public int deleteBomIngredient(List<BomVO> list);
 	
 	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -104,6 +105,15 @@ public class BomController {
 	  int result = bomService.updateBom(list);
 		
 	  return result;
+	}
+	
+	// bom 원재료 삭제
+	@ResponseBody
+	@DeleteMapping("bomIngredientDel")
+	public int bomIngredientDel(@RequestBody List<BomVO> list) {
+		
+		
+		return bomService.deleteBomIngredient(list);
 	}
 	
 	

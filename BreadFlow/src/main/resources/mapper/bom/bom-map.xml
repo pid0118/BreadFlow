@@ -33,12 +33,20 @@
 <!-- bom 수정 -->
 	<update	id="updateBom" parameterType="BomVO">
 		UPDATE bom
-		SET	   bom_code = #{bomCode}
-			 , consumption = #{consumption}
-			 , unit = #{unit}
+		SET	   consumption = #{consumption}
 			 , note = #{note}
-			 , ingredient_code = #{ingredientCode}
-			 , product_Code = #{productCode}
 		WHERE bom_code = #{bomCode}
 	</update>
+	
+	<!-- bom 원재료 삭제 -->
+	<delete id="deleteBomIngredient" parameterType="BomVO">
+		DELETE FROM bom
+		WHERE bom_code = #{bomCode}
+	</delete>
+	
+	<select id="selectBomCnt" parameterType="string" resultType="int">
+		SELECT COUNT(*)
+		FROM bom
+		WHERE bom_code = #{bomCode}S
+	</select>
 </mapper>

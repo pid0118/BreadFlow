@@ -134,7 +134,8 @@
 				<div class="grid-header-right">
 					<button class="btn btn-primary" data-toggle="modal"
 						data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
-					<button id="deleteMaterial" class="btn btn-danger">삭제</button>
+					<button th:if="${product.bomSituation == 'Y'}" type="button" id="deleteIngredient" class="btn btn-danger">삭제</button>
+					<button th:if="${product.bomSituation == 'N'}" type="button" id="deleteMaterial" class="btn btn-danger">삭제</button>
 				</div>
 			</div>
 			<div id="grid"></div>
@@ -267,7 +268,7 @@
 	            grid.appendRow(newRow);
 	        });
 			
-	        // 삭제 버튼
+	        // 등록시 삭제 버튼
 	        $('#deleteMaterial').on('click', function () {
 			    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
 			    if (selectedRows.length > 0) {
@@ -281,7 +282,30 @@
 			        alert('삭제할 항목을 선택해주세요.');
 			    }
 			});
-	
+			
+	        // 수정시 db에서 원재료 정보작제 버튼
+	        $('#deleteIngredient').on('click', function () {
+	        	let jsonData = [];
+				jsonData = grid.getCheckedRows();
+				
+				if (jsonData.length == 0) {
+					alert("선택된 원재료가 없습니다.");
+				} else {
+					$.ajax({
+		        		url : "bomIngredientDel",
+		        		method : "delete",
+		        		contentType: "application/json",
+						data: JSON.stringify(jsonData),
+						success : function (data) {
+							if(data >= 1) {
+								alert("등록된 원재료가 삭제되었습니다.");
+								location.reload(true);
+							}
+						}
+		        	})
+				}
+	        });
+	        
 	     	// 품목 추가 (발주 신청 테이블)
 			itemAdd.addEventListener('click', function() {
 				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
@@ -507,15 +531,13 @@
 					   
 		// 수정하기 기능 =================================================================================
 		$('#updateButton').click(function(){
-		  updateBom()
-		  function updateBom(){
+		 
 			let jsonData = [];
 			jsonData = grid.getData();
 			
 			for (let obj of jsonData){
 				obj.productCode = $('#productCode').val();
-			} 	// end for
-		  } 	// end updateBom function
+			}// end for
 		  
 		  $.ajax({
 			url : "bomUpdate",

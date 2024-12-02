@@ -55,6 +55,17 @@ public class ProductServiceImpl implements ProductService {
 	// 제품 수정
 	@Override
 	public int updateProductList(ProductVO productVO) {
+		
+		ProductVO param = productMapper.selectProduct(productVO.getProductCode());
+//		
+//		if (productVO.getAmount() == param.getAmount()) {
+//			return 3;
+//		} else if (productVO.getExpirationDeadline() == param.getExpirationDeadline()) {
+//			return 3;
+//		} else if (productVO.)
+		
+		
+		
 		return productMapper.updateProductList(productVO);
 	}
 	
