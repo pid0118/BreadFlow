@@ -3,6 +3,7 @@ package com.breadflow.app.inout.mapper;
 
 import java.util.List;
 
+import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InstoreVO;
 import com.breadflow.app.inout.service.ItemListVO;
@@ -24,4 +25,12 @@ public interface InOutMapper {
 	public int countOutstoreList(FilterVO filterVO);
 	public int countOrderListForInsert(FilterVO filterVO);
 	public int countInstoreListForInsert(FilterVO filterVO);
+	
+	public int getInstoreLastGroupNo();
+	public int getOutstoreLastGroupNo();
+	
+	public List<InstoreVO> getInstoreModal(FilterVO filterVO);
+	public List<OutstoreVO> getOutstoreModal(FilterVO filterVO);
+	public CompanyVO getInstoreComp(String companyName);
+	public CompanyVO getOutstoreComp(String companyName);
 }

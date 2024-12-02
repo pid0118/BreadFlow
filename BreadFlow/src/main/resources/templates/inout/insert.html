@@ -6,64 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 등록</title>
-	<style>
-        #container {
-            width: 100%;
-            border: 1px solid #000;
-            padding: 20px;
-        }
-        #title {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        #info {
-            display: flex;
-            justify-content: space-between;
-        }
-        #info #box1 {
-            width: 48%;
-            border: 1px solid #000;
-            padding: 10px;
-        }
-        #info #box2 {
-            width: 48%;
-            border: 1px solid #000;
-            padding: 10px;
-        }
-        #table-container {
-            margin-top: 20px;
-        }
-        #insertedTable {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #companyTable {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #companyTable tr, td {
-            border: 1px solid #000;
-            text-align: center;
-            padding: 8px;
-        }
-        #insertedTable th {
-            border: 1px solid #000;
-            text-align: center;
-            padding: 8px;
-        }
-        .amount {
-            text-align: right;
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: 10px;
-        }
-        .stamp {
-            margin-top: 20px;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -145,81 +87,7 @@
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
 			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
-			<button type="button" class="btn btn-primary" id="getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>
 		</div>
-	</div>
-	
-	<!-- 거래 명세서 발행 모달창 -->
-	<div class="modal fade" id="getListModal" tabindex="-1" role="dialog" aria-labelledby="getListModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg modal-dialog-centered">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h4 class="modal-title" id="getListModalLabel">거래 명세서</h4>
-	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeModalX">×</button>
-	            </div>
-	            <div class="modal-body">
-			 		<div id="container">
-					        <div id="title">거래 명세서</div>
-					        <div id="info">
-					            <div id="box1"></div>
-					            <div id="box2">
-					                <table class="companyTable">
-					                    <tr class="only">
-					                        <td>담당자</td>
-					                        <td th:text="${session.name}"></td>
-					                    </tr>
-					                    <tr class="only">
-					                        <td>사업자등록번호</td>
-					                        <td th:text="${session.brn}"></td>
-					                    </tr>
-					                    <tr class="only">
-					                        <td>상호</td>
-					                        <td th:text="${session.companyName}"></td>
-					                    </tr>
-					                    <tr class="only">
-					                        <td>주소</td>
-					                        <td th:text="${session.companyAddress}"></td>
-					                    </tr>
-					                    <tr class="only">
-					                        <td>TEL</td>
-					                        <td th:text="${session.companyTel}"></td>
-					                    </tr>
-					                </table>
-					            </div>
-					        </div>
-					        <div class="amount">금액:<span id="amount"></span>원</div>
-					        <div id="table-container">
-					            <table id="insertedTable">
-					                <thead>
-					                    <tr class="only">
-					                        <th>일자</th>
-					                        <th>품목</th>
-					                        <th>수량</th>
-					                        <th>단가</th>
-					                        <th>공급가액</th>
-					                        <th>부가세</th>
-					                    </tr>
-					                </thead>
-					                <tbody id="insertedTble">
-					                    
-					                </tbody>
-					            </table>
-					        </div>
-					        <div class="amount">
-					            <p>수량:<span id="quant"></span>개</p>
-					            <p>공급가액:<span id="selling"></span>원</p>
-					            <p>VAT:<span id="toten"></span>원</p>
-					            <p>합계:<span id="addup"></span>원</p>
-					        </div>
-					        <div class="stamp">인수: ___________ 인: ___________</div>
-					</div>  
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-primary" data-dismiss="modal">출력</button>
-	                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">닫기</button>
-	            </div>
-	        </div>
-	    </div>
 	</div>
 	
 	<script>
@@ -343,18 +211,11 @@
                 pageClear();
                 changeFilter();
             });
-         	
-         	// 모달 창 데이터
-         	var modalData = [];
-         	
-         	// 모달 창 버튼 클릭 시 처리
-         	$("#getListBtn").click(function() {
-         		updateModal(modalData);
-         	});
 
 	     	// 저장 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
 	        	var checkNull = false;
+	        	var checkQuant = false;
 	            // 선택된 행을 추출
 	            var selectedRows = [];
 	            $("#inOutTable tr.selected").each(function() {
@@ -370,16 +231,15 @@
 		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
 		                    instoreDiv: row.find("td:nth-child(9)").text(),
 		                    deadline: row.find("td:nth-child(10)").text(),
-		                    itemCode: row.find("td:nth-child(11)").text(),
-		                    purchasePrice: row.find("td:nth-child(12)").text(),
-		                    price: row.find("td:nth-child(13)").text(),
-		                    companyInput: $("#companyInput").val()
+		                    itemCode: row.find("td:nth-child(11)").text()
 		                };
 		                if (data.instoreQuantity == null) {
 	            			checkNull = true;
 	            		}
+		                if (data.quantity < data.instoreQuantity) {
+		                	checkQuant = true;
+		                }
 		                selectedRows.push(data);
-		                modalData.push(data);
 	                } else {
 	                	var row = $(this);
 		                var data = {
@@ -390,23 +250,26 @@
 		                	ordersDetailNo: row.find("td:nth-child(9)").text(),
 		                    instoreNo: row.find("td:nth-child(8)").text(),
 		                    orderingDetailCode: row.find("td:nth-child(10)").text(),
-		                    div: div,
-		                    purchasePrice: row.find("td:nth-child(11)").text(),
-		                    price: row.find("td:nth-child(12)").text(),
-		                    companyInput: $("#companyInput").val()
+		                    div: div
 		                };
 		                if (data.outstoreQuantity == null) {
 	            			checkNull = true;
 	            		}
+		                if (data.quantity < data.outstoreQuantity) {
+		                	checkQuant = true;
+		                }
 		                selectedRows.push(data);
-		                modalData.push(data);
 	                }
 	            });
+	            
 	            console.log(selectedRows);
 	            
 	            if (checkNull) {
-	            	alert("수량이 입력되지 않았습니다.")
+	            	alert("수량이 입력되지 않았습니다.");
+	            } else if (checkQuant) {
+	            	alert("올바른 수량을 입력해주세요.");
 	            } else {
+	            	
 		            // AJAX로 데이터 전송
 		            var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/insertIn' : '/inOut/insertOut';
 		            $.ajax({
@@ -418,11 +281,13 @@
 		                	console.log(selectedRows);
 		                	alert("등록되었습니다.");
 		                	changeFilter();
+		                	$("#getListBtn").css("display: block;");
 		                },
 		                error: function() {
 		                    alert("등록하는 데 실패했습니다.");
 		                }
 		            });
+		            
 	            }
 	            
 	        });
@@ -491,54 +356,6 @@
 	 		$("#inOutDate").val(todayDate.slice(2, 10));
 	 	}
 	 	
-	 	// 모달 창 갱신
-	 	function updateModal(data) {
-	 		var tbody = $("#insertedTble");
-	 		tbody.empty();
-	 		
-	 		var objectDate = new Date();
-	 		var day = objectDate.getDate();
-	    	var month = objectDate.getMonth();
-	    	var monDay = (month + 1) + "/" + day;
-	    	
-	    	var amount = null;
-	    	var quant = null;
-	    	var selling = null;
-	    	var toten = null;
-	    	var addup = null;
-	    	
-	 		data.forEach(function(item) {
-	 			var row = "<tr>";
-	            	row += "<td>" + monDay + "</td>";
-	            	row += "<td>" + item.itemName + "</td>";
-	            	if (item.contains('instoreQuantity')) {
-	                	row += "<td>" + item.instoreQuantity + "</td>";
-	                	quant += Number(item.instoreQuantity);
-	                } else {
-	                	row += "<td>" + item.outstoreQuantity + "</td>";
-	                	quant += Number(item.outstoreQuantity);
-	                }
-	            	row += "<td>" + item.price + "</td>";
-					row += "<td>" + item.productPrice + "</td>";
-					row += "<td>" + (Number(item.productPrice) / 10) + "</td>";
-	            	row += "</tr>";
-	            amount += Number(item.price) + (Number(item.productPrice) / 10);
-	            selling += Number(item.productPrice);
-	            toten += (Number(item.productPrice) / 10);
-	            addup += Number(item.price) + (Number(item.productPrice) / 10);
-	 		});
-	 		tbody.append(row);
-	 		
-	 		$("#amount").html(amount);
-	 		$("#quant").html(quant);
-	 		$("#selling").html(selling);
-	 		$("#toten").html(toten);
-	 		$("#addup").html(addup);
-	 		
-	 		var box1Insert = $("input[name='options']:checked").val() === '입고' ? '공급받는 자' : '공급자';
-	 		$("#box1").html(box1Insert);
-	 	}
-
 	    // 목록 갱신
 	    function updateTable(data, type) {
 	        var tbody = $("#inOutTable");
@@ -640,15 +457,6 @@
      	    });
      	});
 
-     	// 모달창 숨기기 처리
-     	$("#closeModal").click(function() {
-     		$("#getListModal").modal('hide');
-	    });
-     	
-     	$("#closeModalX").click(function() {
-     		$("#getListModal").modal('hide');
-     	});
-     
 	</script>
 </body>
 </html>

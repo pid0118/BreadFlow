@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.inout.mapper.InOutMapper;
 import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
@@ -45,11 +46,25 @@ public class InOutServiceImpl implements InOutService {
 	@Override
 	public int instoreInsert(List<InstoreVO> list) {
 		int result = 0;
+		
+		// 그룹 번호
+		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		
+		// 업체 순으로 정렬
+		list.sort((InstoreVO o1, InstoreVO o2) -> o1.getOutstoreCompany().compareTo(o2.getOutstoreCompany()));
+		
+		String preNo = "";
 		for (InstoreVO instoreVO : list) {
+			// 업체가 바뀌면 그룹 번호 증가
+			if (!preNo.equals(instoreVO.getOutstoreCompany())) {
+				groupNo ++;
+			}
+			instoreVO.setInstoreGroupNo(groupNo);
 			// 입고 등록
 			result += inOutMapper.insertInstoreInfo(instoreVO);
 			// 입고 등록 후 주문 상태 갱신
 			result += inOutMapper.updateInstoreOrdering(instoreVO);
+			preNo = instoreVO.getCompanyNo();
 		}
 		return result;
 	}
@@ -58,11 +73,25 @@ public class InOutServiceImpl implements InOutService {
 	@Override
 	public int outstoreInsert(List<OutstoreVO> list) {
 		int result = 0;
+		
+		// 그룹 번호
+		int groupNo = inOutMapper.getOutstoreLastGroupNo();
+		
+		// 업체 순으로 정렬
+		list.sort((OutstoreVO o1, OutstoreVO o2) -> o1.getInstoreCompany().compareTo(o2.getInstoreCompany()));
+		
+		String preNo = "";
 		for (OutstoreVO outstoreVO : list) {
+			// 업체가 바뀌면 그룹 번호 증가
+			if (!preNo.equals(outstoreVO.getInstoreCompany())) {
+				groupNo ++;
+			}
+			outstoreVO.setOutstoreGroupNo(groupNo);
 			// 출고 등록
 			result += inOutMapper.insertOutstoreInfo(outstoreVO);
 			// 출고 등록 후 주문 상태 갱신
 			result += inOutMapper.updateOutstoreOrdering(outstoreVO);
+			preNo = outstoreVO.getCompanyNo();
 		}
 		return result;
 	}
@@ -90,5 +119,25 @@ public class InOutServiceImpl implements InOutService {
 	@Override
 	public int countInstoreInsert(FilterVO filterVO) {
 		return inOutMapper.countInstoreListForInsert(filterVO);
+	}
+
+	@Override
+	public List<InstoreVO> instoreModal(FilterVO filterVO) {
+		return inOutMapper.getInstoreModal(filterVO);
+	}
+
+	@Override
+	public List<OutstoreVO> outstoreModal(FilterVO filterVO) {
+		return inOutMapper.getOutstoreModal(filterVO);
+	}
+
+	@Override
+	public CompanyVO instoreComp(String companyNo) {
+		return inOutMapper.getInstoreComp(companyNo);
+	}
+
+	@Override
+	public CompanyVO outstoreComp(String companyNo) {
+		return inOutMapper.getOutstoreComp(companyNo);
 	}
 }
