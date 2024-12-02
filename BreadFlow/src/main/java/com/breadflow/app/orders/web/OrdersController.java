@@ -59,7 +59,14 @@ public class OrdersController {
 	@GetMapping("/orders/ordersComList")
 	@ResponseBody
 	public Map<String, Object> ordersComList(){
-		return null;
+		return ordersService.selectOrdersComList();
+	}
+	
+	// 주문 상세 현황 조회
+	@GetMapping("/orders/detailComList")
+	@ResponseBody
+	public Map<String, Object> ordersComDetailList(@RequestParam String no){
+		return ordersService.selectOrdersComDList(no);
 	}
 	
 }

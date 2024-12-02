@@ -87,15 +87,51 @@
 	</update>
 	
 	<select id="selectOrdersComList">
-		SELECT DISTINCT o.orders_no,
-                     o.orders_date,
-                     o.manager,
-                     FIND_CD(ord.situation_code) situation
+		SELECT  DISTINCT o.orders_no,
+                o.orders_date,
+                o.manager,
+                (SELECT company_name
+                 FROM company
+                 WHERE company_no = od.instore_company) in_company
 	    FROM orders o JOIN orders_detail od
 	    ON o.orders_no = od.orders_no
 	    JOIN ordering_detail ord
 	    ON ord.ordering_detail_code = od.ordering_detail_code
 	    WHERE ord.situation_code != 'e1'
+	</select>
+	
+	<select id="selectOrdersComDList">
+		SELECT  DISTINCT od.orders_detail_no,
+                NVL((SELECT ingredient_name
+                     FROM ingredient
+                     WHERE ingredient_code = od.orders_item),
+                    (SELECT product_name
+                     FROM product
+                     WHERE product_code = od.orders_item)) item_name,
+                NVL((SELECT amount || FIND_CD(unit)
+                     FROM ingredient
+                     WHERE ingredient_code = od.orders_item),
+                    (SELECT amount || FIND_CD(unit)
+                     FROM product
+                     WHERE product_code = od.orders_item)) unit,
+                NVL((SELECT standard
+                     FROM ingredient
+                     WHERE ingredient_code = od.orders_item),
+                    (SELECT standard
+                     FROM product
+                     WHERE product_code = od.orders_item)) standard,
+                (SELECT company_name
+                 FROM company
+                 WHERE company_no = od.outstore_company) out_company,
+                od.quantity,
+                FIND_CD(ord.situation_code) situation
+	    FROM orders o JOIN orders_detail od
+	    ON o.orders_no = od.orders_no
+	    JOIN ordering_detail ord
+	    ON ord.ordering_detail_code = od.ordering_detail_code
+	    WHERE ord.situation_code != 'e1'
+        AND o.orders_no = #{no}
+        ORDER BY od.orders_detail_no
 	</select>
 
 </mapper>

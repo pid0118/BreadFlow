@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/breadflow_layout}"
+	layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<title></title>
+</head>
+<body>
+<div class="pd-20 card-box mb-30">
+	<div class="clearfix">
+		<h4 class="text-blue h4">재고 조회</h4>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-4">
+					<select class="selectpicker form-control" data-size="5"
+						data-style="btn-outline-secondary" multiple title="시설 선택" id="facilities">
+						<option>제조공장</option>
+						<option>물류창고</option>
+						<option>가맹점</option>
+					</select>
+				</div>
+				<div class="col-4">
+					<select class="selectpicker form-control" data-size="5"
+						data-style="btn-outline-secondary" multiple title="구분" id="major">
+						<option value="원재료">원재료</option>
+						<option value="부재료">부재료</option>
+						<option value="생산품">생산품</option>
+						<option value="완제품">완제품</option>
+					</select>
+				</div>
+				<div class="col-3">
+					<input type="text" class="form-control" placeholder="품목명" id="itemForm">
+				</div>
+				<div class="col-1">
+					<button class="btn btn-outline-secondary" type="button"
+						id="stockSearchBtn">
+						<i class="icon-copy bi bi-search"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div id="grid"></div>
+	</div>
+</div>
+
+<div class="modal fade bs-example-modal-lg" id="stockModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 1200px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myLargeModalLabel">재고 현황</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			</div>
+			<div class="modal-body">
+				<div id="stockGrid"></div>
+			</div>
+		</div>
+	</div>
+</div>
+							
+<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script>
+stockList('', '', ''); // 재고 리스트 조회
+
+// 검색 버튼 클릭 이벤트
+$('#stockSearchBtn').on('click', function(){
+	let facVal = $('#facilities').val(); // 선택된 시설 값들
+	let facilities = '';
+	facVal.forEach(value => {
+		facilities += value + ',';	// 시설
+	})
+	let majVal = $('#major').val(); // 선택된 구분 값들
+	let major = '';
+	majVal.forEach(value => {
+		major += value + ',';	// 구분
+	})
+	let item = $('#itemForm').val();	// 품목명
+	$('.tui-grid-container').remove();	// 기존 그리드 내용 제거
+	stockList(facilities, major, item);	// 재고 그리드 생성
+})
+
+// 재고 리스트 생성 함수
+function stockList(facilities, major, item){
+	const columns = [ {
+		name : 'facilities',
+		header : '시설',
+		formatter: function(data) {	// 모달 뜨게 수정
+			let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
+						${data.value}</a>`;
+			return ele;
+		}
+	}, {
+		name : 'itemCode',
+		hidden: true
+	}, {
+		name : 'major',
+		header : '구분'
+	}, {
+		name : 'sub',
+		header : '카테고리'
+	}, {
+		name : 'orderingItem',
+		header : '품목명',
+		formatter: function(data) {
+			let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
+						${data.value}</a>`;
+			return ele;
+		}
+	}, {
+		name : 'standard',
+		header : '규격'
+	}, {
+		name : 'stockQuantity',
+		header : '총 재고',
+		formatter : function(data) {
+			let stock = data.value;
+			return stock.toLocaleString('ko-KR'); // 단위 변환
+		},
+	} ];
+
+	const grid = new tui.Grid({
+		el : document.getElementById('grid'),
+		data : {
+			api : {
+				readData : {
+					url : `/stock/stocklist?facilities=${facilities}&major=${major}&item=${item}`,
+					method : 'GET'
+				}
+			},
+		},
+		scrollX : false,
+		scrollY : false,
+		minBodyHeight : 30,
+		pageOptions : {
+			useClient : true,
+			perPage : 10
+		},
+		columns : columns
+	});
+	
+	//
+	grid.on('click', (ev) => {
+		if(event.target.tagName == 'A'){
+			let facilities = grid.getValue(ev.rowKey, 'facilities');	// 시설
+			let itemCode = grid.getValue(ev.rowKey, 'itemCode');		// 품목코드
+			stockDetailList(facilities, itemCode); 						// 재고 상세 모달 생성
+		}
+	})
+}	
+
+// 재고 상세 현황 조회 함수
+function stockDetailList(facilities, itemCode){
+	const columns = [ {
+		name : 'companyName',
+		header : '회사명'
+	},  {
+		name : 'orderingItem',
+		header : '품목명'
+	}, {
+		name : 'unit',
+		header : '단위'
+	}, {
+		name : 'standard',
+		header : '규격'
+	}, {
+		name : 'stockQuantity',
+		header : '재고량',
+		formatter : function(data) {
+			let stock = data.value;
+			return stock.toLocaleString('ko-KR'); // 단위 변환
+		}
+	}, {
+		name : 'safeStockQuantity',
+		header : '안전재고량',
+		formatter : function(data) {
+			let stock = data.value;
+			return stock.toLocaleString('ko-KR'); // 단위 변환
+		},
+		validation: {
+            validatorFn: (value, row, columnName) => {
+	            return row.safeStockQuantity < row.stockQuantity;           	
+            }
+        }
+	}, {
+		name : 'expirationDeadline',
+		header : '유통기한',
+		formatter : function(data) {
+			let date = data.value;
+			return date.substring(0,10); // 날짜 변환
+		}
+	} ];
+
+	const grid = new tui.Grid({
+		el : document.getElementById('stockGrid'),
+		data : {
+			api : {
+				readData : {
+					url : `/stock/detailList?facilities=${facilities}&itemCode=${itemCode}`,
+					method : 'GET'
+				}
+			},
+		},
+		bodyHeight: 'fitToParent',
+		minBodyHeight: 400,
+		columns : columns,
+		rowHeaders: ['checkbox'],
+		summary: {
+			height: 40,
+			position: 'bottom',
+			columnContent: {
+			  safeStockQuantity: {
+	            template: function(valueMap) {
+	              return `${valueMap.sum.toLocaleString('ko-KR')}`;
+	            }
+	          },
+	          stockQuantity: {
+	            template: function(valueMap) {
+	              return `${valueMap.sum.toLocaleString('ko-KR')}`;
+              	}
+          	  }
+            }
+		},
+		onGridUpdated: function(data){
+			const rows = grid.getData();
+	        rows.forEach((row, rowIndex) => {
+	           if (row.stockQuantity > row.safeStockQuantity) {
+	                grid.setRow(rowIndex, {
+	                	companyName: row.companyName,
+	                	orderingItem: row.orderingItem,
+	                	unit: row.unit,
+	                	standard: row.standard,
+	                	stockQuantity: row.stockQuantity,
+	                	safeStockQuantity: row.safeStockQuantity,
+	                	expirationDeadline: row.expirationDeadline,
+	                    _attributes: {
+	                        checkDisabled: true 
+	                    }
+	                });
+	           }
+	        });
+		}
+	});
+
+}
+</script>
+</body>
+</html>

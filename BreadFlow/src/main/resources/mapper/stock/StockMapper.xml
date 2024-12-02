@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.breadflow.app.stock.mapper.StockMapper">
+	
+	<select id="selectStockList">
+		SELECT item_code
+			   ,facilities
+		       , major
+		       , sub
+		       , ordering_item
+		       , unit || ' / ' || standard standard
+		       , SUM(stock_quantity) stock_quantity
+		FROM stock_vu
+		WHERE facilities IN (
+		<foreach collection="facilities" item="item" separator=",">
+			#{item}
+		</foreach>
+		)
+		AND major IN (
+		<foreach collection="majors" item="item2" separator=",">
+			#{item2}
+		</foreach>
+		)
+		AND ordering_item LIKE '%' || #{itemName} || '%'
+		GROUP BY item_code, facilities, major, sub, ordering_item, unit || ' / ' || standard
+	</select>
+	
+	<select id="selectDetailStockList">
+		SELECT company_name
+			   , ordering_item
+			   , unit
+			   , standard
+			   , stock_quantity
+			   , safe_stock_quantity
+			   , expiration_deadline
+		FROM stock_vu
+		WHERE item_code = #{itemCode}
+		AND facilities = #{facilities}
+		ORDER BY company_name, expiration_deadline
+	</select>
+	
+</mapper>
