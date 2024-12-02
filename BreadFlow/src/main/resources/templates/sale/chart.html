@@ -5,8 +5,18 @@
 	layout:fragment="Content">
   <body>
 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
-		<div id="chart4"></div>
+      <div>
+        <!-- 연도 선택 드롭다운 추가 -->
+        <label for="yearSelect">연도 선택: </label>
+        <select id="yearSelect" onchange="updateChart()">
+          <option value="2024">2024년</option>
+          <option value="2023">2023년</option>
+          <!-- 다른 연도 추가 가능 -->
+        </select>
+      </div>
+      <div id="chart4"></div>
 	</div>
+    
 	<div class="bg-white pd-20 card-box mb-30" style="width: 100%">
 		<div id="chart5"></div>
 	</div>
@@ -15,10 +25,9 @@
 	<script src="https://code.highcharts.com/highcharts-3d.js"></script>
 	<script src="/plugins/highcharts-6.0.7/code/highcharts-more.js"></script>
 	<script>
-		sales();
-		productAjax();
 		let today = new Date();
 		let curYear = today.getFullYear();
+		let selectedYear = curYear;
 		
 		let chartAry = [];
 		//chart4 데이터 ajax 호출 ( 월별 매출 )
@@ -35,7 +44,8 @@
 					let yearMon = saleDate.substring(0, 6);
 					let year = saleDate.substring(0, 4);
 					let daySales = ele.daySales;
-					if(year === curYear.toString()){
+					
+					if(year === selectedYear.toString()){
 						if(monSales[yearMon]){
 							monSales[yearMon] += daySales;
 						
@@ -44,7 +54,7 @@
 							monSales[yearMon] = daySales;
 						}
 					}
-					else if (year === (curYear - 1).toString()){
+					else if (year === (selectedYear - 1).toString()){
 		                if(prevMonSales[yearMon]) {
 		                	prevMonSales[yearMon] += daySales;
 		                }
@@ -61,12 +71,18 @@
 	                let month = i < 10 ? '0' + i : i.toString();
 	                
 	                months.push(month); // 월 추가
-	                salesData.push(monSales[curYear + month] || 0)
-	                prevSalesData.push(prevMonSales[(curYear-1) + month] || 0);
+	                salesData.push(monSales[selectedYear + month] || 0)
+	                prevSalesData.push(prevMonSales[(selectedYear-1) + month] || 0);
 	            }
 
 	            chartist(months, salesData, prevSalesData);
 			})
+		}
+		
+	    // 차트를 업데이트하는 함수
+		function updateChart() {
+			selectedYear = document.getElementById("yearSelect").value; // 선택된 연도 가져오기
+			sales(); // 새로운 연도로 차트 업데이트
 		}
 		
 		// chart5 데이터 ajax 호출 ( 월별 제품 매출 상세 조회 ) / 아직 미완성
@@ -87,7 +103,7 @@
 					type: 'column'
 				},
 				title: {
-					text: curYear + '년 월 매출 그래프'
+					text: selectedYear + '년 월 매출 그래프'
 				},
 				subtitle: {
 					text: 'Oh! Bbang'
@@ -127,6 +143,7 @@
 			});
 		}
 		
+		sales();
 		Highcharts.chart('chart5', {
 			title: {
 				text: 'Pie point CSS'

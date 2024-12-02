@@ -30,16 +30,16 @@
 	</select>
 	
 	<select id="selectSaleDetailOffice" resultType="SaleVO" parameterType="String">
-		SELECT (SELECT product_name
-		        FROM product
-		        WHERE product_code = sa.product_code) AS productCode
-		      ,SUM(sale_price) AS salePrice
-		      ,SUM(quantity) AS quantity
-		      ,sales_date
+		SELECT TRUNC(sa.sales_date) AS salesDate,
+		       p.product_name,
+		       SUM(sa.sale_price) AS salePrice,
+		       SUM(sa.quantity) AS Quantity
 		FROM sale_detail_history sa
-		WHERE TO_CHAR(sales_date, 'yyyyMM') = #{saleDate}
-		AND company_no = #{comNo}
-		GROUP BY product_code, sales_date
+		JOIN product p ON sa.product_code = p.product_code
+		WHERE TO_CHAR(sa.sales_date, 'yyyyMM') = #{saleDate}
+		  AND sa.company_no = #{comNo}
+		GROUP BY TRUNC(sa.sales_date), p.product_name
+		ORDER BY salesDate
 	</select>
 	
 	<select id="selectProductList" resultType="ProductVO" parameterType="String">

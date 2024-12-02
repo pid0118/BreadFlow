@@ -267,13 +267,14 @@
 		       				<th>총 합계</th>
 		       			</tr>
 		       		</thead>
-		       		<tbody></tbody>
+		       		<tbody id="saleDetail"></tbody>
 		       	</table>
 		    </div>
 		</div>
 	<script>
 		const salMonthRow = document.querySelector('#salMonth');
 		const modal = document.querySelector('.modal-month');
+		const saleDetail = document.querySelector('#saleDetail');
 		const year =  document.querySelector('h3').innerText; // 연도
 		
 		
@@ -334,7 +335,6 @@
 		document.querySelector('#salMonth').addEventListener('click', function(e){
 			const companyCd = document.querySelector(".view.open > td:nth-child(4)").innerText;
 			if(e.target.tagName === 'TD'){
-				
 				//해당 타겟의 인덱스 값 구하기 (array.from: 배열로바꿈)
 				const tdIdx = Array.from(e.target.parentElement.children).indexOf(e.target);
 				
@@ -349,7 +349,7 @@
 				
 				openModal();
 				
-				//daySaleDetailAjax(companyCd, yearMon);
+				daySaleDetailAjax(companyCd, yearMon);
 			}
 		})
 		
@@ -379,10 +379,19 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
+				let str = '';
 				data.forEach(ele => {
-					//let node = `<td>${ele.}</td>`
+					console.log(ele);
+					let node = `<tr>
+								<td>${ele.salesDate}</td>
+								<td>${ele.productName}</td>
+								<td>${ele.quantity}</td>
+								<td>${ele.salePrice}</td>
+								</tr>
+								`
+					str += node;
 				})
+				saleDetail.innerHTML = str;
 			})
 		}
 
