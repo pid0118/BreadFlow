@@ -26,4 +26,6 @@ public interface PrdtplanService {
 	public int updateDetailForProgressToC5(PrdtplanVO prdtplanVO);
 
 	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list);
+
+	public int insertInstoreForPrdtplan(PrdtplanVO prdtplanVO);
 }

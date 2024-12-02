@@ -120,7 +120,8 @@ public class PrdtplanController {
 	public int updateDetailForProgressToC5(@RequestBody PrdtplanVO prdtplanVO) {
 		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
 		int result = prdtplanService.updateDetailForProgressToC5(prdtplanVO);
-		return result;
+		int result2 = prdtplanService.insertInstoreForPrdtplan(prdtplanVO);
+		return result + result2;
 	}
 	
 	@PostMapping("insertPrdtplanDetailsForSelf")

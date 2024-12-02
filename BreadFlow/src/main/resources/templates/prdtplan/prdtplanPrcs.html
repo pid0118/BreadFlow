@@ -119,7 +119,7 @@
 									id="updProductionCompany" name="productionCompany" th:value="${session.companyNo}">
 							</div>
 						</div>
-						<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12" hidden="hidden">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
 							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -827,7 +827,7 @@ function updatePrdtplanSituComplete() {
 	} else if ($("#updProgressSituation").val() != "진행중") {
 		alert("생산상태가 '진행중'인 계획만 완료처리를 할 수 있습니다.")
 	} else {
-		if(confirm('생산계획을 완료 처리하시겠습니까?')) {
+		if(confirm('생산계획을 완료 처리하시겠습니까?\n생산 완료와 동시에 입고처리가 되어집니다.')) {
 			jsonData = {
 					productionPlanNo: $("#updProductionPlanNo").val()
 			}

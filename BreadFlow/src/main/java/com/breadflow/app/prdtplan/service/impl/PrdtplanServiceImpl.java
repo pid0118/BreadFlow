@@ -86,6 +86,12 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 		return result;
 	}
 
+	// 최종 생산이 완료되면 입고(instore) 테이블에 해당 계획 INSERT 
+	@Override
+	public int insertInstoreForPrdtplan(PrdtplanVO prdtplanVO) {
+		return prdtplanMapper.insertInstoreForPrdtplan(prdtplanVO);
+	}
+
 
 	
 }

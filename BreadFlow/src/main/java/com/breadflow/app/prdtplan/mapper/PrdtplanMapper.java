@@ -44,4 +44,7 @@ public interface PrdtplanMapper {
 	// 생산관리 디테일 입력
 	public int insertPrdtplanDetailsForSelf(PrdtplanVO pvo);
 
+	// 최종 생산이 완료되면 입고(instore) 테이블에 해당 계획 INSERT 
+	public int insertInstoreForPrdtplan(PrdtplanVO prdtplanVO);
+
 }
