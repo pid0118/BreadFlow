@@ -149,7 +149,7 @@
 		<div class="updateButtons" style="float: left;">
 				<button type="button" class="btn btn-primary btn-lg" id="planProgressBtn">진행 처리</button>
 				<button type="button" class="btn btn-primary btn-lg" id="planCompleteBtn">완료 처리</button>
-				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn">취소 처리</button>
+				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn" hidden="hidden">취소 처리</button>
 			</div>
 		</div>
 		
@@ -362,10 +362,10 @@ deleteRowBtn.addEventListener('click', function() {
 })
 
 let planProgressBtn = document.querySelector("#planProgressBtn");				// 진행 처리
-planProgressBtn.addEventListener('click', updatePrdtplanSituProgress);
+planProgressBtn.addEventListener('click', updateMtrqplanSituProgress);
 
 let planCompleteBtn = document.querySelector("#planCompleteBtn");				// 완료 처리
-planCompleteBtn.addEventListener('click', updatePrdtplanSituComplete);
+planCompleteBtn.addEventListener('click', updateMtrqplanSituComplete);
 
 let planCancelBtn = document.querySelector("#planCancelBtn");					// 취소 처리
 //planCancelBtn.addEventListener('click', updatePrdtplanSituCancel);
@@ -782,7 +782,7 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 	
 //========================================================================	
 // [박진석|241126] 진행 처리(progress_situation Update -> c4) AJAX 걸기
-function updatePrdtplanSituProgress() {
+function updateMtrqplanSituProgress() {
 	if(mode == 'insert') {
 		alert("생산계획을 진행할 행을 선택해주세요.")
 	} else if ($("#updProgressSituation").val() != "미확인") {
@@ -790,11 +790,11 @@ function updatePrdtplanSituProgress() {
 	} else {
 		if(confirm('생산계획을 진행하시겠습니까?')) {
 			jsonData = {
-					productionPlanNo: $("#updProductionPlanNo").val()
+					matrequiredPlanNo: $("#updProductionPlanNo").val()
 			}
 			
 			$.ajax({
-				url: "updateDetailForProgressToC4",
+				url: "updateMtrqDetailForProgressToC4",
 		        type: "post",
 		        contentType: "application/json",
 		        data:  JSON.stringify(jsonData),
@@ -809,8 +809,9 @@ function updatePrdtplanSituProgress() {
 		     	}
 			});
 			
+			
 		} else {
-			alert("취소하였습니다.")
+			alert("취소하였습니다.");
 		}
 	}
 }
@@ -821,19 +822,19 @@ function updatePrdtplanSituProgress() {
 	
 //========================================================================	
 // [박진석|241126] 진행 처리(progress_situation Update -> c5) AJAX 걸기
-function updatePrdtplanSituComplete() {
+function updateMtrqplanSituComplete() {
 	if(mode == 'insert') {
 		alert("생산계획을 진행할 행을 선택해주세요.")
 	} else if ($("#updProgressSituation").val() != "진행중") {
 		alert("생산상태가 '진행중'인 계획만 완료처리를 할 수 있습니다.")
 	} else {
-		if(confirm('생산계획을 완료 처리하시겠습니까?')) {
+		if(confirm('생산계획을 완료 처리하시겠습니까?\생산 완료와 동시에 입고처리가 되어집니다.')) {
 			jsonData = {
-					productionPlanNo: $("#updProductionPlanNo").val()
+					matrequiredPlanNo: $("#updProductionPlanNo").val()
 			}
 			
 			$.ajax({
-				url: "updateDetailForProgressToC5",
+				url: "updateMatqDetailForProgressToC5",
 		        type: "post",
 		        contentType: "application/json",
 		        data:  JSON.stringify(jsonData),
@@ -847,6 +848,7 @@ function updatePrdtplanSituComplete() {
 		     	   console.log(result);
 		     	}
 			});
+			
 			
 		} else {
 			alert("취소하였습니다.")

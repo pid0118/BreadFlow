@@ -50,7 +50,7 @@
 										</span>
 									</div>
 								</div>
-								<div class="row pb-30">
+								<div class="row pb-30" hidden="hidden">
 									<div class="col-6">
 										<div class="custom-control custom-checkbox">
 											<input
@@ -95,7 +95,6 @@
 	        data: loginData,
 	        success: function(data){
 	            if(data == 1) {
-	            	alert("로그인 성공");
 	            	location.href='/welcome';
 	            } else {
 	            	alert("로그인 실패: 아이디 비밀번호를 다시 확인해주세요.");

@@ -35,17 +35,34 @@
 
 <div class="container">
 	<div class="parentArea">
-		<div class="insertButtons">
+		<div class="insertButtons" style="float:left;">
 			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정(업체) 생성</button>
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
-		<div>
+		
+		<!--  
+		<div style="float:right;">
 			<form>
 				<input type="radio" value="">전체
 				<input type="radio" name="div" th:each="code, sts : ${code0A}" th:value="${code.codeRule}" th:text="${code.codeVal}">
 				<button type="submit">검색</button>
 			</form>
 		</div>
+		-->
+		<div style="float:right;">
+			<form>
+				<div class="custom-control custom-radio" style="display: inline-block;">
+					<input type="radio" name="div" class="custom-control-input" id="allItem">
+					<label class="custom-control-label" for="allItem">전체</label>
+				</div>
+				<div class="custom-control custom-radio" th:each="code, sts : ${code0A}" style="display: inline-block;">
+					<input type="radio" name="div" th:id=${sts.index} class="custom-control-input" th:value="${code.codeRule}">
+					<label class="custom-control-label" th:for="${sts.index}" th:text="${code.codeVal}"></label>
+				</div>
+				<button type="submit" class="btn btn-primary btn-sm">검색</button>
+			</form>
+		</div>
+		
 		<div>
 		
 		

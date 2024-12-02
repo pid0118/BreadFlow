@@ -2,22 +2,27 @@ package com.breadflow.app.account.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.breadflow.app.account.mapper.AccountMapper;
 import com.breadflow.app.account.service.AccountService;
 import com.breadflow.app.account.service.AccountVO;
-import com.breadflow.app.account.service.Encryptor;
+import com.breadflow.app.account.service.EncryptHelper;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
-	//private final Encryptor encryptor;	// 암호화하는 JBcrypt 가져옴
+	private final EncryptHelper encryptHelper = null;
+	
+	@Autowired
 	private AccountMapper accountMapper;
 	
+	/*
 	public AccountServiceImpl(AccountMapper accountMapper) {
 		this.accountMapper = accountMapper;
 	}
+	*/
 	
 	@Override
 	public List<AccountVO> selectMemberList(AccountVO accountVO) {
@@ -31,7 +36,12 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public int insertMember(AccountVO accountVO) {
+	public int insertMember(AccountVO accountVO){
+		// [박진석|241202] 비밀번호 암호화
+		String password = accountVO.getPassword();
+		String encryptedPw = encryptHelper.encrypt(password);
+		accountVO.setPassword(encryptedPw);
+		
 		int result = accountMapper.insertMember(accountVO);
 		return result;
 	}

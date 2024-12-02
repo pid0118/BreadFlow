@@ -32,4 +32,10 @@ public interface MtrqplanMapper {
 	// 자식 테이블에서 쓰이는 자재소요계획 디테일 단건 조회
 	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String matrequiredPlanNo);
 
+	// 자재소요계획 진행상태(progress)를 c4(진행중)으로 update 
+	public int updateMtrqDetailForProgressToC4(MtrqplanVO mtrqplanVO);
+
+	// 자재소요계획 진행상태(progress)를 c5(완료)로 update 
+	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO);
+
 }

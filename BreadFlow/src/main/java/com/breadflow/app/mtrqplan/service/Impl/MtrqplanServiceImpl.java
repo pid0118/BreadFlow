@@ -64,4 +64,14 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	public List<MtrqplanVO> selectMtrqplanDetailForGrid(String matrequiredPlanNo) {
 		return mtrqplanMapper.selectMtrqplanDetailForGrid(matrequiredPlanNo);
 	}
+
+	@Override
+	public int updateMtrqDetailForProgressToC4(MtrqplanVO mtrqplanVO) {
+		return mtrqplanMapper.updateMtrqDetailForProgressToC4(mtrqplanVO);
+	}
+
+	@Override
+	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO) {
+		return mtrqplanMapper.updateMatqDetailForProgressToC5(mtrqplanVO);
+	}
 }

@@ -138,7 +138,7 @@ public class AccountController {
 		System.out.println("\n[AccountController.java] updateAccountInfo - accountVO: " + accountVO + "\n");
 		
 		int result = accountService.UpdateMember(accountVO);
-		return 1;
+		return result;
 	}
 	
 	// 사원 신규등록 AJAX

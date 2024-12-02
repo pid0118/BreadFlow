@@ -116,7 +116,19 @@ public class MtrqplanController {
 		return list;
 	}
 	
+	@PostMapping("updateMtrqDetailForProgressToC4")
+	@ResponseBody
+	public int updateMtrqDetailForProgressToC4(@RequestBody MtrqplanVO mtrqplanVO) {
+		System.out.println("\n[PrdtplanController.java] updateMtrqDetailForProgressToC4 - PrdtplanVO: " + mtrqplanVO + "\n");
+		int result = mtrqplanService.updateMtrqDetailForProgressToC4(mtrqplanVO);
+		return result;
+	}
 	
-	
-	
+	@PostMapping("updateMatqDetailForProgressToC5")
+	@ResponseBody
+	public int updateMatqDetailForProgressToC5(@RequestBody MtrqplanVO mtrqplanVO) {
+		System.out.println("\n[PrdtplanController.java] updateMatqDetailForProgressToC5 - PrdtplanVO: " + mtrqplanVO + "\n");
+		int result = mtrqplanService.updateMatqDetailForProgressToC5(mtrqplanVO);
+		return result;
+	}
 }
