@@ -10,5 +10,5 @@ public class BomVO {
 	private String note;			// 비고
 	private String ingredientCode;	// 재료코드
 	private String productCode;		// 제품코드
-	
+	private String ingredientName;  // 재료명
 }

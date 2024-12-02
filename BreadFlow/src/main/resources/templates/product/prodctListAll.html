@@ -54,6 +54,7 @@
     </style>
 </head>
 <body>
+<!-- 카테고리 검색시작 -->
     <h2 class="mb-4">제품목록</h2>
     <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
         <div class="col-md-3">
@@ -77,6 +78,7 @@
             </div>
         </div>
     </div>
+<!-- 카테고리 검색끝 -->    
     
 	<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
     <div id="dtSearch"></div>
@@ -85,8 +87,7 @@
         <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
     </div>
 	</div>
-    
-    <!-- 데이터 테이블 시작 -->
+<!-- 데이터 테이블 시작 -->
     <div class="pb-20">
         
         <table class="data-table table stripe hover wrap" id="productTable">
@@ -129,7 +130,7 @@
         </table>
     </div>
 	
-    <!-- 제품상세보기 모달창 -->
+<!-- 제품상세보기/수정 모달창 -->
 	<div class="modal fade" id="productDetailModal" tabindex="-1" role="dialog" aria-labelledby="productDetailModalLabel" aria-hidden="true">
 	    <div class="modal-dialog modal-lg modal-dialog-centered">
 	        <div class="modal-content">
@@ -356,7 +357,7 @@
                 }
             });
 
-           // Initialize DataTable without sorting 데이터테이블 사용 설정
+           //데이터테이블 사용 설정
            myTable = $('.data-table').DataTable({
                 "ordering": false,
                 "info": false,         
@@ -372,7 +373,7 @@
                 }
             });
             
-            
+         // #region  selectpicker ============================================================================   
            var mySelect = $('#categorylist');
            var mySelect2 = $('#subList');
            
@@ -397,8 +398,9 @@
      			myTable.draw()
            });
         });
-        
-     	// modal 카테고리 변경 처리 =================================================================================
+       // #endregion ===========================================================================================
+       
+       // modal 카테고리 변경 처리 =================================================================================
     	var subCategory = $('#subCategory');
 
         $("#mainCategory").change(function() {
@@ -457,14 +459,14 @@
       //체크박스 클릭시 삭제하기 기능 전체삭제까지
 		function checkBoxDeleteClick(){
     	  
-    	  	var checked = $("[name='checkProductCode']").is(':checked');
+    	  	const checked = $("[name='checkProductCode']").is(':checked');
     	  	
     	  	if (checked){
-    	  		let delcheck = confirm("선택하신 제품을 삭제하시겠습니까?")
+    	  		const delcheck = confirm("선택하신 제품을 삭제하시겠습니까?")
         	  	if(delcheck == false){
         	  		return
         	  	}
-            	var checkBoxArr = [];
+            	let checkBoxArr = [];
             	$("[name='checkProductCode']:checked").each(function(){
             		checkBoxArr.push($(this).closest('td').next().text()); // 체크된 항목 값 배열에 push
             	})
@@ -537,7 +539,7 @@
      			alert("양를 입력해주세요")
      			return;
      		}
-     		if($("#unit option:selected").val() == '선택하세요'){
+     		if($("#unit").get(0).selectedIndex <= 0 ){
      			alert("단위를 선택해주세요")
      			return;
      		}
@@ -549,7 +551,7 @@
      			alert("소분류를 선택해주세요")
      			return;
      		}
-     		if(sameCheck == false){
+     		if(sameCheck === false){
      			alert("제품명이 중복되거나 상품이 등록되어있습니다")
      			return;
      		}
@@ -572,7 +574,7 @@
      				"productImage" : $("#productImage").val()
      			}),
      			contentType : 'application/json',
-     			dataType : "json",
+     			dataType : "text",
      			success : function (data) {
      				if (data == 1) {
      					alert("제품 수정에 성공하였습니다.");

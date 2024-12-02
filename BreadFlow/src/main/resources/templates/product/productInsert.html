@@ -158,6 +158,8 @@
                 $('#image').click();
             });
 
+
+        	// 이미지 업로드    
             $('#image').change(function(event) {
                 const file = event.target.files[0];
                 if (file) {
@@ -168,7 +170,6 @@
                     }
                     reader.readAsDataURL(file);
                 }
-        	// 이미지 업로드    
         		
         		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
         		formData.append("file",file); /* 폼에 file 변수 추가 */
@@ -180,52 +181,48 @@
         			dataType: "text",
         			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
         			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
-        			success: function(data, status,req) {
-        			
-        			$("#productImage").val(data);
+        			success: function(data, status,req) {        			
+        				$("#productImage").val(data);
         			}
-        		});
-        	});
-        
-        	
-        	
-            });
+        		});  // end of ajax
+          }); // end of $('#image').change  
+        });  // end of $(document).ready
     	        
 	            
             
          	// 카테고리 변경 처리
-        	var subCategory = $('#subCategory');
+        var subCategory = $('#subCategory');
     
-            $("#mainCategory").change(function() {
-                const category = this.value;
-                
-                /* $.ajax({
-                	url : "/category/subList?major="+ category,
-                	method : "get",
-                	success : function (data) {
-                		console.log(data)
-                	},
-                	error : function (err) {
-                		console.log(err)
-                	}
-                	
-                }); */
-               // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
-                if (category === "") {
-                    subCategory.empty().append('<option selected>선택하세요</option>');
-                    return;
-                }
+        $("#mainCategory").change(function() {
+              const category = this.value;
+              
+              /* $.ajax({
+              	url : "/category/subList?major="+ category,
+              	method : "get",
+              	success : function (data) {
+              		console.log(data)
+              	},
+              	error : function (err) {
+              		console.log(err)
+              	}
+              	
+              }); */
+             // 선택한 카테고리가 "선택하세요"일 경우, 소분류를 초기화합니다.
+              if (category === "") {
+                  subCategory.empty().append('<option selected>선택하세요</option>');
+                  return;
+              }
 
-                fetch("/category/subList?major=" + category)
-                    .then(response => response.json())
-                    .then(response => {
-                        // 기존 옵션을 지운 후 새로운 옵션 추가
-                        subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
-                        for (let item of response) {
-                            subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error)); // 오류 처리 
+              fetch("/category/subList?major=" + category)
+                  .then(response => response.json())
+                  .then(response => {
+                      // 기존 옵션을 지운 후 새로운 옵션 추가
+                      subCategory.empty().append('<option selected>선택하세요</option>');  // 초기 옵션 추가
+                      for (let item of response) {
+                          subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
+                      }
+                })
+                .catch(error => console.error('Error:', error)); // 오류 처리 
             });
          
 	     	// 제품등록
@@ -323,7 +320,7 @@
         			data: data,
         		}).done((res)=> {
         			console.log(res);
-        			sameCheck = true;
+        			sameCheck = res;
         		}).fail((err)=>{
         			alert("이미등록된 상품이거나 상품명이 중복되었습니다")
         			console.log(err);

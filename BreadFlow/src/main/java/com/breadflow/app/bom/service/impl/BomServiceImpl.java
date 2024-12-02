@@ -25,10 +25,13 @@ public class BomServiceImpl implements BomService{
 	}
 	// bom조회
 	@Override
-	public BomVO selectBom(BomVO bomVO) {
-		
-		return null;
+	public List<BomVO> selectBom(BomVO bomVO) {
+
+		return bomMapper.selectBom(bomVO);
 	}
+	
+	
+	
 	// bom등록
 	@Override
 	public int insertBom(List<BomVO> list) {
@@ -42,9 +45,13 @@ public class BomServiceImpl implements BomService{
 	}
 	// bom수정
 	@Override
-	public int updateBom(BomVO bomVO) {
-		
-		return 0;
+	public int updateBom(List<BomVO> list) {
+	  int result = 0;
+	  for(BomVO bomVO : list) {
+		  bomMapper.insertBom(bomVO);
+		  result++;
+	}
+	  return result;
 	}
 
 //	@Override

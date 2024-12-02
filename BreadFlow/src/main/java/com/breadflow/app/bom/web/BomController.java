@@ -43,15 +43,28 @@ public class BomController {
 		
 		return "bom/bomProductList";
 	}
-	
-	// BOM 조회
-	@ResponseBody
+	// bom상세보기 페이지
 	@GetMapping("bomCheck")
-	public BomVO selectProduct(BomVO bomVO) {
+	public String selectBom(@RequestParam String productCode, Model model) {
+		
+		ProductVO product = productService.selectProduct(productCode);
+		model.addAttribute("product", product);
 		
 		
-		return bomService.selectBom(bomVO);
+		return "bom/bomCheck";
 	}
+	
+	// BOM 데이터 불러오기
+	@GetMapping("bomChecks")
+	@ResponseBody
+	public List<BomVO> selectBomDetail(@RequestParam String productCode) {
+		BomVO bomVO = new BomVO();
+		bomVO.setProductCode(productCode);
+		
+		List<BomVO> list = bomService.selectBom(bomVO);
+		return list;
+	}
+	
 	
 	// BOM 등록 페이지 이동
 	@GetMapping("bomInsert")
@@ -87,12 +100,11 @@ public class BomController {
 	// bom 수정 처리
 	@ResponseBody
 	@PostMapping("bomUpdate")
-	public int updateBomProcess(BomVO bomVO) {
-
-		return bomService.updateBom(bomVO);
+	public int updateBomProcess(@RequestBody List<BomVO> list) {
+	  int result = bomService.updateBom(list);
+		
+	  return result;
 	}
-	
-	
 	
 	
 }
