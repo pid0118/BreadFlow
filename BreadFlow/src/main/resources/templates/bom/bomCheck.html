@@ -5,6 +5,7 @@
 	layout:fragment="Content">
 <head>
 <meta charset="UTF-8">
+<<<<<<< HEAD
 <title>BOM상세보기</title>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
@@ -97,10 +98,125 @@
 	justify-content: center;
 }
 
+=======
+<title>BOM등록</title>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
+<style>
+.container {
+	display: flex;
+	padding: 20px;
+	gap: 20px;
+	max-width: 1400px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.page-title {
+	font-size: 24px;
+	margin: 40px 0;
+	padding-left: 20px;
+}
+
+.image-section {
+	width: 300px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
+}
+
+.image-placeholder {
+	width: 300px;
+	height: 300px;
+	background-color: #E6E9FF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.product-name-input {
+	width: 200px;
+	padding: 8px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	text-align: center;
+	margin-top: 10px;
+}
+
+.grid-section {
+	flex: 1;
+	background: white;
+	border: 1px solid #e5e7eb;
+	border-radius: 4px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	min-height: 500px;
+}
+
+.grid-header {
+	display: flex;
+	justify-content: space-between; /* 좌우 정렬 */
+	margin-bottom: 10px;
+}
+
+.grid-header-right {
+	display: flex;
+	gap: 10px; /* 버튼 간격 */
+	margin-left: auto;
+}
+
+.button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.btn {
+	padding: 6px 16px;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.btn-primary {
+	background-color: #0052CC;
+	color: white;
+	border: none;
+}
+
+.btn-secondary {
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	color: #333;
+}
+
+.tui-pagination {
+	margin-top: 20px;
+	display: flex;
+	justify-content: center;
+}
+
+.btn-danger {
+	background-color: #ff4d4d;
+	color: white;
+	border: none;
+}
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 </style>
 </head>
 <body>
+<<<<<<< HEAD
 	<h2 class="page-title">BOM조회</h2>
+=======
+	<h2 class="page-title">BOM등록</h2>
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 
 	<div class="container">
 		<div class="image-section">
@@ -113,17 +229,138 @@
 		</div>
 
 		<div class="grid-section">
+<<<<<<< HEAD
 			<div id="grid"></div>
 			<div class="tui-pagination" id="pagination"></div>
 			<div class="button-container">
 				<button id="cancelButton" class="btn btn-secondary" th:onclick="|location.href='@{/bomProductList}'|">목록</button>
+=======
+			<div class="grid-header">
+				<div class="grid-header-right">
+					<button class="btn btn-primary" data-toggle="modal"
+						data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
+					<button id="deleteMaterial" class="btn btn-danger">삭제</button>
+				</div>
+			</div>
+			<div id="grid"></div>
+			<div class="tui-pagination" id="pagination"></div>
+			<div class="button-container">
+				<button id="saveButton" class="btn btn-primary">저장</button>
+				<button id="cancelButton" class="btn btn-secondary"
+					th:onclick="|location.href='@{/bomProductList}'|">취소</button>
+			</div>
+		</div>
+	</div>
+	<!-- 원재료 추가 모달창 -->
+	<div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg"
+		tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myLargeModalLabel">품목 추가</h4>
+					<button type="button" class="close" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12 sm-12 text-left">
+							<div class="form-group">
+								<label>품목 종류</label> <select
+									class="custom-select2 form-control second" multiple="multiple"
+									style="width: 100%;">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-9 col-sm-12">
+							<input type="text" class="form-control" id="iname"
+								placeholder="품목명">
+						</div>
+						<div class="col-md-3 col-sm-12">
+							<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
+						</div>
+					</div>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>
+									<div class="custom-control custom-checkbox mb-5">
+										<input type="checkbox" class="custom-control-input checkAll"
+											id="customCheck"> <label class="custom-control-label"
+											for="customCheck"></label>
+									</div>
+								</th>
+								<th>품목코드</th>
+								<th>품목명</th>
+								<th>단위</th>
+								<th>규격</th>
+								<th>가격</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+					<ul class="pagination justify-content-center">
+						<li class="paginate_button page-item previous disabled"
+							id="DataTables_Table_0_previous"><a href="#"
+							aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0"
+							class="page-link"> <i class="ion-chevron-left"></i>
+						</a></li>
+						<li class="paginate_button page-item next disabled"
+							id="DataTables_Table_0_next"><a href="#"
+							aria-controls="DataTables_Table_0" data-dt-idx="3" tabindex="0"
+							class="page-link"> <i class="ion-chevron-right"></i>
+						</a></li>
+					</ul>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="itemAdd" data-dismiss="modal">추가</button>
+				</div>
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 			</div>
 		</div>
 	</div>
 
 	<script>
 	    $(document).ready(function () {
+<<<<<<< HEAD
 	    	getBomDetail()
+=======
+	    	// 이미지 미리보기 기능
+            $('#imagePreview').click(function() {
+                $('#image').click();
+            });
+
+            $('#image').change(function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#img').attr('src', e.target.result);
+                        //$('#imagePreview').empty().append(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+        	// 이미지 업로드    
+        		
+        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+        		formData.append("file",file); /* 폼에 file 변수 추가 */
+        		//서버에 파일 업로드(백그라운드에서 실행)
+        		$.ajax({
+        			type:"post",
+        			url:"/uploadFile",
+        			data : formData,
+        			dataType: "text",
+        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+        			success: function(data, status,req) {
+        			
+        			$("#productImage").val(data);
+        			}
+        		});
+        	});
+	
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	        const grid = new tui.Grid({
 	            el: document.getElementById('grid'),
 	            data: [],
@@ -135,11 +372,20 @@
 	            columns: [
 	                { header: '원재료 코드', name: 'ingredientCode', width: 150, align: 'center' },
 	                { header: '재료명', name: 'ingredientName', width: 200 },
+<<<<<<< HEAD
 	                { header: '소모량', name: 'consumption', width: 150},
+=======
+	                { header: '소모량', name: 'consumption', width: 150, editor: 'text' },
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	                { header: '단위', name: 'unit', width: 150},
+<<<<<<< HEAD
 	                { header: '비고', name: 'note',  width: 150}
+=======
+	                { header: '비고', name: 'note', editor: 'text' }
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	            ]
 	        });
+<<<<<<< HEAD
 	    
 	    // 해당 제품의 bom정보 조회
 	    function getBomDetail(){
@@ -160,8 +406,297 @@
 	    }    
 	    // end 해당 제품의 bom정보 조회  
 	    
+=======
+	
+	        // 원재료 추가 버튼
+	        $('#addMaterial').on('click', function () {
+	            const newRow = {
+	                code: `OB${String(grid.getRowCount() + 1).padStart(5, '0')}`,
+	                name: '새 재료',
+	                quantity: '',
+	                unit: '',
+	                notes: ''
+	            };
+	            grid.appendRow(newRow);
+	        });
+			
+	        // 삭제 버튼
+	        $('#deleteMaterial').on('click', function () {
+			    const selectedRows = grid.getCheckedRows(); // 체크된 항목 가져오기
+			    if (selectedRows.length > 0) {
+			        // 확인 메시지를 추가해 사용자 확인 요청
+			        if (confirm(`${selectedRows.length}개의 항목을 삭제하시겠습니까?`)) {
+			            selectedRows.forEach(row => grid.removeRow(row.rowKey)); // 체크된 행 삭제
+			            alert(`${selectedRows.length}개의 항목이 삭제되었습니다.`);
+			        }
+			    } else {
+			        // 체크된 항목이 없을 경우
+			        alert('삭제할 항목을 선택해주세요.');
+			    }
+			});
+	
+	     	// 품목 추가 (발주 신청 테이블)
+			itemAdd.addEventListener('click', function() {
+				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
+				
+				if (checktd.length === 0) {
+			        alert('선택된 품목이 없습니다.');
+			        
+			        event.preventDefault();
+			        event.stopPropagation();
+			        
+			        return; // 함수 실행 중단
+			    }
+				
+				//check 된것만큼 반복
+				checktd.forEach(td => {
+					//데이터 읽기
+					let datas = td.closest('tr').querySelectorAll('td');
+					const ingredientName = datas[2].innerText
+					const ingredientCode = datas[1].innerText
+					const unit = datas[3].innerText
+					
+					let checktable = true; // 품목코드 중복 여부
+					//grid에 있는지 중복체크 필요
+					grid.getData().forEach(ele => {
+						if(ele.ingredientCode == ingredientCode){
+							checktable = false;
+						}
+					})
+					// grid에 추가
+					if(checktable == true){
+						grid.appendRow(  {ingredientName, ingredientCode, unit} )
+					}
+				})
+				
+			})
+	        
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 
+<<<<<<< HEAD
 	    }); // end ready function
+=======
+	    
+	   /*=====================================================모달 script================================================================= */ 
+
+			// 옵션값 초기화
+		   $('#bd-example-modal-lg').on('hidden.bs.modal', function () {
+			    // 모든 입력 필드 초기화
+			    $(this).find('input[type="text"], input[type="number"], input[type="checkbox"], textarea').val('');
+			    $(this).find('select').val('').trigger('change'); // select2 초기화
+			    $(this).find('input[type="checkbox"]').prop('checked', false); // 체크박스 초기화
+			    $(this).find('table tbody tr').remove(); // 테이블 내용 초기화 (필요 시)
+			});
+		
+		// 품목 종류 카테고리 생성
+		fetch("../category/list")
+		.then(result => result.json())
+		.then(datas => makeCategory(datas))
+		.catch(err => console.log());
+		
+		// 카테고리 생성
+		function makeCategory(datas) {
+			datas = datas.filter((cate) => cate.major == '원재료' || cate.major == '부재료');
+			
+			let major = datas[0];
+			let element = '';
+			for(let data in datas){
+				if(major == datas[data].major){
+					element += `<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+				} else {
+					element += '</optgroup>';
+					$('.custom-select2.second').append(element);
+					element = `<optgroup label="${datas[data].major}">
+						<option value="${datas[data].sub}" data-name="${datas[data].major}">${datas[data].sub}</option>`;
+					major = datas[data].major;	
+				}
+			}
+			element += '</optgroup>';
+			$('.custom-select2.second').append(element);
+		}
+		//-------------------------------------------------원래위치
+		// 페이징 버튼 이벤트
+		document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
+		
+		// 페이지 버튼 클릭 시 페이지 계산 및 페이지 이동
+		function pageEvent(){
+			if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
+				let page;
+				if(event.target.closest('li').classList.contains('next')){
+					page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
+				} else if(event.target.closest('li').classList.contains('previous')) {
+					page = Number(document.querySelector('.paginate_button.active').innerText) - 1;
+				} else {
+					page = event.target.innerText;
+				}
+				itemClick(page);
+			}
+		}
+		
+		// 품목 검색 이벤트
+		itemSearch.addEventListener('click', itemClick);
+	
+		function itemClick(page) {
+			let val = $('.custom-select2.second').val();
+			let searchOpt = $('.custom-select2.second')[0];
+			let ingredients = [];
+			let products = [];
+			let pages = 1;
+			let lastPage;
+			
+			if(page != '[object PointerEvent]') {
+				pages = page;
+			}
+
+			for(let opt of searchOpt) {
+				if(val.indexOf(opt.value) != -1){
+					if(opt.dataset.name.substring(1) == '재료'){
+						ingredients.push(val[val.indexOf(opt.value)]);
+					} else {
+						products.push(val[val.indexOf(opt.value)]);
+					}
+				}
+			}
+			
+			// 검색 조건이 아무것도 없을 때 
+			if(val.length == 0 && iname.value == '' || val.length == 0) {
+				alert("검색 조건을 설정해주세요.");
+			} 
+			else {
+				fetch('../search/itempage', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products
+					})
+				})
+				.then(response => response.json())
+				.then(data => {
+					$('.paginate_button.page-item#addcol').remove()
+					lastPage = Math.ceil(data / 5);
+					for(let i = 1; i <= lastPage; i++) {
+						if(i == 1){
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item active" id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);
+						} else {
+							document.querySelector('.paginate_button:last-child').insertAdjacentHTML('beforeBegin', `<li class="paginate_button page-item " id="addcol">
+									<a href="#" aria-controls="DataTables_Table_0" data-name="${i}" tabindex="0" class="page-link">${i}</a>
+								</li>`);	
+						}
+					}
+					if(pages == 1 && pages == lastPage) {
+						document.querySelector('li.page-item.next').classList.add("disabled");
+						document.querySelector('li.page-item.previous').classList.add("disabled");
+					} else if(pages == 1) {
+						document.querySelector('li.page-item.previous').classList.add("disabled");
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+					} else if(pages == lastPage) {
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+						document.querySelector('li.page-item.next').classList.add("disabled");
+					} else {
+						document.querySelector('li.page-item.next').classList.remove("disabled");
+						document.querySelector('li.page-item.previous').classList.remove("disabled");
+					}
+					
+					document.querySelectorAll('#addcol').forEach(data => {
+						if(data.children[0].dataset.name == pages){
+							data.classList.add('active');
+						} else{
+							data.classList.remove('active');
+						}
+					})
+
+				})
+				.catch(err => console.log(err));
+				
+				
+				fetch('../search/items', {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						'name': iname.value,	
+						'ingredients': ingredients,
+						'products': products,
+						'page': pages
+					})
+				})
+				.then(response => response.json())
+				.then(data => makeItems(data))
+				.catch(err => console.log(err));
+			}
+		}
+		
+		// 품목 검색 테이블 생성
+		function makeItems(data) {
+			$('.modal-body table tbody tr').remove();
+			data.forEach(td => {
+				$('.modal-body table tbody').append(`<tr>
+						<td>
+						<div class="custom-control custom-checkbox mb-5">
+							<input type="checkbox" class="custom-control-input check"
+								id="customCheck${td.itemCode}"> <label
+								class="custom-control-label" for="customCheck${td.itemCode}"></label>
+						</div>
+					</td>
+					<td>${td.itemCode}</td>
+					<td>${td.itemName}</td>
+					<td>${td.unit}</td>
+					<td>${td.standard}</td>
+					<td>${td.purchasePrice}</td>
+				</tr>`)
+			})
+		}
+		// 품목 체크막스 전체 선택
+		$('input.checkAll').click(function(){
+		    if($('input.checkAll').prop("checked")){
+		        $('input.check').prop("checked",true);
+		    }else{
+		    	$('input.check').prop("checked",false); 
+		    }
+		});
+	   /*======================================================modal end================================================================ */ 
+	   
+	   $('#saveButton').click(function(){
+		   insertBom()
+	   })
+	   
+	   // grid로 받은 데이터 insert하기============================================================================
+	   function insertBom() {
+		   let jsonData = [];
+		   jsonData = grid.getData();
+		   
+		   for (let obj of jsonData) {
+			   obj.productCode = $('#productCode').val();
+		   }
+		   
+		   console.log(jsonData);
+		   $.ajax({
+				url: "bomInsert",
+		        type: "post",
+		        contentType: "application/json",
+		        data:  JSON.stringify(jsonData),
+		        success: function(data){
+		            alert("BOM이 성공적으로 저장되었습니다.");
+		            console.log(data);
+		            location.href = "/bomProductList";
+		        },
+		        error: function(result){
+		     	   alert("저장에 실패하였습니다.");
+		     	   console.log(result);
+		     	}
+			});
+			
+	  	 }
+	   
+	    });
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 	
     </script>
 

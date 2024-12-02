@@ -25,7 +25,11 @@ public class BomServiceImpl implements BomService{
 	}
 	// bom조회
 	@Override
+<<<<<<< HEAD
 	public List<BomVO> selectBom(BomVO bomVO) {
+=======
+	public BomVO selectBom(String productCode) {
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 		
 		return bomMapper.selectBom(bomVO);
 	}

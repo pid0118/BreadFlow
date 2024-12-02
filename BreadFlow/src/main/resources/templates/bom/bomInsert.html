@@ -504,6 +504,7 @@
 		    }
 		});
 	   /*======================================================modal end================================================================ */ 
+<<<<<<< HEAD
 					   
 		// 수정하기 기능 =================================================================================
 		$('#updateButton').click(function(){
@@ -511,6 +512,38 @@
 		  function updateBom(){
 			let jsonData = [];
 			jsonData = grid.getData();
+=======
+	   
+	   $('#saveButton').click(function(){
+		   insertBom()
+	   })
+	   
+	   // grid로 받은 데이터 insert하기============================================================================
+	   function insertBom() {
+		   let jsonData = [];
+		   jsonData = grid.getData();
+		   
+		   for (let obj of jsonData) {
+			   obj.productCode = $('#productCode').val();
+		   }
+		   
+		   console.log(jsonData);
+		   $.ajax({
+				url: "bomInsert",
+		        type: "post",
+		        contentType: "application/json",
+		        data:  JSON.stringify(jsonData),
+		        success: function(data){
+		            alert("BOM이 성공적으로 저장되었습니다.");
+		            console.log(data);
+		            location.href = "/bomProductList";
+		        },
+		        error: function(result){
+		     	   alert("저장에 실패하였습니다.");
+		     	   console.log(result);
+		     	}
+			});
+>>>>>>> branch 'indeukk' of https://github.com/pid0118/BreadFlow.git
 			
 			for (let obj of jsonData){
 				obj.productCode = $('#productCode').val();
