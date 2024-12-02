@@ -445,7 +445,7 @@ function showOrdersModal(data){
 //주문 상세 정보 그리드 생성 함수
 function makeOrdDetailGrid(no){
     const columns = [
-    	{name: 'ordersNo', header: '주문 상세코드'},
+    	{name: 'ordersDetailNo', header: '주문 상세코드'},
     	{name: 'itemName', header: '품목명'},
     	{name: 'unit', header: '단위'},
     	{name: 'standard', header: '규격'},
@@ -456,15 +456,15 @@ function makeOrdDetailGrid(no){
     	 formatter: function(data) {
     		 let ele = '';
              if (data.value == '주문완료') {
-            	 ele = `<div class="progress mb-20">
+            	 ele = `<div class="progress">
                                  <div class="progress-bar bg-info" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">주문완료</div>
                                </div>`;
              } else if (data.value == '출고') {
-            	 ele = `<div class="progress mb-20">
+            	 ele = `<div class="progress">
                                  <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">출고</div>
                                </div>`;
              } else if (data.value == '입고완료') {
-            	 ele = `<div class="progress mb-20">
+            	 ele = `<div class="progress">
                                  <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">입고완료</div>
                                </div>`;
              }

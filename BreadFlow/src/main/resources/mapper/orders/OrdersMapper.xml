@@ -101,7 +101,7 @@
 	</select>
 	
 	<select id="selectOrdersComDList">
-		SELECT  DISTINCT o.orders_no,
+		SELECT  DISTINCT od.orders_detail_no,
                 NVL((SELECT ingredient_name
                      FROM ingredient
                      WHERE ingredient_code = od.orders_item),
@@ -131,6 +131,7 @@
 	    ON ord.ordering_detail_code = od.ordering_detail_code
 	    WHERE ord.situation_code != 'e1'
         AND o.orders_no = #{no}
+        ORDER BY od.orders_detail_no
 	</select>
 
 </mapper>

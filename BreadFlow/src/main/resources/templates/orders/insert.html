@@ -57,8 +57,6 @@
 	</div>
 </div>
 
-<button class="btn btn-outline-secondary" type="button" id="updPrdtcomSerachBtn" data-toggle="modal" data-target="#Prdtcom-modal"><i class="icon-copy bi bi-search"></i></button>
-
 <div
 	class="modal fade bs-example-modal-lg"
 	id="Prdtcom-modal"
@@ -181,10 +179,10 @@ const columns = [
 const grid = new tui.Grid({
   el: document.getElementById('grid'),
   data: {
-       api: {
-         readData: { url: '/orders/list', method: 'GET' }
-       }
-     },
+    api: {
+      readData: { url: '/orders/list', method: 'GET' }
+    }
+  },
   width: 'auto',
   columnOptions: {
 	resizable: true  
@@ -215,7 +213,7 @@ $('#addOrders').on('click', function() {
 	})
 	
 	if(codeArr.length == 0){
-		alert("선택된 주문건이 없습니다.");
+		alert("선택된 주문 신청이 없습니다.");
 		event.stopPropagation();
 	}
 	else {
