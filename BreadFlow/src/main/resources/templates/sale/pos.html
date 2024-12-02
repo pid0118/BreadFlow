@@ -12,7 +12,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #f0f0f0;
-}
+} /* 수정 */
 
 .container {
 	display: flex;
@@ -21,7 +21,7 @@ body {
 	margin: 0 auto;
 	background-color: #fff;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+} /* 수정 */
 
 .left-panel {
 	flex: 2;
@@ -44,14 +44,14 @@ header {
 	padding: 10px;
 	background-color: rgb(1, 69, 71);
 	color: white;
-}
+} /* 수정 */
 
 nav {
 	display: flex;
 	overflow-x: auto;
 	background-color: #f0f0f0;
 	padding: 10px 5px;
-}
+} /* 수정 */
 
 .nav-button {
 	border: none;
@@ -141,7 +141,7 @@ footer {
 	background-color: #f0f0f0;
 	height: 130px;
 	padding: 10px;
-}
+} /* 수정 */
 
 .footer-buttons {
 	display: flex;
@@ -277,6 +277,7 @@ footer {
 </head>
 <body>
 	<div class="container">
+		<!-- 좌측 메뉴 시작 -->
 		<div class="left-panel">
 			<header>
 				<span th:text="${#dates.format(#dates.createNow(), 'MM월 dd일 (EEE) a hh:mm')}"></span>
@@ -301,6 +302,9 @@ footer {
 				</div>
 			</footer>
 		</div>
+		<!-- 좌측 메뉴 끝 -->
+				
+		<!-- 우측 메뉴 시작 -->
 		<div class="right-panel">
 			<h3>선택된 메뉴</h3>
 			<ul id="selected-items" class="list-group mb-3">
@@ -314,6 +318,9 @@ footer {
 				<button class="details-button">상세내역</button>
 			</div>
 		</div>
+		<!-- 우측 메뉴 끝 -->
+		
+		<!-- 상세내역 모달 -->
 		<div id="detailsModal" class="modal">
 		    <div class="modal-content">
 		        <span class="close-button">&times;</span>
@@ -341,10 +348,10 @@ footer {
 	</div>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
-		let itemGrid = document.querySelector(".menu-grid");
-		let selectItemList = document.querySelector("#selected-items");
-		let totalPriceElem = document.querySelector(".total-price");
-		let itemCountElem = document.querySelector('.item-count');
+		const itemGrid = document.querySelector(".menu-grid");
+		const selectItemList = document.querySelector("#selected-items");
+		const totalPriceElem = document.querySelector(".total-price");
+		const itemCountElem = document.querySelector('.item-count');
 		let disItemCnt = 0; // 현재 보여지는 아이템 갯수
 		let curPage = 1; // 현재 페이지
 		let itemsPage = 20; // 한 페이지 아이템 수
@@ -371,19 +378,7 @@ footer {
 				});
 			});
 			
-			let btn = document.querySelectorAll('.nav-button');
-			btn.forEach(button => {
-				button.addEventListener('click', function(){
-					btn.forEach(b => b.classList.remove('active'));
-					button.classList.add('active');
-					
-					let category = button.getAttribute('data-category');
-					loadMenu(category);
-				});
-			});
-			
-			loadMenu();
-			
+			// 메뉴클릭시 오른쪽패널 데이터 여부 확인후 수량 증가 또는 신규 추가
 			itemGrid.addEventListener("click", (event) => {
 				if(event.target.closest(".menu-item")) {
 					const element = event.target.closest(".menu-item");
@@ -431,6 +426,7 @@ footer {
 			        }
 		    });
 			
+			    
 			// 주문 등록 ( 매출 상세 저장 )
 			document.querySelector("#menuSub").addEventListener('click', function(){
 				
@@ -458,26 +454,22 @@ footer {
 					.then(response => response.text())
 					.then(data => {
 						alert("주문완료!");
-						location.reload(true); // 새로고침
+						location.reload(); // 새로고침
 					})
 					.catch(error => {
 						console.error(error);
 						alert("주문실패 ㅜㅜ..");
 					});
-					selectedMenu = [];
-					arrayPrint();
 				}
 				else{
 					alert("주문 내역이 없습니다.");
-				}
-				
-				
-			});
-		});
+				}				
+			}); //END OF if(selectedMenu.length > 0)
+		}); //END of ("#menuSub").addEventListener('click')
 		
 
 		
-		
+		// 오른쪽 주문메뉴
 		function arrayPrint() {
 		    // 리스트를 비우고
 		    selectItemList.innerHTML = '';
@@ -505,8 +497,9 @@ footer {
 		        selectItemList.insertAdjacentHTML("beforeend", node);
 		        totalPrice += item.price * item.count;
 		    });
-			// 수량증가 / 감소
+			// 수량증가 / 감소 이벤트
 			amountBnt();
+			
 		    // 총 금액 업데이트
 		    totalPriceElem.textContent = `총 금액: ${totalPrice.toLocaleString()}원`;
 		    itemCountElem.textContent = `${selectedMenu.length}개`;
@@ -515,16 +508,6 @@ footer {
 		    if (selectedMenu.length >= disItemCnt + 6) {
 		        disItemCnt += 6;
 		    }
-
-	        // 총 금액 업데이트
-	        totalPriceElem.textContent = `총 금액: ${totalPrice.toLocaleString()}원`;
-	        itemCountElem.textContent = `${selectedMenu.length}개`;
-	
-			// 6개 이상이면 증가
-			if(selectedMenu.length >= disItemCnt + 6){
-				disItemCnt += 6;
-			}
-		
 
 			//삭제 이벤트
 			let deleteBnt = selectItemList.querySelectorAll('.delete-button');
@@ -594,6 +577,7 @@ footer {
 		        	else{
 		        		totalPages = Math.ceil(menuData.length / itemsPage);
 		        	}
+		        	// IF문 없이 해보기
 		        	renderMenu();
 		        })
 		        .catch(error => {
@@ -601,6 +585,7 @@ footer {
 		        });
 		}
 		
+
 		function renderMenu(){
 			// 생지인거 제외
 			let filterMenu = menuData.filter((item) => item.sub !== '생지');
@@ -628,6 +613,7 @@ footer {
 			updatePagination();
 		}
 		
+		// 페이징 20개씩
 		function updatePagination(){
 			let pagination = document.querySelector('.pagination');
 			pagination.innerHTML = '';
@@ -657,7 +643,8 @@ footer {
 			curPage = page;
 			renderMenu();
 		}
-
+		
+		// 마감정산
 		document.getElementById("salesSub").addEventListener('click', function(){
 			let tableLeg = document.querySelector('#menuDetail').rows.length;
 			if(tableLeg > 1){
@@ -668,7 +655,7 @@ footer {
 				.then(res => res.text())
 				.then(data => {
 					alert("마감정산 완료!");
-					location.reload(true);
+					location.reload();
 				})
 			}
 			else{

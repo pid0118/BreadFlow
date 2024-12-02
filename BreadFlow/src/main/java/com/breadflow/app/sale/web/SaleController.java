@@ -31,13 +31,21 @@ public class SaleController {
 		model.addAttribute("SList", list);
 		return "sale/toSalList";
     }
-    
+    // 월별 매출조회
     @PostMapping("/toSalList/Month")
     @ResponseBody
-    public List<SaleVO> saleListOffice(@RequestParam String saDate, @RequestParam String comNo){
-    	List<SaleVO> list = saleService.selectSaleOffice(saDate, comNo);
+    public List<SaleVO> saleListOffice(@RequestParam String comNo){
+    	List<SaleVO> list = saleService.selectSaleOffice(comNo);
     	return list;
     }
+    // 일별 매출조회
+    @PostMapping("/toSalList/days")
+    @ResponseBody
+    public List<SaleVO> saleListDetailOffice(@RequestParam String comNo, @RequestParam String saleDate){
+    	List<SaleVO> list = saleService.selectSaleDetailOffice(comNo, saleDate);
+    	return list;
+    }
+    
     
     // POS 메인화면 및 상세내역 모달창
     @GetMapping("/pos")

@@ -15,7 +15,10 @@ public interface SaleMapper {
 	public List<SaleVO> selectSaleList();
 	
 	// 본사 : 월별 매출 가져오기
-	public List<SaleVO> selectSaleOffice(String saleDate, String comNo);
+	public List<SaleVO> selectSaleOffice(String comNo);
+	
+	// 본사 : 가맹점 일매출 가져오기
+	public List<SaleVO> selectSaleDetailOffice(String comNO, String saleDate);
 	
 	// POS 제품 리스트 조회
 	public List<ProductVO> selectProductList(String category);
