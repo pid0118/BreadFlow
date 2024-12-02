@@ -64,10 +64,12 @@ public class AccountController {
 		System.out.println("id: " + accountVO.getId());
 		System.out.println("pw: " + accountVO.getPassword());
 		
+		String pw = accountVO.getPassword();
+		
 		//TODO : bcrypt 인코더 또는 paswordendorcer 사용
 		// match 함수 사용하여 비교
 		
-		AccountVO acVO = accountService.selectMemberForLogin(accountVO);
+		AccountVO acVO = accountService.selectMemberForLogin(accountVO, pw);
 		
 		if(acVO == null) {	// 로그인 실패
 			return 0;

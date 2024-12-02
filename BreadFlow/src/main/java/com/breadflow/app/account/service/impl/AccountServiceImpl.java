@@ -12,8 +12,9 @@ import com.breadflow.app.account.service.EncryptHelper;
 
 @Service
 public class AccountServiceImpl implements AccountService {
-
-	private final EncryptHelper encryptHelper = null;
+	
+	@Autowired
+	private EncryptHelper encryptHelper;
 	
 	@Autowired
 	private AccountMapper accountMapper;
@@ -83,9 +84,18 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public AccountVO selectMemberForLogin(AccountVO accountVO) {
+	public AccountVO selectMemberForLogin(AccountVO accountVO, String password) {
 		AccountVO result = accountMapper.selectMemberForLogin(accountVO);
-		return result;
+		String AccountPw = result.getPassword();
+		
+		System.out.println("[AccountServiceImpl] selectMemberForLogin - 암호화.ismatch: " + encryptHelper.isMatch(password, AccountPw));
+		
+		if(encryptHelper.isMatch(password, AccountPw)) {
+			return result;
+		} else {
+			return null;
+		}
+		
 	}
 
 	@Override
@@ -100,6 +110,13 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public int UpdateMember(AccountVO accountVO) {
+		
+		if(accountVO.getPassword() != null || accountVO.getPassword() != "") {
+			String password = accountVO.getPassword();
+			String encryptedPw = encryptHelper.encrypt(password);
+			accountVO.setPassword(encryptedPw);
+		}
+		
 		int result = accountMapper.updateMember(accountVO);
 		return result;
 	}
