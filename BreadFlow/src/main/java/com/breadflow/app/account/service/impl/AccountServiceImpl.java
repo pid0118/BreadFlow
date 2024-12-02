@@ -36,10 +36,16 @@ public class AccountServiceImpl implements AccountService {
 		return result;
 	}
 
+	// 회원 신규 입력
 	@Override
 	public int insertMember(AccountVO accountVO){
 		// [박진석|241202] 비밀번호 암호화
 		String password = accountVO.getPassword();
+		
+		if(password == null || password == "") {
+			password = "0000";
+		}
+		
 		String encryptedPw = encryptHelper.encrypt(password);
 		accountVO.setPassword(encryptedPw);
 		
@@ -47,9 +53,17 @@ public class AccountServiceImpl implements AccountService {
 		return result;
 	}
 
+	// 비밀번호를 0000으로 초기화
 	@Override
 	public int updateMemberForPw(String id) {
-		int result = accountMapper.updateMemberForPw(id);
+		AccountVO accVO = new AccountVO();
+		String pW0000 = "0000";
+		String encryptedPw = encryptHelper.encrypt(pW0000);
+		
+		accVO.setId(id);
+		accVO.setPassword(encryptedPw);
+		
+		int result = accountMapper.updateMemberForPw(accVO);
 		return result;
 	}
 

@@ -84,14 +84,7 @@
 		) VALUES (
 		    (SELECT 'US' || LPAD(NVL(SUBSTR(MAX(member_no), 3),0)+1, 5, '0') FROM member)
 		    , (SELECT 'BB' || LPAD(NVL(SUBSTR(MAX(id), 3),0)+1, 5, '0') FROM member)
-		    <choose>
-		    	<when test="password != null">
-		    	, #{password}
-		    	</when>
-		    	<otherwise>
-		    	,'0000'
-		    	</otherwise>
-		    </choose>
+		    , #{password}
 		    , #{name}
 		    , #{companyTel}
 		    , #{other}
@@ -102,9 +95,9 @@
 	</insert>
 	
 	<!-- 비밀번호 초기화 -->
-	<update id="updateMemberForPw" parameterType="String">
+	<update id="updateMemberForPw" parameterType="AccountVO">
 		UPDATE 	member
-		SET 	password = '0000'
+		SET 	password = #{password}
 		WHERE 	id = #{id}
 	</update>
 	
