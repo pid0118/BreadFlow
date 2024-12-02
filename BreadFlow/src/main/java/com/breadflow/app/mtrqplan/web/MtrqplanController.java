@@ -129,6 +129,7 @@ public class MtrqplanController {
 	public int updateMatqDetailForProgressToC5(@RequestBody MtrqplanVO mtrqplanVO) {
 		System.out.println("\n[PrdtplanController.java] updateMatqDetailForProgressToC5 - PrdtplanVO: " + mtrqplanVO + "\n");
 		int result = mtrqplanService.updateMatqDetailForProgressToC5(mtrqplanVO);
-		return result;
+		int result2 = mtrqplanService.insertInstoreForMtrqplan(mtrqplanVO);
+		return result + result2;
 	}
 }

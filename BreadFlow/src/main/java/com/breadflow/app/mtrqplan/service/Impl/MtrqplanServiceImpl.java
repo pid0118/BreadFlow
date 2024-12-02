@@ -74,4 +74,9 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO) {
 		return mtrqplanMapper.updateMatqDetailForProgressToC5(mtrqplanVO);
 	}
+
+	@Override
+	public int insertInstoreForMtrqplan(MtrqplanVO mtrqplanVO) {
+		return mtrqplanMapper.insertInstoreForMtrqplan(mtrqplanVO);
+	}
 }

@@ -26,4 +26,6 @@ public interface MtrqplanService {
 	public int updateMtrqDetailForProgressToC4(MtrqplanVO mtrqplanVO);
 
 	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO);
+
+	public int insertInstoreForMtrqplan(MtrqplanVO mtrqplanVO);
 }

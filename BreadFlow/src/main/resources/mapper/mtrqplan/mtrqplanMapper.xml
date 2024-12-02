@@ -168,4 +168,39 @@
 	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
 </update>
 
+<insert id="insertInstoreForMtrqplan" parameterType="MtrqplanVO">
+	INSERT INTO INSTORE
+		(
+			instore_no
+            , instore_date
+            , item_div
+            , item_code
+            , instore_quantity
+            , company_no
+            , stock_quantity
+            , facilities_div_no
+            , lot_no
+            , instore_manager
+            , ordering_detail_code
+            , instore_div
+            , expiration_deadline
+            , instore_group_no		
+		) VALUES (
+			('IN' || (SELECT GETSEQ('instore','instore_no') FROM dual))
+            , #{lastDate}
+            , 'g1'
+            , #{productCode}
+            , #{planQuantity}
+            , #{supplyCompany}
+            , (SELECT SUM(i.instore_quantity) + #{planQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{supplyCompany})
+            , 'a2'
+            , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
+            , #{writer}
+            , #{matrequiredPlanNo}
+            , 'f2'
+            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{productCode} AND ROWNUM = 1)
+            , (SELECT MAX(INSTORE_GROUP_NO) + 1 FROM instore)
+		)
+</insert>
+
 </mapper>
