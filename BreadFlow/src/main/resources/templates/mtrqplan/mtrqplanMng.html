@@ -821,8 +821,33 @@ function updateMtrqplanSituation() {
 	}
 	
 	if(progress != "작성중") {
-		alert("이미 공유된 계획입니다.");
+		alert("이미 공유된 자재소요계획입니다.");
 		return false;
+	}
+	
+	if(confirm(`자재소요계획을 ${ $("#updPrdtComNm").val() } 업체에게 공유하시겠습니까?`)) {
+		let jsonData = {
+			matrequiredPlanNo: $("#updMtrqPlanNo").val()
+		}
+		
+		$.ajax({
+			url: "updateMtrqplanDetailForProgress",
+	        type: "post",
+	        contentType: "application/json",
+	        data:  JSON.stringify(jsonData),
+	        success: function(data){
+	            alert("성공적으로 저장되었습니다.");
+	            console.log(data);
+	            location.reload(true);
+	        },
+	        error: function(result){
+	     	   alert("저장에 실패하였습니다.");
+	     	   console.log(result);
+	     	}
+		});
+
+	} else {
+		alert('취소하였습니다.');
 	}
 	
 }

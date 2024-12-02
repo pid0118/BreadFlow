@@ -4,6 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <th:block th:replace="~{common/configs/breadflow_config :: BootstrapConfig}"></th:block>
+<!-- [박진석|241202] 비회원일 경우 어떤 페이지 접속하든 자동으로 로그인 페이지 호출 -->
+<th:block th:if="${session.memNo == null}">
+	<meta http-equiv="refresh" content="0;url=index">
+</th:block>
+<!-- 비회원 자동 로그인 페이지 호출 끝 -->
 <title></title>
 </head>
 <body>

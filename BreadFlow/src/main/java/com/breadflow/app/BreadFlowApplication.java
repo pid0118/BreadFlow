@@ -5,6 +5,10 @@ import java.util.TimeZone;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import com.breadflow.app.account.service.EncryptHelper;
+import com.breadflow.app.account.service.SaltEncrypt;
 
 import jakarta.annotation.PostConstruct;
 
@@ -20,6 +24,11 @@ public class BreadFlowApplication {
     public void init() {
         // timezone 설정
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
+    
+    @Bean
+    EncryptHelper encryptConfig() {
+    	return new SaltEncrypt();
     }
 
 }

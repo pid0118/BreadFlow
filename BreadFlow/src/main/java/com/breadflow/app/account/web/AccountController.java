@@ -64,10 +64,9 @@ public class AccountController {
 		System.out.println("id: " + accountVO.getId());
 		System.out.println("pw: " + accountVO.getPassword());
 		
-		//TODO : bcrypt 인코더 또는 paswordendorcer 사용
-		// match 함수 사용하여 비교
+		String pw = accountVO.getPassword();
 		
-		AccountVO acVO = accountService.selectMemberForLogin(accountVO);
+		AccountVO acVO = accountService.selectMemberForLogin(accountVO, pw);
 		
 		if(acVO == null) {	// 로그인 실패
 			return 0;
@@ -110,7 +109,6 @@ public class AccountController {
 		System.out.println("[AccountController.java] passwordResetUpdate - id: " + accountVO.getId());
 		int result = accountService.updateMemberForPw(accountVO.getId());
 		return result;
-		// TODO 암호화 필요
 		
 	}
 	
@@ -138,7 +136,7 @@ public class AccountController {
 		System.out.println("\n[AccountController.java] updateAccountInfo - accountVO: " + accountVO + "\n");
 		
 		int result = accountService.UpdateMember(accountVO);
-		return 1;
+		return result;
 	}
 	
 	// 사원 신규등록 AJAX

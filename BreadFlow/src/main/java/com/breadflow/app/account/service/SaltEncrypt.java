@@ -1,10 +1,9 @@
 package com.breadflow.app.account.service;
 
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.stereotype.Component;
 
-@Component
-public class SaltEncrypt implements Encryptor {
+
+public class SaltEncrypt implements EncryptHelper {
 	
 	@Override
 	public String encrypt(String password) {

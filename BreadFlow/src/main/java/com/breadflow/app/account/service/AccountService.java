@@ -23,7 +23,7 @@ public interface AccountService {
 
 	public int UpdateCompanyForTel(AccountVO accountVO);
 
-	public AccountVO selectMemberForLogin(AccountVO accountVO);
+	public AccountVO selectMemberForLogin(AccountVO accountVO, String password);
 
 	public List<AccountVO> selectCompanyList();
 

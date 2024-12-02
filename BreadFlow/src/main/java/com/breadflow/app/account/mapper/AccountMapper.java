@@ -16,7 +16,7 @@ public interface AccountMapper {
 	public int insertMember(AccountVO accountVO);
 
 	// 특정 회원의 비밀번호 초기화
-	public int updateMemberForPw(String id);
+	public int updateMemberForPw(AccountVO accountVO);
 
 	// 회원(member) 단건 입력(사원인 경우)
 	public int insertEmpMember(AccountVO accountVO);
@@ -30,7 +30,7 @@ public interface AccountMapper {
 	// 회사(업체) 삭제
 	public int deleteCompany(String companyNo);
 
-	// 회원(member) 수정
+	// 본사에서의 회원(member) 수정
 	public int updateMemberForEmp(AccountVO accountVO);
 
 	public int UpdateCompanyForTel(AccountVO accountVO);

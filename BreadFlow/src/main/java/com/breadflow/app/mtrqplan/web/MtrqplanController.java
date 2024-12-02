@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,8 @@ import com.breadflow.app.mtrqplan.service.MtrqplanService;
 import com.breadflow.app.mtrqplan.service.MtrqplanVO;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MtrqplanController {
@@ -30,10 +33,6 @@ public class MtrqplanController {
 		return "mtrqplan/mtrqplanMng";
 	}
 	
-	@GetMapping("mtrqplanPrcs")
-	public String mtrqpplanPrsc() {
-		return "mtrqplan/mtrqplanPrcs";
-	}
 	
 	@GetMapping("getPrdtPlanList")
 	@ResponseBody
@@ -79,5 +78,57 @@ public class MtrqplanController {
 		System.out.println("\n[MtrqplanController.java] selectMtrqplanDetails - mtrqPlanNo: " + id + "\n");
 		List<MtrqplanVO> list = mtrqplanService.selectMtrqplanDetails(id);
 		return list;
+	}
+	
+	@PostMapping("updateMtrqplanDetailForProgress")
+	@ResponseBody
+	public int updateMtrqplanDetailForProgress(@RequestBody MtrqplanVO mtrqplanVO) {
+		int result = mtrqplanService.updateMtrqplanDetailForProgress(mtrqplanVO);
+		return result;
+	}
+	
+	
+	//== 자재소요계획(공급업체) 페이지에서 사용되는 컨트롤러 ==//
+	
+	@GetMapping("mtrqplanPrcs")
+	public String mtrqpplanPrsc(Model model, HttpSession session) {
+		String CompanyNo = (String) session.getAttribute("companyNo");
+		List<MtrqplanVO> list = mtrqplanService.selectMtrqplanForCom(CompanyNo);
+		model.addAttribute("plans", list);
+		return "mtrqplan/mtrqplanPrcs";
+	}
+	
+	
+	@GetMapping("selectMtrqplanForForm")
+	@ResponseBody
+	public MtrqplanVO selectMtrqplanForForm(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplanForForm - id: " + id + "\n");
+		MtrqplanVO mVO = mtrqplanService.selectMtrqplanForForm(id);
+		return mVO;
+	}
+
+	
+	@GetMapping("selectMtrqplanDetailForGrid")
+	@ResponseBody
+	public List<MtrqplanVO> selectMtrqplanDetailForGrid(@RequestParam String id) {
+		System.out.println("\n[MtrqplanController.java] selectMtrqplanDetailForGrid - id: " + id + "\n");
+		List<MtrqplanVO> list = mtrqplanService.selectMtrqplanDetailForGrid(id);
+		return list;
+	}
+	
+	@PostMapping("updateMtrqDetailForProgressToC4")
+	@ResponseBody
+	public int updateMtrqDetailForProgressToC4(@RequestBody MtrqplanVO mtrqplanVO) {
+		System.out.println("\n[PrdtplanController.java] updateMtrqDetailForProgressToC4 - PrdtplanVO: " + mtrqplanVO + "\n");
+		int result = mtrqplanService.updateMtrqDetailForProgressToC4(mtrqplanVO);
+		return result;
+	}
+	
+	@PostMapping("updateMatqDetailForProgressToC5")
+	@ResponseBody
+	public int updateMatqDetailForProgressToC5(@RequestBody MtrqplanVO mtrqplanVO) {
+		System.out.println("\n[PrdtplanController.java] updateMatqDetailForProgressToC5 - PrdtplanVO: " + mtrqplanVO + "\n");
+		int result = mtrqplanService.updateMatqDetailForProgressToC5(mtrqplanVO);
+		return result;
 	}
 }
