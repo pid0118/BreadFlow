@@ -71,11 +71,13 @@ public class SaleServiceImpl implements SaleService {
 	}
 
 	@Override
-	public List<SaleVO> selectSaleOffice(String saleDate, String comNo) {
-		if(saleDate.equals("undefined")) {
-			saleDate = DateUtil.dashFormatDate(null, "yyyyMM");
-		}
-		return saleMapper.selectSaleOffice(saleDate, comNo);
+	public List<SaleVO> selectSaleOffice(String comNo) {
+		return saleMapper.selectSaleOffice(comNo);
+	}
+
+	@Override
+	public List<SaleVO> selectSaleDetailOffice(String comNO, String saleDate) {
+		return saleMapper.selectSaleDetailOffice(comNO, saleDate);
 	}
 
 }
