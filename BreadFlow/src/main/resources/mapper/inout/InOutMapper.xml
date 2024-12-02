@@ -9,12 +9,13 @@
 		    I.INSTORE_DATE,
 		    I.INSTORE_QUANTITY,
 		    I.EXPIRATION_DEADLINE,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
+		    I.INSTORE_GROUP_NO,
+		    FIND_CD(CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END) AS UNIT,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_INGREDIENT,
 		    OD.ORDERING_PRODUCT,
-		    ODS.OUTSTORE_COMPANY,
-		    ODS.INSTORE_COMPANY,
+		    FIND_COMPNAME(ODS.OUTSTORE_COMPANY) AS OUTSTORE_COMPANY,
+		    FIND_COMPNAME(ODS.INSTORE_COMPANY) AS INSTORE_COMPANY,
 			CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME		    
 		FROM
 		              INSTORE I
@@ -55,7 +56,7 @@
 			]]>
 			</if>
 		ORDER BY
-		    I.INSTORE_NO DESC
+		    I.INSTORE_GROUP_NO DESC
 		
 		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
@@ -66,6 +67,7 @@
 		SELECT
 		    O.OUTSTORE_DATE,
 		    O.OUTSTORE_QUANTITY,
+		    O.OUTSTORE_GROUP_NO,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    ODS.OUTSTORE_COMPANY,
@@ -111,7 +113,7 @@
 			]]>
 			</if>
 		ORDER BY
-		    O.OUTSTORE_NO DESC
+		    O.OUTSTORE_GROUP_NO DESC
 		    
 		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
@@ -130,6 +132,8 @@
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.EXPIRATION_DEADLINE ELSE ING.EXPIRATION_DEADLINE END AS EXPIRATIONDEADLINE,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PURCHASE_PRICE ELSE ING.PURCHASE_PRICE END AS PURCHASE_PRICE,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
 		    ODS.PRICE
 		FROM
 		         ORDERING O
@@ -180,6 +184,8 @@
 		    ODS.ORDERS_DETAIL_NO,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PURCHASE_PRICE ELSE ING.PURCHASE_PRICE END AS PURCHASE_PRICE,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
 		    ODS.PRICE
 		FROM
 		         INSTORE I
@@ -227,7 +233,8 @@
 		                    , instore_manager
 		                    , ordering_detail_code
 		                    , instore_div
-		                    , expiration_deadline)
+		                    , expiration_deadline
+		                    , instore_group_no)
 		VALUES      (('IN' || (SELECT GETSEQ('instore','instore_no') FROM dual))
 		            , #{instoreDate}
 		            , #{itemDiv}
@@ -235,12 +242,13 @@
 		            , #{instoreQuantity}
 		            , #{companyNo}
 		            , (SELECT SUM(i.instore_quantity) + #{instoreQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{companyNo})
-		            , (SELECT div FROM company WHERE company_no = #{companyInput})
+		            , (SELECT div FROM company WHERE company_no = #{companyNo})
 		            , (SUBSTR(#{itemCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
 		            , #{instoreManager}
 		            , #{orderingDetailCode}
 		            , #{instoreDiv}
-		            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode} AND ROWNUM = 1))
+		            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode} AND ROWNUM = 1)
+		            , #{instoreGroupNo})
 	</insert>
 	
 	<update id="updateInstoreOrdering" parameterType="InstoreVO">
@@ -421,6 +429,78 @@
 	    <if test="ing != null and ing != ''">
 	        AND OD.ORDERING_INGREDIENT IS NOT NULL
 	    </if>
+	</select>
+	
+	<select id="getInstoreLastGroupNo" resultType="int">
+		SELECT	MAX(INSTORE_GROUP_NO)
+		FROM	INSTORE
+	</select>
+	
+	<select id="getOutstoreLastGroupNo" resultType="int">
+		SELECT	MAX(OUTSTORE_GROUP_NO)
+		FROM	OUTSTORE
+	</select>
+	
+	<select id="getInstoreModal" resultType="InstoreVO">
+		SELECT
+		    I.INSTORE_DATE "DATE",
+		    I.INSTORE_QUANTITY "QUANTITY",
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEM_NAME,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PURCHASE_PRICE ELSE ING.PURCHASE_PRICE END AS PURCHASE_PRICE,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
+		    ODS.PRICE
+		FROM
+		         	  INSTORE I
+		    LEFT JOIN ORDERING_DETAIL OD  ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+            I.INSTORE_GROUP_NO = #{groupNo}
+	</select>
+	
+	<select id="getOutstoreModal" resultType="OutstoreVO">
+		SELECT
+		    O.OUTSTORE_DATE AS DATE,
+		    O.OUTSTORE_QUANTITY AS QUANTITY,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEM_NAME,
+		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PURCHASE_PRICE ELSE ING.PURCHASE_PRICE END AS PURCHASE_PRICE,
+		    ODS.OUTSTORE_COMPANY,
+		    ODS.INSTORE_COMPANY,
+		    ODS.PRICE
+		FROM
+		         	  OUTSTORE O
+		    LEFT JOIN ORDERS_DETAIL   ODS ON O.ORDERS_DETAIL_NO = ODS.ORDERS_DETAIL_NO
+		    LEFT JOIN ORDERING_DETAIL OD  ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
+		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
+		WHERE
+            O.OUTSTORE_GROUP_NO = #{groupNo}
+	</select>
+	
+	<select id="getInstoreComp" resultType="CompanyVO">
+		SELECT
+		    COMPANY_NAME,
+		    COMPANY_ADDRESS,
+		    COMPANY_TEL,
+		    BRN
+		FROM
+		    COMPANY
+		WHERE 
+		    COMPANY_NO = #{companyNo}
+	</select>
+	
+	<select id="getOutstoreComp" resultType="CompanyVO">
+		SELECT
+		    COMPANY_NAME,
+		    COMPANY_ADDRESS,
+		    COMPANY_TEL,
+		    BRN
+		FROM
+		    COMPANY
+		WHERE 
+		    COMPANY_NO = #{companyNo}
 	</select>
 	
 </mapper>

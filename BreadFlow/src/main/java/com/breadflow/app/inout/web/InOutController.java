@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.infer.service.CompanyVO;
 import com.breadflow.app.inout.service.FilterVO;
 import com.breadflow.app.inout.service.InOutService;
 import com.breadflow.app.inout.service.InstoreVO;
@@ -102,5 +103,29 @@ public class InOutController {
 	@ResponseBody
 	public int insertOut(@RequestBody List<OutstoreVO> outstoreVO) {
 		return inOutService.outstoreInsert(outstoreVO);
+	}
+	
+	@GetMapping("inOut/instoreModal")
+	@ResponseBody
+	public List<InstoreVO> instoreModal(FilterVO filterVO) {
+		return inOutService.instoreModal(filterVO);
+	}
+	
+	@GetMapping("inOut/outstoreModal")
+	@ResponseBody
+	public List<OutstoreVO> outstoreModal(FilterVO filterVO) {
+		return inOutService.outstoreModal(filterVO);
+	}
+	
+	@GetMapping("inOut/instoreComp")
+	@ResponseBody
+	public CompanyVO instoreComp(String companyNo) {
+		return inOutService.instoreComp(companyNo);
+	}
+	
+	@GetMapping("inOut/outstoreComp")
+	@ResponseBody
+	public CompanyVO outstoreComp(String companyNo) {
+		return inOutService.outstoreComp(companyNo);
 	}
 }

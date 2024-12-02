@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.breadflow.app.modal.mapper.ModalMapper">
 	<select id="selectCompanyList" resultType="CoFindVO">
-		SELECT      DIV
+		SELECT      FIND_CD(DIV) AS DIV
 		            , COMPANY_NAME
 		            , COMPANY_ADDRESS
 		            , COMPANY_NO

@@ -6,6 +6,24 @@
 <head>
 <meta charset="UTF-8">
 <title>불량 내역 등록</title>
+<style>
+	.image-placeholder {
+		width: 100%;
+		height: 100%;
+		background-color: #e6e6fa;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		border-radius: 4px;
+		overflow: hidden;
+	}
+	.image-placeholder img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+</style>
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -131,50 +149,58 @@
             
          	// 업체 검색 모달에서 선택 (없어도 될지도)
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
+                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 companyInput = selectedCompanyName;
                 changeFilter();
             });
          	
-         	// 이미지 미리보기 기능
-            $('#imagePreview').click(function() {
-                $('#image').click();
-            });
-			
-            $('#image').change(function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = $('<img>').attr('src', e.target.result);
-                        $('#imagePreview').empty().append(img);
-                    }
-                    reader.readAsDataURL(file);
-                }
-                
-        		// 이미지 업로드    
-        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
-        		formData.append("file", file); /* 폼에 file 변수 추가 */
-        		
-        		//서버에 파일 업로드(백그라운드에서 실행)
-        		$.ajax({
-        			type:"post",
-        			url:"/uploadFile",
-        			data : formData,
-        			dataType: "text",
-        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
-        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
-        			success: function(data, status, req) {
-        				$("#productImage").val(data);
-        			}
-        		});
-        	});
+         	function imageSet() {
+         		
+	         	// 이미지 미리보기 기능
+	            $('.imagePreview').click(function() {
+	                $(this).closest('td').find('.image').click();
+	            });
+				
+	            $('.image').change(function(event) {
+	            	
+	            	let pi = $(this).closest("td").find(".imagePreview");
+	            	let pri = $(this).closest("td").find(".productImage");
+	                const file = event.target.files[0];
+	                if (file) {
+	                    const reader = new FileReader();
+	                    reader.onload = function(e) {
+	                        const img = $('<img>').attr('src', e.target.result);
+	                        pi.empty().append(img);
+	                    }
+	                    reader.readAsDataURL(file);
+	                }
+	                
+	        		// 이미지 업로드    
+	        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
+	        		formData.append("file", file); /* 폼에 file 변수 추가 */
+	        		
+	        		//서버에 파일 업로드(백그라운드에서 실행)
+	        		$.ajax({
+	        			type:"post",
+	        			url:"/uploadFile",
+	        			data : formData,
+	        			dataType: "text",
+	        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
+	        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+	        			success: function(data, status, req) {
+	        				pri.val(data);
+	        			}
+	        		});
+	        	});
+            
+         	}
 
 	     	// 등록 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
 	        	var checkNull = false;
+	        	var checkQuant = false;
 	            // 선택된 행 추출
 	            var selectedRows = [];
 	            $("#inferTable tr.selected").each(function() {
@@ -185,13 +211,16 @@
 				        inferQuantity: row.find("td:nth-child(5) .quant").val(),
 				        inferType: row.find("td:nth-child(6) select").val(),
 				        instoreNo: row.find("td:nth-child(7)").text(),
-				        inferImage: 'test', // $("#productImage").val(),
-				        confirmLocation: $("#companyName").val(),
+				        inferImage: $(".productImage").val(),
+				        confirmLocation: $("#companyInput").val(),
 				        inferManager
 			        };
 					if ((data.inferQuantity == null || data.inferQuantity == '') || (data.inferImage == null || data.inferImage == '')) {
 						checkNull = true;
 					} 
+					if (data.inferQuantity > data.totalQuantity) {
+						checkQuant = true;
+					}
 			        selectedRows.push(data);
 	            });
 	            
@@ -199,6 +228,8 @@
 	            
 	            if (checkNull) {
 	            	alert("필수 항목이 입력되지 않았습니다.")
+	            } else if (checkQuant) {
+	            	alert("올바른 수량을 입력해주세요.")
 	            } else {
 		         	// 불량 내역 등록
 		            $.ajax({
@@ -209,6 +240,7 @@
 		                success: function(response) {
 		                	console.log(selectedRows);
 		                	alert("등록되었습니다.");
+		                	$(".form-change-input").removeClass("selected");
 		                },
 		                error: function() {
 		                	console.log(selectedRows);
@@ -218,137 +250,140 @@
 	            }
 	         	
 	        });
+				
+			// 이전 버튼 클릭시 동작
+			$("#prevPageBtn").click(function() {
+			    if (page > 1) {
+			        page--;
+			        changeFilter();
+			        $("#currentPage").text(page + " 페이지");
+			    }
+			});
 			
+			// 다음 버튼 클릭시 동작
+			$("#nextPageBtn").click(function() {
+			    page++;
+			    changeFilter();
+			    $("#currentPage").text(page + " 페이지");
+			});
+			
+			// 필터값 전송
+	        function changeFilter() {
+	        	$.ajax({
+	            	url : '/infer/getInstore',
+	            	method : 'GET',
+	            	data : {companyInput, page, pageSize},
+	            	success : function(data) {
+	            		console.log(data);
+	            		updateTable(data);
+	            		var lastPage = Math.ceil(data.count / pageSize);
+	            		if (page == lastPage) {
+	            			$("#nextPageBtn").hide();
+	            		} else {
+	            			$("#nextPageBtn").show();
+	            		}
+	            		if (page > 1) {
+	            			$("#prevPageBtn").show();
+	            		} else {
+	            			$("#prevPageBtn").hide();
+	            		}
+	            	},
+	            	error : function() {
+		                alert("내역을 불러오는 데 실패했습니다.");
+		            }
+	            });
+	        }
+	
+		    // 목록 갱신
+		    function updateTable(data) {
+		        var tbody = $("#inferTable");
+		        tbody.empty();
+		        data.forEach(function(item) {
+		            var row = "<tr>";
+			            row += `<td>
+									<div class="form-check">
+										<input class="form-check-input check" type="checkbox">
+									</div>
+								</td>`;
+		                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
+		                row += "<td>" + item.itemName + "</td>";
+		                row += "<td>" + item.instoreQuantity + "</td>";
+		                row += "<td>" + "<input class='form-control quant' type='text' placeholder='불량 수량을 입력하세요.'></input>" + "</td>";
+		                row += "<td>" + `<select class="custom-select col-12">
+										 	<option selected="">불량 유형을 선택하세요.</option>
+											<option value="h1">부패</option>
+											<option value="h2">분실</option>
+											<option value="h3">파손</option>
+										 </select>` + "</td>";
+		                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
+		                row += `<td>
+		                			<div class="image-placeholder imagePreview">
+					            		<span>이미지</span>
+					        		</div>
+					        		<input type="file" class="image d-none" accept="image/*">
+					        		<input type="hidden" class="productImage">
+					        	<td>`;
+		            	row += "</tr>";
+		            tbody.append(row);
+		        });
+		        
+		        // 이미지 이벤트 설정
+		        imageSet();
+		    }
+		    
+			// 당일 날짜 가져오기
+		    function loadTodayDate() {
+		    	var objectDate = new Date();
+		    	var day = objectDate.getDate();
+		    	var month = objectDate.getMonth();
+		    	var year = objectDate.getFullYear();
+		    	var todayDate = year + "-" + (month + 1) + "-" + day;
+		 		$("#inferDate").val(todayDate);
+		 	}
+		    
+		 	// 검색
+	        function searchData(keyword) {
+	            $("#inferTable tr").each(function() {
+	                var rowText = $(this).text().toLowerCase();
+	                if (rowText.includes(keyword)) {
+	                    $(this).show();
+	                } else {
+	                    $(this).hide();
+	                }
+	            });
+	        }
+		 	
+	     	// 테이블에서 행 클릭 시 선택 처리
+	        $("#inferTable").on('click', '.form-check-input', function() {
+	            var row = $(this).closest('tr');
+	            
+	            if ($(this).prop('checked')) {
+	                row.addClass('selected');
+	            } else {
+	                row.removeClass('selected');
+	            }
+	        });
+	     	
+	     	// 체크박스 일괄 선택 처리
+	     	$("#checkAll").change(function() {
+	     	    var isChecked = $(this).prop('checked');
+	     	    
+	     	    $("#inferTable tr").each(function() {
+	     	        var row = $(this);
+	     	        var checkbox = row.find(".form-check-input");
+	     	        
+	     	        checkbox.prop('checked', isChecked);
+	     	        
+	     	        if (isChecked) {
+	     	            row.addClass('selected');
+	     	        } else {
+	     	            row.removeClass('selected');
+	     	        }
+	     	    });
+	     	});
+	        
 	    });
 		
-		// 이전 버튼 클릭시 동작
-		$("#prevPageBtn").click(function() {
-		    if (page > 1) {
-		        page--;
-		        changeFilter();
-		        $("#currentPage").text(page + " 페이지");
-		    }
-		});
-		
-		// 다음 버튼 클릭시 동작
-		$("#nextPageBtn").click(function() {
-		    page++;
-		    changeFilter();
-		    $("#currentPage").text(page + " 페이지");
-		});
-		
-		// 필터값 전송
-        function changeFilter() {
-        	$.ajax({
-            	url : '/infer/getInstore',
-            	method : 'GET',
-            	data : {companyInput, page, pageSize},
-            	success : function(data) {
-            		console.log(data);
-            		updateTable(data);
-            		var lastPage = Math.ceil(data.count / pageSize);
-            		if (page == lastPage) {
-            			$("#nextPageBtn").hide();
-            		} else {
-            			$("#nextPageBtn").show();
-            		}
-            		if (page > 1) {
-            			$("#prevPageBtn").show();
-            		} else {
-            			$("#prevPageBtn").hide();
-            		}
-            	},
-            	error : function() {
-	                alert("내역을 불러오는 데 실패했습니다.");
-	            }
-            });
-        }
-
-	    // 목록 갱신
-	    function updateTable(data) {
-	        var tbody = $("#inferTable");
-	        tbody.empty();
-	        data.forEach(function(item) {
-	            var row = "<tr>";
-		            row += `<td>
-								<div class="form-check">
-									<input class="form-check-input check" type="checkbox">
-								</div>
-							</td>`;
-	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
-	                row += "<td>" + item.itemName + "</td>";
-	                row += "<td>" + item.instoreQuantity + "</td>";
-	                row += "<td>" + "<input class='form-control quant' type='text' placeholder='불량 수량을 입력하세요.'></input>" + "</td>";
-	                row += "<td>" + `<select class="custom-select col-12">
-									 	<option selected="">불량 유형을 선택하세요.</option>
-										<option value="h1">부패</option>
-										<option value="h2">분실</option>
-										<option value="h3">파손</option>
-									 </select>` + "</td>";
-	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
-	                row += `<td>
-	                			<div class="image-placeholder" id="imagePreview">
-				            		<span>이미지</span>
-				        		</div>
-				        		<input type="file" id="image" accept="image/*">
-				        		<input type="hidden" id="productImage">
-				        	<td>`;
-	            	row += "</tr>";
-	            tbody.append(row);
-	        });
-	    }
-	    
-		// 당일 날짜 가져오기
-	    function loadTodayDate() {
-	    	var objectDate = new Date();
-	    	var day = objectDate.getDate();
-	    	var month = objectDate.getMonth();
-	    	var year = objectDate.getFullYear();
-	    	var todayDate = year + "-" + (month + 1) + "-" + day;
-	 		$("#inferDate").val(todayDate);
-	 	}
-	    
-	 	// 검색
-        function searchData(keyword) {
-            $("#inferTable tr").each(function() {
-                var rowText = $(this).text().toLowerCase();
-                if (rowText.includes(keyword)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        }
-	 	
-     	// 테이블에서 행 클릭 시 선택 처리
-        $("#inferTable").on('click', '.form-check-input', function() {
-            var row = $(this).closest('tr');
-            
-            if ($(this).prop('checked')) {
-                row.addClass('selected');
-            } else {
-                row.removeClass('selected');
-            }
-        });
-     	
-     	// 체크박스 일괄 선택 처리
-     	$("#checkAll").change(function() {
-     	    var isChecked = $(this).prop('checked');
-     	    
-     	    $("#inferTable tr").each(function() {
-     	        var row = $(this);
-     	        var checkbox = row.find(".form-check-input");
-     	        
-     	        checkbox.prop('checked', isChecked);
-     	        
-     	        if (isChecked) {
-     	            row.addClass('selected');
-     	        } else {
-     	            row.removeClass('selected');
-     	        }
-     	    });
-     	});
-        
 	</script>
 </body>
 </html>

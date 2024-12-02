@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class OutstoreVO {
 	private String outstoreNo;
+	private Integer outstoreGroupNo;
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
 	private Date outstoreDate;
@@ -20,6 +21,13 @@ public class OutstoreVO {
 	private String instoreNo;
 	private String salesNo;
 	private String orderingDetailCode;
+	private String quantity;
+	private Integer purchasePrice;
+	private Integer price;
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
+	private Date date;
+	private String companyNo;
 	
 	private String unit;
 	private String standard;

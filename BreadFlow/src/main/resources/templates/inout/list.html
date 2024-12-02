@@ -6,12 +6,57 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 내역</title>
+	<style>
+        .modal-dialog #container {
+            width: 100%;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+        .modal-dialog #title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .modal-dialog #info {
+            display: flex;
+            justify-content: space-between;
+        }
+        .box {
+            width: 48%;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+        .modal-dialog #table-container {
+            margin-top: 20px;
+        }
+        .modal-dialog #insertedTable, .modal-dialog #companyTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .modal-dialog #companyTable tr td, .modal-dialog #companyTable th {
+            border: 1px solid #000;
+            text-align: center;
+            padding: 8px;
+        }
+        .modal-dialog .amount {
+            text-align: right;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .modal-dialog .stamp {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
 			<h2 class="text-black">입출고 내역</h2>
 		</div>
+		<!-- 입고 출고 분류 시작 -->
 		<div>
 			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style=display:none; readonly>
 			<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
@@ -28,6 +73,9 @@
 				<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
 			</div>
 		</div>
+		<!-- 입고 출고 분류 끝 -->
+		
+		<!-- 조건 필터 시작 -->
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="rawmatBtn">원재료</button>
 			<button type="button" class="btn btn-primary" id="finprdBtn">완제품</button>
@@ -57,6 +105,9 @@
 			<input class="form-control" type="date" id="endDate">
 			<button type="button" class="btn btn-primary input-group-button" id="dateFilterBtn">검색</button>
 		</div>
+		<!-- 조건 필터 끝 -->
+		
+		<!-- 테이블 시작 -->
 		<div class="pd-20">
 			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
 				<thead>
@@ -67,6 +118,7 @@
 						<th class="datatable-nosort">규격/단위</th>
 						<th class="datatable-nosort">출고처</th>
 						<th class="datatable-nosort">입고처</th>
+						<th class="datatable-nosort">상세</th>
 					</tr>
 				</thead>
 				<tbody id="inOutTable">
@@ -79,12 +131,103 @@
 			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
 			</div>
 		</div>
+		<!-- 테이블 끝 -->
+	</div>
+	
+	<!-- 거래 명세서 발행 모달창 -->
+	<div class="modal fade" id="getListModal" tabindex="-1" role="dialog" aria-labelledby="getListModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg modal-dialog-centered">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title" id="getListModalLabel">거래 명세서</h4>
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" id="closeModalX">×</button>
+	            </div>
+	            <div class="modal-body">
+			 		<div id="container">
+					        <div id="title">거래 명세서</div>
+					        <div id="info">
+					            <div class="box">
+					            	<table class="companyTable">
+					            		<caption>입고처</caption>
+					                    <tr class="only">
+					                        <td>사업자등록번호</td>
+					                        <td id="inBrn"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>상호</td>
+					                        <td id="inCompanyName"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>주소</td>
+					                        <td id="inCompanyAddress"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>TEL</td>
+					                        <td id="session.inCompanyTel"></td>
+					                    </tr>
+					                </table>
+					            </div>
+					            <div class="box">
+					                <table class="companyTable">
+					                	<caption>출고처</caption>
+					                    <tr class="only">
+					                        <td>사업자등록번호</td>
+					                        <td id="outBrn"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>상호</td>
+					                        <td id="outCompanyName"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>주소</td>
+					                        <td id="outCompanyAddress"></td>
+					                    </tr>
+					                    <tr class="only">
+					                        <td>TEL</td>
+					                        <td id="session.outCompanyTel"></td>
+					                    </tr>
+					                </table>
+					            </div>
+					        </div>
+					        <div class="amount">금액:<span id="amount"></span>원</div>
+					        <div id="table-container">
+					            <table id="insertedTable">
+					                <thead>
+					                    <tr class="only">
+					                        <th>일자</th>
+					                        <th>품목</th>
+					                        <th>수량</th>
+					                        <th>단가</th>
+					                        <th>공급가액</th>
+					                        <th>부가세</th>
+					                    </tr>
+					                </thead>
+					                <tbody id="insertedTble">
+					                    
+					                </tbody>
+					            </table>
+					        </div>
+					        <div class="amount">
+					            <p>수량:<span id="quant"></span>개</p>
+					            <p>공급가액:<span id="selling"></span>원</p>
+					            <p>VAT:<span id="toten"></span>원</p>
+					            <p>합계:<span id="addup"></span>원</p>
+					        </div>
+					        <div class="stamp">인수: ___________ 인: ___________</div>
+					</div>  
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">출력</button>
+	                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeModal">닫기</button>
+	            </div>
+	        </div>
+	    </div>
 	</div>
 	
     <script>
     
 	 	// 조건
-	 	var companyInput = null;
+	 	var companyInput = null; // 업체 번호
 		var comp = null;
 		var ing = null;
 		var prd = null;
@@ -94,6 +237,7 @@
 		var startDt = null;
 		var endDt = null;
 		var div = null;
+		var groupNo = null;
 		
 		// 페이징 조건
 		var page = 1;
@@ -121,6 +265,9 @@
     			month = null;
     			startDt = null;
     			endDt = null;
+    			$("#yearlyBtn").text('연도');
+            	$("#monthlyBtn").text('월');
+            	$("#itemBtn").text('품목');
     			pageClear();
             }
             
@@ -133,18 +280,12 @@
             
             // 입고 내역 버튼 클릭
             $("#instoreBtn").click(function() {
-            	$("#yearlyBtn").text('연도');
-            	$("#monthlyBtn").text('월');
-            	$("#itemBtn").text('품목');
             	clear();
             	changeFilter();
             });
 
             // 출고 내역 버튼 클릭
             $("#outstoreBtn").click(function() {
-            	$("#yearlyBtn").text('연도');
-            	$("#monthlyBtn").text('월');
-            	$("#itemBtn").text('품목');
             	clear();
                 changeFilter();
             });
@@ -191,8 +332,7 @@
             
             // 입력시 검색
             $("#searchKeyword").on('input', function() {
-    	        var keyword = $(this).val().toLowerCase();
-    	        searchData(keyword);
+            	$("#searchBtn").click();
     	    });
 
             // 검색 버튼 클릭
@@ -238,8 +378,8 @@
         
         // 필터값 전송
         function changeFilter() {
-        	var url = $("input[name='options']:checked").val() === '입고' ? '/inOut/instores' : '/inOut/outstores';
-        	var type = $("input[name='options']:checked").val() === '입고' ? 'instore' : 'outstore';
+        	const url = $("input[name='options']:checked").val() === '입고' ? '/inOut/instores' : '/inOut/outstores';
+        	const type = $("input[name='options']:checked").val() === '입고' ? 'instore' : 'outstore';
         	$.ajax({
             	url : url,
             	method : 'GET',
@@ -258,11 +398,13 @@
             	success : function(data) {
             		updateTable(data.list, type);
             		var lastPage = Math.ceil(data.count / pageSize);
+            		// 마지막 버튼 처리
             		if (page == lastPage) {
             			$("#nextPageBtn").hide();
             		} else {
             			$("#nextPageBtn").show();
             		}
+            		// 첫번째 버튼 처리
             		if (page > 1) {
             			$("#prevPageBtn").show();
             		} else {
@@ -289,6 +431,8 @@
                     row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
+                	row += "<td style='display: none;'>" + item.instoreGroupNo + "</td>";
+                    row += "<td>" + `<button type="button" class="btn btn-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
                 } else if (type === 'outstore') {
                     row += "<td class='table-plus date'>" + item.outstoreDate + "</td>";
                     row += "<td>" + item.itemName + "</td>";
@@ -296,11 +440,125 @@
                     row += "<td>" + item.standard + "/" + item.unit + "</td>";
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
+                    row += "<td style='display: none;'>" + item.outstoreGroupNo + "</td>";
+                    row += "<td>" + `<button type="button" class="btn btn-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
                 }
                 row += "</tr>";
                 tbody.append(row);
             });
+            
+	     	$(".getListBtn").click(function() {
+	     		groupNo = $(this).closest("tr").find("td:nth-child(7)").text();
+	     		console.log(groupNo);
+	     		getModal(groupNo);
+	     	});
         }
+        
+        
+     	// 모달 창 버튼 클릭 시 처리
+        
+     	// 모달창 필터값 전송
+        function getModal(groupNo) {
+        	const url = $("input[name='options']:checked").val() === '입고' ? '/inOut/instoreModal' : '/inOut/outstoreModal';
+        	$.ajax({
+            	url : url,
+            	method : 'GET',
+            	data : {groupNo},
+            	success : function(data) {
+            		updateModal(data);
+            		console.log(data);
+            	},
+            	error : function() {
+	                alert("거래 명세서를 불러오는 데 실패했습니다.");
+	            }
+            });
+        }
+        
+     	// 모달 창 갱신
+	 	function updateModal(data) {
+     		
+	 		var tbody = $("#insertedTble");
+	 		tbody.empty();
+	    	
+	    	var amount = null;
+	    	var quant = null;
+	    	var selling = null;
+	    	var toten = null;
+	    	var addup = null;
+	    	
+	 		data.forEach(function(item) {
+	 			
+	 			var row = "<tr>";
+	 				row += "<td style='display: none;'>" + item.instoreCompany + "</td>";
+	 				row += "<td style='display: none;'>" + item.outstoreCompany + "</td>";
+	            	row += "<td>" + item.date + "</td>";
+	            	row += "<td>" + item.itemName + "</td>";
+	            	row += "<td>" + item.quantity + "</td>";
+	            	row += "<td>" + item.price + "</td>";
+					row += "<td>" + item.productPrice + "</td>";
+					row += "<td>" + (Number(item.productPrice) / 10) + "</td>";
+	            	row += "</tr>";
+	            	
+	            amount += Number(item.price) + (Number(item.productPrice) / 10);
+                quant += Number(item.quantity);
+	            selling += Number(item.productPrice);
+	            toten += (Number(item.productPrice) / 10);
+	            addup += Number(item.price) + (Number(item.productPrice) / 10);
+	            
+		 		tbody.append(row);
+	 		});
+	 		
+	 		$("#amount").html(amount);
+	 		$("#quant").html(quant);
+	 		$("#selling").html(selling);
+	 		$("#toten").html(toten);
+	 		$("#addup").html(addup);
+	 		
+	 		var instoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(1)").text();
+	 		var outstoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(2)").text();
+	 		
+	 		$.ajax({
+            	url : '/inOut/instoreComp',
+            	method : 'GET',
+            	data : {companyNo: instoreCompany},
+            	success : function(data) {
+            		$("#inBrn").text(data.brn);
+            		$("#inCompanyName").text(data.companyName);
+            		$("#inCompanyAddress").text(data.companyAddress);
+            		$("#inCompanyTel").text(data.companyTel);
+            		console.log(data);
+            	},
+            	error : function() {
+	                alert("입고처 정보를 불러오는 데 실패했습니다.");
+	            }
+            });
+	 		
+	 		$.ajax({
+            	url : '/inOut/outstoreComp',
+            	method : 'GET',
+            	data : {companyNo: outstoreCompany},
+            	success : function(data) {
+            		$("#outBrn").text(data.brn);
+            		$("#outCompanyName").text(data.companyName);
+            		$("#outCompanyAddress").text(data.companyAddress);
+            		$("#outCompanyTel").text(data.companyTel);
+            		console.log(data);
+            	},
+            	error : function() {
+	                alert("출고처 정보를 불러오는 데 실패했습니다.");
+	            }
+            });
+	 		
+	 	}
+     	
+     	// 모달창 숨기기 처리
+     	$("#closeModal").click(function() {
+     		$("#getListModal").modal('hide');
+	    });
+     	
+     	$("#closeModalX").click(function() {
+     		$("#getListModal").modal('hide');
+     	});
 
         // 검색
         function searchData(keyword) {

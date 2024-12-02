@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class InstoreVO {
 	private String instoreNo;
+	private Integer instoreGroupNo;
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
 	private Date instoreDate;
@@ -30,6 +31,10 @@ public class InstoreVO {
 	private String deadline;
 	private Integer purchasePrice;
 	private Integer price;
+	private String quantity;
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
+	private Date date;
 	
 	private String unit;
 	private String standard;
