@@ -16,6 +16,9 @@ public class InstoreVO {
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
 	private Date instoreDate;
+	@DateTimeFormat(pattern = "yy/MM/dd")
+	@JsonFormat(pattern = "yy/MM/dd")
+	private Date orderingDate;
 	private String itemDiv;
 	private String itemCode;
 	private Integer instoreQuantity;
