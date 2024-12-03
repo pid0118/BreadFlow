@@ -85,7 +85,7 @@
 			<div class="updateAccounts">
 				<form id="updatePrdtplanForm" method="post">
 					<div class="row">
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>생산계획 고유번호h</label> <input type="text" class="form-control"
 									id="updProductionPlanNo" name="productionPlanNo" readonly>
@@ -103,7 +103,7 @@
 									id="updLastDate" name="lastDate" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12"  hidden="hidden">
 							<label for="updPrdtComNm">생산업체</label>
 							<div class="input-group mb-3">
 							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -113,13 +113,13 @@
 							</div>
 						</div>
 						
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>생산업체코드h</label> <input type="text" class="form-control"
 									id="updProductionCompany" name="productionCompany" th:value="${session.companyNo}">
 							</div>
 						</div>
-						<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12"  hidden="hidden">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
 							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -130,7 +130,7 @@
 						</div>
 						
 						
-						<div class="col-md-6 col-sm-12">
+						<div class="col-md-6 col-sm-12" hidden="hidden">
 							<div class="form-group">
 								<label>납품위치코드h</label> <input type="text" class="form-control"
 									id="updDeliveryLocation" name="deliveryLocation">
@@ -380,6 +380,8 @@ let newPrdtPlanBtn = document.querySelector("#newPrdtPlanBtn");					// 생산계
 newPrdtPlanBtn.addEventListener('click', function() {
 	mode = "insert"
 	$('#updatePrdtplanForm')[0].reset();
+	$('#updDeliveryLocation').val('CP00001');
+	
 	grid.clear();
 })
 
@@ -714,8 +716,8 @@ function insertOrUpdatePrdPlanAjax() {
 		let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
 		let updProductionCompany = document.querySelector("#updProductionCompany").value
 		
-		if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
-			alert("날짜 또는 업체를 선택했는지 확인하세요.");
+		if(updStartDate == "" || updLastDate == "") {
+			alert("날짜를 선택했는지 확인하세요.");
 			return false;
 		}
 		
@@ -841,7 +843,7 @@ function updatePrdtplanSituComplete() {
 		            alert("성공적으로 저장되었습니다.");
 		            console.log(data);
 		            insertInstoreForPrdtplan(data);
-		            //location.reload(true);
+		            location.reload(true);
 		        },
 		        error: function(result){
 		     	   alert("저장에 실패하였습니다.");

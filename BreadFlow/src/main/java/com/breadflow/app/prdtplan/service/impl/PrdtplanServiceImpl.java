@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import com.breadflow.app.prdtplan.mapper.PrdtplanMapper;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
+import com.breadflow.app.inout.mapper.InOutMapper;
 
 @Service
 public class PrdtplanServiceImpl implements PrdtplanService {
+	
+	public InOutMapper inOutMapper;
 	
 	private PrdtplanMapper prdtplanMapper;
 	
@@ -79,7 +82,10 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	@Override
 	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list) {
 		int result = 0;
+		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		
 		for(PrdtplanVO pvo : list) {
+			pvo.setInstoreGroupNo(groupNo);
 			prdtplanMapper.insertPrdtplanDetailsForSelf(pvo);
 			result++;
 		}

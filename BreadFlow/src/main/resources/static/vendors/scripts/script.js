@@ -180,11 +180,11 @@ jQuery(document).ready(function () {
 		e.clearSelection();
 	});
 
-	// date picker
+	// [박진석|24.12.03] 날짜 형식 변경
 	$(".date-picker").datepicker({
 		language: "en",
 		autoClose: true,
-		dateFormat: "dd MM yyyy",
+		dateFormat: "yyyy-mm-dd",
 	});
 	$(".datetimepicker").datepicker({
 		timepicker: true,
