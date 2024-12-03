@@ -19,7 +19,10 @@ public interface BomMapper {
 		// BOM 수정
 		public int updateBom(BomVO bomVO);
 		
-		// BOM 삭제
-		//public int deleteBom(BomVO bomVO);
+		// BOM 원재료 삭제
+		public int deleteBomIngredient(BomVO bomVO);
+		
+		// BOM 원재료 확인 여부
+		public int selectBomCnt(String bomCode);
 		
 }

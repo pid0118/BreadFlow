@@ -24,5 +24,7 @@ public interface IngredientService {
 	
 	// 제품명 단건조회 / 중복값 제거위해
 	public String selectIngredientName(String productName, String productCode);
+	
+	
 
 }

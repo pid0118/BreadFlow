@@ -70,7 +70,7 @@
 		    , #{amount}
 		)
 	</insert>
-	
+	<!-- 수정하기 -->
 	<update id="updateIngredient"  parameterType="IngredientVO">
 		UPDATE ingredient
 		SET	   ingredient_name = #{ingredientName} ,
@@ -88,17 +88,27 @@
 			   amount = #{amount}
 		WHERE ingredient_code = #{ingredientCode}
 	</update>
-	
+	<!-- 원부재료 삭제 -->
 	<delete id="deleteIngredient"  parameterType="String">
 		DELETE FROM ingredient
 		Where ingredient_code = #{ingredientCode}
 	</delete>
 	
-	<!-- 삭제 조건 주문중 재품찾기 -->
+	<!-- 삭제 조건 주문중 재료찾기 -->
 	<select id="selectOrderingIngredientCnt" resultType="int">
 		SELECT  COUNT(ordering_ingredient)
 		FROM	ordering_detail
 		WHERE	ordering_ingredient IN 
+		<foreach item="ingredientCode" index="index" collection="list" open="(" separator="," close=")">
+			#{ingredientCode}
+		</foreach>
+	</select>
+	<!-- 삭제 조건 BOM에 등록된 재료찾기 -->
+	
+	<select id="selectBomIngredientCnt" resultType="int">
+		SELECT COUNT(ingredient_code)
+		FROM bom
+		WHERE ingredient_code IN
 		<foreach item="ingredientCode" index="index" collection="list" open="(" separator="," close=")">
 			#{ingredientCode}
 		</foreach>

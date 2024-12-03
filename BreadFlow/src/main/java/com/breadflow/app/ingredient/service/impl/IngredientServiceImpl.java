@@ -50,15 +50,19 @@ public class IngredientServiceImpl implements IngredientService{
 	@Override
 	public int deleteIngredient(List<String> ingredientCode) {
 		
-	int count = ingredientMapper.selectOrderingIngredientCnt(ingredientCode);
-			
-			if (count == 0) {
-				for(int i = 0;i < ingredientCode.size();i++ ) {
-					ingredientMapper.deleteIngredient(ingredientCode.get(i));
-				}	
-			}
-		
-		return count;
+		int orderCount = ingredientMapper.selectOrderingIngredientCnt(ingredientCode);
+	    int bomCount = ingredientMapper.selectBomIngredientCnt(ingredientCode);
+
+	    if (orderCount > 0 || bomCount > 0) {
+	        // 주문 중이거나 BOM에 등록된 재료가 있으면 삭제 중단
+	        return -1;
+	    }
+
+	    for (String code : ingredientCode) {
+	        ingredientMapper.deleteIngredient(code);
+	    }
+	    
+	    return 1; // 삭제 성공
 	}
 
 	@Override

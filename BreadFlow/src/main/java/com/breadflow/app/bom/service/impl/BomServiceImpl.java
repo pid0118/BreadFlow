@@ -48,17 +48,29 @@ public class BomServiceImpl implements BomService{
 	public int updateBom(List<BomVO> list) {
 	  int result = 0;
 	  for(BomVO bomVO : list) {
-		  bomMapper.insertBom(bomVO);
+		  
+		 if(bomVO.getBomCode() != null) {
+			 bomMapper.updateBom(bomVO);
+		 } else {
+			 bomMapper.insertBom(bomVO);
+		 }
 		  result++;
-	}
+	  }
 	  return result;
 	}
+	
+	// bom 원재료 삭제
+	@Override
+	public int deleteBomIngredient(List<BomVO> list) {
+		
+		int result = 0;
+		for(BomVO vo : list) {
+			bomMapper.deleteBomIngredient(vo);
+			result++;
+		}
+		
+		
+		return result;
+	}
 
-//	@Override
-//	public int deleteBom(BomVO bomVO) {
-//		
-//		return 0;
-//	}
-	
-	
 }
