@@ -43,6 +43,7 @@
 										class="form-control form-control-lg"
 										placeholder="**********"
 										id="loginPw"
+										onkeyup="enterkey()"
 									/>
 									<div class="input-group-append custom">
 										<span class="input-group-text">
@@ -83,6 +84,14 @@
 
 
 <script>
+	// [박진석|241203] 엔터키로도 로그인 되게끔 설정
+	function enterkey() {
+	  if (window.event.keyCode == 13) {
+		  loginChk();
+	  }
+	}
+
+
 	function loginChk() {
 		let id = document.querySelector("#loginId").value
 		let pw = document.querySelector("#loginPw").value
