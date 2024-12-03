@@ -7,12 +7,6 @@
 <meta charset="UTF-8">
 <title></title>
 <style>
-body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	background-color: #f0f0f0;
-} /* 수정 */
 
 .container {
 	display: flex;
@@ -37,7 +31,7 @@ body {
 	background-color: #f9f9f9;
 }
 
-header {
+.head {
 	display: flex;
 	justify-content: space-between;
 	margin-top: 10px;
@@ -46,7 +40,7 @@ header {
 	color: white;
 } /* 수정 */
 
-nav {
+.nav-main {
 	display: flex;
 	overflow-x: auto;
 	background-color: #f0f0f0;
@@ -137,7 +131,7 @@ nav {
 	font-size:24px;
 }
 
-footer {
+.footer-main {
 	background-color: #f0f0f0;
 	height: 130px;
 	padding: 10px;
@@ -279,22 +273,22 @@ footer {
 	<div class="container">
 		<!-- 좌측 메뉴 시작 -->
 		<div class="left-panel">
-			<header>
-				<span th:text="${#dates.format(#dates.createNow(), 'MM월 dd일 (EEE) a hh:mm')}"></span>
+			<header class="head">
+				<h5 id="colck" style="color:white;"></h5>
 				<div class="header-right"></div>
 			</header>
-			<nav class="menu-type">
+			<nav class="menu-type nav-main">
 				<button class="nav-button active" data-category="">전체메뉴</button>
 				<button class="nav-button" data-category="브레드">빵</button>
 				<button class="nav-button" data-category="쿠키">쿠키</button>
 				<button class="nav-button" data-category="샌드위치">샌드위치</button>
-				<button class="nav-button" data-category="커피&음료">커피&음료</button>
+				<button class="nav-button" data-category="음료">커피&음료</button>
 			</nav>
 			<div class="menu-grid"></div>
 			<div class="action-buttons">
 				<span class="item-count">0개</span>
 			</div>
-			<footer>
+			<footer class="footer-main">
 				<div class="footer-actions">
 					<div class="pagination"></div>
 					<div class="total"></div>
@@ -345,6 +339,7 @@ footer {
 		       	</table>
 		    </div>
 		</div>
+		<!-- 상세내역 모달 끝 -->
 	</div>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
@@ -352,6 +347,8 @@ footer {
 		const selectItemList = document.querySelector("#selected-items");
 		const totalPriceElem = document.querySelector(".total-price");
 		const itemCountElem = document.querySelector('.item-count');
+		const tableLeg = document.querySelector('#menuDetail').rows.length;
+		const clock = document.querySelector('#colck');
 		let disItemCnt = 0; // 현재 보여지는 아이템 갯수
 		let curPage = 1; // 현재 페이지
 		let itemsPage = 20; // 한 페이지 아이템 수
@@ -360,9 +357,12 @@ footer {
 		
 		// 메뉴 탭 AJAX
 		loadMenu();
-
+		
+		//시간 실행
+		getClock();
+		setInterval(getClock, 1000);
+		
 		// AJAX
-
 		document.addEventListener('DOMContentLoaded', function(){
 
 			// 카테고리 버튼 클릭 시 메뉴를 AJAX로 로드
@@ -405,8 +405,13 @@ footer {
 			
 			// 모달창 열고 닫기
 			document.querySelector(".details-button").addEventListener("click", function() {
-		        openModal();
-		    });
+				if(tableLeg > 1){
+			        openModal();				
+				}
+				else{
+					alert("주문 내역이 없습니다.");
+				}
+		    });				
 
 		    function openModal() {
 		        let modal = document.getElementById("detailsModal");
@@ -646,7 +651,6 @@ footer {
 		
 		// 마감정산
 		document.getElementById("salesSub").addEventListener('click', function(){
-			let tableLeg = document.querySelector('#menuDetail').rows.length;
 			if(tableLeg > 1){
 				let url = `/closeSale`
 				fetch(url,{
@@ -663,7 +667,14 @@ footer {
 			}
 		})
 		
-
+		// 실시간 시간 보여주기
+		function getClock(){
+			const d = new Date();
+			const h = String(d.getHours()).padStart(2, "0");
+			const m = String(d.getMinutes()).padStart(2, "0");
+			const s = String(d.getSeconds()).padStart(2, "0");
+			clock.innerText = `${h}시 ${m}분 ${s}초`;
+		}
 
     </script>
 </body>

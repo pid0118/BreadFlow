@@ -23,9 +23,13 @@
 	<select id="selectSaleOffice" resultType="SaleVO" parameterType="String">
 		SELECT SUM(day_sales) AS daySales
 		      ,TO_CHAR(sales_date, 'yyyyMM') AS saleDate
+		      
 		FROM sales
+		
 		WHERE company_no = #{comNo}
+		
 		GROUP BY TO_CHAR(sales_date, 'yyyyMM')
+		
 		ORDER BY saleDate
 	</select>
 	
@@ -34,11 +38,15 @@
 		       p.product_name,
 		       SUM(sa.sale_price) AS salePrice,
 		       SUM(sa.quantity) AS Quantity
+		       
 		FROM sale_detail_history sa
 		JOIN product p ON sa.product_code = p.product_code
+		
 		WHERE TO_CHAR(sa.sales_date, 'yyyyMM') = #{saleDate}
 		  AND sa.company_no = #{comNo}
+		  
 		GROUP BY TRUNC(sa.sales_date), p.product_name
+		
 		ORDER BY salesDate
 	</select>
 	
@@ -46,12 +54,15 @@
 		SELECT sub
 			  ,product_name
 		      ,sale_price
+		      
 		FROM product
+		
 		<where>
 			<if test="sub != null and sub != ''">
 				sub = #{sub}
 			</if>
 		</where>
+		
 	</select>
 	
 	<insert id="insertSale" parameterType="PosVO">
@@ -62,6 +73,7 @@
 										,company_no
 										,last
 										,sales_date)
+										
 		VALUES ('PA' || (SELECT GETSEQ('sale_detail_history','sale_no') FROM dual)
 		        ,(SELECT product_code FROM product WHERE product_name = #{productCode})
 		        ,#{salePrice}
@@ -80,7 +92,9 @@
 	<select id="selectSales" resultType="PosVO" parameterType="String">
 		SELECT day_sales
 			  ,sales_date
+			  
 		FROM sales
+		
 		WHERE TO_CHAR(sales_date, 'yyyyMM') = #{salesDate}
 		AND company_no = #{companyNo}
 	</select>
@@ -90,7 +104,9 @@
 			  , quantity
 			  , sale_price
 			  , TO_CHAR(sales_date, 'yy') || '년' || TO_CHAR(sales_date, 'MM') || '월' || TO_CHAR(sales_date, 'dd') || '일 ' || TO_CHAR(sales_date, 'HH') || '시' || TO_CHAR(sales_date, 'mi') || '분' || TO_CHAR(sales_date, 'ss') AS saleDate
+			  
 		FROM sale_detail_history
+		
 		WHERE last = '주문'
 		AND company_no = #{companyNo}
 	</select>
@@ -99,7 +115,9 @@
 		SELECT TO_CHAR(sales_date, 'yyyyMMdd') AS saleDate
 		      ,total_quantity
 		      ,day_sales
+		      
 		FROM  sales
+		
 		WHERE company_no = #{companyNo}
 	</select>
 	

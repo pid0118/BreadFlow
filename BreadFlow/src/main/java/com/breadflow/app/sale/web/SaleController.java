@@ -111,8 +111,8 @@ public class SaleController {
     // 차트 월별 제품 상세 매출 ajax호출
     @PostMapping("/saleChart/product")
     @ResponseBody
-    public List<PosVO> saleProductList(HttpSession name) {
-    	List<PosVO> list = saleService.selectSaleProduct(name);
+    public List<PosVO> saleProductList(HttpSession companyNo) {
+    	List<PosVO> list = saleService.selectSaleProduct(companyNo);
     	return list;
     }
 }
