@@ -9,17 +9,22 @@
 </head>
 <body>
 	<div class="card-box mb-30">
+		<!-- 해당 불량 번호값 시작 -->
 		<div class="pd-20">
 			<h2 class="text-black" th:text="${inferNo}"></h2>
 		</div>
+		<!-- 해당 불량 번호값 끝 -->
+		
 		<form>
 		<div class="pd-20 row">
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>불량 일자</label>
-					<input class="form-control" type="text" name="inferDate" id="inferDate" th:value="${inferDate}" readonly>
+					<input class="form-control" type="text" name="todayDate" id="todayDate" readonly>
 				</div>
 			</div>
+			
+			<!-- 처분 선택 시작 -->
 			<div class="col-md-3 col-sm-12">
 				<label>처분</label>
 				<div class="form-group">
@@ -36,10 +41,13 @@
 					</div>
 				</div>
 			</div>
+			<!-- 처분 선택 끝 -->
+			
+			<!-- 세션값 정보 입력 시작 -->
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
 					<label>담당자</label>
-					<input class="form-control" type="text" name="inferMember" id="inferMember" th:value="${session.name}" readonly>
+					<input class="form-control" type="text" name="inferMember" id="inferMember" readonly>
 				</div>
 			</div>
 			<div class="col-md-3 col-sm-12">
@@ -50,11 +58,16 @@
 			</div>
 			<div class="form-group">
 				<label>답변자</label>
-				<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.name}" readonly>
+				<input class="form-control" type="text" name="name" id="name" th:value="${session.name}" readonly>
+				<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.memNo}" readonly style="display: none;">
 			</div>
 			<input id="inferNo" th:value="${inferNo}" style="display:none;" readonly>
+			<!-- 세션값 정보 입력 끝 -->
+			
 		</div>
 		<div class="pd-20">
+		
+			<!-- 테이블 시작 -->
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
 					<tr>
@@ -78,18 +91,25 @@
 						<td th:text="${infer.inferType}"></td>
 						<td th:text="${infer.confirmWhether}"></td>
 						<td style="display:none;" th:text="${infer.inferManager}"></td>
+						<td style="display:none;" th:text="${infer.managerName}"></td>
 					</tr>
 				</tbody>
 			</table>
+			<!-- 테이블 끝 -->
+			
 		</div>
 		<div class="pd-20">
+		
+			<!-- 답변 입력 textarea 시작 -->
 			<div class="form-group">
 				<textarea class="form-control" name="answer" id="answer"></textarea>
 			</div>
+			<!-- 답변 입력 textarea 끝 -->
+			
 		</div>
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>취소</button>
+			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>취소</button> <!-- 불량 내역 조회 페이지로 이동 -->
 		</div>
 		</form>
 	</div>
@@ -99,15 +119,28 @@
     	// 페이지 로딩 시 기능 실행
 		$(document).ready(function() {
 			
+			// 현재 날짜 로드
+			loadTodayDate();
+			
 			// 첫 번째 열에서 필수값 추출
-			var inferApplicationDate = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(2)").text().trim();
-			var inferMember = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(9)").text().trim();
-			var confirmLocation = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(3)").text().trim();
+			let inferApplicationDate = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(2)").text().trim();
+			let inferMember = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(10)").text().trim();
+			let confirmLocation = $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(3)").text().trim();
 			
 			// 추출한 데이터 값에 삽입
 			$("#inferDate").val(inferApplicationDate);
 			$("#inferMember").val(inferMember);
 			$("#confirmLocation").val(confirmLocation);
+			
+			// 당일 날짜 가져오기
+		    function loadTodayDate() {
+		    	let objectDate = new Date();
+		    	let day = objectDate.getDate();
+		    	let month = objectDate.getMonth();
+		    	let year = objectDate.getFullYear();
+		    	let todayDate = year + "/" + (month + 1) + "/" + day;
+		 		$("#todayDate").val(todayDate);
+		 	}
 			
 		});
 
@@ -115,14 +148,15 @@
 		$("#submitBtn").click(function() {
 			
 			// 현재 해당하는 불량 번호 저장
-			var inferNo = $("#inferNo").val();
+			let inferNo = $("#inferNo").val();
 			
-			var checkNull = false;
-            var insertData = {
+			let checkNull = false;
+            let insertData = {
                 disposalWhether : $("input[name='options']:checked").val(),
             	answer : $("#answer").val(),
-            	manager : $("#inferMember").val(),
+            	manager : $("#inferDetailTable").find("tr:nth-child(1)").find("td:nth-child(9)").text().trim(),
             	answerer : $("#loginMember").val(),
+            	answerDate : $("#todayDate").val(),
             	inferNo
             };
             

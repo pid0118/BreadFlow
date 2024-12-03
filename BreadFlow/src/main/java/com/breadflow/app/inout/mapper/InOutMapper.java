@@ -26,8 +26,8 @@ public interface InOutMapper {
 	public int countOrderListForInsert(FilterVO filterVO);
 	public int countInstoreListForInsert(FilterVO filterVO);
 	
-	public int getInstoreLastGroupNo();
-	public int getOutstoreLastGroupNo();
+	public Integer getInstoreLastGroupNo();
+	public Integer getOutstoreLastGroupNo();
 	
 	public List<InstoreVO> getInstoreModal(FilterVO filterVO);
 	public List<OutstoreVO> getOutstoreModal(FilterVO filterVO);

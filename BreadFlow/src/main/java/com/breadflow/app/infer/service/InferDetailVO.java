@@ -19,6 +19,7 @@ public class InferDetailVO {
 	private String inferNo;
 	private String instoreNo;
 	private String inferManager;
+	private String managerName;
 	
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")

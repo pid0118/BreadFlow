@@ -105,24 +105,28 @@ public class InOutController {
 		return inOutService.outstoreInsert(outstoreVO);
 	}
 	
+	// 입고 거래 명세서 모달창 반환
 	@GetMapping("inOut/instoreModal")
 	@ResponseBody
 	public List<InstoreVO> instoreModal(FilterVO filterVO) {
 		return inOutService.instoreModal(filterVO);
 	}
 	
+	// 출고 거래 명세서 모달창 반환
 	@GetMapping("inOut/outstoreModal")
 	@ResponseBody
 	public List<OutstoreVO> outstoreModal(FilterVO filterVO) {
 		return inOutService.outstoreModal(filterVO);
 	}
 	
+	// 입고처 정보 반환
 	@GetMapping("inOut/instoreComp")
 	@ResponseBody
 	public CompanyVO instoreComp(String companyNo) {
 		return inOutService.instoreComp(companyNo);
 	}
 	
+	// 출고처 정보 반환
 	@GetMapping("inOut/outstoreComp")
 	@ResponseBody
 	public CompanyVO outstoreComp(String companyNo) {

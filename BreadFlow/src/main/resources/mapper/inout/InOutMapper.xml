@@ -241,7 +241,13 @@
 		            , #{itemCode}
 		            , #{instoreQuantity}
 		            , #{companyNo}
-		            , (SELECT SUM(i.instore_quantity) + #{instoreQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{companyNo})
+		            , (((SELECT  (NVL(SUM(i.instore_quantity), 0))
+						 FROM    instore i LEFT JOIN ordering_detail od ON i.ordering_detail_code = od.ordering_detail_code
+						                   LEFT JOIN orders_detail ods ON od.ordering_detail_code = ods.ordering_detail_code
+						 WHERE   ods.instore_company = #{companyNo} AND i.item_code = #{itemCode}) - 
+						(SELECT  (NVL(SUM(o.outstore_quantity), 0))
+						 FROM    outstore o LEFT JOIN orders_detail ods ON o.orders_detail_no = ods.orders_detail_no
+						 WHERE   ods.outstore_company = #{companyNo} AND ods.orders_item = #{itemCode})) + #{instoreQuantity})
 		            , (SELECT div FROM company WHERE company_no = #{companyNo})
 		            , (SUBSTR(#{itemCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
 		            , #{instoreManager}
@@ -263,7 +269,8 @@
 		                     , outstore_quantity
 		                     , outstore_manager
 		                     , orders_detail_no
-		                     , instore_no)
+		                     , instore_no
+		                     , outstore_group_no)
 		VALUES      (('OU' || (SELECT GETSEQ('outstore','outstore_no') FROM dual))
 		            , #{outstoreDate}
 		            , #{outstoreQuantity}
@@ -276,7 +283,8 @@
 		            <otherwise>
 		            , #{instoreNo}
 		            </otherwise>
-		            </choose>)
+		            </choose>
+		            , #{outstoreGroupNo})
 	</insert>
 	
 	<update id="updateOutstoreOrdering" parameterType="OutstoreVO">
@@ -431,13 +439,13 @@
 	    </if>
 	</select>
 	
-	<select id="getInstoreLastGroupNo" resultType="int">
-		SELECT	MAX(INSTORE_GROUP_NO)
+	<select id="getInstoreLastGroupNo" resultType="Integer">
+		SELECT	MAX(TO_NUMBER(INSTORE_GROUP_NO))
 		FROM	INSTORE
 	</select>
 	
-	<select id="getOutstoreLastGroupNo" resultType="int">
-		SELECT	MAX(OUTSTORE_GROUP_NO)
+	<select id="getOutstoreLastGroupNo" resultType="Integer">
+		SELECT	MAX(TO_NUMBER(OUTSTORE_GROUP_NO))
 		FROM	OUTSTORE
 	</select>
 	

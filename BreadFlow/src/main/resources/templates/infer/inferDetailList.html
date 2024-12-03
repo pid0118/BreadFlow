@@ -13,6 +13,8 @@
 			<h2 class="text-black" th:text="${inferNo}"></h2>
 		</div>
 		<form>
+		
+		<!-- 불량 내역 테이블 시작 -->
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
@@ -34,12 +36,15 @@
 						<td><img id="inferImage" th:src="@{/imgs} + ${infer.inferImage}" alt="" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
-						<td th:text="${infer.disposalWhether}"></td>
+						<!-- <td th:text="${infer.disposalWhether}"></td> -->
+						<td>처분 대기중</td>
 						<td th:text="${infer.confirmWhether}"></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
+		<!-- 불량 내역 테이블 끝 -->
+		
 		</form>
 	</div>
 </body>

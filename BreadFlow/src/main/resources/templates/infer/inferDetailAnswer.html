@@ -13,6 +13,8 @@
 			<h2 class="text-black" th:text="${inferNo}"></h2>
 		</div>
 		<form>
+		
+		<!-- 불량 내역 테이블 시작 -->
 		<div class="pd-20">
 			<table class="data-table table stripe hover multiple-select-row nowrap" id="inferTable">
 				<thead>
@@ -40,6 +42,9 @@
 				</tbody>
 			</table>
 		</div>
+		<!-- 불량 내역 테이블 끝 -->
+		
+		<!-- 불량 답변 조회 시작 -->
 		<div class="pd-20 row">
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
@@ -76,9 +81,11 @@
 				<textarea class="form-control" name="answer" id="answer" th:text="${answer.answer}" readonly></textarea>
 			</div>
 		</div>
+		<!-- 불량 답변 조회 끝 -->
+		
 		</form>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>목록으로 돌아가기</button>
+			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>목록으로 돌아가기</button> <!-- 클릭할 시 목록으로 이동 -->
 		</div>
 	</div>
 </body>
