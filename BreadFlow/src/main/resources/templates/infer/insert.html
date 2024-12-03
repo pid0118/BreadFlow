@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>불량 내역 등록</title>
+<!-- 이미지 등록 미리보기 스타일 시작 -->
 <style>
 	.image-placeholder {
 		width: 100%;
@@ -24,20 +25,26 @@
 		object-fit: cover;
 	}
 </style>
+<!-- 이미지 등록 미리보기 스타일 끝 -->
 </head>
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
 			<h2 class="text-black">불량 내역 등록</h2>
 		</div>
+		
+		<!-- 세션값 저장 시작 -->
 		<input class="form-control" type="text" name="inferManager" id="inferManager" th:value="${session.memNo}" style="display:none;" readonly>
 		<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
+		<!-- 세션값 저장 끝 -->
+		
+		<!-- 고정 정보 시작 -->
 		<form>
 			<div class="pd-20 row">
 				<div class="col-md-6 col-sm-12">
 					<div class="form-group">
 						<label>불량 일자</label>
-						<input class="form-control" type="date" name="inferDate" id="inferDate">
+						<input class="form-control" type="text" name="inferDate" id="inferDate" readonly>
 					</div>
 				</div>
 			</div>
@@ -57,12 +64,16 @@
 				</div>
 			</div>
 		</form>
+		<!-- 고정 정보 끝 -->
+		
 		<div class="pd-20 input-group mb-3">
 			<div class="input-group">
 				<input class="form-control" type="text" id="searchKeyword">
 				<button type="button" class="btn btn-primary" id="searchBtn">검색</button>
 			</div>
 		</div>
+		
+		<!-- 테이블 시작 -->
 		<div class="pd-20">
 			<table class="table stripe hover multiple-select-row nowrap">
 				<thead>
@@ -84,6 +95,9 @@
 					
 				</tbody>
 			</table>
+			<div id="noData" style="display: none;">
+				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
+			</div>
 			<div class="pagination-container">
 			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
@@ -94,17 +108,18 @@
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
 			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
 		</div>
+		<!-- 테이블 끝 -->
 	</div>
 	
 	<script>
 	
 		// 조건
-		var companyInput = null;
-		var inferManager = null;
+		let companyInput = null;
+		let inferManager = null;
 		
 		// 페이징 조건
-		var page = 1;
-		var pageSize = 10;
+		let page = 1;
+		let pageSize = 10;
 		
 		// 페이지 로딩 시 기능 실행
 		$(document).ready(function() {
@@ -137,25 +152,26 @@
 	        
 	     	// 입력시 검색
             $("#searchKeyword").on('input', function() {
-    	        var keyword = $(this).val().toLowerCase();
+    	        let keyword = $(this).val().toLowerCase();
     	        searchData(keyword);
     	    });
 
             // 검색 버튼 클릭
             $("#searchBtn").click(function() {
-                var keyword = $("#searchKeyword").val().toLowerCase();
+                let keyword = $("#searchKeyword").val().toLowerCase();
                 searchData(keyword);
             });
             
          	// 업체 검색 모달에서 선택 (없어도 될지도)
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(2)").text();
+                let selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
-                companyInput = selectedCompanyName;
+                companyInput = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 changeFilter();
             });
          	
+         	// 이미지 등록 기능
          	function imageSet() {
          		
 	         	// 이미지 미리보기 기능
@@ -178,17 +194,17 @@
 	                }
 	                
 	        		// 이미지 업로드    
-	        		var formData = new FormData(); /* Ajava 방식의 파일 업로드의 핵심 객체  */
-	        		formData.append("file", file); /* 폼에 file 변수 추가 */
+	        		let formData = new FormData(); // Ajava 방식의 파일 업로드의 핵심 객체
+	        		formData.append("file", file); // 폼에 file 변수 추가
 	        		
-	        		//서버에 파일 업로드(백그라운드에서 실행)
+	        		// 서버에 파일 업로드 (백그라운드에서 실행)
 	        		$.ajax({
 	        			type:"post",
 	        			url:"/uploadFile",
 	        			data : formData,
 	        			dataType: "text",
 	        			processData: false, // 파일 전송시 자동으로 쿼리 스트링 형식으로 전송되지 않도록 막는 처리
-	        			contentType: false, /* multipart/ form-data 로 처리되는 것과 같음*/
+	        			contentType: false, // multipart/form-data 로 처리되는 것과 같음 
 	        			success: function(data, status, req) {
 	        				pri.val(data);
 	        			}
@@ -199,13 +215,13 @@
 
 	     	// 등록 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
-	        	var checkNull = false;
-	        	var checkQuant = false;
+	        	let checkNull = false;
+	        	let checkQuant = false;
 	            // 선택된 행 추출
-	            var selectedRows = [];
+	            let selectedRows = [];
 	            $("#inferTable tr.selected").each(function() {
-		            var row = $(this);
-			        var data = {
+		            let row = $(this);
+			        let data = {
 				        inferItem: row.find("td:nth-child(3)").text(),
 				        totalQuantity: row.find("td:nth-child(4)").text(),
 				        inferQuantity: row.find("td:nth-child(5) .quant").val(),
@@ -218,7 +234,7 @@
 					if ((data.inferQuantity == null || data.inferQuantity == '') || (data.inferImage == null || data.inferImage == '')) {
 						checkNull = true;
 					} 
-					if (data.inferQuantity > data.totalQuantity) {
+					if (Number(data.inferQuantity) > Number(data.totalQuantity)) {
 						checkQuant = true;
 					}
 			        selectedRows.push(data);
@@ -231,6 +247,7 @@
 	            } else if (checkQuant) {
 	            	alert("올바른 수량을 입력해주세요.")
 	            } else {
+	            	
 		         	// 불량 내역 등록
 		            $.ajax({
 		                url: '/infer/insertInfer',
@@ -241,6 +258,9 @@
 		                	console.log(selectedRows);
 		                	alert("등록되었습니다.");
 		                	$(".form-change-input").removeClass("selected");
+		                	$(".form-check-input").prop("checked", false);
+		                	$("#checkAll").prop("checked", false);
+		                	changeFilter();
 		                },
 		                error: function() {
 		                	console.log(selectedRows);
@@ -276,7 +296,7 @@
 	            	success : function(data) {
 	            		console.log(data);
 	            		updateTable(data);
-	            		var lastPage = Math.ceil(data.count / pageSize);
+	            		let lastPage = Math.ceil(data.count / pageSize);
 	            		if (page == lastPage) {
 	            			$("#nextPageBtn").hide();
 	            		} else {
@@ -287,6 +307,12 @@
 	            		} else {
 	            			$("#prevPageBtn").hide();
 	            		}
+	            		if (data.count == 0 || data.count == null) {
+	            			$("#nextPageBtn").hide();
+	            			$("#prevPageBtn").hide();
+	            			$("#currentPage").hide();
+	            			$("#noData").css("display", "block");
+	            		}
 	            	},
 	            	error : function() {
 		                alert("내역을 불러오는 데 실패했습니다.");
@@ -296,10 +322,10 @@
 	
 		    // 목록 갱신
 		    function updateTable(data) {
-		        var tbody = $("#inferTable");
+		        let tbody = $("#inferTable");
 		        tbody.empty();
 		        data.forEach(function(item) {
-		            var row = "<tr>";
+		            let row = "<tr>";
 			            row += `<td>
 									<div class="form-check">
 										<input class="form-check-input check" type="checkbox">
@@ -320,7 +346,7 @@
 		                			<div class="image-placeholder imagePreview">
 					            		<span>이미지</span>
 					        		</div>
-					        		<input type="file" class="image d-none" accept="image/*">
+					        		<input type="file" class="image" accept="image/*" style="display: none;">
 					        		<input type="hidden" class="productImage">
 					        	<td>`;
 		            	row += "</tr>";
@@ -333,18 +359,18 @@
 		    
 			// 당일 날짜 가져오기
 		    function loadTodayDate() {
-		    	var objectDate = new Date();
-		    	var day = objectDate.getDate();
-		    	var month = objectDate.getMonth();
-		    	var year = objectDate.getFullYear();
-		    	var todayDate = year + "-" + (month + 1) + "-" + day;
+		    	let objectDate = new Date();
+		    	let day = objectDate.getDate();
+		    	let month = objectDate.getMonth();
+		    	let year = objectDate.getFullYear();
+		    	let todayDate = year + "/" + (month + 1) + "/" + day;
 		 		$("#inferDate").val(todayDate);
 		 	}
 		    
 		 	// 검색
 	        function searchData(keyword) {
 	            $("#inferTable tr").each(function() {
-	                var rowText = $(this).text().toLowerCase();
+	                let rowText = $(this).text().toLowerCase();
 	                if (rowText.includes(keyword)) {
 	                    $(this).show();
 	                } else {
@@ -355,7 +381,7 @@
 		 	
 	     	// 테이블에서 행 클릭 시 선택 처리
 	        $("#inferTable").on('click', '.form-check-input', function() {
-	            var row = $(this).closest('tr');
+	            let row = $(this).closest('tr');
 	            
 	            if ($(this).prop('checked')) {
 	                row.addClass('selected');
@@ -366,11 +392,11 @@
 	     	
 	     	// 체크박스 일괄 선택 처리
 	     	$("#checkAll").change(function() {
-	     	    var isChecked = $(this).prop('checked');
+	     	    let isChecked = $(this).prop('checked');
 	     	    
 	     	    $("#inferTable tr").each(function() {
-	     	        var row = $(this);
-	     	        var checkbox = row.find(".form-check-input");
+	     	        let row = $(this);
+	     	        let checkbox = row.find(".form-check-input");
 	     	        
 	     	        checkbox.prop('checked', isChecked);
 	     	        

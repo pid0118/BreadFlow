@@ -20,21 +20,25 @@ import lombok.RequiredArgsConstructor;
 public class InferServiceImpl implements InferService {
 	public final InferMapper inferMapper;
 	
+	// 불량 내역
 	@Override
 	public List<InferHistoryVO> inferList(FilterVO filterVO) {
 		return inferMapper.selectInferList(filterVO);
 	}
 	
+	// 불량 상세 내역
 	@Override
 	public List<InferDetailVO> inferListDetail(String inferNo) {
 		return inferMapper.selectInferListDetail(inferNo);
 	}
 	
+	// 불량 상세 답변 내역
 	@Override
 	public InferAnswerVO inferAnswerDetail(String inferNo) {
 		return inferMapper.selectInferAnswerDetail(inferNo);
 	}
 	
+	// 불량 등록
 	@Transactional
 	@Override
 	public int inferInsert(List<InferDetailVO> list) {
@@ -53,12 +57,14 @@ public class InferServiceImpl implements InferService {
 		return result;
 	}
 	
+	// 불량 내역 등록
 	@Transactional
 	@Override
 	public int inferHistoryInsert(InferHistoryVO inferHistoryVO) {
 		return inferMapper.insertInferHistory(inferHistoryVO);
 	}
-
+	
+	// 불량 답변 등록
 	@Transactional
 	@Override
 	public int inferAnswerInsert(InferAnswerVO inferAnswerVO) {
@@ -67,12 +73,14 @@ public class InferServiceImpl implements InferService {
 		result += inferMapper.updateInferHistory(inferAnswerVO);
 		return result;
 	}
-
+	
+	// 업체 목록
 	@Override
 	public List<CompanyVO> companyList() {
 		return inferMapper.selectCompany();
 	}
-
+	
+	// 불량 내역 페이징
 	@Override
 	public int inferListCount(FilterVO filterVO) {
 		return inferMapper.countInferList(filterVO);

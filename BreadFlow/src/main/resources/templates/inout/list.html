@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 내역</title>
+	<!-- 모달창 스타일 시작 -->
 	<style>
         .modal-dialog #container {
             width: 100%;
@@ -50,6 +51,7 @@
             text-align: center;
         }
     </style>
+    <!-- 모달창 스타일 끝 -->
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -125,6 +127,9 @@
 
 				</tbody>
 			</table>
+			<div id="noData" style="display: none;">
+				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
+			</div>
 			<div class="pagination-container">
 			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
@@ -134,7 +139,7 @@
 		<!-- 테이블 끝 -->
 	</div>
 	
-	<!-- 거래 명세서 발행 모달창 -->
+	<!-- 거래 명세서 발행 모달창 시작 -->
 	<div class="modal fade" id="getListModal" tabindex="-1" role="dialog" aria-labelledby="getListModalLabel" aria-hidden="true">
 	    <div class="modal-dialog modal-lg modal-dialog-centered">
 	        <div class="modal-content">
@@ -163,7 +168,7 @@
 					                    </tr>
 					                    <tr class="only">
 					                        <td>TEL</td>
-					                        <td id="session.inCompanyTel"></td>
+					                        <td id="inCompanyTel"></td>
 					                    </tr>
 					                </table>
 					            </div>
@@ -184,7 +189,7 @@
 					                    </tr>
 					                    <tr class="only">
 					                        <td>TEL</td>
-					                        <td id="session.outCompanyTel"></td>
+					                        <td id="outCompanyTel"></td>
 					                    </tr>
 					                </table>
 					            </div>
@@ -223,25 +228,26 @@
 	        </div>
 	    </div>
 	</div>
+	<!-- 거래 명세서 발행 모달창 끝 -->
 	
     <script>
     
 	 	// 조건
-	 	var companyInput = null; // 업체 번호
-		var comp = null;
-		var ing = null;
-		var prd = null;
-		var item = null;
-		var year = null;
-		var month = null;
-		var startDt = null;
-		var endDt = null;
-		var div = null;
-		var groupNo = null;
+	 	let companyInput = null; // 업체 번호
+		let comp = null;
+		let ing = null;
+		let prd = null;
+		let item = null;
+		let year = null;
+		let month = null;
+		let startDt = null;
+		let endDt = null;
+		let div = null;
+		let groupNo = null;
 		
 		// 페이징 조건
-		var page = 1;
-		var pageSize = 10;
+		let page = 1;
+		let pageSize = 10;
    		
 		// 페이지 로딩 시 기능 실행
         $(document).ready(function() {
@@ -337,7 +343,7 @@
 
             // 검색 버튼 클릭
             $("#searchBtn").click(function() {
-                var keyword = $("#searchKeyword").val().toLowerCase();
+                let keyword = $("#searchKeyword").val().toLowerCase();
                 searchData(keyword);
             });
 
@@ -351,7 +357,7 @@
             
          	// 업체 검색 모달에서 선택
             $("#selectCompanyBtn").click(function() {
-                var selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
+                let selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 comp = selectedCompanyName;
@@ -397,7 +403,7 @@
                         pageSize},
             	success : function(data) {
             		updateTable(data.list, type);
-            		var lastPage = Math.ceil(data.count / pageSize);
+            		let lastPage = Math.ceil(data.count / pageSize);
             		// 마지막 버튼 처리
             		if (page == lastPage) {
             			$("#nextPageBtn").hide();
@@ -410,6 +416,12 @@
             		} else {
             			$("#prevPageBtn").hide();
             		}
+            		if (data.count == 0 || data.count == null) {
+            			$("#nextPageBtn").hide();
+            			$("#prevPageBtn").hide();
+            			$("#currentPage").hide();
+            			$("#noData").css("display", "block");
+            		}
             		console.log(data);
             	},
             	error : function() {
@@ -420,10 +432,10 @@
 
         // 목록 갱신
         function updateTable(data, type) {
-            var tbody = $("#inOutTable");
+            let tbody = $("#inOutTable");
             tbody.empty();
             data.forEach(function(item) {
-                var row = "<tr>";
+                let row = "<tr>";
                 if (type === 'instore') {
                     row += "<td class='table-plus date'>" + item.instoreDate + "</td>";
                     row += "<td>" + item.itemName + "</td>";
@@ -447,15 +459,13 @@
                 tbody.append(row);
             });
             
+         	// 모달 창 버튼 클릭 시 처리
 	     	$(".getListBtn").click(function() {
 	     		groupNo = $(this).closest("tr").find("td:nth-child(7)").text();
 	     		console.log(groupNo);
 	     		getModal(groupNo);
 	     	});
         }
-        
-        
-     	// 모달 창 버튼 클릭 시 처리
         
      	// 모달창 필터값 전송
         function getModal(groupNo) {
@@ -477,33 +487,35 @@
      	// 모달 창 갱신
 	 	function updateModal(data) {
      		
-	 		var tbody = $("#insertedTble");
+	 		let tbody = $("#insertedTble");
 	 		tbody.empty();
 	    	
-	    	var amount = null;
-	    	var quant = null;
-	    	var selling = null;
-	    	var toten = null;
-	    	var addup = null;
+	    	let amount = null;
+	    	let quant = null;
+	    	let selling = null;
+	    	let toten = null;
+	    	let addup = null;
+	    	
+	    	console.log(data);
 	    	
 	 		data.forEach(function(item) {
 	 			
-	 			var row = "<tr>";
+	 			let row = "<tr>";
 	 				row += "<td style='display: none;'>" + item.instoreCompany + "</td>";
 	 				row += "<td style='display: none;'>" + item.outstoreCompany + "</td>";
 	            	row += "<td>" + item.date + "</td>";
 	            	row += "<td>" + item.itemName + "</td>";
 	            	row += "<td>" + item.quantity + "</td>";
 	            	row += "<td>" + item.price + "</td>";
-					row += "<td>" + item.productPrice + "</td>";
-					row += "<td>" + (Number(item.productPrice) / 10) + "</td>";
+					row += "<td>" + item.purchasePrice + "</td>";
+					row += "<td>" + (Number(item.purchasePrice) / 10) + "</td>";
 	            	row += "</tr>";
 	            	
-	            amount += Number(item.price) + (Number(item.productPrice) / 10);
+	            amount += Number(item.price) + (Number(item.purchasePrice) / 10);
                 quant += Number(item.quantity);
-	            selling += Number(item.productPrice);
-	            toten += (Number(item.productPrice) / 10);
-	            addup += Number(item.price) + (Number(item.productPrice) / 10);
+	            selling += Number(item.purchasePrice);
+	            toten += (Number(item.purchasePrice) / 10);
+	            addup += Number(item.price) + (Number(item.purchasePrice) / 10);
 	            
 		 		tbody.append(row);
 	 		});
@@ -514,8 +526,8 @@
 	 		$("#toten").html(toten);
 	 		$("#addup").html(addup);
 	 		
-	 		var instoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(1)").text();
-	 		var outstoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(2)").text();
+	 		let instoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(1)").text();
+	 		let outstoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(2)").text();
 	 		
 	 		$.ajax({
             	url : '/inOut/instoreComp',
@@ -563,7 +575,7 @@
         // 검색
         function searchData(keyword) {
             $("#inOutTable tr").each(function() {
-                var rowText = $(this).text().toLowerCase();
+                let rowText = $(this).text().toLowerCase();
                 if (rowText.includes(keyword)) {
                     $(this).show();
                 } else {
