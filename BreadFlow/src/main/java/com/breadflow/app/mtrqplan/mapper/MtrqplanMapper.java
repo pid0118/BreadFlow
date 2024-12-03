@@ -38,4 +38,7 @@ public interface MtrqplanMapper {
 	// 자재소요계획 진행상태(progress)를 c5(완료)로 update 
 	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO);
 
+	// 자재소요계획이 완료됨에 따라 다음 프로세스(입고) 진행을 위해 instore 테이블 INSERT
+	public int insertInstoreForMtrqplan(MtrqplanVO mtrqplanVO);
+
 }

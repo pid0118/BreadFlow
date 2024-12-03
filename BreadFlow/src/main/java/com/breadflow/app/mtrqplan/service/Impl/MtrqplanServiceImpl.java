@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.breadflow.app.inout.mapper.InOutMapper;
 import com.breadflow.app.mtrqplan.mapper.MtrqplanMapper;
 import com.breadflow.app.mtrqplan.service.MtrqplanService;
 import com.breadflow.app.mtrqplan.service.MtrqplanVO;
@@ -13,6 +14,9 @@ import com.breadflow.app.mtrqplan.service.MtrqplanVO;
 public class MtrqplanServiceImpl implements MtrqplanService {
 	@Autowired
 	private MtrqplanMapper mtrqplanMapper;
+	
+	@Autowired
+	private InOutMapper inOutMapper;
 
 	@Override
 	public List<MtrqplanVO> selectIngrdntList() {
@@ -73,5 +77,21 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	@Override
 	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO) {
 		return mtrqplanMapper.updateMatqDetailForProgressToC5(mtrqplanVO);
+	}
+
+	// 최종 생산이 완료되면 입고(instore) 테이블에 해당 계획 INSERT 
+	@Override
+	public int insertInstoreForMtrqplan(List<MtrqplanVO> list, String writer, String Company) {
+		int result = 0;
+		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		
+		for (MtrqplanVO mvo: list) {
+			mvo.setInstoreGroupNo(groupNo);
+			mvo.setWriter(writer);
+			mvo.setSupplyCompany(Company);
+			mtrqplanMapper.insertInstoreForMtrqplan(mvo);
+			result++;
+		}
+		return result;
 	}
 }

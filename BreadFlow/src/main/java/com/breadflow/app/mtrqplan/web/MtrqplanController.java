@@ -119,7 +119,7 @@ public class MtrqplanController {
 	@PostMapping("updateMtrqDetailForProgressToC4")
 	@ResponseBody
 	public int updateMtrqDetailForProgressToC4(@RequestBody MtrqplanVO mtrqplanVO) {
-		System.out.println("\n[PrdtplanController.java] updateMtrqDetailForProgressToC4 - PrdtplanVO: " + mtrqplanVO + "\n");
+		System.out.println("\n[PrdtplanController.java] updateMtrqDetailForProgressToC4 - mtrqplanVO: " + mtrqplanVO + "\n");
 		int result = mtrqplanService.updateMtrqDetailForProgressToC4(mtrqplanVO);
 		return result;
 	}
@@ -127,8 +127,19 @@ public class MtrqplanController {
 	@PostMapping("updateMatqDetailForProgressToC5")
 	@ResponseBody
 	public int updateMatqDetailForProgressToC5(@RequestBody MtrqplanVO mtrqplanVO) {
-		System.out.println("\n[PrdtplanController.java] updateMatqDetailForProgressToC5 - PrdtplanVO: " + mtrqplanVO + "\n");
+		System.out.println("\n[PrdtplanController.java] updateMatqDetailForProgressToC5 - mtrqplanVO: " + mtrqplanVO + "\n");
 		int result = mtrqplanService.updateMatqDetailForProgressToC5(mtrqplanVO);
+		return result;
+	}
+	
+	@PostMapping("insertInstoreForMtrqplan")
+	@ResponseBody
+	public int insertInstoreForMtrqplan(@RequestBody List<MtrqplanVO> list, HttpSession session) {
+		String writer = (String) session.getAttribute("memNo");
+		String company = (String) session.getAttribute("companyNo");
+		System.out.println("\n[PrdtplanController.java] insertInstoreForMtrqplan - list: " + list + "\n");
+		
+		int result = mtrqplanService.insertInstoreForMtrqplan(list, writer, company);
 		return result;
 	}
 }

@@ -124,14 +124,17 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public int UpdateMember(AccountVO accountVO) {
+		int result;
 		
-		if(accountVO.getPassword() != null || accountVO.getPassword() != "") {
+		if(accountVO.getPassword().equals("") || accountVO.getPassword() == null) {
+			result = accountMapper.updateMember(accountVO);
+		} else {
 			String password = accountVO.getPassword();
 			String encryptedPw = encryptHelper.encrypt(password);
 			accountVO.setPassword(encryptedPw);
+			result = accountMapper.updateMember(accountVO);
 		}
 		
-		int result = accountMapper.updateMember(accountVO);
 		return result;
 	}
 

@@ -130,5 +130,13 @@ public class PrdtplanController {
 		int result = prdtplanService.insertPrdtplanDetailsForSelf(list);
 		return result;
 	}
+	
+	@PostMapping("insertInstoreForPrdtplan")
+	@ResponseBody
+	public int insertInstoreForPrdtplan(@RequestBody List<PrdtplanVO> list, HttpSession session) {
+		String writer = (String) session.getAttribute("memNo");
+		int result = prdtplanService.insertInstoreForPrdtplan(list, writer);
+		return result;
+	}
 
 }

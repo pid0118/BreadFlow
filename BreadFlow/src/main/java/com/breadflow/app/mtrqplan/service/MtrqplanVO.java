@@ -2,6 +2,8 @@ package com.breadflow.app.mtrqplan.service;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -9,8 +11,11 @@ public class MtrqplanVO {
 	//== matrequired_plan 테이블 관련 VO ==//
 	String	matrequiredPlanNo;		// 자재소요 계획 번호
 	String	productionPlanNo;		// 생산 계획 번호
+	@DateTimeFormat(pattern = "yyyy-mm-dd")
 	Date	writeDate;				// 작성 일자
+	@DateTimeFormat(pattern = "yyyy-mm-dd")
 	Date	startDate;				// 시작 일자
+	@DateTimeFormat(pattern = "yyyy-mm-dd")
 	Date	lastDate;				// 마감 일자
 	String	deliveryLocation;		// 납품 위치
 	String	supplyCompany;			// 공급(공유) 업체
@@ -32,7 +37,8 @@ public class MtrqplanVO {
 	String	unitName;				// 단위 이름
 	
 	//== 기타 VO ==//
-	String supplyCompanyNm;			// 공급업체 이름
-	String deliveryLocationNm;		// 납품업체 이름
-	String productName;				// 재료명
+	String 	supplyCompanyNm;		// 공급업체 이름
+	String 	deliveryLocationNm;		// 납품업체 이름
+	String 	productName;			// 재료명
+	Integer instoreGroupNo;			// 입고할 때의 그룹 번호
 }

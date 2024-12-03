@@ -26,6 +26,7 @@ public class BreadFlowApplication {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
     }
     
+    // [박진석|241202] 암호화 모듈 Bean 등록
     @Bean
     EncryptHelper encryptConfig() {
     	return new SaltEncrypt();

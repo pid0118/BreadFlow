@@ -103,7 +103,7 @@
 									id="updLastDate" name="lastDate" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12" hidden="hidden">
+						<div class="col-md-6 col-sm-12"  hidden="hidden">
 							<label for="updPrdtComNm">생산업체</label>
 							<div class="input-group mb-3">
 							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -119,7 +119,7 @@
 									id="updProductionCompany" name="productionCompany" th:value="${session.companyNo}">
 							</div>
 						</div>
-						<div class="col-md-12 col-sm-12">
+						<div class="col-md-12 col-sm-12"  hidden="hidden">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
 							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -380,6 +380,8 @@ let newPrdtPlanBtn = document.querySelector("#newPrdtPlanBtn");					// 생산계
 newPrdtPlanBtn.addEventListener('click', function() {
 	mode = "insert"
 	$('#updatePrdtplanForm')[0].reset();
+	$('#updDeliveryLocation').val('CP00001');
+	
 	grid.clear();
 })
 
@@ -714,8 +716,8 @@ function insertOrUpdatePrdPlanAjax() {
 		let updDeliveryLocation = document.querySelector("#updDeliveryLocation").value
 		let updProductionCompany = document.querySelector("#updProductionCompany").value
 		
-		if(updStartDate == "" || updLastDate == "" || updDeliveryLocation == "" || updProductionCompany == "") {
-			alert("날짜 또는 업체를 선택했는지 확인하세요.");
+		if(updStartDate == "" || updLastDate == "") {
+			alert("날짜를 선택했는지 확인하세요.");
 			return false;
 		}
 		
@@ -827,7 +829,7 @@ function updatePrdtplanSituComplete() {
 	} else if ($("#updProgressSituation").val() != "진행중") {
 		alert("생산상태가 '진행중'인 계획만 완료처리를 할 수 있습니다.")
 	} else {
-		if(confirm('생산계획을 완료 처리하시겠습니까?')) {
+		if(confirm('생산계획을 완료 처리하시겠습니까?\n생산 완료와 동시에 입고처리가 되어집니다.')) {
 			jsonData = {
 					productionPlanNo: $("#updProductionPlanNo").val()
 			}
@@ -840,6 +842,7 @@ function updatePrdtplanSituComplete() {
 		        success: function(data){
 		            alert("성공적으로 저장되었습니다.");
 		            console.log(data);
+		            insertInstoreForPrdtplan(data);
 		            location.reload(true);
 		        },
 		        error: function(result){
@@ -856,6 +859,44 @@ function updatePrdtplanSituComplete() {
 // ajax 걸기 끝
 //========================================================================	
 
+
+	
+//========================================================================	
+// [박진석|241203] 입고(instore)처리 하는 AJAX
+function insertInstoreForPrdtplan(data) {
+	
+	let lastDate = convertDate($("#updLastDate").val());
+	let productionCompany = $("#updProductionCompany").val();
+	let productionPlanNo = $("#updProductionPlanNo").val();
+	
+	let jsonData = [];
+	grid.getData().forEach( element => {
+		jsonData.push({...element, lastDate, productionCompany, productionPlanNo })
+	});
+	
+	console.log(jsonData);
+	
+	
+	$.ajax({
+		url: "insertInstoreForPrdtplan",
+        type: "post",
+        contentType: "application/json",
+        data:  JSON.stringify(jsonData),
+        success: function(data){
+            alert("성공적으로 저장되었습니다.");
+            console.log(data);
+            location.reload(true);
+        },
+        error: function(result){
+     	   alert("저장에 실패하였습니다.");
+     	   console.log(result);
+     	}
+	});
+	
+}
+// ajax 걸기 끝
+//========================================================================	
+	
 	
 	
 //========================================================================	
@@ -900,4 +941,36 @@ function formatDate(dateString) {
 
 // 날짜 변환함수 끝
 // =======================================================	
+	
+	
+	
+// =======================================================	
+// [박진석|241203] 날짜 변환 함수 (11 September 2025 => 2025-07-11)
+function convertDate(dateString) {
+  const months = {
+    'January': '01',
+    'February': '02',
+    'March': '03',
+    'April': '04',
+    'May': '05',
+    'June': '06',
+    'July': '07',
+    'August': '08',
+    'September': '09',
+    'October': '10',
+    'November': '11',
+    'December': '12'
+  };
+
+  const parts = dateString.split(' ');
+
+  const day = parts[0].padStart(2, '0');
+  const month = months[parts[1]];
+  const year = parts[2];
+
+  return `${year}-${month}-${day}`;
+}
+// 날짜 변환함수 끝
+// =======================================================	
+	
 </script>

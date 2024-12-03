@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import com.breadflow.app.prdtplan.mapper.PrdtplanMapper;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
+import com.breadflow.app.inout.mapper.InOutMapper;
 
 @Service
 public class PrdtplanServiceImpl implements PrdtplanService {
+	
+	public InOutMapper inOutMapper;
 	
 	private PrdtplanMapper prdtplanMapper;
 	
@@ -79,13 +82,28 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	@Override
 	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list) {
 		int result = 0;
+		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		
 		for(PrdtplanVO pvo : list) {
+			pvo.setInstoreGroupNo(groupNo);
 			prdtplanMapper.insertPrdtplanDetailsForSelf(pvo);
 			result++;
 		}
 		return result;
 	}
 
+	// 최종 생산이 완료되면 입고(instore) 테이블에 해당 계획 INSERT 
+	@Override
+	public int insertInstoreForPrdtplan(List<PrdtplanVO> list, String writer) {
+		int result = 0;
+		for (PrdtplanVO pvo : list) {
+			pvo.setWriter(writer);
+			prdtplanMapper.insertInstoreForPrdtplan(pvo);
+			result++;
+		}
+		return result;
+	}
 
+	
 	
 }
