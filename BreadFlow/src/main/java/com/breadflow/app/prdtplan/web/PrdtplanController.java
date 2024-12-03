@@ -120,8 +120,7 @@ public class PrdtplanController {
 	public int updateDetailForProgressToC5(@RequestBody PrdtplanVO prdtplanVO) {
 		System.out.println("\n[PrdtplanController.java] updatedetailForProgress - PrdtplanVO: " + prdtplanVO + "\n");
 		int result = prdtplanService.updateDetailForProgressToC5(prdtplanVO);
-		int result2 = prdtplanService.insertInstoreForPrdtplan(prdtplanVO);
-		return result + result2;
+		return result;
 	}
 	
 	@PostMapping("insertPrdtplanDetailsForSelf")
@@ -129,6 +128,14 @@ public class PrdtplanController {
 	public int insertPrdtplanDetailsForSelf(@RequestBody List<PrdtplanVO> list) {
 		System.out.println("\n[PrdtplanController.java] insertPrdtplanDetails.do - prdtplanVO: " + list + "\n");
 		int result = prdtplanService.insertPrdtplanDetailsForSelf(list);
+		return result;
+	}
+	
+	@PostMapping("insertInstoreForPrdtplan")
+	@ResponseBody
+	public int insertInstoreForPrdtplan(@RequestBody List<PrdtplanVO> list, HttpSession session) {
+		String writer = (String) session.getAttribute("memNo");
+		int result = prdtplanService.insertInstoreForPrdtplan(list, writer);
 		return result;
 	}
 

@@ -85,7 +85,7 @@
 			<div class="updateAccounts">
 				<form id="updatePrdtplanForm" method="post">
 					<div class="row">
-						<div class="col-md-6 col-sm-12" hidden="hidden">
+						<div class="col-md-6 col-sm-12">
 							<div class="form-group">
 								<label>생산계획 고유번호h</label> <input type="text" class="form-control"
 									id="updProductionPlanNo" name="productionPlanNo" readonly>
@@ -103,7 +103,7 @@
 									id="updLastDate" name="lastDate" readonly>
 							</div>
 						</div>
-						<div class="col-md-6 col-sm-12" hidden="hidden">
+						<div class="col-md-6 col-sm-12">
 							<label for="updPrdtComNm">생산업체</label>
 							<div class="input-group mb-3">
 							  	<input id="updPrdtComNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -113,13 +113,13 @@
 							</div>
 						</div>
 						
-						<div class="col-md-6 col-sm-12" hidden="hidden">
+						<div class="col-md-6 col-sm-12">
 							<div class="form-group">
 								<label>생산업체코드h</label> <input type="text" class="form-control"
 									id="updProductionCompany" name="productionCompany" th:value="${session.companyNo}">
 							</div>
 						</div>
-						<div class="col-md-12 col-sm-12" hidden="hidden">
+						<div class="col-md-12 col-sm-12">
 							<label for="updDlvryLocNm">납품위치</label>
 							<div class="input-group mb-3">
 							  	<input id="updDlvryLocNm" type="text" class="form-control" aria-describedby="button-addon2">
@@ -130,7 +130,7 @@
 						</div>
 						
 						
-						<div class="col-md-6 col-sm-12" hidden="hidden">
+						<div class="col-md-6 col-sm-12">
 							<div class="form-group">
 								<label>납품위치코드h</label> <input type="text" class="form-control"
 									id="updDeliveryLocation" name="deliveryLocation">
@@ -840,7 +840,8 @@ function updatePrdtplanSituComplete() {
 		        success: function(data){
 		            alert("성공적으로 저장되었습니다.");
 		            console.log(data);
-		            location.reload(true);
+		            insertInstoreForPrdtplan(data);
+		            //location.reload(true);
 		        },
 		        error: function(result){
 		     	   alert("저장에 실패하였습니다.");
@@ -856,6 +857,44 @@ function updatePrdtplanSituComplete() {
 // ajax 걸기 끝
 //========================================================================	
 
+
+	
+//========================================================================	
+// [박진석|241203] 입고(instore)처리 하는 AJAX
+function insertInstoreForPrdtplan(data) {
+	
+	let lastDate = convertDate($("#updLastDate").val());
+	let productionCompany = $("#updProductionCompany").val();
+	let productionPlanNo = $("#updProductionPlanNo").val();
+	
+	let jsonData = [];
+	grid.getData().forEach( element => {
+		jsonData.push({...element, lastDate, productionCompany, productionPlanNo })
+	});
+	
+	console.log(jsonData);
+	
+	
+	$.ajax({
+		url: "insertInstoreForPrdtplan",
+        type: "post",
+        contentType: "application/json",
+        data:  JSON.stringify(jsonData),
+        success: function(data){
+            alert("성공적으로 저장되었습니다.");
+            console.log(data);
+            location.reload(true);
+        },
+        error: function(result){
+     	   alert("저장에 실패하였습니다.");
+     	   console.log(result);
+     	}
+	});
+	
+}
+// ajax 걸기 끝
+//========================================================================	
+	
 	
 	
 //========================================================================	
@@ -900,4 +939,36 @@ function formatDate(dateString) {
 
 // 날짜 변환함수 끝
 // =======================================================	
+	
+	
+	
+// =======================================================	
+// [박진석|241203] 날짜 변환 함수 (11 September 2025 => 2025-07-11)
+function convertDate(dateString) {
+  const months = {
+    'January': '01',
+    'February': '02',
+    'March': '03',
+    'April': '04',
+    'May': '05',
+    'June': '06',
+    'July': '07',
+    'August': '08',
+    'September': '09',
+    'October': '10',
+    'November': '11',
+    'December': '12'
+  };
+
+  const parts = dateString.split(' ');
+
+  const day = parts[0].padStart(2, '0');
+  const month = months[parts[1]];
+  const year = parts[2];
+
+  return `${year}-${month}-${day}`;
+}
+// 날짜 변환함수 끝
+// =======================================================	
+	
 </script>

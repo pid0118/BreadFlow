@@ -27,5 +27,5 @@ public interface PrdtplanService {
 
 	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list);
 
-	public int insertInstoreForPrdtplan(PrdtplanVO prdtplanVO);
+	public int insertInstoreForPrdtplan(List<PrdtplanVO> list, String writer);
 }

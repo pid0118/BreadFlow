@@ -209,15 +209,28 @@
             , #{productCode}
             , #{planQuantity}
             , #{productionCompany}
-            , (SELECT SUM(i.instore_quantity) + #{planQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{productionCompany})
+            , (SELECT NVL(SUM(i.instore_quantity),0) + #{planQuantity} FROM instore i left join company c on i.company_no = c.company_no WHERE i.company_no = #{productionCompany})
             , 'a3'
             , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
             , #{writer}
             , #{productionPlanNo}
             , 'f2'
-            , (SELECT pp.last_date + #{deadline} FROM production_plan pp JOIN production_plan_detail ppd ON pp.production_plan_no = ppd.production_plan_no WHERE ppd.product_code = #{itemCode} AND ROWNUM = 1)
+            , (	SELECT #{lastDate} + (SELECT expiration_deadline
+                    				FROM product
+                    				WHERE product_code = #{productCode})
+				FROM production_plan
+				WHERE production_plan_no = #{productionPlanNo})
             , (SELECT MAX(INSTORE_GROUP_NO) + 1 FROM instore)
 		)
 	</insert>
 
 </mapper>
+
+
+
+
+
+
+
+
+
