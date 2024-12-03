@@ -90,11 +90,11 @@
 				            <!-- 2번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">소비기한</label>
-				                <input type="text" class="form-control form-control-sm" id="expirationDeadline">
+				                <input type="number" step='1'class="form-control form-control-sm" id="expirationDeadline">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">구매가</label>
-				                <input type="text" class="form-control form-control-sm" id="purchasePrice">
+				                <input type="number" step='100'class="form-control form-control-sm" id="purchasePrice">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">원산지</label>
@@ -103,11 +103,11 @@
 				            <!-- 3번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">안전재고 수량</label>
-				                <input type="text" class="form-control form-control-sm" id="safeStockQuantity">
+				                <input type="number"step='100' class="form-control form-control-sm" id="safeStockQuantity">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">용량</label>
-				                <input type="text" class="form-control form-control-sm" id="amount">
+				                <input type="number" step='10' class="form-control form-control-sm" id="amount">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">단위</label>
@@ -230,6 +230,10 @@
 	     		
 	     		if($("#ingredientName").val()==''){
 	     			alert("제품명을 입력해주세요")
+	     			return;
+	     		}
+	     		if($("#standard").val()==''){
+	     			alert("규격을 입력해주세요")
 	     			return;
 	     		}
 	     		if($("#purchasePrice").val() == ''){

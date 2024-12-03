@@ -258,6 +258,7 @@
 
 	<script>
     let sub = ''
+    let oldIngredient = {};
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showingredientDetail(ingredientCode) {
 		    $.ajax({
@@ -279,6 +280,22 @@
 		            document.getElementById('mainCategory').value = ingredient.major;
 		            sub = ingredient.sub;     
 		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
+		            
+		            oldIngredient = {
+	                    ingredientCode: $("#ingredientCode").val(),
+	                    ingredientName: $("#ingredientName").val(),
+	                    standard: $("#standard").val(),
+	                    expirationDeadline: strdel(commadel($("#expirationDeadline").val())),
+	                    purchasePrice: strdel(commadel($("#purchasePrice").val())),
+	                    safeStockQuantity: commadel($("#safeStockQuantity").val()),
+	                    origin: $("#origin").val(),
+	                    unit: $("#unit option:selected").val(),
+	                    major: $("#mainCategory option:selected").val(),
+	                    sub: sub,
+	                    amount: commadel($("#amount").val()),
+	                    ingredientImage: $("#ingredientImage").val()
+	                };
+		            
 		            $('#ingredientDetailModal').modal('show');
 		            $("#mainCategory").change()
 		        },
@@ -496,21 +513,20 @@
             		contentType : 'application/json',
             		data : JSON.stringify(checkBoxArr),
             		success : function(result){
-            			if (result == 0) {
-            				alert("선택하신 재료삭제가 완료되었습니다.")
-            				location.reload(true);
-            			} else {
-            				alert("현재 선택하신 재료가 주문품목에 등록되어 삭제가 불가능합니다."); 
-            			}
-            		},
-            		error : function(xhr, status, error){
-            			alert("재료 삭제에 실패했습니다.");
-            		}
-            		
-            	});
-    	  	} else {
-    	  		alert("삭제하실 재료를 선택해주세요")
-    	  	}
+            			if (result === 1) {
+                            alert("선택하신 재료삭제가 완료되었습니다.");
+                            location.reload(true);
+                        } else if (result === -1) {
+                            alert("선택하신 재료 중 주문 또는 BOM에 등록된 항목이 있어 삭제할 수 없습니다.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("재료 삭제에 실패했습니다.");
+                    }
+                });
+              }else {
+                alert("삭제하실 재료를 선택해주세요");
+    	  	  }
         }			
         
 		      
@@ -553,6 +569,34 @@
      			alert("재료명이 중복되거나 재료가 등록되어있습니다")
      			return;
      		}
+     		// 수정된 데이터와 원본 데이터 비교
+     		const newData = {
+   		        ingredientCode: $("#ingredientCode").val(),
+   		        ingredientName: $("#ingredientName").val(),
+   		        standard: $("#standard").val(),
+   		        expirationDeadline: strdel(commadel($("#expirationDeadline").val())),
+   		        purchasePrice: strdel(commadel($("#purchasePrice").val())),
+   		        safeStockQuantity: commadel($("#safeStockQuantity").val()),
+   		        origin: $("#origin").val(),
+   		        unit: $("#unit option:selected").val(),
+   		        major: $("#mainCategory option:selected").val(),
+   		        sub: $("#subCategory option:selected").val(),
+   		        amount: commadel($("#amount").val()),
+   		        ingredientImage: $("#ingredientImage").val()
+   		    };
+     		
+     		let isChanged = false;
+     	    for (let key in newData) {
+     	        if (oldIngredient[key] !== newData[key]) {
+     	            isChanged = true;
+     	            break;
+     	        }
+     	    }
+     	    // 변경된 데이터가 없으면 업데이트 요청 중단
+     	    if (!isChanged) {
+     	        alert("변경된 내용이 없습니다.");
+     	        return;
+     	    }
      		$.ajax({
      			url : "/ingredient",
      			method : "put",

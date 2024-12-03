@@ -247,7 +247,7 @@
 		    		data : {},
 					success : function(data){
 						console.log(data);
-						grid.appendRows(data);
+						grid.resetData(data);
 					},
 					error: function(result){
 						alert("정보를 불러오는데 실패하였습니다.")
@@ -534,11 +534,15 @@
 		 
 			let jsonData = [];
 			jsonData = grid.getData();
+		  console.log(jsonData);
+			if(!grid.isModified()){
+				alert("변경사항이 없습니다.");
+				return;
+			}
 			
 			for (let obj of jsonData){
 				obj.productCode = $('#productCode').val();
 			}// end for
-		  
 		  $.ajax({
 			url : "bomUpdate",
 			type : "post",
@@ -563,6 +567,10 @@
 			jsonData = grid.getData();
 			let bomdate = true;
 			
+			if(jsonData == ''){
+				alert("등록된 재료가 없습니다");
+				return;
+			}
 			for (let obj of jsonData) {
 			  obj.productCode = $('#productCode').val();
 			  
@@ -573,7 +581,7 @@
 			}
 			
 			if(!bomdate){
-				alert("소모량을 입력해주세요")
+				alert("소모량을 입력해주세요");
 				return;
 			}
 			   

@@ -87,12 +87,6 @@
         <table class="data-table table stripe hover wrap" id="productTable">
             <thead>
                 <tr style="text-align : center;">
-                	<th class="datatable">
-	                	<div class="dt-checkbox">
-	                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
-	                            <span class="dt-checkbox-lable"></span>
-	                    </div>
-                	</th>
                     <th class="table-plus">제품코드</th>
                     <th class="datatable">제품명</th>
                     <th class="datatable">소비기한</th>
@@ -105,15 +99,10 @@
             <tbody>
                 <th:block th:each="info : ${products}">
                     <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
-                    	<td>
-                    		<div class="dt-checkbox">
-                                <input type="checkbox" id="checkProductCode" name="checkProductCode">
-                                <span class="dt-checkbox-lable"></span>
-                        	</div>
-                    	</td>
-
-                        <td class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productCode}]]</td>
-                        <td class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productName}]]</td>
+                        <td th:if="${info.bomSituation == 'Y'}" class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productCode}]]</td>
+	                    <td th:if="${info.bomSituation == 'N'}" class="clickable" >[[${info.productCode}]]</td>
+                        <td th:if="${info.bomSituation == 'Y'}" class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productName}]]</td>
+						<td th:if="${info.bomSituation == 'N'}" class="clickable" >[[${info.productCode}]]</td>
                         <td>[[${info.expirationDeadline}]]일</td>
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>

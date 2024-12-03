@@ -31,4 +31,7 @@ public interface IngredientMapper {
 	// 주문중 재품찾기
 	public int selectOrderingIngredientCnt(List<String> ingredientCode);
 	
+	// BOM에서 사용중인 원재료 찾기
+	public int selectBomIngredientCnt(List<String> ingredientCode);
+	
 }

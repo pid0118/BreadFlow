@@ -260,6 +260,7 @@
 
 	<script>
 	let sub = ''
+	let oldProduct = {};
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showProductDetail(productCode) {
 		    $.ajax({
@@ -282,6 +283,23 @@
 		            document.getElementById('amount').value = formatNumber(product.amount) + product.unitName;
 		            document.getElementById('productCodes').value = product.productCode;
 		            sub = product.sub; 
+		            
+		            oldProduct = {
+		         	        productCode: $("#productCode").val(),
+		         	        productName: $("#productName").val(),
+		         	        standard: $("#standard").val(),
+		         	        expirationDeadline: strdel(commadel($("#expirationDeadline").val())),
+		         	        purchasePrice: strdel(commadel($("#purchasePrice").val())),
+		         	        salePrice: strdel(commadel($("#salePrice").val())),
+		         	        safeStockQuantity: $("#safeStockQuantity").val(),
+		         	        proplace: $("#proplace").val(),
+		         	        unit: $("#unit option:selected").val(),
+		         	        major: $("#mainCategory option:selected").val(),
+		         	        sub: sub,
+		         	        amount: strdel(commadel($("#amount").val())),
+		         	        productImage: $("#productImage").val(),
+		         	    };
+		            
 		            $('#productDetailModal').modal('show');
 		            $("#mainCategory").change()
 		        },
@@ -515,6 +533,7 @@
      	// 제품수정
      	// NOT NULL값 미입력시 알림 및 등록 불가
      	function updateProduct() {
+     		
      		if($("#productName").val()==''){
      			alert("제품명을 입력해주세요")
      			return;
@@ -555,6 +574,38 @@
      			alert("제품명이 중복되거나 상품이 등록되어있습니다")
      			return;
      		}
+     		
+     	// 수정된 데이터와 원본 데이터 비교
+     	    const newData = {
+     	        productCode: $("#productCode").val(),
+     	        productName: $("#productName").val(),
+     	        standard: $("#standard").val(),
+     	        expirationDeadline: strdel(commadel($("#expirationDeadline").val())),
+     	        purchasePrice: strdel(commadel($("#purchasePrice").val())),
+     	        salePrice: strdel(commadel($("#salePrice").val())),
+     	        safeStockQuantity: $("#safeStockQuantity").val(),
+     	        proplace: $("#proplace").val(),
+     	        unit: $("#unit option:selected").val(),
+     	        major: $("#mainCategory option:selected").val(),
+     	        sub: $("#subCategory option:selected").val(),
+     	        amount: strdel(commadel($("#amount").val())),
+     	        productImage: $("#productImage").val(),
+     	    };
+
+     	    let isChanged = false;
+     	    for (let key in newData) {
+     	        if (oldProduct[key] !== newData[key]) {
+     	            isChanged = true;
+     	            break;
+     	        }
+     	    }
+
+     	    // 변경된 데이터가 없으면 업데이트 요청 중단
+     	    if (!isChanged) {
+     	        alert("변경된 내용이 없습니다.");
+     	        return;
+     	    }
+     		
      		$.ajax({
      			url : "/product",
      			method : "put",
@@ -565,7 +616,7 @@
      				"expirationDeadline" : strdel(commadel($("#expirationDeadline").val())),
      				"purchasePrice" : strdel(commadel($("#purchasePrice").val())),
      				"salePrice" : strdel(commadel($("#salePrice").val())),
-     				"safeStockQuantity" : $("#safeStockQuantity").val(),
+     				"safeStockQuantity" : strdel(commadel($("#safeStockQuantity").val())),
      				"proplace" : $("#proplace").val(),
      				"unit" : $("#unit option:selected").val(),
      				"major" : $("#mainCategory option:selected").val(),
