@@ -11,4 +11,6 @@ public class StockVO {
 	private String orderingItem;	// 품목명
 	private String standard;		// 규격
 	private int stockQuantity;		// 재고량
+	private int safeStockQuantity;	// 안전재고량
+	private int price;				// 매입 가격
 }

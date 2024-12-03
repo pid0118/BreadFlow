@@ -33,9 +33,10 @@ public class OrderingController {
 	
 	// 발주 신청 처리
 	@PostMapping("/ordering/insert")
+	@ResponseBody
 	public String insertOrdering(@RequestBody Map<String, Object> ordering, HttpSession session) {
 		orderingService.insertOrdering(ordering, session);
-		return "redirect:/order/list";
+		return "/order/list";
 	}
 	
 	// 발주/주문 현황 페이지
@@ -49,8 +50,9 @@ public class OrderingController {
 	@ResponseBody
 	public Map<String, Object> selectOrderList(@RequestParam("status") String status, 
 			                                   @RequestParam(name = "sort", required = false) String sort, 
-			                                   @RequestParam(name = "page", defaultValue = "1") int page){
-		Map<String, Object> map = orderingService.selectOrderingList(status, sort, page);
+			                                   @RequestParam(name = "page", defaultValue = "1") int page,
+			                                   HttpSession session){
+		Map<String, Object> map = orderingService.selectOrderingList(status, sort, page, session);
 		return map;
 	}
 	
