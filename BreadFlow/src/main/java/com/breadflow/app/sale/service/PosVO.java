@@ -17,4 +17,5 @@ public class PosVO {
 	private Integer daySales; // 매출
 	private Integer totalQuantity;
 	private String name; // 가맹점주 성함
+	private String sub; // 카테고리(소분류)
 }
