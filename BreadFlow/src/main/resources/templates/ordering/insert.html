@@ -139,22 +139,17 @@ fetch("../category/list")
 
 // 품목 추가 (발주 신청 테이블)
 itemAdd.addEventListener('click', function() {
-	let checktd = document.querySelectorAll('table .custom-checkbox input.check');
+	const checktd = document.querySelectorAll('table .custom-checkbox input.check');
 	let checkbool = false; // 체크박스 여부
 	let checktable = true; // 품목코드 중복 여부
 	let element = ''; // 품목 요소
 	checktd.forEach(td => {
 		if(td.checked == true){
 			checkbool = true;
-			checktable = true;
 			element += '<tr>';
 			let datas = td.closest('tr').querySelectorAll('td');
-			document.querySelectorAll('.datatable tbody tr td:first-child').forEach(ele => {
-				if(ele.innerText == datas[1].innerText){
-					checktable = false;
-				}
-			})
-			
+			const found = Array.from(document.querySelectorAll('.datatable tbody tr td:first-child')).find(ele => ele.innerText == datas[1].innerText);
+			checktable = found ? false : true;
 			if(checktable == true){
 				for(let i=1; i<datas.length; i++){
 					element += `<td>${datas[i].innerText}</td>`;
@@ -164,6 +159,7 @@ itemAdd.addEventListener('click', function() {
 			
 		}
 	})
+	// 품목이 중복되거나 품목 선택이 안되었을때
 	if(checktable == false || checkbool == false){
 		event.stopPropagation();
 		if(checktable == false){
@@ -187,7 +183,7 @@ itemAdd.addEventListener('click', function() {
 document.querySelector('.pagination.justify-content-center').addEventListener('click', pageEvent);
 
 // 품목 검색 이벤트
-itemSearch.addEventListener('click', itemClick);
+itemSearch.addEventListener('click', () => itemClick(1));
 
 // 각 품목 총 금액, 합계 계산 이벤트
 document.querySelector('.datatable').addEventListener('change', itemSum)
@@ -222,7 +218,7 @@ orderRequest.addEventListener('click', function() {
 	  	},
 		body: JSON.stringify(list)
 	})
-	.then(response => response.url)
+	.then(response => response.text())
 	.then(data => {
 		window.location.href = data;
 	})
@@ -328,12 +324,12 @@ function makeItems(data) {
 }
 
 // 검색이나 페이지 버튼 클릭시 나타내는 목록 함수
-function itemClick(page) {
+function itemClick(pages) {
 	let val = $('.custom-select2.second').val();	// 품목 종류 값들
 	let searchOpt = $('.custom-select2.second')[0];	// select 옵션
 	let ingredients = []; // 재료들
 	let products = [];	// 제품들
-	let pages = 1;	// 페이지
+	//let pages = 1;	// 페이지
 	let lastPage;	// 마지막 페이지
 
 	for(let opt of searchOpt) {
@@ -376,6 +372,7 @@ function itemClick(page) {
 						</li>`);	
 				}
 			}
+			
 			if(pages == 1 && pages == lastPage) {
 				document.querySelector('li.page-item.next').classList.add("disabled");
 				document.querySelector('li.page-item.previous').classList.add("disabled");
@@ -423,7 +420,7 @@ function itemClick(page) {
 // 페이지 버튼 클릭 시 페이지 계산 및 페이지 이동 함수
 function pageEvent(){
 	if(event.target.closest('li') != null && !event.target.closest('li').classList.contains('disabled')){
-		let page;
+		let page = 0;
 		if(event.target.closest('li').classList.contains('next')){ // > 버튼일 경우
 			page = Number(document.querySelector('.paginate_button.active').innerText) + 1;
 		} else if(event.target.closest('li').classList.contains('previous')) { // < 버튼일 경우
@@ -431,6 +428,7 @@ function pageEvent(){
 		} else {
 			page = event.target.innerText;
 		}
+		console.log(page);
 		itemClick(page); 
 	}
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import jakarta.servlet.http.HttpSession;
 
 public interface OrderingService {
-	public Map<String, Object> selectOrderingList(String status, String sort, int page); // 발주 현황 조회
+	public Map<String, Object> selectOrderingList(String status, String sort, int page, HttpSession session); // 발주 현황 조회
 	public int insertOrdering(Map<String, Object> ordering, HttpSession session); // 발주 신청
 	public String updateOrderingApprovalCancel(String no, String reason); // 발주 취소
 	public int updateOrderingAccept(String orderingCode); // 발주 승인

@@ -29,12 +29,12 @@ public class OrderingServiceImpl implements OrderingService{
 	
 	// 발주 현황 조회
 	@Override
-	public Map<String, Object> selectOrderingList(String status, String sort, int page) {
+	public Map<String, Object> selectOrderingList(String status, String sort, int page, HttpSession session) {
 		List<String> list = Arrays.asList(status.split(",")); // 상태 배열 , 기준으로 나누어 list
-	
+		String div = (String)session.getAttribute("div");
 
-		int totalPage = orderingMapper.selectOrderingPage(list, sort, page);	// 총 페이지
-		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page);	// 전체 발주 조회
+		int totalPage = orderingMapper.selectOrderingPage(list, sort, page, div);	// 총 페이지
+		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page, div);	// 전체 발주 조회
 		Map<String, Object> map = new HashMap<>();
 
 		map.put("data", oList);
@@ -54,6 +54,9 @@ public class OrderingServiceImpl implements OrderingService{
 			orderingVO.setDeliveryDesireDate(newDesireDate);	// 발주 납기 희망일자
 		} catch (ParseException e) {
 			e.printStackTrace();
+		}
+		if(((String) ordering.get("approvalWhether")).equals("d4")) {
+			orderingVO.setApprovalWhether("d4");
 		}
 		orderingVO.setOrderingCode((String)ordering.get("orderingCode"));	// 발주코드
 		orderingVO.setOrderingRequestManager((String)session.getAttribute("name"));	// 발주 요청 담당자

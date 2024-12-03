@@ -10,6 +10,8 @@
 		       , ordering_item
 		       , unit || ' / ' || standard standard
 		       , SUM(stock_quantity) stock_quantity
+		       , safe_stock_quantity
+		       , price
 		FROM stock_vu
 		WHERE facilities IN (
 		<foreach collection="facilities" item="item" separator=",">
@@ -22,7 +24,10 @@
 		</foreach>
 		)
 		AND ordering_item LIKE '%' || #{itemName} || '%'
-		GROUP BY item_code, facilities, major, sub, ordering_item, unit || ' / ' || standard
+		<if test="companyNo != ''">
+		AND company_no = #{companyNo}
+		</if>
+		GROUP BY item_code, facilities, major, sub, ordering_item, unit || ' / ' || standard, safe_stock_quantity, price
 	</select>
 	
 	<select id="selectDetailStockList">
@@ -30,12 +35,16 @@
 			   , ordering_item
 			   , unit
 			   , standard
-			   , stock_quantity
+			   , SUM(stock_quantity) stock_quantity
 			   , safe_stock_quantity
 			   , expiration_deadline
 		FROM stock_vu
 		WHERE item_code = #{itemCode}
 		AND facilities = #{facilities}
+		<if test="companyNo != ''">
+		AND company_no = #{companyNo}
+		</if>
+		GROUP BY company_name , ordering_item , unit , standard , safe_stock_quantity , expiration_deadline
 		ORDER BY company_name, expiration_deadline
 	</select>
 	

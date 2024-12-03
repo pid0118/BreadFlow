@@ -11,6 +11,7 @@
 <body>
 <div class="pd-20 card-box mb-30">
 	<div class="clearfix mb-20">
+		<th:block th:if="${session.div == '본사'}">
 		<div class="tab">
 			<ul class="nav nav-tabs customtab" role="tablist">
 				<li class="nav-item">
@@ -21,6 +22,7 @@
 				</li>
 			</ul>
 		</div>
+		</th:block>
 		<div class="tab-content">
 			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
 				<div class="pd-20">
@@ -28,6 +30,7 @@
 						<h4 class="text-blue h4">발주 현황</h4>
 					</div>
 					<div class="pull-right">
+					<th:block th:if="${session.div == '본사'}">
 						<div class="row">
 							<div class="col-md-6 col-sm-12">
 								<div class="form-group">
@@ -55,6 +58,7 @@
 								</div>
 							</div>
 						</div>
+					</th:block>
 					</div>
 					<div class="table-responsive">
 						<table class="table" id="orderingTable">
@@ -66,8 +70,10 @@
 									<th scope="col">발주 요청자</th>
 									<th scope="col">총 금액</th>
 									<th scope="col">발주 상태</th>
+									<th:block th:if="${session.div == '본사'}">
 									<th scope="col">승인</th>
 									<th scope="col">거절</th>
+									</th:block>
 								</tr>
 							</thead>
 							<tbody></tbody>
@@ -196,6 +202,7 @@
 </div>		
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>		
 <script>
+let div = "[[${session.div}]]"; // 업체
 let status = 'd3,d4';	// 기본 발주 상태
 let sort = '';	// 기본 정렬 조건
 let page = 1;	// 기본 페이지 수
@@ -298,40 +305,82 @@ function orderingList(status, sort, page){
 		$('#orderingTable tbody tr').remove(); // 테이블 데이터 삭제
 		result.data.forEach(data => {
 			let ele;
-			if(data.approvalWhether == 'd3'){ // 요청 상태일 경우
-				ele = `<tr class="table-light">
-					<td data-id="${data.orderformNo}">
-						<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
-					</td>
-					<td>${data.orderingDate.substring(0,10)}</td>
-					<td>${data.deliveryDesireDate.substring(0,10)}</td>
-					<td>${data.orderingRequestManager}</td>
-					<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-					<td><span class="badge badge-secondary">요청</span></td>
-					<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
-					<td>
-						<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-						<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
-						</a>
-					</td>
-				</tr>`
+			if(data.approvalWhether != 'd4'){ // 요청 상태일 경우
+				if(div == '본사'){
+					ele = `<tr class="table-light">
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+						</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+						<td><span class="badge badge-secondary">요청</span></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+						<td>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							</a>
+						</td>
+					</tr>`;
+				} else {
+					ele = `<tr class="table-light">
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+						</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>`;
+						if(data.approvalWhether == 'd3'){
+							ele += `<td><div class="progress">
+		                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">대기중</div>
+		                        </div></td>
+							</tr>`;
+						} else if(data.approvalWhether == 'd1'){
+							ele += `<td><div class="progress">
+	                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">승인</div>
+	                        </div></td>`;
+						} else {
+							ele += `<td><div class="progress">
+	                        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">거절</div>
+	                        </div></td>`;
+						}
+						
+				}
 			} else { // 긴급 상태일 경우
-				ele = `<tr class="table-danger">
-					<td data-id="${data.orderformNo}">
-						<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
-					</td>
-					<td>${data.orderingDate.substring(0,10)}</td>
-					<td>${data.deliveryDesireDate.substring(0,10)}</td>
-					<td>${data.orderingRequestManager}</td>
-					<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-					<td><span class="badge badge-danger">긴급</span></td>
-					<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
-					<td>
-						<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-						<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
-						</a>
-					</td>
-				</tr>`
+				if(div == '본사'){
+					ele = `<tr class="table-danger">
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+						</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+						<td><span class="badge badge-danger">긴급</span></td>
+						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
+						<td>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							</a>
+						</td>
+					</tr>`;
+				} else {
+					ele = `<tr class="table-danger">
+						<td data-id="${data.orderformNo}">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+						</td>
+						<td>${data.orderingDate.substring(0,10)}</td>
+						<td>${data.deliveryDesireDate.substring(0,10)}</td>
+						<td>${data.orderingRequestManager}</td>
+						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
+						<td><div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">대기중</div>
+                        </div></td>
+					</tr>`;
+				}
+				
 			}
 			$('#orderingTable tbody').append(ele); // 테이블 데이터 추가
 		})

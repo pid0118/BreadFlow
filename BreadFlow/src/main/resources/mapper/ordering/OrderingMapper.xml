@@ -6,11 +6,13 @@
 		FROM (SELECT rownum rn, a.*
 		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
 				   FROM ordering 
-				   WHERE  approval_whether IN (
-				   <foreach collection="status" item="item" separator=",">
-				   		#{item}
-				   </foreach>
-				   )
+				   <if test="div == '본사'">
+					   WHERE  approval_whether IN (
+					   <foreach collection="status" item="item" separator=",">
+					   		#{item}
+					   </foreach>
+					   )
+				   </if>
 				   ORDER BY
 					<choose>
 						<when test="sort == 'odDesc'">
@@ -38,11 +40,13 @@
 		FROM (SELECT rownum rn, a.*
 		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
 				   FROM ordering 
-				   WHERE  approval_whether IN (
-				   <foreach collection="status" item="item" separator=",">
-				   		#{item}
-				   </foreach>
-				   )
+				   <if test="div == '본사'">
+					   	WHERE  approval_whether IN (
+					   <foreach collection="status" item="item" separator=",">
+					   		#{item}
+					   </foreach>
+					   )
+				   </if>
 				   ORDER BY
 					<choose>
 						<when test="sort == 'odDesc'">
@@ -70,7 +74,18 @@
 			FROM dual
 		</selectKey>
 		INSERT INTO ordering (ordering_code, ordering_date, ordering_request_manager, total_price, approval_whether, orderform_no, delivery_desire_date, company_no)
-		VALUES (#{code}, sysdate, #{orderingVO.orderingRequestManager}, #{orderingVO.totalPrice}, 'd3', #{orderformNo}, #{orderingVO.deliveryDesireDate}, #{orderingVO.companyNo})
+		VALUES (#{code}
+				, sysdate
+				, #{orderingVO.orderingRequestManager}
+				, #{orderingVO.totalPrice}
+				<choose>
+					<when test="orderingVO.approvalWhether == '' || orderingVO.approvalWhether == null">, 'd3'</when>
+					<otherwise>, #{orderingVO.approvalWhether}</otherwise>
+				</choose>
+				, #{orderformNo}
+				, #{orderingVO.deliveryDesireDate}
+				, #{orderingVO.companyNo}
+				)
 	</insert>
 	
 	<insert id="insertOrderingDetail">
