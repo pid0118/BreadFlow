@@ -209,9 +209,13 @@
             , #{productCode}
             , #{planQuantity}
             , #{productionCompany}
-            , (SELECT  (NVL(SUM(i.instore_quantity), 0) - NVL(SUM(o.outstore_quantity), 0)) + #{planQuantity}
-                          FROM    instore i LEFT JOIN outstore o ON i.instore_no = o.instore_no
-                         WHERE   i.company_no = #{productionCompany} AND i.item_code = #{productCode})
+            , (((SELECT  (NVL(SUM(i.instore_quantity), 0))
+                         FROM    instore i LEFT JOIN ordering_detail od ON i.ordering_detail_code = od.ordering_detail_code
+                                           LEFT JOIN orders_detail ods ON od.ordering_detail_code = ods.ordering_detail_code
+                         WHERE   ods.instore_company = #{productionCompany} AND i.item_code = #{productCode}) - 
+                        (SELECT  (NVL(SUM(o.outstore_quantity), 0))
+                         FROM    outstore o LEFT JOIN orders_detail ods ON o.orders_detail_no = ods.orders_detail_no
+                         WHERE   ods.outstore_company = #{productionCompany} AND ods.orders_item = #{productCode})) + #{planQuantity})
             , 'a3'
             , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
             , #{writer}

@@ -84,6 +84,7 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	public int insertInstoreForMtrqplan(List<MtrqplanVO> list, String writer, String Company) {
 		int result = 0;
 		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		groupNo++;
 		
 		for (MtrqplanVO mvo: list) {
 			mvo.setInstoreGroupNo(groupNo);
