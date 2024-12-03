@@ -10,12 +10,13 @@ import lombok.Data;
 public class SaleVO {
 	private String region;
 	private String companyNo; // 가맹점번호
-	private int quantity; // 수량
-	private int sale_price; // 가격
+	private String productName; // 제품명
 	private String name; // 점주 성함
-	private int daySales; // 일매출		
 	private String other; // 특이사항
 	private String companyName; // 가맹점명 
+	private int daySales; // 일매출
+	private int quantity; // 수량
+	private int salePrice; // 가격
 	private int rownum;
 	@JsonFormat(pattern = "yyyyMMdd", timezone = "Asia/Seoul" )
 	private Date salesDate; // 매출일

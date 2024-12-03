@@ -25,11 +25,6 @@
 	* {
 	    box-sizing: border-box;
 	}
-	body {
-	    position: relative;
-	    padding: .2em 2em;
-	    color: #555;
-	}
 	table {
 	    position: relative;
 	    width: 100%;
@@ -169,7 +164,7 @@
     z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
@@ -209,10 +204,10 @@
 	      <th>번호</th>
 	      <th>지역</th>
 	      <th>가맹점명</th>
-	      <th><span class="visible-small" title="Premiumns">Prem.</span><span class="visible-big">코드</span></th>
-	      <th><span class="visible-small" title="Strategy A">Str. A</span><span class="visible-big">성함</span></th>
-	      <th><span class="visible-small" title="Strategy B">Str. B</span><span class="visible-big">매출(년)</span></th>
-	      <th><span class="visible-small" title="Strategy C">Str. C</span><span class="visible-big">비고</span></th>
+	      <th><span class="visible-big">코드</span></th>
+	      <th><span class="visible-big">성함</span></th>
+	      <th><span class="visible-big">매출(년)</span></th>
+	      <th><span class="visible-big">비고</span></th>
 	    </tr>
 	  </thead>
 	  <tbody>
@@ -267,13 +262,14 @@
 		       				<th>총 합계</th>
 		       			</tr>
 		       		</thead>
-		       		<tbody></tbody>
+		       		<tbody id="saleDetail"></tbody>
 		       	</table>
 		    </div>
 		</div>
 	<script>
 		const salMonthRow = document.querySelector('#salMonth');
 		const modal = document.querySelector('.modal-month');
+		const saleDetail = document.querySelector('#saleDetail');
 		const year =  document.querySelector('h3').innerText; // 연도
 		
 		
@@ -282,9 +278,6 @@
 		$(".fold-table tr.view").on("click", function(event){
 			if($(this).hasClass("open")) {
 				$(this).removeClass("open").next(".fold").removeClass("open");
-				
-				// 초기화
-				document.querySelector('#salMonth').innerText = '';
 			} 
 			else {
 				$(".fold-table tr.view").removeClass("open")
@@ -292,7 +285,7 @@
 				                        .removeClass("open");
 				$(this).addClass("open").next(".fold").addClass("open");
 				
-				const companyCd = document.querySelector(".view.open > td:nth-child(4)").innerText;
+				const companyCd = event.target.closest('tr').querySelector('td:nth-child(4)').innerText;
 				
 				saleMonthAjax(companyCd);
 			}
@@ -334,7 +327,6 @@
 		document.querySelector('#salMonth').addEventListener('click', function(e){
 			const companyCd = document.querySelector(".view.open > td:nth-child(4)").innerText;
 			if(e.target.tagName === 'TD'){
-				
 				//해당 타겟의 인덱스 값 구하기 (array.from: 배열로바꿈)
 				const tdIdx = Array.from(e.target.parentElement.children).indexOf(e.target);
 				
@@ -349,7 +341,7 @@
 				
 				openModal();
 				
-				//daySaleDetailAjax(companyCd, yearMon);
+				daySaleDetailAjax(companyCd, yearMon);
 			}
 		})
 		
@@ -379,10 +371,19 @@
 			})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
+				let str = '';
 				data.forEach(ele => {
-					//let node = `<td>${ele.}</td>`
+					console.log(ele);
+					let node = `<tr>
+								<td>${ele.salesDate}</td>
+								<td>${ele.productName}</td>
+								<td>${ele.quantity}</td>
+								<td>${ele.salePrice}</td>
+								</tr>
+								`
+					str += node;
 				})
+				saleDetail.innerHTML = str;
 			})
 		}
 

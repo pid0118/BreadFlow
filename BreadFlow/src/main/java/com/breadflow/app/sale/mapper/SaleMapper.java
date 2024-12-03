@@ -18,7 +18,7 @@ public interface SaleMapper {
 	public List<SaleVO> selectSaleOffice(String comNo);
 	
 	// 본사 : 가맹점 일매출 가져오기
-	public List<SaleVO> selectSaleDetailOffice(String comNO, String saleDate);
+	public List<SaleVO> selectSaleDetailOffice(String comNo, String saleDate);
 	
 	// POS 제품 리스트 조회
 	public List<ProductVO> selectProductList(String category);
