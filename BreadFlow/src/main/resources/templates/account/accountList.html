@@ -6,12 +6,6 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
 <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
-<!-- Sweet Alert 사용하기 위한 script, css -->
-<!-- <script src="/src/main/resources/static/plugins/sweetalert2/sweetalert2.all.js"></script>
-<script src="/src/main/resources/static/plugins/sweetalert2/sweet-alert.init.js"></script>
-<link rel="stylesheet" type="text/css" href="/src/main/resources/static/plugins/sweetalert2/sweetalert2.css" /> -->
-
-
 <style>
 .required {
 	color: red;
@@ -29,8 +23,6 @@
 .form-control.date-picker[readonly] {
     background-color: #ffffff;
 }
-
-
 </style>
 
 <div class="container">
@@ -612,8 +604,6 @@
 
 	    return `${year}-${month}-${day}`;
 	}
-	
-	
 	// 
 	// =======================================================		
 		
@@ -635,8 +625,6 @@
 		            data: { 'id': id },
 		            success: function(data){
 		                alert("비밀번호가 '0000'으로 초기화되었습니다.");
-		                //swal("비밀번호 초기화가 완료되었습니다.","초기화된 비밀번호는 '0000' 입니다.", {icon: "success"});
-		                console.log(data);
 		            },
 		            error: function(){  alert("비밀번호 초기화 실패");  }
 		        });
@@ -669,10 +657,10 @@
 		            type: "POST",
 		            data: $('#updateAccountFrm').serialize(),
 		            success: function(data){
-		                alert("수정 이게되네");
+		                alert("수정되었습니다.");
 		                location.reload(true);
 		            },
-		            error: function(){  alert("수정 이건안되네");  }
+		            error: function(){  alert("수정 중 오류가 발생하였습니다.");  }
 		        });
 			} else {
 				alert("취소하였습니다.")
@@ -707,7 +695,7 @@
 	            type: "POST",
 	            data: $('#insertMngAccountFrm').serialize(),
 	            success: function(data){
-	                alert("신규등록 성공!");
+	                alert("등록되었습니다.");
 	                brnChk = 0;
 	                location.reload(true);
 	            },
