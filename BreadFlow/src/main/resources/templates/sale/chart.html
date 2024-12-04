@@ -9,8 +9,8 @@
         <!-- 연도 선택 드롭다운 추가 -->
         <label for="yearSelect">연도 선택: </label>
         <select id="yearSelect" onchange="updateChart()">
-          <option value="2024">2024년</option>
-          <option value="2023">2023년</option>
+        	<option value="2024">2024년</option>
+        	<option value="2023">2023년</option>
           <!-- 다른 연도 추가 가능 -->
         </select>
     </div>
@@ -30,6 +30,8 @@
 		let selectedYear = curYear;
 		
 		let chartAry = [];
+		
+		updateChart();
 		//chart4 데이터 ajax 호출 ( 월별 매출 )
 		function sales(){
 			fetch("/saleChart", {
@@ -84,19 +86,42 @@
 			selectedYear = document.getElementById("yearSelect").value; // 선택된 연도 가져오기
 			sales(); // 새로운 연도로 차트 업데이트
 		}
-		
-		// chart5 데이터 ajax 호출 ( 월별 제품 매출 상세 조회 ) / 아직 미완성
+	    
+		// chart5 데이터 ajax 호출 ( 월별 제품 매출 상세 조회 )
 		function productAjax(){
-			fetch("/saleChart/product", {
+			let url = `/saleChart/product`;
+			fetch(url, {
 				method: "POST",
 			})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data);
+				let productSalesMap = {}; // 제품별 매출 합산을 위한 객체
+
+				// 데이터를 제품별로 처리하여 매출 합산
+				data.forEach(ele => {
+					let sub = ele.sub; // 소분류 (제품명)
+					let proSales = ele.salePrice; // 제품 매출
+
+					// 제품별 매출 데이터를 합산
+					if (productSalesMap[sub]) {
+						productSalesMap[sub] += proSales;
+					} else {
+						productSalesMap[sub] = proSales;
+					}
+				});
+				
+				// 매출 합산된 데이터를 배열로 변환
+				let SalesData = [];
+				for (let productName in productSalesMap) {
+					SalesData.push([productName, productSalesMap[productName]]);
+				}
+
+		        // chart5 업데이트
+		    	updateChart5(SalesData);
 			})
 		}
 		
-		// 차트 함수
+		// 차트 함수 (월별 매출)
 		function chartist(months, salesData, prevSalesData){
 			Highcharts.chart('chart4', {
 				chart: {
@@ -130,7 +155,7 @@
 					column: {
 						pointPadding: 0.2,
 						borderWidth: 0
-					}
+								}
 				},
 				series: [{
 					name: '올해',
@@ -142,32 +167,32 @@
 				}]
 			});
 		}
+
+		// 차트5 업데이트 함수 (제품별 매출 비율)
+		function updateChart5(productSalesData) {
+		    Highcharts.chart('chart5', {
+		        chart: {
+		            type: 'pie'
+		        },
+		        title: {
+		            text: '제품별 매출 비율'
+		        },
+		        tooltip: {
+		            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b> ({point.y} 원)'
+		        },
+		        series: [{
+		            name: '제품 매출',
+		            data: productSalesData
+		        }]
+		    });
+		}
 		
-		sales();
-		Highcharts.chart('chart5', {
-			title: {
-				text: 'Pie point CSS'
-			},
-			xAxis: {
-				categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-			},
-			series: [{
-				type: 'pie',
-				allowPointSelect: true,
-				keys: ['name', 'y', 'selected', 'sliced'],
-				data: [
-				['Apples', 29.9, false],
-				['Pears', 71.5, false],
-				['Oranges', 106.4, false],
-				['Plums', 129.2, false],
-				['Bananas', 144.0, false],
-				['Peaches', 176.0, false],
-				['Prunes', 135.6, true, true],
-				['Avocados', 148.5, false]
-				],
-				showInLegend: true
-			}]
-		});
+		// 차트를 업데이트하는 함수
+		function updateChart() {
+		    selectedYear = document.getElementById("yearSelect").value; // 선택된 연도 가져오기
+		    sales(); // 월별 매출 차트 업데이트
+		    productAjax(); // 제품별 매출 차트 업데이트
+		}
 	</script>
   </body>
 </html>
