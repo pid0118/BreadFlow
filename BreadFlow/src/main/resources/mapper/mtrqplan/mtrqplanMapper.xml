@@ -112,18 +112,31 @@
 <!--  ======= 자재소요계획(공급업체) 페이지에서 사용되는 매퍼들 ========= -->
 <!-- 부모 테이블에서 쓰이는 자재소요계획 전체 조회 -->
 <select id="selectMtrqplanForCom" parameterType="String" resultType="MtrqplanVO">
-	SELECT  m.matrequired_plan_no
-	        , ( SELECT  ingredient_name
-	            FROM    ingredient
-	            WHERE   ingredient_code = d.product_code) AS product_code
-	        , d.plan_quantity
-	        , FIND_CD(d.progress_situation) AS progress_situation
-	        , m.last_date
-	        , d.other
-	FROM    matrequired_plan m JOIN matrequired_plan_detail d
-	            ON m.matrequired_plan_no = d.matrequired_plan_no
-	WHERE   supply_company = #{supplyCompany}
-	  AND   d.progress_situation != 'c1'
+	SELECT
+	    matrequired_plan_no
+	    , ( SELECT  ingredient_name
+	        FROM    ingredient
+	        WHERE   ingredient_code = product_code) AS product_code
+	    , plan_quantity
+	    , FIND_CD(progress_situation) AS progress_situation
+	    , last_date
+	    , other
+	FROM (
+	    SELECT m.matrequired_plan_no,
+	           d.product_code,
+	           d.plan_quantity,
+	           d.progress_situation,
+	           m.last_date,
+	           d.other,
+	           ROW_NUMBER() OVER (PARTITION BY m.matrequired_plan_no ORDER BY d.product_code) AS rn
+	    FROM matrequired_plan m
+	    JOIN matrequired_plan_detail d
+	        ON m.matrequired_plan_no = d.matrequired_plan_no
+	    WHERE m.supply_company = #{supplyCompany}
+	      AND d.progress_situation != 'c1'
+	) subquery
+	WHERE subquery.rn = 1
+	ORDER BY subquery.matrequired_plan_no
 </select>
 
 <!-- 좌측아래 form에 쓰이는 자재소요계획 단건 조회 -->
@@ -192,9 +205,13 @@
             , #{productCode}
             , #{planQuantity}
             , #{supplyCompany}
-            , (SELECT  (NVL(SUM(i.instore_quantity), 0) - NVL(SUM(o.outstore_quantity), 0)) + #{planQuantity}
-                          FROM    instore i LEFT JOIN outstore o ON i.instore_no = o.instore_no
-                         WHERE   i.company_no = #{supplyCompany} AND i.item_code = #{productCode})
+            , (((SELECT  (NVL(SUM(i.instore_quantity), 0))
+                         FROM    instore i LEFT JOIN ordering_detail od ON i.ordering_detail_code = od.ordering_detail_code
+                                           LEFT JOIN orders_detail ods ON od.ordering_detail_code = ods.ordering_detail_code
+                         WHERE   ods.instore_company = #{supplyCompany} AND i.item_code = #{productCode}) - 
+                        (SELECT  (NVL(SUM(o.outstore_quantity), 0))
+                         FROM    outstore o LEFT JOIN orders_detail ods ON o.orders_detail_no = ods.orders_detail_no
+                         WHERE   ods.outstore_company = #{supplyCompany} AND ods.orders_item = #{productCode})) + #{planQuantity})
             , 'a2'
             , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
             , #{writer}

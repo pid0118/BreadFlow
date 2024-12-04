@@ -160,14 +160,12 @@
 	        if (div == '공급업체') {
 	        	$("#instoreBtnLabel").css("display", "none");
             	$("#outstoreBtn").prop("checked", true);
-            	$("#firstQuanTh").text("입고 수량");
 	        	$("#secondQuanTh").text("출고 수량");
             	changeFilter();
             }
 	        
 	        // 입고 내역 버튼 클릭
 	        $("#instoreBtn").click(function() {
-	        	$("#firstQuanTh").text("발주 수량");
 	        	$("#secondQuanTh").text("입고 수량");
 	        	$("#itemBtn").text('품목');
 	        	clear();
@@ -176,7 +174,6 @@
 	
 	        // 출고 내역 버튼 클릭
 	        $("#outstoreBtn").click(function() {
-	        	$("#firstQuanTh").text("입고 수량");
 	        	$("#secondQuanTh").text("출고 수량");
 	        	$("#itemBtn").text('품목');
 	        	clear();
@@ -393,7 +390,7 @@
 								</div>
 							</td>`
 	            if (type === 'instore') {
-	                row += "<td class='table-plus'>" + item.instoreDate + "</td>";
+	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
 	                	row += "<td class='prd'>" + "g1" + "</td>";
 	                	row += "<td class='prd'>" + item.itemName + "</td>";
@@ -401,7 +398,7 @@
 	                	row += "<td class='ing'>" + "g2" + "</td>";
 	                	row += "<td class='ing'>" + item.itemName + "</td>";
 	                }
-	                row += "<td>" + item.instoreQuantity + "</td>";
+	                row += "<td>" + item.quantity + "</td>";
 	                row += "<td>" + "<input class='form-control' type='text' placeholder='출고 수량을 입력하세요.'></input>" + "</td>";
 	                row += "<td>" + item.standard + "/" + item.unit + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreNo + "</td>";
