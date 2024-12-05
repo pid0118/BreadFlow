@@ -150,7 +150,6 @@
 	    		url : 'bomChecks?productCode='+ productCode,
 	    		data : {},
 				success : function(data){
-					console.log(data);
 					grid.appendRows(data);
 				},
 				error: function(result){
