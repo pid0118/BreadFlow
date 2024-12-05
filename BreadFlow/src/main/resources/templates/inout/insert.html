@@ -6,6 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <title>입출고 등록</title>
+	<!-- 스타일 시작 -->
+	<style>
+	.dropdown-menu {
+	    max-height: 300px;
+	    overflow: scroll;
+	    overflow-x: hidden;
+	}
+	</style>
+	<!-- 스타일 끝 -->
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -16,7 +25,7 @@
 			<div>
 				<!-- 세션값 저장 시작 -->
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" name="companyName" id="companyName" th:value="${session.companyName}" readonly>
+					<input class="form-control" type="text" name="compName" id="compName" th:value="${session.companyName}" readonly>
 					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.name}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
@@ -43,7 +52,7 @@
 				</div>
 
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="text" id="inOutDate">
+					<input class="form-control" type="date" id="inOutDate">
 				</div>
 
 				<div class="pd-20">
@@ -103,7 +112,7 @@
 		</div>
 		<div class="pd-20">
 			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
+			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inOutList"'>취소</button>
 		</div>
 	</div>
 	
@@ -146,6 +155,7 @@
     			item = null;
     			year = null;
     			month = null;
+    			$("#companyGet").val(null);
     			pageClear();
             }
 	        
@@ -279,8 +289,9 @@
 	            });
 	            
 	            console.log(selectedRows);
-	            
-	            if (checkNull) {
+	            if (selectedRows.length == 0 || selectedRows.length == '') {
+	            	alert("선택된 항목이 없습니다.");
+	            } else if (checkNull) {
 	            	alert("수량이 입력되지 않았습니다.");
 	            } else if (checkQuant) {
 	            	alert("올바른 수량을 입력해주세요.");
@@ -374,7 +385,7 @@
 	    	let day = objectDate.getDate();
 	    	let month = objectDate.getMonth();
 	    	let year = objectDate.getFullYear();
-	    	let todayDate = year + "/" + (month + 1) + "/" + day;
+	    	let todayDate = year + "-" + (month + 1) + "-" + day;
 	 		$("#inOutDate").val(todayDate);
 	 	}
 	 	

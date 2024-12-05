@@ -6,6 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <title>불량 내역 조회</title>
+	<!-- 스타일 시작 -->
+	<style>
+	.dropdown-menu {
+	    max-height: 300px;
+	    overflow: scroll;
+	    overflow-x: hidden;
+	}
+	</style>
+	<!-- 스타일 끝 -->
 </head>
 <body>
 	<div class="card-box mb-30">
@@ -49,7 +58,7 @@
             <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="confirmCompBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
 			<ul class="dropdown-menu" id="companyMenu">
  				<li th:each="company : ${companyList}">
-                    <a class="dropdown-item company">[[ ${company.companyName} ]]</a>
+                    <a th:attr="data-value=${company.companyNo}" class="dropdown-item company">[[ ${company.companyName} ]]</a>
                 </li>
             </ul>
             <button type="button" class="dropdown btn btn-primary dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">처분</button>
@@ -219,8 +228,10 @@
             
             // 확인 위치별 필터 클릭
             $(document).on('click', '.company', function() {
-                confirmComp = $(this).text().trim();
-                $("#confirmCompBtn").text(confirmComp);
+            	let company = $(this).text().trim();
+                confirmComp = $(this).data('value');
+                console.log(confirmComp);
+                $("#confirmCompBtn").text(company);
                 pageClear();
                 changeFilter();
             });

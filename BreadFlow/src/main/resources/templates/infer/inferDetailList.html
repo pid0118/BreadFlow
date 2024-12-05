@@ -33,7 +33,7 @@
 						<td style="display:none;" th:text="${infer.inferDetailCode}"></td>
 						<td th:text="${infer.instoreDate}"></td>
 						<td th:text="${infer.confirmLocation}"></td>
-						<td><img id="inferImage" th:src="@{/imgs} + ${infer.inferImage}" alt="" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
+						<td><img id="inferImage" th:src="|/imgs${infer.inferImage}|" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
 						<!-- <td th:text="${infer.disposalWhether}"></td> -->
@@ -42,6 +42,7 @@
 					</tr>
 				</tbody>
 			</table>
+			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>목록으로 돌아가기</button> <!-- 불량 내역 조회 페이지로 이동 -->
 		</div>
 		<!-- 불량 내역 테이블 끝 -->
 		
