@@ -102,7 +102,7 @@
                         <td th:if="${info.bomSituation == 'Y'}" class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productCode}]]</td>
 	                    <td th:if="${info.bomSituation == 'N'}" class="clickable" >[[${info.productCode}]]</td>
                         <td th:if="${info.bomSituation == 'Y'}" class="clickable" th:onclick="|location.href='@{/bomCheck(productCode=${info.productCode})}'|">[[${info.productName}]]</td>
-						<td th:if="${info.bomSituation == 'N'}" class="clickable" >[[${info.productCode}]]</td>
+						<td th:if="${info.bomSituation == 'N'}" class="clickable" >[[${info.productName}]]</td>
                         <td>[[${info.expirationDeadline}]]일</td>
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
@@ -171,7 +171,6 @@
 	  	var val2 = [];
 	  	
 	  	$('#subList option:selected').each((idx, element) => val2.push(element.value))
-	  	console.log(attr2, val2)
 	  	if((val1 === "" || val1 === attr1) &&
 	  	 (val2.length == 0 || val2.includes(attr2))){
 	  		return true;

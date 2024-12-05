@@ -427,7 +427,6 @@
         	var val2 = [];
         	
         	$('#subList option:selected').each((idx, element) => val2.push(element.value))
-        	console.log(attr2, val2)
         	if((val1 === "" || val1 === attr1) &&
         	 (val2.length == 0 || val2.includes(attr2))){
         		return true;
@@ -643,7 +642,6 @@
     			type: "post",
     			data: data,
     		}).done((res)=> {
-    			console.log(res);
     			sameCheck = true;
     		}).fail((err)=>{
     			alert("이미등록된 재료이거나 재료명이 중복되었습니다")

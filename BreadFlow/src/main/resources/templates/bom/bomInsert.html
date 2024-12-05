@@ -246,7 +246,6 @@
 		    		url : 'bomChecks?productCode='+ productCode,
 		    		data : {},
 					success : function(data){
-						console.log(data);
 						grid.resetData(data);
 					},
 					error: function(result){
@@ -585,7 +584,6 @@
 				return;
 			}
 			   
-			console.log(jsonData);
 			$.ajax({
 				url: "bomInsert",
 				type: "post",
