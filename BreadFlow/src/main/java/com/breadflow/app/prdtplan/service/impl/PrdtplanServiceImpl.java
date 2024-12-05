@@ -2,16 +2,18 @@ package com.breadflow.app.prdtplan.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.breadflow.app.inout.mapper.InOutMapper;
 import com.breadflow.app.prdtplan.mapper.PrdtplanMapper;
 import com.breadflow.app.prdtplan.service.PrdtplanService;
 import com.breadflow.app.prdtplan.service.PrdtplanVO;
-import com.breadflow.app.inout.mapper.InOutMapper;
 
 @Service
 public class PrdtplanServiceImpl implements PrdtplanService {
 	
+	@Autowired
 	public InOutMapper inOutMapper;
 	
 	private PrdtplanMapper prdtplanMapper;
@@ -82,10 +84,8 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	@Override
 	public int insertPrdtplanDetailsForSelf(List<PrdtplanVO> list) {
 		int result = 0;
-		int groupNo = inOutMapper.getInstoreLastGroupNo();
-		
+
 		for(PrdtplanVO pvo : list) {
-			pvo.setInstoreGroupNo(groupNo);
 			prdtplanMapper.insertPrdtplanDetailsForSelf(pvo);
 			result++;
 		}
@@ -96,14 +96,17 @@ public class PrdtplanServiceImpl implements PrdtplanService {
 	@Override
 	public int insertInstoreForPrdtplan(List<PrdtplanVO> list, String writer) {
 		int result = 0;
+		int groupNo = inOutMapper.getInstoreLastGroupNo();
+		groupNo++;
+		
+		System.out.println("\n[PrdtplanServiceImpl.java] insertPrdtplanDetailsForSelf - groupNo: " + groupNo + "\n");
+		
 		for (PrdtplanVO pvo : list) {
+			pvo.setInstoreGroupNo(groupNo);
 			pvo.setWriter(writer);
 			prdtplanMapper.insertInstoreForPrdtplan(pvo);
 			result++;
 		}
 		return result;
 	}
-
-	
-	
 }

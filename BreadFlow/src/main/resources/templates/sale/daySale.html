@@ -119,7 +119,6 @@
     <script>
 	    let currentDate = new Date();
 	    let dayTotals = [0, 0, 0, 0, 0, 0, 0]; // 일~토 요일별 매출 합계
-	    let weekSales = [0, 0, 0, 0, 0]; // 주별 매출 합계
 	    let monthlySales = 0; // 월별 매출 합계
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1 , 0);
@@ -138,20 +137,17 @@
 	        calendarBody.innerHTML = '';
 	
 	        let date = 1;
-	        let weekIndex = 0;
+	        let weekTotal = 0;
 
 	        for (let i = 0; i < 6; i++) {
 	            const row = document.createElement('tr');
 	            for (let j = 0; j < 8; j++) {
 	                const cell = document.createElement('td');
 	                if (j === 7) {
-	                	if (weekIndex < weekSales.length) {
-	                        cell.textContent = weekSales[weekIndex].toLocaleString() + "원";
-	                        cell.style.color = "green";
-	                        cell.style.textAlign = "center";
-	                        cell.style.verticalAlign = "middle";
-	                        weekIndex++; // 주별 매출을 한 번만 출력하기 위해 인덱스 증가
-	                    }
+                        cell.textContent = weekTotal.toLocaleString() + "원"; // 매출 출력
+                        cell.style.color = "green"; // 색상 지정
+                        cell.style.textAlign = "center"; // 정렬
+                        cell.style.verticalAlign = "middle"; // 세로 중앙 정렬
 	                } else if (i === 0 && j < firstDay.getDay()) {
 	                    // Empty cell
 	                } else if (date > lastDay.getDate()) {
@@ -179,7 +175,7 @@
 		function loadDaySale(){
 			//초기화
 			dayTotals = [0, 0, 0, 0, 0, 0, 0];
-			weekSales = [0, 0, 0, 0, 0];
+			weeklySales = [0, 0, 0, 0, 0, 0];
 		    monthlySales = 0;
 		    
 			const today = $('#currentMonth').text();
@@ -193,6 +189,7 @@
 			.then(res => res.json())
 			.then(data => {
 				const cells = document.querySelectorAll('.date');
+				let weekTotal = 0;
 				cells.forEach(cel => {
 					const date = cel.dataset.date;
 					const mat = data.find(ele => ele.salesDate == date); // dataSet과 db의 date 비교
@@ -208,38 +205,42 @@
 		                const dayOfWeek = new Date(date.substring(0, 4), date.substring(4, 6) - 1, date.substring(6, 8)).getDay();
 		                dayTotals[dayOfWeek] += sales; // 요일별 매출 추가
 		                
-		                const weekNumber = getWeekNumber(date);  // 주 번호 구하기
-		                if (weekNumber >= 0) {
-		                    weekSales[weekNumber] += sales; // 주별 매출 추가
+		             // 주 번호 구하기
+		                const weekNumber = getWeekNumber(date);
+		                if (weekNumber >= 0 && weekNumber < 6) { // 5주까지만 처리
+		                    weeklySales[weekNumber] += sales; // 주별 매출 추가
+		                    weekTotal += sales; // 각 주의 매출 합산
 		                }
 		                
 		                monthlySales += sales; // 월별 매출 추가
 		                
 					}
 				});
-				updateTotalRow(dayTotals, weekSales, monthlySales);
+				
+				updateCalendarWithWeeklySales();
+				updateTotalRow(dayTotals, monthlySales);
 				
 			});
 		}
 		
-		function updateTotalRow(dayTotals, weekSales, monthlySales) {
+		function updateTotalRow(dayTotals, monthlySales) {
 		    const totalRow = document.getElementById('totalRow');
 		    totalRow.innerHTML = '';
 		    
 		    const days = ['일요일(합)', '월요일(합)', '화요일(합)', '수요일(합)', '목요일(합)', '금요일(합)', '토요일(합)', '총계'];
 		    
 		    // 요일별 매출 합계 및 총계
-		    for (let i = 0; i < 8; i++) {
+		    for (let i = 0; i < 7; i++) {
 		        const cell = document.createElement('td');
-		        if (i < 7) {
-		            // 요일별 매출 합계
-		            cell.textContent = `${days[i]}\n${dayTotals[i].toLocaleString()}원`; 
-		        } else {
-		            // 월별 합계
-		            cell.textContent = `총계\n${monthlySales.toLocaleString()}원`;
-		        }
+		        // 요일별 매출 합계
+		        cell.textContent = `${days[i]}\n${dayTotals[i].toLocaleString()}원`; 
 		        totalRow.appendChild(cell);
 		    }
+		    
+		    // 월별 합계
+		    const totalCell = document.createElement('td');
+		    totalCell.textContent = `총계\n${monthlySales.toLocaleString()}원`;
+		    totalRow.appendChild(totalCell);
 		}
 		
 		function getWeekNumber(dateString) {
@@ -272,6 +273,31 @@
 	        updateCalendar();
 	        loadDaySale();
 	    });
+	    
+	    function updateCalendarWithWeeklySales(){
+	    	const calendarRows = document.querySelectorAll('#calendarBody tr');
+	        let rowIdx = 0;
+	        
+	        calendarRows.forEach(row => {
+	            const cells = row.querySelectorAll('td');
+	            let weekTotal = 0; // 해당 주의 매출 합계
+	            
+	            // 각 셀에서 매출을 계산하여 weekTotal에 합산
+	            cells.forEach((cell, index) => {
+	                if (index < 7) { // 일~토까지 계산
+	                    const div = cell.querySelector('.date div');
+	                    if (div) {
+	                        const sales = div.textContent.replace('원', '').replace(',', ''); // 금액 가져오기
+	                        weekTotal += parseInt(sales);
+	                    }
+	                }
+	            });
+	            
+	            // 해당 주의 마지막 칸에 매출 합계 표시
+	            const lastCell = cells[7]; // 토요일 오른쪽 마지막 칸
+	            lastCell.textContent = weekTotal.toLocaleString() + "원"; // 주별 매출 합계
+	        });
+	    }
 
     </script>
 </body>

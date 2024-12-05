@@ -172,11 +172,14 @@
 		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
 	
 		SELECT
-		    I.INSTORE_DATE,
+		    <!-- I.INSTORE_DATE,
 		    I.INSTORE_NO,
 		    I.INSTORE_MANAGER,
 		    I.INSTORE_QUANTITY,
-		    I.ORDERING_DETAIL_CODE,
+		    I.ORDERING_DETAIL_CODE, -->
+		    O.ORDERING_DATE,
+		    OD.QUANTITY,
+		    ODS.ORDERING_DETAIL_CODE,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.UNIT ELSE ING.UNIT END AS UNIT,
 		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
 		    OD.ORDERING_PRODUCT,
@@ -188,9 +191,10 @@
 		    ODS.INSTORE_COMPANY,
 		    ODS.PRICE
 		FROM
-		         INSTORE I
-		    LEFT JOIN ORDERING_DETAIL OD ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    	 <!-- INSTORE I LEFT JOIN  --> 
+		    	      ORDERING_DETAIL OD  <!-- ON I.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE -->
 		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
+		    LEFT JOIN ORDERING 		  O   ON O.ORDERING_CODE = OD.ORDERING_CODE
 		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
 		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
 		WHERE
@@ -203,10 +207,10 @@
 		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
 			</if>
 			<if test="year != null and year != ''">
-			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
+			AND EXTRACT(YEAR FROM CAST(ORDERING_DATE AS DATE)) = TO_NUMBER(#{year})
 			</if>
 			<if test="month != null and month != ''">
-			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
+			AND EXTRACT(MONTH FROM CAST(ORDERING_DATE AS DATE)) = TO_NUMBER(#{month})
 			</if>
 			<if test="prd != null and prd != ''">
 			AND OD.ORDERING_PRODUCT IS NOT NULL
@@ -215,7 +219,7 @@
 			AND OD.ORDERING_INGREDIENT IS NOT NULL
 			</if>
 		ORDER BY
-		    I.INSTORE_DATE DESC
+		    O.ORDERING_DATE DESC
 		    
 		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} 
 	</select>
@@ -281,7 +285,7 @@
 		            , NULL
 		            </when>
 		            <otherwise>
-		            , #{instoreNo}
+		            , 'IN-20241203-026'
 		            </otherwise>
 		            </choose>
 		            , #{outstoreGroupNo})

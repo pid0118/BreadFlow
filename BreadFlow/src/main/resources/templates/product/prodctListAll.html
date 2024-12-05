@@ -142,7 +142,7 @@
 	                <div class="row">
 	                    <div class="col-md-4 text-center mb-3">
 	                    	<div class="image-placeholder" id="imagePreview">
-					            <img th:src="'/imgs/' + ${productImage}" id="productImage">
+					            <img th:src="'imgs/' + ${productImage}" id="productImage">
 					        </div>
 					        <input type="file" class="d-none" id="image" accept="image/*">
 	                    </div>
@@ -268,7 +268,7 @@
 		        method: 'GET',
 		        success: function(product) {
 		        	
-		            document.getElementById('productImage').src = '/imgs/' + product.productImage;
+		            document.getElementById('productImage').src = 'imgs/' + product.productImage;
 		            document.getElementById('productImage').alt = product.productName;
 		            document.getElementById('productCode').value = product.productCode;
 		            document.getElementById('productName').value = product.productName;

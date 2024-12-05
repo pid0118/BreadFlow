@@ -787,8 +787,10 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 function updatePrdtplanSituProgress() {
 	if(mode == 'insert') {
 		alert("생산계획을 진행할 행을 선택해주세요.")
-	} else if ($("#updProgressSituation").val() != "미확인") {
-		alert("이미 진행중이거나 완료된 생산계획입니다.")
+	} else if ($("#updProgressSituation").val() == "완료")  {
+		alert("이미 완료된 생산계획입니다.");
+	} else if ($("#updProgressSituation").val() == "진행중") {
+		alert("이미 진행중인 생산계획입니다.");
 	} else {
 		if(confirm('생산계획을 진행하시겠습니까?')) {
 			jsonData = {

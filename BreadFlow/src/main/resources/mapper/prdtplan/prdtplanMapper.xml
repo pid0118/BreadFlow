@@ -92,7 +92,18 @@
 	<!-- 전체 조회 -->
 	<!-- 두 테이블 조인할 때 디테일 테이블은 한개의 행만 나오도록 첫번째 행만 뽑아 출력 -->
 	<select id="selectPrdtplanList" resultType="PrdtplanVO">
-	SELECT 	*
+	SELECT 	p.production_plan_no
+	        , ( SELECT product_name
+	            FROM product
+	            WHERE product_code = d.product_code ) AS product_code
+	        , d.plan_quantity
+	        , ( SELECT company_name
+	            FROM company
+	            WHERE company_no = p.production_company ) AS production_company
+	        , FIND_CD(d.progress_situation) AS progress_situation
+	        , p.start_date
+	        , p.last_date
+	        , d.other
 	FROM 	production_plan p
 	JOIN (
 	    SELECT d.production_plan_no, d.production_detail_no, d.product_code, d.plan_quantity, d.unit, d.other, d.progress_situation
@@ -209,9 +220,13 @@
             , #{productCode}
             , #{planQuantity}
             , #{productionCompany}
-            , (SELECT  (NVL(SUM(i.instore_quantity), 0) - NVL(SUM(o.outstore_quantity), 0)) + #{planQuantity}
-                          FROM    instore i LEFT JOIN outstore o ON i.instore_no = o.instore_no
-                         WHERE   i.company_no = #{productionCompany} AND i.item_code = #{productCode})
+            , (((SELECT  (NVL(SUM(i.instore_quantity), 0))
+                         FROM    instore i LEFT JOIN ordering_detail od ON i.ordering_detail_code = od.ordering_detail_code
+                                           LEFT JOIN orders_detail ods ON od.ordering_detail_code = ods.ordering_detail_code
+                         WHERE   ods.instore_company = #{productionCompany} AND i.item_code = #{productCode}) - 
+                        (SELECT  (NVL(SUM(o.outstore_quantity), 0))
+                         FROM    outstore o LEFT JOIN orders_detail ods ON o.orders_detail_no = ods.orders_detail_no
+                         WHERE   ods.outstore_company = #{productionCompany} AND ods.orders_item = #{productCode})) + #{planQuantity})
             , 'a3'
             , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
             , #{writer}

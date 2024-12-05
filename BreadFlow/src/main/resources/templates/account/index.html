@@ -43,6 +43,7 @@
 										class="form-control form-control-lg"
 										placeholder="**********"
 										id="loginPw"
+										onkeyup="enterkey()"
 									/>
 									<div class="input-group-append custom">
 										<span class="input-group-text">
@@ -68,7 +69,7 @@
 									<div class="col-sm-12">
 										<div class="input-group mb-0">
 											<!-- <input class="btn btn-primary btn-lg btn-block" type="submit" value="로그인"> -->
-											<a class="btn btn-primary btn-lg btn-block" onclick="loginChk()">로그인</a>
+											<a class="btn btn-primary btn-lg btn-block" onclick="loginChk()" style="color:white;">로그인</a>
 										</div>
 									</div>
 								</div>
@@ -83,6 +84,14 @@
 
 
 <script>
+	// [박진석|241203] 엔터키로도 로그인 되게끔 설정
+	function enterkey() {
+	  if (window.event.keyCode == 13) {
+		  loginChk();
+	  }
+	}
+
+
 	function loginChk() {
 		let id = document.querySelector("#loginId").value
 		let pw = document.querySelector("#loginPw").value

@@ -17,9 +17,9 @@ import lombok.extern.log4j.Log4j2;
 public class ExceptionHandlingController implements ErrorController {
 
 	// 에러 페이지 정의
-	private final String ERROR_404_PAGE_PATH = "/error/404";
-	private final String ERROR_500_PAGE_PATH = "/error/500";
-	private final String ERROR_ETC_PAGE_PATH = "/error/error";
+	private final String ERROR_404_PAGE_PATH = "error/404";
+	private final String ERROR_500_PAGE_PATH = "error/500";
+	private final String ERROR_ETC_PAGE_PATH = "error/error";
 
 	@RequestMapping(value = "/error")
 	public String handleError(HttpServletRequest request, Model model) {
@@ -55,7 +55,7 @@ public class ExceptionHandlingController implements ErrorController {
 	}
 
 	public String getErrorPath() {
-		return "/error";
+		return "error";
 	}
 
 }

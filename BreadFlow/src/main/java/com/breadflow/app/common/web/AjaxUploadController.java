@@ -21,11 +21,6 @@ public class AjaxUploadController {
 	@Value("${uploadPath}")
 	String uploadPath;
 	
-	@GetMapping
-	public String uploadAjax() {
-		return "upload/uploadAjax";
-	}
-	
 	@ResponseBody // 객체를 json 형식으로 데이터 리번 ( 서버 -> 클라이언트)\
 	@PostMapping("uploadFile") //한글이 깨지지 않도록 처리	
 	// ResponseEntity : 업로드한 파일 정보와 Http 상태 코드를 함깨 리턴
