@@ -137,7 +137,7 @@
                         <td>[[${info.standard}]]</td>
                         <td>[[${info.safeStockQuantity}]]</td>
                         <td>
-                        	<img th:src="|/imgs/${info.ingredientImage}|" class="tdimgs">
+                        	<img th:src="|imgs/${info.ingredientImage}|" class="tdimgs">
 				        </td>
                     </tr>
                 </th:block>
@@ -162,7 +162,7 @@
 						<div class="row">
 							<div class="col-md-4 text-center mb-3">
 								<div class="image-placeholder" id="imagePreview">
-						            <img th:src="'/imgs/' + ${ingredientImage}" id="ingredientImage">
+						            <img th:src="'imgs/' + ${ingredientImage}" id="ingredientImage">
 						        </div>
 						        <input type="file" class="d-none" id="image" accept="image/*">
 							</div>
@@ -266,7 +266,7 @@
 		        method: 'GET',
 		        success: function(ingredient) {
 		        	
-		            document.getElementById('ingredientImage').src = '/imgs/' + ingredient.ingredientImage;
+		            document.getElementById('ingredientImage').src = 'imgs/' + ingredient.ingredientImage;
 		            document.getElementById('ingredientImage').alt = ingredient.ingredientName;
 		            document.getElementById('ingredientCode').value = ingredient.ingredientCode;
 		            document.getElementById('ingredientName').value = ingredient.ingredientName;
