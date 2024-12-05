@@ -56,7 +56,7 @@
 						<div class="form-group">
 							<label>계약일자</label>
 							<input class="form-control" type="text"
-								id="updContDt" name="contractDate" th:value="${#dates.format(account.contractDate, 'yyyy/MM/dd')}" readonly>
+								id="updContDt" name="contractDate" th:value="${#dates.format(account.contractDate, 'yyyy-MM-dd')}" readonly>
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
@@ -79,14 +79,14 @@
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
-							<label>이름</label> <input type="text" class="form-control"
+							<label>이름</label><b class="required"> *</b> <input type="text" class="form-control"
 								id="updName" name="name" th:value="${account.name}" >
 						</div>
 					</div>
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
-							<label>연락처</label> <input type="text" class="form-control"
-								id="updTel" name="tel" th:value="${account.tel}" >
+							<label>연락처</label><b class="required"> *</b><input type="text" class="form-control"
+								id="updTel" name="tel" th:value="${account.tel}" oninput="autoHyphen(this)" maxlength="13">
 						</div>
 					</div>					
 					<div class="col-md-4 col-sm-12">
@@ -175,13 +175,32 @@
 	// 이벤트 걸기 끝
 	// =================================================================
 
-		
+	
 		
 	// =================================================================
-	// [박진석|24.11.22] 
+	// [박진석|24.11.21] 수정 AJAX 이벤트 걸기
+	document.querySelector("#delAccBtn").addEventListener('click', resetForm);
 	
-	// 끝
-	// =================================================================	
+	function resetForm() {
+		$("#updName").val("");
+		$("#updTel").val("");
+		$("#updOther").val("");
+		$("#updPw").val("");
+		$("#updPwConfitm").val("");
+	}
+	// 이벤트 걸기 끝
+	// =================================================================		
+		
+		
+	// =======================================================
+	// [박진석|24.12.05] 전화번호 유효성 검사 함수 시작
+	const autoHyphen = (target) => {
+	 target.value = target.value
+	   .replace(/[^0-9]/g, '')
+	  .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+	}
+	// 전화번호 검사 끝
+	// =======================================================
 		
 		
 </script>
