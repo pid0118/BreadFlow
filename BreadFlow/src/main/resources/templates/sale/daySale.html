@@ -287,8 +287,8 @@
 	                if (index < 7) { // 일~토까지 계산
 	                    const div = cell.querySelector('.date div');
 	                    if (div) {
-	                        const sales = div.textContent.replace('원', '').replace(',', ''); // 금액 가져오기
-	                        weekTotal += parseInt(sales);
+	                        const sales = div.textContent.replace('원', '').replace(/,/g, ''); // 금액 가져오기
+	                        weekTotal += parseInt(sales, 10);
 	                    }
 	                }
 	            });
