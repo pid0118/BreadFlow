@@ -105,7 +105,7 @@
 	<div class="container">
 		<div class="image-section">
 			<div class="image-placeholder" id="imagePreview">
-				<img th:src="'/imgs/' + ${product.productImage}" style="width: 300px; height: 300px;" id="img">
+				<img th:src="'imgs/' + ${product.productImage}" style="width: 300px; height: 300px;" id="img">
 			</div>
 			<input type="text" class="product-name-input"
 				th:value="${product.productName}" readonly>
