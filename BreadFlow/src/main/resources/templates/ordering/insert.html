@@ -11,7 +11,7 @@
 <div class="card-box mb-30">
 	<div class="row">
 		<div class="col-md-3 col-sm-12 pd-30">
-			<h4 class="text-blue h4">발주 신청</h4>
+			<h4 class="text h2">발주 신청</h4>
 		</div>
 		<div class="col-md-9 col-sm-12 pd-30 text-right">
 			<div class="row">
@@ -208,7 +208,8 @@ orderRequest.addEventListener('click', function() {
 		    "deliveryDesireDate" : new Date($('.date-picker').val()),
 		    "orderingRequestManger": "test",
 		    "totalPrice": Number($('#total td:last-child').text()),
-		    "itemCodes": items
+		    "itemCodes": items,
+		    "approvalWhether": '',
 		};
 	
 	fetch('../ordering/insert', {

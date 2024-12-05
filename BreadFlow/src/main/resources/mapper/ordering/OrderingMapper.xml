@@ -5,7 +5,10 @@
 		SELECT b.*
 		FROM (SELECT rownum rn, a.*
 		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
-				   FROM ordering 
+				   FROM ordering o JOIN company c ON o.company_no = c.company_no
+				   <if test="div != '본사'">
+				   		WHERE o.company_no = #{companyNo}
+				   </if>
 				   <if test="div == '본사'">
 					   WHERE  approval_whether IN (
 					   <foreach collection="status" item="item" separator=",">
@@ -39,7 +42,10 @@
 		SELECT count(b.rn)
 		FROM (SELECT rownum rn, a.*
 		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
-				   FROM ordering 
+				   FROM ordering o JOIN company c ON o.company_no = c.company_no
+				   <if test="div != '본사'">
+				   		WHERE o.company_no = #{companyNo}
+				   </if>
 				   <if test="div == '본사'">
 					   	WHERE  approval_whether IN (
 					   <foreach collection="status" item="item" separator=",">

@@ -27,7 +27,7 @@
 			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
 				<div class="pd-20">
 					<div class="pull-left">
-						<h4 class="text-blue h4">발주 현황</h4>
+						<h4 class="text h2">발주 현황</h4>
 					</div>
 					<div class="pull-right">
 					<th:block th:if="${session.div == '본사'}">
@@ -432,8 +432,16 @@ function makeDetailGrid(datas){
     	{name: 'itemname', header: '품목명'},
     	{name: 'unit', header: '단위'},
     	{name: 'standard', header: '규격'},
-    	{name: 'quantity', header: '수량'},
-    	{name: 'price', header: '총 금액'}
+    	{name: 'quantity',
+    	 header: '수량',
+    	 formatter: function(data){
+    		 return data.value.toLocaleString('ko-KR');
+    	 }},
+    	{name: 'price',
+    	 header: '총 금액',
+    	 formatter: function(data){
+    		 return data.value.toLocaleString('ko-KR');
+    	 }}
     ];
 
     for (let i = 0; i < ROW_COUNT; i += 1) {
