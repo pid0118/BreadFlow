@@ -27,7 +27,7 @@ public class AccountController {
 	private final ComCodeService comcodeService;
 	
 	
-	@GetMapping("index")
+	@GetMapping("/index")
 	public String index() {
 		return "account/index";
 	}
@@ -46,7 +46,7 @@ public class AccountController {
 		
 		AccountVO accountvo = accountService.selectMember(accVO);
 		model.addAttribute("account", accountvo);
-		return "account/accountinfo";
+		return "account/accountInfo";
 	}
 	
 	// 로그아웃
