@@ -27,7 +27,7 @@ public class AccountController {
 	private final ComCodeService comcodeService;
 	
 	
-	@GetMapping("index")
+	@GetMapping("/")
 	public String index() {
 		return "account/index";
 	}
