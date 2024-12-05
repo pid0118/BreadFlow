@@ -156,7 +156,7 @@
 					<div class="col-md-4 col-sm-12">
 						<div class="form-group">
 							<label>연락처</label> <input type="text" class="form-control"
-								id="updTel" name="companyTel" >
+								id="updTel" name="companyTel" oninput="autoHyphen(this)" maxlength="13">
 						</div>
 					</div>					
 					<div class="col-md-4 col-sm-12">
@@ -227,7 +227,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>연락처</label><b class="required"> *</b>
-						<input type="text" class="form-control" name="companyTel">
+						<input type="text" class="form-control" name="companyTel" oninput="autoHyphen(this)" maxlength="13">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -311,7 +311,7 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>연락처</label> <input type="text" class="form-control" name="companyTel">
+						<label>연락처</label> <input type="text" class="form-control" name="companyTel" oninput="autoHyphen(this)" maxlength="13">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12" hidden="hidden">
@@ -829,35 +829,36 @@
 	// TODO: 시간나면 key값 분리시켜보자
 	// 검증코드 끝
 	// =======================================================
-		
-		
+
+	
 		
 	// =======================================================	
-	// [박진석|241120] 날짜 변환 함수 ( Tue Nov 12 00:00:00 KST 2024 => 12 November 2024 )
+	// [박진석|241126] 날짜 변환 함수 ( Tue Nov 05 00:00:00 KST 2024 => 2025-07-12 )
 	function formatDate(dateString) {
+		const cleanedDateString = dateString.replace(/(KST|UTC|GMT|\s[+-]\d{4})/, '').trim();
+		const date = new Date(cleanedDateString);
 		
-	    const parts = dateString.split(" ");
-	    const day = parts[2];
-	    const month = parts[1];
-	    const year = parts[5];
-	
-	    // 월 이름 배열
-	    const monthNames = {
-	        Jan: "January", Feb: "February", Mar: "March", Apr: "April",
-	        May: "May", Jun: "June", Jul: "July", Aug: "August",
-	        Sep: "September", Oct: "October", Nov: "November", Dec: "December"
-	    };
-	
-	    // 월 이름 변환
-	    const monthFullName = monthNames[month];
-	
-	    if (parts[0] === "") {
-	    	return ``;
-	    }
-	    
-	    return `${day} ${monthFullName} ${year}`;
+		if (isNaN(date)) {
+			return " ";
+		}
+		
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		
+		return `${year}-${month}-${day}`;
 	}
 	// 날짜 변환함수 끝
+	// =======================================================	
+		
+	// =======================================================
+	// 전화번호 유효성 검사 함수 시작
+	const autoHyphen = (target) => {
+	 target.value = target.value
+	   .replace(/[^0-9]/g, '')
+	  .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+	}
+	// 전화번호 검사 끝
 	// =======================================================
 
 </script>

@@ -529,11 +529,11 @@ const grid2 = new Grid({
 	columns: [
 		{
 			header: '제품코드',
-			name: 'productionDetailNo',
+			name: 'productCode',
 		},
 		{
 			header: '제품명',
-			name: 'productCode',
+			name: 'productName',
 		},
 		{
 			header: '계획수량',
@@ -776,7 +776,7 @@ function setInfoToForm(data) {
 	$("#updMtrqPlanNo").val(data.matrequiredPlanNo);
 	$("#updProductionCompany").val(data.supplyCompany);
 	$("#updPrdtComNm").val(data.supplyCompanyNm);
-	$("#updStartDate").val(formatDate(data.startDate));
+	$("#updStartDate").val( formatDate(data.startDate) );
 	$("#updDeliveryLocation").val(data.deliveryLocation);
 	$("#updDlvryLocNm").val(data.deliveryLocationNm);
 	$("#updLastDate").val(formatDate(data.lastDate));
@@ -889,26 +889,22 @@ function formatSituation(value) {
 //========================================================================	
 	
 	
-
+	
 // =======================================================	
-// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 11 September 2025 )
+// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 2025-07-12 )
 function formatDate(dateString) {
-  const date = new Date(dateString);
+    const date = new Date(dateString);
 
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
-  ];
+    date.setDate(date.getDate());
 
-  const day = date.getUTCDate(); // UTC 기준 일
-  const month = monthNames[date.getUTCMonth()]; // 월 이름
-  const year = date.getUTCFullYear(); // 연도
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
 
-  return `${day} ${month} ${year}`;
+    return `${year}-${month}-${day}`;
 }
 // 날짜 변환함수 끝
 // =======================================================	
-
 
 </script>
 
