@@ -46,7 +46,7 @@ public class AccountController {
 		
 		AccountVO accountvo = accountService.selectMember(accVO);
 		model.addAttribute("account", accountvo);
-		return "account/accountinfo";
+		return "account/accountInfo";
 	}
 	
 	// 로그아웃
