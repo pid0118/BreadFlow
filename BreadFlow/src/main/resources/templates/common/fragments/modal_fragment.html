@@ -30,7 +30,7 @@
 					</div>
       			</div>
       			<div class="modal-footer">
-        			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        			<button type="button" class="btn btn-secondary" id="backOut" data-bs-dismiss="modal">취소</button>
         			<button type="button" class="btn btn-primary" id="selectCompanyBtn">선택하기</button>
       			</div>
     		</div>
@@ -57,27 +57,34 @@
 		}
 
 	    $("#searchBtn").click(function() {
-	        var searchKeyword = $("#searchKeyword").val().toLowerCase();
+	        let searchKeyword = $("#searchKeyword").val().toLowerCase();
 	        filterCompanyTable(searchKeyword);
 	    });
 
 	    $("#searchKeyword").on('input', function() {
-	        var searchKeyword = $(this).val().toLowerCase();
+	        let searchKeyword = $(this).val().toLowerCase();
 	        filterCompanyTable(searchKeyword);
 	    });
 	    
-	    var selectedCompany = null;
+	    let selectedCompany = null;
 	    
 	    $("#compTble").on('click', '.form-check-input', function() {
-            $("#compTble .form-check-input").prop('checked', false);
-            $(this).prop('checked', true);
-            $("#compTble tbody tr").removeClass('selected');
-            $(this).closest('tr').addClass('selected');
+        	$("#compTble .form-check-input").prop('checked', false);
+           	$("#compTble tbody tr").removeClass('selected');
+            if ($(this).is(":checked")) {
+            	$(this).prop('checked', false);
+	            $(this).closest('tr').removeClass('selected');
+            } else {
+                $("#compTble .form-check-input").prop('checked', false);
+                $("#compTble tbody tr").removeClass('selected');
+	            $(this).prop('checked', true);
+	            $(this).closest('tr').addClass('selected');
+            }
         });
 	    
 	    function filterCompanyTable(keyword) {
 	        $("#companyTableBody tr").each(function() {
-	            var rowText = $(this).text().toLowerCase();
+	            let rowText = $(this).text().toLowerCase();
 	            if (rowText.includes(keyword)) {
 	                $(this).show();
 	            } else {
@@ -101,10 +108,10 @@
         }
 	    
 	    function updateTable(data) {
-            var tbody = $("#companyTableBody");
+            let tbody = $("#companyTableBody");
             tbody.empty();
             data.forEach(function(item) {
-                var row = "<tr>";
+                let row = "<tr>";
 	                row += `<td>
 								<div class="form-check">
 										<input class="form-check-input check" type="checkbox">
@@ -120,7 +127,7 @@
         }
 
 	    $("#selectCompanyBtn").click(function() {
-			var selectedCompanyName = $("#companyTableBody .selected").find("td:nth-child(3)").text();
+			let selectedCompanyName = $("#companyTableBody .selected").find("td:nth-child(3)").text();
 	        if (selectedCompanyName) {
 	            console.log(selectedCompanyName);
 	            $("#companyName").val(selectedCompanyName); 
@@ -131,6 +138,11 @@
 	            alert("업체가 선택되지 않았습니다.");
 	        }
 	    });
+	    
+	    $("#backOut").click(function() {
+	    	
+	    });
+	    
 	});
 	</script>
 </th:block>
