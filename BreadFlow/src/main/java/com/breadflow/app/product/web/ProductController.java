@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.breadflow.app.account.service.AccountService;
+import com.breadflow.app.account.service.AccountVO;
 import com.breadflow.app.common.service.CategoryService;
 import com.breadflow.app.common.service.CategoryVO;
 import com.breadflow.app.common.service.ComCodeService;
@@ -37,17 +38,20 @@ public class ProductController {
 	private final ProductService productService;
 	private final CategoryService categoryService;
 	private final ComCodeService comCodeService;
+	private final AccountService accountService;
 	     
 	// 전체조회
 	@GetMapping("productListAll")                           
-	public String selectProductList(ProductVO productVO, Model model) {
+	public String selectProductList(ProductVO productVO, AccountVO accountVO, Model model) {
 		// 제품 리스트
 		List<ProductVO> list = productService.selectProductList(productVO);
 		
 		// 카테고리
 		List<CategoryVO> category = categoryService.selectCategorySub("제품");
 		List<ComCodeVO> codeVal = comCodeService.selectComCode("0J");
+		List<AccountVO> List = accountService.selectMemberList(accountVO);
 		
+		model.addAttribute("accounts", List);
 		model.addAttribute("products", list);
 		model.addAttribute("category", category);
 		model.addAttribute("codeVal" , codeVal);
