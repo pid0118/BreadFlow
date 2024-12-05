@@ -14,7 +14,7 @@
 <body>
 <div class="pd-20 card-box mb-30">
 	<div class="clearfix">
-		<h4 class="text-blue h4">재고 조회</h4>
+		<h4 class="text h2">재고 조회</h4>
 		<div class="form-group">
 			<div class="row">
 				<th:block th:if="${session.div == '본사'}">
@@ -102,6 +102,10 @@ $('#stockSearchBtn').on('click', function(){
 // 안전 재고 신청 클릭 이벤트
 $('#safeStockBtn').on('click', function() {
 	let checkRows = grid.getCheckedRows();
+	if(checkRows.length == 0){
+		alert("선택된 항목이 없습니다.");
+		return;
+	}
 	let items = []; // 품목
 	let total = 0; // 총 금액
 	let date = new Date();
@@ -337,8 +341,12 @@ function stockDetailList(facilities, itemCode){
 		name : 'expirationDeadline',
 		header : '유통기한',
 		formatter : function(data) {
-			let date = data.value;
-			return date.substring(0,10); // 날짜 변환
+			if(data.value != null){
+				date = data.value.substring(0,10); // 날짜 변환 
+			} else {
+				date = '기한없음';
+			}
+			return date;
 		}
 	} ];
 
