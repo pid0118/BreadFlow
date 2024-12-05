@@ -268,7 +268,7 @@
 		        method: 'GET',
 		        success: function(product) {
 		        	
-		            document.getElementById('productImage').src = '/imgs/' + product.productImage;
+		            document.getElementById('productImage').src = '/imgs' + product.productImage;
 		            document.getElementById('productImage').alt = product.productName;
 		            document.getElementById('productCode').value = product.productCode;
 		            document.getElementById('productName').value = product.productName;
