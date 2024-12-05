@@ -21,7 +21,7 @@
 - BACK : SpringBoot 3.2.11 / Spring Security / Java21 / Mybatis 3.0.0 / Lombok / Maven /
 - IDE : Eclipse / Visual Studio Code / ORACLE Sqldeveloper
 - DATABASE :  Oracle
-- 배포 : AWS, docker
+- 배포 : AWS, docker, jenkins
 
 BACK / IDE / 배포
 =========
