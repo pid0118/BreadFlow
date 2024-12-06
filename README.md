@@ -34,7 +34,7 @@ BACK / IDE / 배포
       <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
     </td>
     <td>
-      
+      <ing src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fvelog.io%2F%40shinhyocheol%2FLombok-%25EA%25B3%25BC-Jackson-Deserialize-%25EA%25B4%2580%25EA%25B3%2584&psig=AOvVaw1ueT2-3s4H09KBBZt6EoBg&ust=1733539291539000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPibrqOPkooDFQAAAAAdAAAAABAY">
     </td>
   </tr>
   <tr>
