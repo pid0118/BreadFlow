@@ -36,8 +36,8 @@
 								<div class="form-group">
 									<label>발주 상태</label>
 									<select class="selectpicker form-control" data-size="5" data-style="btn-outline-secondary" multiple data-max-options="3" id="statusSel">
-							            <option value="d3">요청</option>
-							            <option value="d4">긴급</option>
+							            <option value="d3">대기중</option>
+							            <option value="d4">안전재고</option>
 								    </select>
 								</div>
 							</div>
@@ -315,7 +315,7 @@ function orderingList(status, sort, page){
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-						<td><span class="badge badge-secondary">요청</span></td>
+						<td><span class="badge badge-secondary">대기중</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
 						<td>
 							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
@@ -350,7 +350,7 @@ function orderingList(status, sort, page){
 				}
 			} else { // 긴급 상태일 경우
 				if(div == '본사'){
-					ele = `<tr class="table-danger">
+					ele = `<tr class="table-warning">
 						<td data-id="${data.orderformNo}">
 							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
 						</td>
@@ -358,7 +358,7 @@ function orderingList(status, sort, page){
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
 						<td>${data.orderingRequestManager}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
-						<td><span class="badge badge-danger">긴급</span></td>
+						<td><span class="badge badge-danger">안전재고</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
 						<td>
 							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
