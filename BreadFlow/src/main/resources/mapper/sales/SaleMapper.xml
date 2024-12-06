@@ -133,6 +133,7 @@
 		        WHERE product_code = sale_detail_history.product_code) AS sub
 		FROM sale_detail_history
 		WHERE company_no = #{companyNo}
+		AND   last = '마감'
 	</select>
 	
 </mapper>
