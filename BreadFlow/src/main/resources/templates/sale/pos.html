@@ -440,7 +440,7 @@
 				items.forEach(item => {
 						let data = {
 							productCode: item.querySelector(".my-0").innerText,
-							salePrice: item.querySelector(".pri").innerText.replace(',',''),
+							salePrice: item.querySelector(".pri").innerText.replace(/,/g,''),
 							quantity: item.querySelector(".su").innerText.split(" ")[1],
 							name: document.querySelector(".user-name").innerText
 						}
