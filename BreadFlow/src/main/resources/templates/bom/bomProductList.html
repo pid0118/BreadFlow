@@ -60,7 +60,7 @@
             <div class="form-group">
                 <select id="categorylist"
                 	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm">
+                    data-style="btn-outline-dark btn-sm">
                     <option value="">선택</option>
                     <th:block th:each="cate : ${category}">
                     	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
@@ -72,7 +72,7 @@
             <div class="form-group">
                 <select id="subList"
                 	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
+                    data-style="btn-outline-dark btn-sm" multiple data-max-options="3">
                 </select>
             </div>
         </div>
@@ -107,7 +107,7 @@
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
-                        <td th:if="${info.bomSituation == 'N'}"> <button type="submit" class="btn btn-secondary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
+                        <td th:if="${info.bomSituation == 'N'}"> <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
                         <td th:if="${info.bomSituation == 'Y'}"> <button type="submit" class="btn btn-success btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">수정</button></td>
                     </tr>
                 </th:block>

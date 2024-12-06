@@ -7,6 +7,12 @@
     <meta charset="UTF-8">
     <title>제품목록</title>
     <style>
+    	.form-container {
+            background-color: white;
+            height: 100%;
+            padding: 20px;
+            border-radius: 4px;
+        }
         .clickable {
             cursor: pointer;
             color: #0d6efd;
@@ -55,13 +61,14 @@
 </head>
 <body>
 <!-- 카테고리 검색시작 -->
+	<div class="form-container">
     <h2 class="mb-4">제품목록</h2>
     <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
         <div class="col-md-3">
             <div class="form-group">
                 <select id="categorylist"
                 	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm">
+                    data-style="btn-outline-dark btn-sm">
                     <option value="">선택</option>
                     <th:block th:each="cate : ${category}">
                     	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
@@ -73,7 +80,7 @@
             <div class="form-group">
                 <select id="subList"
                 	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
+                    data-style="btn-outline-dark btn-sm" multiple data-max-options="3">
                 </select>
             </div>
         </div>
@@ -250,13 +257,13 @@
 	                </div>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateProduct()">수정</button>
+	                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="updateProduct()">수정</button>
 	                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 	            </div>
 	        </div>
 	    </div>
 	</div>
-
+	</div>
 
 	<script>
 	let sub = ''
@@ -615,7 +622,7 @@
      				"expirationDeadline" : strdel(commadel($("#expirationDeadline").val())),
      				"purchasePrice" : strdel(commadel($("#purchasePrice").val())),
      				"salePrice" : strdel(commadel($("#salePrice").val())),
-     				"safeStockQuantity" : strdel(commadel($("#safeStockQuantity").val())),
+     				"safeStockQuantity" : commadel($("#safeStockQuantity").val()),
      				"proplace" : $("#proplace").val(),
      				"unit" : $("#unit option:selected").val(),
      				"major" : $("#mainCategory option:selected").val(),

@@ -11,6 +11,12 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
 <script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
 <style>
+.form-container {
+    background-color: white;
+    height: 100%;
+    padding: 20px;
+    border-radius: 4px;
+}
 .container {
 	display: flex;
 	padding: 20px;
@@ -84,23 +90,10 @@
 	margin-top: 20px;
 }
 
-.btn {
-	padding: 6px 16px;
-	border-radius: 4px;
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.btn-primary {
-	background-color: #0052CC;
-	color: white;
-	border: none;
-}
-
 .btn-secondary {
-	background-color: #ffffff;
+	background-color: secondary;
 	border: 1px solid #ddd;
-	color: #333;
+	color: white;
 }
 
 .tui-pagination {
@@ -117,6 +110,7 @@
 </style>
 </head>
 <body>
+	<div class="form-container">
 	<h2 class="page-title">BOM등록</h2>
 
 	<div class="container">
@@ -132,10 +126,9 @@
 		<div class="grid-section">
 			<div class="grid-header">
 				<div class="grid-header-right">
-					<button class="btn btn-primary" data-toggle="modal"
-						data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
-					<button th:if="${product.bomSituation == 'Y'}" type="button" id="deleteIngredient" class="btn btn-danger">삭제</button>
-					<button th:if="${product.bomSituation == 'N'}" type="button" id="deleteMaterial" class="btn btn-danger">삭제</button>
+					<button class="btn btn-primary" data-toggle="modal" data-target="#bd-example-modal-lg" id="addItems">원재료 추가</button>
+					<button th:if="${product.bomSituation == 'Y'}" type="button" id="deleteIngredient" class="btn btn-danger">원재료 삭제</button>
+					<button th:if="${product.bomSituation == 'N'}" type="button" id="deleteMaterial" class="btn btn-danger">원재료 삭제</button>
 				</div>
 			</div>
 			<div id="grid"></div>
@@ -215,7 +208,7 @@
 			</div>
 		</div>
 	</div>
-
+	</div>
 	<script>
 	    $(document).ready(function () {
 	    	getBomDetail()
