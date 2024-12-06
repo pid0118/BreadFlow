@@ -17,12 +17,12 @@ public class InferAnswerVO {
 	private String answerer;
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
-	private Date answerDate;
+	private String answerDate;
 	private String inferNo;
 	
 	@DateTimeFormat(pattern = "yy/MM/dd")
 	@JsonFormat(pattern = "yy/MM/dd")
-	private String inferApplicationDate;
+	private Date inferApplicationDate;
 	private String confirmLocation;
 	private String confirmWhether;
 }

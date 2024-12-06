@@ -55,6 +55,9 @@
 		    	select: true
 		    });
 		}
+        
+        $("#compTble .form-check-input").prop('checked', false);
+       	$("#compTble tbody tr").removeClass('selected');
 
 	    $("#searchBtn").click(function() {
 	        let searchKeyword = $("#searchKeyword").val().toLowerCase();
@@ -137,10 +140,6 @@
 	        } else {
 	            alert("업체가 선택되지 않았습니다.");
 	        }
-	    });
-	    
-	    $("#backOut").click(function() {
-	    	
 	    });
 	    
 	});
