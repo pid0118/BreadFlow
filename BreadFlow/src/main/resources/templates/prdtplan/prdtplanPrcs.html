@@ -65,8 +65,10 @@
 									<td id="parentPrdtplanNo">[[ ${pl.productionPlanNo} ]]</td>
 									<td id="parentPrdtplanCd">[[ ${pl.productCode} ]]</td>
 									<td id="parentPlanQuantity" >[[ ${pl.planQuantity} ]]</td>
-									<td id="parentProgressSituation" 
+									<!-- <td id="parentProgressSituation" 
 										th:text="${pl.progressSituation == 'c1' ? '작성중' : (pl.progressSituation == 'c2' ? '확인' : (pl.progressSituation == 'c3' ? '미확인' : (pl.progressSituation == 'c4' ? '진행중' : '완료')))}"></td>									
+									 -->
+									 <td id="parentProgressSituation"> [[ ${pl.progressSituation} ]] </td>
 									<td id="parentLastDt" th:text="${#dates.format(pl.lastDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentOther">[[ ${pl.other}]] </td>
 								</tr>
