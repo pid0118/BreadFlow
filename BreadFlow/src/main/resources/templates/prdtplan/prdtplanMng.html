@@ -714,6 +714,28 @@ function insertOrUpdatePrdPlanAjax() {
 			return false;
 		}
 		
+		let gridData = grid.getData()
+	
+		if(gridData.length == 0) {
+			alert("'행 추가'를 통해 제품을 추가했는지 확인하세요.");
+			return false;
+		} else {
+			for(let i = 0; i < gridData.length; i++) {
+				if(gridData[i].productCode == null) {
+					alert("팝업창을 통해 제품을 선택했는지 확인하세요.")
+					return false;
+				};
+				
+				if(gridData[i].planQuantity == null) {
+					alert("계획수량을 반드시 입력하세요.")
+					return false;
+				}
+			}
+			
+		}
+		
+		
+		
 		if(confirm("생산을 저장 하시겠습니까?")) {
 			$.ajax({
 	           url: "insertPrdtplan.do",
