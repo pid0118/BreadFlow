@@ -40,7 +40,9 @@
 			   , expiration_deadline
 		FROM stock_vu
 		WHERE item_code = #{itemCode}
+		<if test="facilities != 'null'">
 		AND facilities = #{facilities}
+		</if>
 		<if test="companyNo != ''">
 		AND company_no = #{companyNo}
 		</if>

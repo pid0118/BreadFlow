@@ -149,14 +149,15 @@ itemAdd.addEventListener('click', function() {
 			element += '<tr>';
 			let datas = td.closest('tr').querySelectorAll('td');
 			const found = Array.from(document.querySelectorAll('.datatable tbody tr td:first-child')).find(ele => ele.innerText == datas[1].innerText);
-			checktable = found ? false : true;
+			if(checktable != false){
+				checktable = found ? false : true;
+			}
 			if(checktable == true){
 				for(let i=1; i<datas.length; i++){
 					element += `<td>${datas[i].innerText}</td>`;
 				} 
 				element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
 			}
-			
 		}
 	})
 	// 품목이 중복되거나 품목 선택이 안되었을때
@@ -290,7 +291,9 @@ function itemSum() {
 	}
 	if (event.target.tagName == 'BUTTON') {
 		let td = document.querySelectorAll('.datatable tbody tr');
-		for(let i=0; i<td.length - 1; i++){
+		for(let i=0; i <td.length - 1; i++){
+			console.log(td[i]);
+			console.log(td);
 			let price = td[i].children[4].innerText;
 			let amount = td[i].children[5].querySelector('input').value;
 			td[i].children[6].innerText = price * amount;
