@@ -719,7 +719,6 @@ function insertMtrqPlanAjax() {
            type: "POST",
            data:  $('#updateMtrqplanForm').serialize(),
            success: function(data){
-               alert("성공적으로 저장되었습니다.");
                console.log(data);
                if (data != '')
             	   insertMtrqplanDetailAjax(data);

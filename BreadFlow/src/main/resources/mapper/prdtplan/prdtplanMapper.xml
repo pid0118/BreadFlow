@@ -140,7 +140,14 @@
 	<!-- ==== 생산관리(제조공장) 페이지에서 사용되는 매퍼 ==== -->
 	<!--  -->
 	<select id="selectPrdtplanListForCom" parameterType="String" resultType="PrdtplanVO">
-		SELECT 	*
+		SELECT 	p.production_plan_no
+        , ( SELECT  product_name
+            FROM    product
+            WHERE   product_code = d.product_code) AS product_code
+        , d.plan_quantity
+        , FIND_CD(d.progress_situation) AS progress_situation
+        , p.last_date
+        , d.other
 		FROM 	production_plan p
 			JOIN (
 			    SELECT d.production_plan_no, d.production_detail_no, d.product_code, d.plan_quantity, d.unit, d.other, d.progress_situation
@@ -151,7 +158,7 @@
 			    WHERE d.rn = 1
 			) d
 			ON p.production_plan_no = d.production_plan_no
-		WHERE production_company = #{companyNo}
+		WHERE production_company = #{productionCompany}
 		  AND progress_situation != 'c1'
 	</select>
 	

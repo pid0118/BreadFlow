@@ -65,8 +65,10 @@
 									<td id="parentPrdtplanNo">[[ ${pl.productionPlanNo} ]]</td>
 									<td id="parentPrdtplanCd">[[ ${pl.productCode} ]]</td>
 									<td id="parentPlanQuantity" >[[ ${pl.planQuantity} ]]</td>
-									<td id="parentProgressSituation" 
+									<!-- <td id="parentProgressSituation" 
 										th:text="${pl.progressSituation == 'c1' ? '작성중' : (pl.progressSituation == 'c2' ? '확인' : (pl.progressSituation == 'c3' ? '미확인' : (pl.progressSituation == 'c4' ? '진행중' : '완료')))}"></td>									
+									 -->
+									 <td id="parentProgressSituation"> [[ ${pl.progressSituation} ]] </td>
 									<td id="parentLastDt" th:text="${#dates.format(pl.lastDate, 'yyyy-MM-dd')}"></td>
 									<td id="parentOther">[[ ${pl.other}]] </td>
 								</tr>
@@ -450,8 +452,8 @@ function getPrdtplanInfo(no) {
 	    data: {},
 	    success: function(data){
 	        $('#updProductionPlanNo').val(data.productionPlanNo);
-	        $("#updStartDate").val( formatDate(data.startDate) );
-	        $('#updLastDate').val( formatDate(data.lastDate) );
+	        $("#updStartDate").val( convertDate(formatDate(data.startDate)) );
+	        $('#updLastDate').val( convertDate(formatDate(data.lastDate)) );
 	        $('#updPrdtComNm').val(data.productionCompanyNm);
 	        $('#updProductionCompany').val(data.productionCompany)
 	        $('#updDlvryLocNm').val(data.deliveryLocationNm)
@@ -684,8 +686,6 @@ grid.on('click', function (ev) {
 })
 
 function getPrdtInfo(e) {
-	console.log(e);
-	
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
 	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
@@ -696,7 +696,6 @@ function getPrdtInfo(e) {
 }
 
 function prdtModalConfirm() {
-	console.log(currentTarget);
 	grid.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid.setValue(currentTarget.rowKey, 'productName', prdtNm);
 	grid.setValue(currentTarget.rowKey, 'unit', prdUnit);
@@ -719,6 +718,19 @@ function insertOrUpdatePrdPlanAjax() {
 		if(updStartDate == "" || updLastDate == "") {
 			alert("날짜를 선택했는지 확인하세요.");
 			return false;
+		}
+	
+		if(grid.getData().length == 0) {
+			alert("제품을 추가해주세요.")
+			return false;
+		}
+		
+		let prdData = grid.getModifiedRows().createdRows;
+		
+		console.log(prdData);
+		
+		for(let i = 0; i < prdData.length; i++) {
+			console.log("muyaho!");
 		}
 		
 		if(confirm("생산을 저장 하시겠습니까?")) {
