@@ -41,22 +41,20 @@
 		<!-- 고정 정보 시작 -->
 		<form>
 			<div class="pd-20 row">
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>불량 일자</label>
-						<input class="form-control" type="text" name="inferDate" id="inferDate" readonly>
+						<input class="form-control" type="date" name="inferDate" id="inferDate" readonly>
 					</div>
 				</div>
-			</div>
-			<div class="pd-20 row">
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<label>확인 위치</label>
 					<div class="input-group">
 						<input class="form-control" type="text" id="companyName" th:value="${session.companyName}" placeholder="업체명을 검색하세요" readonly>
-						<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
+						<!-- <button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button> -->
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>담당자</label>
 						<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.name}" readonly>
@@ -98,15 +96,14 @@
 			<div id="noData" style="display: none;">
 				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
 			</div>
-			<div class="pagination-container">
-			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			<div class="pagination-container" style="padding: 20px; text-align: center;">
+			    <button type="button" class="btn btn-outline-dark" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
-			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			    <button type="button" class="btn btn-outline-dark" id="nextPageBtn">다음</button>
 			</div>
+			<button type="button" style="float: right;" class="btn btn-primary" id="submitBtn">등록</button>
 		</div>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
 		</div>
 		<!-- 테이블 끝 -->
 	</div>
@@ -163,13 +160,13 @@
             });
             
          	// 업체 검색 모달에서 선택 (없어도 될지도)
-            $("#selectCompanyBtn").click(function() {
+            /*$("#selectCompanyBtn").click(function() {
                 let selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
                 $("#companyName").val(selectedCompanyName);
                 $('#coFilterModal').modal('hide');
                 companyInput = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
                 changeFilter();
-            });
+            });*/
          	
          	// 이미지 등록 기능
          	function imageSet() {
@@ -312,6 +309,9 @@
 	            			$("#prevPageBtn").hide();
 	            			$("#currentPage").hide();
 	            			$("#noData").css("display", "block");
+	            		} else {
+	            			$("#currentPage").show();
+	            			$("#noData").css("display", "none");
 	            		}
 	            	},
 	            	error : function() {
@@ -361,9 +361,9 @@
 		    function loadTodayDate() {
 		    	let objectDate = new Date();
 		    	let day = objectDate.getDate();
-		    	let month = objectDate.getMonth();
+		    	let month = objectDate.getMonth() + 1;
 		    	let year = objectDate.getFullYear();
-		    	let todayDate = year + "/" + (month + 1) + "/" + day;
+		    	let todayDate = year + "-" + (("00" + month.toString()).slice(-2)) + "-" + (("00" + day.toString()).slice(-2));
 		 		$("#inferDate").val(todayDate);
 		 	}
 		    
