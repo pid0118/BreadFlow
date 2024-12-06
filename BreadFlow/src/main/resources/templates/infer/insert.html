@@ -44,7 +44,7 @@
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>불량 일자</label>
-						<input class="form-control" type="date" name="inferDate" id="inferDate" readonly>
+						<input class="form-control" type="text" name="inferDate" id="inferDate" readonly>
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -363,7 +363,7 @@
 		    	let day = objectDate.getDate();
 		    	let month = objectDate.getMonth() + 1;
 		    	let year = objectDate.getFullYear();
-		    	let todayDate = year + "-" + (("00" + month.toString()).slice(-2)) + "-" + (("00" + day.toString()).slice(-2));
+		    	let todayDate = year.toString().slice(-2) + "/" + (("00" + month.toString()).slice(-2)) + "/" + (("00" + day.toString()).slice(-2));
 		 		$("#inferDate").val(todayDate);
 		 	}
 		    
