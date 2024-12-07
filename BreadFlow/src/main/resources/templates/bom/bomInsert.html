@@ -111,8 +111,8 @@
 </head>
 <body>
 	<div class="form-container">
-	<h2 class="page-title">BOM등록</h2>
-
+	<h2 th:if="${product.bomSituation == 'N'}" class="page-title">BOM등록</h2>
+	<h2 th:if="${product.bomSituation == 'Y'}" class="page-title">BOM수정</h2>
 	<div class="container">
 		<div class="image-section">
 			<div class="image-placeholder" id="imagePreview">
@@ -525,29 +525,45 @@
 		$('#updateButton').click(function(){
 		 
 			let jsonData = [];
-			jsonData = grid.getData();
-		  console.log(jsonData);
+			jsonData = grid.getModifiedRows();
+			console.log(jsonData);
 			if(!grid.isModified()){
 				alert("변경사항이 없습니다.");
 				return;
 			}
 			
-			for (let obj of jsonData){
-				obj.productCode = $('#productCode').val();
-			}// end for
-		  $.ajax({
-			url : "bomUpdate",
-			type : "post",
-			contentType : "application/json",
-			data : JSON.stringify(jsonData),
-			success: function(data){
-				alert("수정이 완료되었습니다.")
-				location.href = "/bomProductList";
-			},
-			error: function(result){
-				alert("수정 실패!!");
-			}
-		  }); 	//end ajax
+	
+			
+			if(jsonData.updatedRows.length > 0){
+				for (let obj of jsonData.updatedRows){
+					obj.productCode = $('#productCode').val();
+				}// end for  
+			  $.ajax({
+				url : "bomUpdate",
+				type : "post",
+				async : false,
+				contentType : "application/json",
+				data : JSON.stringify(jsonData.updatedRows),
+				success: function(data){
+					//alert("수정이 완료되었습니다.")
+				},
+				error: function(result){
+					alert("수정 실패!!");
+				}
+			  }); 	//end ajax
+				
+			}			
+		  
+		  if(jsonData.createdRows.length > 0){
+				for (let obj of jsonData.createdRows){
+					obj.productCode = $('#productCode').val();
+				}// end for 
+			  insertIngredient(jsonData.createdRows);
+			  
+		  }
+		  alert("BOM이 성공적으로 저장되었습니다.");
+		  location.reload();
+		  
 		});	
 		// 수정하기 기능 end ==============================================================================
 	   
@@ -577,23 +593,27 @@
 				return;
 			}
 			   
+			insertIngredient(jsonData);
+				
+		  }
+		   
+		});
+		
+		function insertIngredient(jsonData){
 			$.ajax({
 				url: "bomInsert",
 				type: "post",
 				contentType: "application/json",
+				async : false,
 				data:  JSON.stringify(jsonData),
 				success: function(data){
-				  alert("BOM이 성공적으로 저장되었습니다.");
-				  location.href = "/bomProductList";
+				  //alert("BOM이 성공적으로 저장되었습니다.");
 				},
 			    error: function(result){
 			        alert("저장에 실패하였습니다.");
 			    }
 			});
-				
-		  }
-		   
-		});
+		}
 		   //======================================================================================================
 	   });
 	   

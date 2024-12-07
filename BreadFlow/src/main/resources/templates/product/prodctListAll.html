@@ -266,7 +266,8 @@
 	</div>
 
 	<script>
-	let sub = ''
+	let sub = '';
+	let mainCategory = '';
 	let oldProduct = {};
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showProductDetail(productCode) {
@@ -290,7 +291,7 @@
 		            document.getElementById('amount').value = formatNumber(product.amount) + product.unitName;
 		            document.getElementById('productCodes').value = product.productCode;
 		            sub = product.sub; 
-		            
+		            mainCategory = product.major;
 		            oldProduct = {
 		         	        productCode: $("#productCode").val(),
 		         	        productName: $("#productName").val(),
@@ -359,7 +360,7 @@
 		}
 		
 		function strdel(number){
-		 return number.slice(0, -1);	
+		 return parseInt(number);	
 		}
 	
         let myTable ;
@@ -445,7 +446,9 @@
                     for (let item of response) {
                         subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
                     }
-                    document.getElementById('subCategory').value = sub;
+                    if(mainCategory == category){
+ 	                   document.getElementById('subCategory').value = sub;
+                    }
                 })
                 .catch(error => console.error('Error:', error)); // 오류 처리 
         });
