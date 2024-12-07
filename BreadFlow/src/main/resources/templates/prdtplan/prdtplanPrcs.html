@@ -30,11 +30,13 @@
 
 </style>
 
-<div class="container">
+<div class="container pd-20 card-box mb-30">
+<div class="clearfix mb-20">
+
 	<div class="parentArea">
 		<div class="insertButtons">
-			<h2>생산 계획 관리</h2>
-			<div>
+			<h2 style="float: left;">생산 계획 관리</h2>
+			<div style="float: right;">
 				<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn" hidden="hideen">날짜 선택</button>
 				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>			
 			</div>
@@ -151,7 +153,7 @@
 		<div class="updateButtons" style="float: left;">
 				<button type="button" class="btn btn-primary btn-lg" id="planProgressBtn">진행 처리</button>
 				<button type="button" class="btn btn-primary btn-lg" id="planCompleteBtn">완료 처리</button>
-				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn">취소 처리</button>
+				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn" hidden="hidden">취소 처리</button>
 			</div>
 		</div>
 		
@@ -159,18 +161,19 @@
 			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
 			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
 			<!-- 자식 테이블 시작 -->
-			<div id="grid"></div>
+			<div id="grid" style="margin: 10px;"></div>
 				<!-- 자식 테이블 끝 -->
 			<div style="float: left;" hidden="hidden">
 				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
-				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn" hidden="hidden">취소</button>
 				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">저장</button>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <button type="button" id="prdtSerachBtn" data-toggle="modal" data-target="#prdt-modal" hidden="hidden">제품모달보기</button>
@@ -504,12 +507,10 @@ const grid = new Grid({
 		{
 		  header: '제품코드',
 		  name: 'productCode',
-		  editor: 'text',
 		},
 		{
 		  header: '제품명',
 		  name: 'productName',
-		  editor: 'text',
 		},
 		{
 		  header:'계획수량',
@@ -519,7 +520,6 @@ const grid = new Grid({
 		{
 		  header: '단위',
 		  name: 'unit',
-		  editor: 'text',
 		},
 		{
 		  header: '기타사항',

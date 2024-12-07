@@ -37,4 +37,5 @@ public class PrdtplanVO {
 	private String 	deliveryLocationNm;		// 납품위치 업체의 이름
 	private String 	productionCompanyNm;	// 생산업체의 이름
 	private Integer instoreGroupNo;			// 입고할 때의 그룹 번호
+	private String  isContainPrdt;			// 생산계획에 연결되어졌냐 아니냐 판단
 }

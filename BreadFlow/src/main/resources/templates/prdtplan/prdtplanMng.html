@@ -28,13 +28,16 @@
     background-color: #ffffff;
 }
 
+
+
 </style>
 
-<div class="container">
+<div class="container pd-20 card-box mb-30">
+	<div class="clearfix mb-20">
 	<div class="parentArea">
 		<div class="insertButtons">
-			<h2>생산 계획 관리</h2>
-			<div>
+			<h2 style="float: left; margin-bottom: 20px;">생산 계획 관리</h2>
+			<div style="float: right;">
 				<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn" hidden="hideen">날짜 선택</button>
 				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>			
 			</div>
@@ -43,7 +46,6 @@
 		
 		
 			<!-- 부모 테이블 시작 -->
-			<div class="card-box mb-30">
 				<div class="pb-20">
 					<table id="prdtPlan" class="prdtPlan-table table stripe hover nowrap">
 						<thead>
@@ -77,7 +79,6 @@
 						</tbody>
 					</table>
 				</div>
-			</div>
 			<!-- 부모 테이블 끝 -->
 		</div>
 	</div>
@@ -163,10 +164,11 @@
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
-				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn" hidden="hidden">취소</button>
 				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">저장</button>
 			</div>
 		</div>
+	</div>
 	</div>
 </div>
 

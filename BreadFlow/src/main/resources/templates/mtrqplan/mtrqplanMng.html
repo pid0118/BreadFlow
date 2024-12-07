@@ -12,7 +12,7 @@
 <!-- toast grid CDN 끝 -->
 
 <style>
-.parentArea {
+/* .parentArea {
 	display: inline-block;
 	float: left;
 	width: 35%;
@@ -23,32 +23,42 @@
 	float: right; 
 	width: 60%;
 }
-
+ */
 .form-control.date-picker[readonly] {
     background-color: #ffffff;
 }
 
+.miniTitle {
+	margin-bottom: 10px;
+}
+
+.childGrid {
+	margin: 10px;
+}
+
 </style>
 
-<div class="container">
-	<div class="parentArea">
-		<div class="insertButtons">
-			<h2>자재소요 계획 관리</h2>
-			<br>
-			<h5>생산계획 정보</h5>
+<div class="pd-20 card-box mb-30">
+	<div class="pd-20">
+		<h2 class="text-black">자재소요 계획 관리</h2>
+	</div>
+	<div class = "row">
+	<div class="col-md-4 parentArea">
+		<div class="insertButtons">	
+			<h5 class="miniTitle">생산계획 정보</h5>
 			<div id="grid1"></div>
 		</div>
 	</div>
-	<div class="childArea">
-		<h5>생산계획 정보 상세</h5>
-		<div id="grid2"></div>
+	<div class="col-md-8 childArea">
+		<h5 class="miniTitle">생산계획 정보 상세</h5>
+		<div id="grid2" class="childGrid"></div>
 		
-		<h5 style="float: left;">자재소요 내역</h5>
-		<div style="float: right;">
+		<h5 class="miniTitle" style="float: left;">자재소요 내역</h5>
+		<div style="float: right; margin-bottom: 5px;">
 			<button type="button" class="btn btn-primary btn-sm" id="tblDelRow">행 삭제</button>
 			<button type="button" class="btn btn-primary btn-sm" id="tblNewRow">행 추가</button>
 		</div>
-		<div id="grid3"></div>
+		<div id="grid3" class="childGrid"></div>
 	
 		<div class="detailInputArea">
 			<!-- 상세보기 폼 시작 -->
@@ -141,10 +151,11 @@
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
-				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn" hidden="hidden">취소</button>
 				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">확인</button>
 			</div>
 		</div>
+	</div>
 	</div>
 </div>
 
@@ -287,7 +298,8 @@
 							<th>소분류</th>
 							<th>제품코드</th>
 							<th>제품명</th>
-							<th>단위</th>
+							<th>단위코드</th>
+							<th>단위명</th>
 						</tr>
 					</thead>
 				</table>
@@ -429,6 +441,7 @@ $(document).ready( function () {
    			{data: "ingredientCode"},
    			{data: "ingredientName"},
    			{data: "unit"},
+   			{data: "unitName"}
    		]
     });
 } );
@@ -485,27 +498,29 @@ const grid1 = new Grid({
 		{
 			header: '생산계획 고유번호',
 			name: 'productionPlanNo',
-			width: 130
 			
 		},
 		{
 			header: '제품명',
 			name: 'productCode',
-			width: 100
 		},
 		{
 			header: '계획량',
 			name: 'planQuantity',
-			width: 70,
 		},
 		{
 			header: '마감일',
 			name: 'lastDate',
-			width: 80,
 			formatter: function(e) {	// `2024-11-22T15:00:00.000+00:00` 형식의 날짜를 `24-11-22` 으로 변환
-			  return e.value.replace(/(\d{4})-(\d{2})-(\d{2})T.*/, (_, year, month, day) => year.substring(2) + '-' + month + '-' + day);
+			  return formatDate(e.value);
 			},
+		},
+ 		{
+			header: '진행상태',
+			name: 'isContainPrdt',
+			hidden: true
 		}
+		
 	]
 })
 
@@ -557,12 +572,10 @@ const grid3 = new Grid({
 		{
 			header: '재료코드',
 			name: 'productCode',
-			editor: 'text',
 		},
 		{
 			header: '재료명',
 			name: 'productName',
-			editor: 'text',
 		},
 		{
 			header: '계획수량',
@@ -570,9 +583,12 @@ const grid3 = new Grid({
 			editor: 'text',
 		},
 		{
-			header: '단위',
+			header: '단위코드',
 			name: 'unit',
-			editor: 'text',
+		},
+		{
+			header: '단위',
+			name: 'unitName',
 		},
 		{
 			header: '기타사항',
@@ -591,12 +607,52 @@ const grid3 = new Grid({
 // [박진석|241128] grid1 클릭이벤트 설정 및 관련 데이터 뿌림
 grid1.on('click', function (ev) {
 	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
+	let isContainPrtd = grid1.getValue(ev.rowKey,"isContainPrdt");
 	
 	console.log(prdPlanNo);
 	resetInfo();
 	$("#updproductionPlanNo").val(prdPlanNo);
 	
-	$.ajax({												// grid2에 생산계획 디테일 출력
+
+	selectPrdtplanDetail(prdPlanNo);
+	if (isContainPrtd == 'y') {
+		selectMtrqplan(prdPlanNo);		
+	} else {
+		selectBom(prdPlanNo);
+	}
+	
+})
+// toast grid 클릭이벤트, 데이터 읽기 끝
+//========================================================================
+	
+
+
+// =======================================================================
+// [24.12.07] 특정 자재소요 계획에 들어있는 자재에 맞춰 BOM 리스트를 grid3에 출력하는 함수
+function selectBom(prdPlanNo) {
+	$.ajax({
+	    url: "selectBom?id=" + prdPlanNo,
+	    type: "GET",
+	    data: {},
+	    success: function(data){
+	    
+	    		grid3.resetData(data);
+	    },
+	    error: function(result){
+	 	   alert("조회에 실패하였습니다.");
+	 	   console.log(result);
+	 	}
+	});
+}
+// 자재소요계획 BOM grid3에 출력하는 함수 끝
+//=======================================================================	
+
+	
+
+// =======================================================================
+// [24.12.07] grid2에 생산계획 디테일 출력하는 함수
+function selectPrdtplanDetail(prdPlanNo) {
+	$.ajax({
 	    url: "selectPrdtplanDetail?id=" + prdPlanNo,
 	    type: "GET",
 	    data: {},
@@ -608,29 +664,32 @@ grid1.on('click', function (ev) {
 	 	   console.log(result);
 	 	}
 	});
+}
+// grid2 데이터 출력 함수 끝
+//=======================================================================	
 	
-	$.ajax({												// 상세보기 폼에 출력
+	
+	
+// =======================================================================
+// 오른쪽 맨 아래 상세보기 폼에 출력하는 함수
+function selectMtrqplan(prdPlanNo) {
+	$.ajax({												
 	    url: "selectMtrqplan?id=" + prdPlanNo,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
-	    	if (data == "") {
-	    		resetInfo();
-	    		$("#updproductionPlanNo").val(prdPlanNo);
-	    	} else {
-	    		setInfoToForm(data);
-	    		getMtrqplanDetailAjax(data.matrequiredPlanNo);
-	    	}
+    		setInfoToForm(data);
+    		getMtrqplanDetailAjax(data.matrequiredPlanNo);
+	    	
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
 	 	   console.log(result);
 	 	}
 	});
-	
-})
-// toast grid 클릭이벤트, 데이터 읽기 끝
-//========================================================================
+}	
+// 상세보기 폼 출력 함수 끝
+//=======================================================================		
 	
 	
 	
@@ -652,6 +711,7 @@ let currentTarget = null;
 let prdtNm = "";
 let prdtCd = "";
 let prdUnit = "";
+let prdUnitName = "";
 
 grid3.on('click', function (ev) {
 	if (ev.columnName == "productName" || ev.columnName == "productCode") {
@@ -673,6 +733,7 @@ function getingrdntsInfo(e) {
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
 	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
+	prdUnitName = e.target.parentElement.querySelectorAll("td")[5].innerText;
 	
 	document.querySelector("#selectedPrdtNm").value = prdtNm;
 	document.querySelector("#selectedPrdtCd").value = prdtCd;
@@ -685,6 +746,7 @@ function ingrdntModalConfirm() {
 	console.log(currentTarget);
 	grid3.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid3.setValue(currentTarget.rowKey, 'productName', prdtNm);
+	grid3.setValue(currentTarget.rowKey, 'unitName', prdUnitName);
 	grid3.setValue(currentTarget.rowKey, 'unit', prdUnit);
 	
 }

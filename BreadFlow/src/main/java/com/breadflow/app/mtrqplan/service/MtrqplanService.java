@@ -28,4 +28,6 @@ public interface MtrqplanService {
 	public int updateMatqDetailForProgressToC5(MtrqplanVO mtrqplanVO);
 
 	public int insertInstoreForMtrqplan(List<MtrqplanVO> list, String writer, String company);
+
+	public List<MtrqplanVO> selectBom(String id);
 }
