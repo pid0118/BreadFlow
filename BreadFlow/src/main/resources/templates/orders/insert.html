@@ -8,6 +8,11 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <meta charset="UTF-8">
 <title></title>
+<style>
+	#grid td:first-child .tui-grid-cell-content {
+		text-decoration: underline;
+	}
+</style>
 </head>
 <body>
 <div class="pd-20 card-box mb-30">
@@ -45,10 +50,12 @@
 <div class="modal fade" id="ordersModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
-			<div class="modal-header">
+			<div class="modal-header" style="display: flex; justify-content: space-between; align-items: center;">
 				<h4 class="modal-title" id="myLargeModalLabel">주문 신청</h4>
-				<button type="button" class="btn btn-sm btn-primary" style="margin-left: 75%;" id="requestBtn">신청</button>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<div>
+					<button type="button" class="btn btn-sm btn-primary" id="requestBtn">신청</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
 			</div>
 			<div class="modal-body">
 				<div id="ordersGrid"></div>
@@ -99,8 +106,8 @@
 					<input id="selectedComNm" class="form-control" readonly>
 				</div>
 				<div>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" id="confirmCom">확인</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 				</div>
 			</div>
 		</div>
@@ -324,7 +331,7 @@ function makeDetailGrid(code){
 	const detailColumns = [
 		{
           header: '발주상세코드',
-          name: 'orderingDetailCode'
+          name: 'orderingDetailCode',
         },
         {
           header: '품목명',

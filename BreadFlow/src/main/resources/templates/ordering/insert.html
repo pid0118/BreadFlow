@@ -8,7 +8,8 @@
 <title>발주 신청</title>
 </head>
 <body>
-<div class="card-box mb-30">
+<div class="pd-20 card-box mb-30">
+	<div class="clearfix mb-20">
 	<div class="row">
 		<div class="col-md-3 col-sm-12 pd-30">
 			<h4 class="text h2">발주 신청</h4>
@@ -17,7 +18,7 @@
 			<div class="row">
 				<div class="col-md-6 form-group">
 					<div class="row justify-content-end">
-						<label class="col-md-3">납기 희망 일자</label>
+						<label class="col-md-3"><b>납기 희망 일자</b></label>
 						<input class="col-md-4 form-control date-picker" placeholder="Select Date" type="text">
 					</div>
 				</div>
@@ -48,11 +49,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
+							<div class="row" style="margin-bottom: 20px;">
 								<div class="col-md-9 col-sm-12">
 									<input type="text" class="form-control" id="iname" placeholder="품목명">
 								</div>
-								<div class="col-md-3 col-sm-12">
+								<div class="col-md-3 col-sm-12" style="transform: translate(-30%, 0%);">
 									<button type="button" id="itemSearch" class="btn btn-primary">검색</button>
 								</div>
 							</div>
@@ -116,6 +117,7 @@
 			</table>
 		</div>
 	</form>
+	</div>
 </div>
 <!-- buttons for Export datatable -->
 <script src="/plugins/datatables/js/pdfmake.min.js"></script>
@@ -154,7 +156,12 @@ itemAdd.addEventListener('click', function() {
 			}
 			if(checktable == true){
 				for(let i=1; i<datas.length; i++){
-					element += `<td>${datas[i].innerText}</td>`;
+					if(!isNaN(Number(datas[i].innerText))){
+						let num = Number(datas[i].innerText).toLocaleString('ko-KR');
+						element += `<td>${num}</td>`;
+					} else {
+						element += `<td>${datas[i].innerText}</td>`;
+					}
 				} 
 				element += '<td><div class="col-4"><input type="number" class="form-control" min="1" value="1"></div></td><td></td></tr>';
 			}
@@ -279,27 +286,33 @@ function itemSum() {
 	if(event.target.tagName == 'INPUT'){
 		let datatd = event.target.closest('td');
 		let price = datatd.previousElementSibling.innerText;
-		datatd.nextElementSibling.innerText = price * event.target.value;
+		let tdTotal = (price.replace(/,/g, '') * event.target.value.replace(/,/g, ''));
+		tdTotal = tdTotal.toLocaleString('ko-KR');
+		datatd.nextElementSibling.innerText = tdTotal;
 		document.querySelectorAll('.datatable tbody td:nth-child(6) input').forEach(data => {
-			amountTotal += Number(data.value.replace(',', ''));	
+			amountTotal += Number(data.value.replace(/,/g, ''));
 		})
 		document.querySelectorAll('.datatable tbody td:nth-child(7)').forEach(data => {
-			priceTotal += Number(data.innerText.replace(',', ''));
+			priceTotal += Number(data.innerText.replace(/,/g, ''));
 		})
+		amountTotal = amountTotal.toLocaleString('ko-KR');
+		priceTotal = priceTotal.toLocaleString('ko-KR');
 		document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
 		document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
 	}
 	if (event.target.tagName == 'BUTTON') {
 		let td = document.querySelectorAll('.datatable tbody tr');
 		for(let i=0; i <td.length - 1; i++){
-			console.log(td[i]);
-			console.log(td);
 			let price = td[i].children[4].innerText;
 			let amount = td[i].children[5].querySelector('input').value;
-			td[i].children[6].innerText = price * amount;
-			amountTotal += Number(amount);	
-			priceTotal += Number(price);
+			let tdTotal = price.replace(/,/g, '') * amount;
+			tdTotal = tdTotal.toLocaleString('ko-KR');
+			td[i].children[6].innerText = tdTotal;
+			amountTotal += Number(amount.replace(/,/g, ''));	
+			priceTotal += Number(price.replace(/,/g, ''));
 		}
+		amountTotal = amountTotal.toLocaleString('ko-KR');
+		priceTotal = priceTotal.toLocaleString('ko-KR');
 		document.querySelector('#total td:nth-child(2)').innerText = amountTotal;
 		document.querySelector('#total td:nth-child(3)').innerText = priceTotal;
 	}
@@ -432,7 +445,6 @@ function pageEvent(){
 		} else {
 			page = event.target.innerText;
 		}
-		console.log(page);
 		itemClick(page); 
 	}
 }

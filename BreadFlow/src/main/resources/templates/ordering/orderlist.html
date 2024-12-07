@@ -30,21 +30,27 @@
 						<h4 class="text h2">발주 현황</h4>
 					</div>
 					<div class="pull-right">
-					<th:block th:if="${session.div == '본사'}">
 						<div class="row">
+							<th:block th:if="${session.div == '본사'}">
 							<div class="col-md-6 col-sm-12">
 								<div class="form-group">
 									<label>발주 상태</label>
-									<select class="selectpicker form-control" data-size="5" data-style="btn-outline-secondary" multiple data-max-options="3" id="statusSel">
+									<select class="selectpicker form-control" data-size="5" data-style="btn-outline-dark" multiple data-max-options="3" id="statusSel">
 							            <option value="d3">대기중</option>
 							            <option value="d4">안전재고</option>
 								    </select>
 								</div>
 							</div>
+							</th:block>
+							<th:block th:if="${session.div == '본사'}">
 							<div class="col-md-6 col-sm-12">
+							</th:block>
+							<th:block th:if="${session.div != '본사'}">
+							<div class="col-md-12 col-sm-12">
+							</th:block>
 								<div class="form-group">
 									<label>일자</label>
-									<select class="selectpicker form-control" data-style="btn-outline-secondary">
+									<select class="selectpicker form-control" data-style="btn-outline-dark">
 										<option value="none">---- 선택 ----</option>
 										<optgroup label="발주 일자">
 											<option value="odDesc">발주 최신순</option>
@@ -58,7 +64,6 @@
 								</div>
 							</div>
 						</div>
-					</th:block>
 					</div>
 					<div class="table-responsive">
 						<table class="table" id="orderingTable">
@@ -96,7 +101,7 @@
 			<div class="tab-pane fade" id="orders" role="tabpanel">
 				<div class="pd-20">
 					<div class="pull-left">
-						<h4 class="text-blue h4">주문 현황</h4>
+						<h4 class="text h2">주문 현황</h4>
 					</div>
 					<div class="pull-right">
 							
@@ -247,7 +252,7 @@ $('#cancelBtn').on('click', function() {
 	    success : function(result) {
 	        let resultData = JSON.parse(result);
 	        if(resultData.result == true){
-	        	window.location.href = 'http://localhost:8099/order/list';
+	        	window.location.href = '/order/list';
 	        } else {
 	        	alert("잘못된 접근입니다.");	
 	        }
@@ -309,7 +314,7 @@ function orderingList(status, sort, page){
 				if(div == '본사'){
 					ele = `<tr class="table-light">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button" style="text-decoration: underline;">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -326,7 +331,7 @@ function orderingList(status, sort, page){
 				} else {
 					ele = `<tr class="table-light">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button" style="text-decoration: underline;">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -352,7 +357,7 @@ function orderingList(status, sort, page){
 				if(div == '본사'){
 					ele = `<tr class="table-warning">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button" style="text-decoration: underline;">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -361,15 +366,15 @@ function orderingList(status, sort, page){
 						<td><span class="badge badge-danger">안전재고</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
 						<td>
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button" style="text-decoration: underline;">
 							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
 							</a>
 						</td>
 					</tr>`;
 				} else {
-					ele = `<tr class="table-danger">
+					ele = `<tr class="table-warning">
 						<td data-id="${data.orderformNo}">
-							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button">${data.orderingCode}</a>
+							<a href="#" class="btn-block" data-toggle="modal" data-target="#Medium-modal" type="button" style="text-decoration: underline;">${data.orderingCode}</a>
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
@@ -395,7 +400,7 @@ function orderingList(status, sort, page){
 				    dataType : 'text',
 				    success : function(result) {
 				        console.log(result);
-				        window.location.href = 'http://localhost:8099/order/list';
+				        window.location.href = '/order/list';
 				    },
 				    error : function(request, status, error) { 
 				        console.log(error);
@@ -472,7 +477,7 @@ function ordersList(){
 		result.data.forEach(data => {
 			let ele = `<tr class="table-light">
 					<td data-id="${data.ordersNo}">
-						<a href="#" class="btn-block" data-toggle="modal" data-target="#ordersModal" type="button">${data.ordersNo}</a>
+						<a href="#" class="btn-block" data-toggle="modal" data-target="#ordersModal" type="button" style="text-decoration: underline;">${data.ordersNo}</a>
 					</td>
 					<td>${data.manager}</td>
 					<td>${data.inCompany}</td>
