@@ -113,7 +113,7 @@
 						</when>
 					</choose>) a
 		      ) b 
-		WHERE b.rn BETWEEN (#{page}-1) * 5 + 1 AND (#{page}-1) * 5 + 5
+		WHERE b.rn BETWEEN (#{page}-1) * 10 + 1 AND (#{page}-1) * 10 + 10
 	</select>
 	
 	<select id="selectOrdersComListPage">

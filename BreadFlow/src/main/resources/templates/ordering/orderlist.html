@@ -7,6 +7,13 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <title></title>
+<style>
+	/*
+	#ordering tbody tr {
+		cursor : pointer;
+	}
+	*/
+</style>
 </head>
 <body>
 <div class="pd-20 card-box mb-30">
@@ -73,7 +80,7 @@
 									<th scope="col">발주코드</th>
 									<th scope="col">발주일자</th>
 									<th scope="col">납기 희망 일자</th>
-									<th scope="col">발주 요청자</th>
+									<th scope="col">발주처</th>
 									<th scope="col">총 금액</th>
 									<th scope="col">발주 상태</th>
 									<th:block th:if="${session.div == '본사'}">
@@ -163,10 +170,14 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<div class="col-md-3 col-sm-12" style="padding-left: 0">
-							<div class="form-group">
+						<div class="row" style="margin-bottom: 20px;">
+							<div class="col-md-6 col-sm-12">
 								<label>발주 번호</label>
-								<input type="text" class="form-control" readonly>
+								<input type="text" class="form-control" readonly id="no">
+							</div>
+							<div class="col-md-6 col-sm-12">
+								<label>발주처</label>
+								<input type="text" class="form-control" readonly id="com">
 							</div>
 						</div>
 						<label>사유</label>
@@ -174,8 +185,8 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					<button type="button" class="btn btn-danger" id="cancelBtn">전송</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>				
 				</div>
 			</div>
 		</div>
@@ -277,28 +288,30 @@ $('ul#ordersPagination.pagination.justify-content-center').on('click', 'li', fun
 
 // 발주 취소서 전송 버튼 클릭 이벤트
 $('#cancelBtn').on('click', function() {
-	let no = $('#bd-example-modal-lg input').val(); // 발주 번호
-	let reason = $('#bd-example-modal-lg textarea').val(); // 취소 사유
-	if(reason == ''){
-		alert("취소 사유를 입력해주세요.");
-		return;
+	if(confirm("취소하시겠습니까?")){
+		let no = $('#bd-example-modal-lg input').val(); // 발주 번호
+		let reason = $('#bd-example-modal-lg textarea').val(); // 취소 사유
+		if(reason == ''){
+			alert("취소 사유를 입력해주세요.");
+			return;
+		}
+		$.ajax({
+		    type : 'post',
+		    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
+		    dataType : 'text',
+		    success : function(result) {
+		        let resultData = JSON.parse(result);
+		        if(resultData.result == true){
+		        	window.location.href = '/order/list';
+		        } else {
+		        	alert("잘못된 접근입니다.");	
+		        }
+		    },
+		    error : function(request, status, error) { 
+		        console.log(error);
+		    }
+		})
 	}
-	$.ajax({
-	    type : 'post',
-	    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
-	    dataType : 'text',
-	    success : function(result) {
-	        let resultData = JSON.parse(result);
-	        if(resultData.result == true){
-	        	window.location.href = '/order/list';
-	        } else {
-	        	alert("잘못된 접근입니다.");	
-	        }
-	    },
-	    error : function(request, status, error) { 
-	        console.log(error);
-	    }
-	})
 })
 
 $('#Medium-modal').modal('hide')	// 모달 닫기
@@ -316,7 +329,7 @@ function orderingList(status, sort, page){
 	.then(response => response.json())
 	.then(result => {
 		let totalPage = result.page;	// 총 페이지
-		let perPage = 5;	// 한 페이지당 페이지 수
+		let perPage = 10;	// 한 페이지당 페이지 수
 		let currentPage = Math.ceil(page / perPage);	// 현재 페이지	수
 		let lastPage = Math.ceil(totalPage / perPage);  // 총 마지막 페이지
 		let startPage = (currentPage - 1) * perPage * 1;	// 시작 페이지
@@ -361,13 +374,13 @@ function orderingList(status, sort, page){
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
+						<td>${data.orderingCompany}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-secondary">대기중</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
 						<td>
 							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							<button type="button" data-id="${data.orderingCode}" data-company="${data.orderingCompany}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
 							</a>
 						</td>
 					</tr>`;
@@ -378,7 +391,7 @@ function orderingList(status, sort, page){
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
+						<td>${data.orderingCompany}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>`;
 						if(data.approvalWhether == 'd3'){
 							ele += `<td><div class="progress">
@@ -404,13 +417,13 @@ function orderingList(status, sort, page){
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
+						<td>${data.orderingCompany}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><span class="badge badge-danger">안전재고</span></td>
 						<td><button type="button" class="btn btn-outline-success btn-sm" id="acceptBtn">승인</button></td>
 						<td>
 							<a href="#" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button" style="text-decoration: underline;">
-							<button type="button" data-id="${data.orderingCode}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
+							<button type="button" data-id="${data.orderingCode}" data-company="${data.orderingCompany}" class="btn btn-outline-danger btn-sm" id="modalCancel">거절</button>
 							</a>
 						</td>
 					</tr>`;
@@ -421,7 +434,7 @@ function orderingList(status, sort, page){
 						</td>
 						<td>${data.orderingDate.substring(0,10)}</td>
 						<td>${data.deliveryDesireDate.substring(0,10)}</td>
-						<td>${data.orderingRequestManager}</td>
+						<td>${data.orderingCompany}</td>
 						<td>${data.totalPrice.toLocaleString('ko-KR')}</td>
 						<td><div class="progress">
                         <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">대기중</div>
@@ -435,7 +448,6 @@ function orderingList(status, sort, page){
 		// 승인 버튼 이벤트
 		$('button#acceptBtn').on('click', function() {
 			if(confirm("승인하시겠습니까?")){ 
-				alert("승인");
 				let code = $(this).closest('tr').children('td:first-child').children().text();
 				$.ajax({
 				    type : 'post',
@@ -454,7 +466,8 @@ function orderingList(status, sort, page){
 		// 거절 버튼 이벤트
 		$('button#modalCancel').on('click', function() {
 			// 데이터 값 초기화
-			$('#bd-example-modal-lg input').val($(this).data("id"));
+			$('#bd-example-modal-lg input#no').val($(this).data("id"));
+			$('#bd-example-modal-lg input#com').val($(this).data("company"));
 			$('#bd-example-modal-lg textarea').val('');
 		})
 		
@@ -479,15 +492,17 @@ function makeDetailGrid(datas){
     	columns = [
         	{name: 'orderingDetailCode', header: '발주 상세코드'},
         	{name: 'itemname', header: '품목명'},
-        	{name: 'unit', header: '단위'},
+        	{name: 'unit', header: '단위', align: 'right'},
         	{name: 'standard', header: '규격'},
         	{name: 'quantity',
         	 header: '수량',
+        	 align: 'right',
         	 formatter: function(data){
         		 return data.value.toLocaleString('ko-KR');
         	 }},
         	{name: 'price',
         	 header: '총 금액',
+        	 align: 'right',
         	 formatter: function(data){
         		 return data.value.toLocaleString('ko-KR');
         	 }}
@@ -577,7 +592,7 @@ function ordersList(orderSort, orderPage){
 	.then(response => response.json())
 	.then(result => {
 		let totalPage = result.page;	// 총 페이지
-		let perPage = 5;	// 한 페이지당 페이지 수
+		let perPage = 10;	// 한 페이지당 페이지 수
 		let currentPage = Math.ceil(orderPage / perPage);	// 현재 페이지	수
 		let lastPage = Math.ceil(totalPage / perPage);  // 총 마지막 페이지
 		let startPage = (currentPage - 1) * perPage * 1;	// 시작 페이지
