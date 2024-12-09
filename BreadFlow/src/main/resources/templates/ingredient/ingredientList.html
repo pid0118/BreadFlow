@@ -266,7 +266,8 @@
 		</form>
 	</div>
 	<script>
-    let sub = ''
+    let sub = '';
+    let mainCategory = '';
     let oldIngredient = {};
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showingredientDetail(ingredientCode) {
@@ -284,11 +285,12 @@
 		            document.getElementById('safeStockQuantity').value = formatNumber(ingredient.safeStockQuantity);
 		            document.getElementById('expirationDeadline').value = formatNumber(ingredient.expirationDeadline) + "일";
 		            document.getElementById('purchasePrice').value = formatNumber(ingredient.purchasePrice) + "원";
-		            document.getElementById('amount').value = formatNumber(ingredient.amount);
+		            document.getElementById('amount').value = formatNumber(ingredient.amount) + ingredient.unitName;
 		            document.getElementById('unit').value = ingredient.unit;
 		            document.getElementById('mainCategory').value = ingredient.major;
-		            sub = ingredient.sub;     
 		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
+		            sub = ingredient.sub; 
+		            mainCategory = ingredient.major;
 		            
 		            oldIngredient = {
 	                    ingredientCode: $("#ingredientCode").val(),
@@ -357,7 +359,7 @@
 		}
 		
 		function strdel(number){
-		 return number.slice(0, -1);	
+		 return parseInt(number);	
 		}
 	
         let myTable ;
@@ -463,7 +465,9 @@
                     for (let item of response) {
                         subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
                     }
+                    if(mainCategory == category){
                     document.getElementById('subCategory').value = sub;
+                    }
                 })
                 .catch(error => console.error('Error:', error)); // 오류 처리 
         });
@@ -561,7 +565,7 @@
      			alert("용량를 입력해주세요")
      			return;
      		}
-     		if($("#unit option:selected").val() == '선택하세요'){
+     		if($("#unit").get(0).selectedIndex <= 0){
      			alert("단위를 선택해주세요")
      			return;
      		}
@@ -589,7 +593,7 @@
    		        unit: $("#unit option:selected").val(),
    		        major: $("#mainCategory option:selected").val(),
    		        sub: $("#subCategory option:selected").val(),
-   		        amount: commadel($("#amount").val()),
+   		        amount: strdel(commadel($("#amount").val())),
    		        ingredientImage: $("#ingredientImage").val()
    		    };
      		
@@ -623,7 +627,7 @@
      				"ingredientImage" : $("#ingredientImage").val()
      			}),
      			contentType : 'application/json',
-     			dataType : "json",
+     			dataType : "text",
      			success : function (data) {
      				if (data == 1) {
      					alert("재료 수정에 성공하였습니다.");
