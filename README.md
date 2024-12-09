@@ -44,6 +44,9 @@ BACK / IDE / 배포
     <td>
       SpringBoot<br>3.2.11
     </td>
+    <td>
+      Lombok
+    </td>
   </tr>
   
 </table>
