@@ -604,6 +604,14 @@
      	        alert("변경된 내용이 없습니다.");
      	        return;
      	    }
+     	    
+     	    // 4개가 숫자일경우 문자가 포함된경우 
+     	    // 여기서 정의를 해줘야함 숫자면 그냥 그대로 넣으면 됨 
+     	    // 문자면 저 함수를 사용해서 숫자로 바궈야함
+     	    
+     	    
+     	    
+     	    //  =====================================================
      		
      		$.ajax({
      			url : "/product",
@@ -615,7 +623,7 @@
      				"expirationDeadline" : strdel(commadel($("#expirationDeadline").val())),
      				"purchasePrice" : strdel(commadel($("#purchasePrice").val())),
      				"salePrice" : strdel(commadel($("#salePrice").val())),
-     				"safeStockQuantity" : strdel(commadel($("#safeStockQuantity").val())),
+     				"safeStockQuantity" : $("#safeStockQuantity").val(),
      				"proplace" : $("#proplace").val(),
      				"unit" : $("#unit option:selected").val(),
      				"major" : $("#mainCategory option:selected").val(),
