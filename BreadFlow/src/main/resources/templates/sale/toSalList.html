@@ -6,393 +6,107 @@
 <head>
 <meta charset="UTF-8">
 <title></title>
+<link href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css" rel="stylesheet" />
 <style>
-	@import url("https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css");
-	@import url(https://fonts.googleapis.com/css?family=Oswald:700);
-	@import url(https://fonts.googleapis.com/css?family=Droid+Serif);
-	.pcs, .cur, .per {
-	    white-space: nowrap;
-	}
-	.pcs:after {
-	    content: " pcs";
-	}
-	.cur:before {
-	    content: "$";
-	}
-	.per:after {
-	    content: "%";
-	}
-	* {
-	    box-sizing: border-box;
-	}
-	table {
-	    position: relative;
-	    width: 100%;
-	}
-	table th {
-	    text-align: left;
-	    vertical-align: bottom;
-	    border-bottom: 1px solid #ccc;
-	    text-transform: uppercase;
-	    font: 0.8em "Oswald", sans-serif;
-	}
-	table th, table td {
-	    padding: .4em;
-	}
-	table.fold-table {
-	    background: white;
-	    color: #555;
-	}
-	table.fold-table > tbody > tr.view {
-	    font-family: "Droid Serif", serif;
-	    transition: all .3s ease;
-	}
-	table.fold-table > tbody > tr.view td, table.fold-table > tbody > tr.view th {
-	    cursor: pointer;
-	}
-	table.fold-table > tbody > tr.view td:first-child, table.fold-table > tbody > tr.view th:first-child {
-	    position: relative;
-	    padding-left: 20px;
-	}
-	table.fold-table > tbody > tr.view td:first-child:before, table.fold-table > tbody > tr.view th:first-child:before {
-	    position: absolute;
-	    top: 50%;
-	    left: 5px;
-	    width: 9px;
-	    height: 16px;
-	    margin-top: -8px;
-	    font: 16px fontawesome;
-	    content: "\f0d7";
-	    transition: all .3s ease;
-	}
-	table.fold-table > tbody > tr.view:nth-child(4n-1) {
-	    background: #eee;
-	}
-	table.fold-table > tbody > tr.view:hover {
-	    background: #ddd;
-	}
-	table.fold-table > tbody > tr.view.open {
-	    background: tomato;
-	    color: white;
-	}
-	table.fold-table > tbody > tr.view.open td:first-child:before, table.fold-table > tbody > tr.view.open th:first-child:before {
-	    transform: rotate(-180deg);
-	    color: white;
-	}
-	table.fold-table > tbody > tr.fold {
-	    display: none;
-	    height: 0;
-	    overflow: hidden;
-	    transition: visibility 0s, height 0.3s ease;
-	    position: relative;
-	}
-	table.fold-table > tbody > tr.fold.open {
-	    display: table-row;
-	    height: auto;
-	}
-	.fold-content {
-	    padding: .5em;
-	}
-	.fold-content h3 {
-	    margin-top: 0;
-	}
-	.fold-content > table {
-	    background: white;
-	    color: #555;
-	    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-	}
-	.fold-content > table > tbody > tr {
-	    font-family: "Droid Serif", serif;
-	    cursor: pointer;
-	}
-	.fold-content > table > tbody > tr:nth-child(even) {
-	    background: #eee;
-	}
-	.fold-content > table > tbody > tr > td:hover {
-	    background: #ddd;
-	}
-	.visible-small {
-	    display: none;
-	}
-	.visible-big {
-	    display: block;
-	}
-	@media (max-width: 700px) {
-	    body {
-	        font-size: .8em;
-	        padding: 0 10px;
-	    }
-	    table th, table td {
-	        padding: 1em .2em;
-	    }
-	    table th {
-	        vertical-align: bottom;
-	        padding-bottom: 0;
-	    }
-	    table.small-friendly > thead {
-	        display: none;
-	    }
-	    table.small-friendly > tbody > tr > td, table.small-friendly > tbody > tr > th {
-	        position: relative;
-	        padding: 0;
-	        padding-left: 50%;
-	        display: block;
-	        vertical-align: top;
-	        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-	    }
-	    table.small-friendly > tbody > tr > td:before, table.small-friendly > tbody > tr > th:before {
-	        position: absolute;
-	        top: 0;
-	        left: .5em;
-	        max-width: 50%;
-	        content: attr(data-th) ": ";
-	        display: block;
-	        font-weight: bold;
-	    }
-	    table.small-friendly > tbody > tr > td:first-child, table.small-friendly > tbody > tr > th:first-child {
-	        margin-top: 1em;
-	    }
-	    table.small-friendly > tbody > tr > td:last-child, table.small-friendly > tbody > tr > th:last-child {
-	        margin-bottom: 1em;
-	        border: 0;
-	    }
-	    .visible-small {
-	        display: block;
-	    }
-	    .visible-big {
-	        display: none;
-	    }
-	}
-	.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 60%; /* 모달의 너비 */
-}
-
-.close-button {
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 25px;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+    .accordion-content {
+        padding: 10px;
+        background-color: #f1f1f1;
+        display: none; /* 기본적으로 숨김 */
+    }
+    .accordion-header {
+        cursor: pointer;
+        padding: 10px;
+        background-color: #ccc;
+        text-align: left;
+        font-weight: bold;
+        border: 1px solid #ddd;
+    }
+    .accordion-header:hover {
+        background-color: #bbb;
+    }
 
 </style>
 </head>
 <body>
-	<h3>2024</h3>
-	<table class="fold-table">
-	  <thead>
-	    <tr>
-	      <th>번호</th>
-	      <th>지역</th>
-	      <th>가맹점명</th>
-	      <th><span class="visible-big">코드</span></th>
-	      <th><span class="visible-big">성함</span></th>
-	      <th><span class="visible-big">매출(년)</span></th>
-	      <th><span class="visible-big">비고</span></th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr class="view" th:each="list : ${SList}">
-	      <td>[[ ${list.rownum} ]]</td>
-	      <td>[[ ${list.region} ]]</td>
-	      <td>[[ ${list.companyName} ]]</td>
-	      <td>[[ ${list.companyNo} ]]</td>
-	      <td>[[ ${list.name} ]]</td>
-	      <td>[[ ${#numbers.formatInteger(list.daySales, 3, 'COMMA')} + 원 ]]</td>
-	      <td>[[ ${list.other} ]]</td>
-	    </tr>
-	    <tr class="fold">
-	      <td colspan="7">
-	        <div class="fold-content fold-grid">
-	          <table class="small-friendly" style="z-index:1;">
-	            <thead>
-	              <tr>
-	                <th><span class="visible-big">01월</span></th>
-	                <th><span class="visible-big">02월</span></th>
-	                <th><span class="visible-big">03월</span></th>
-	                <th><span class="visible-big">04월</span></th>
-	                <th><span class="visible-big">05월</span></th>
-	                <th><span class="visible-big">06월</span></th>
-	                <th><span class="visible-big">07월</span></th>
-	                <th><span class="visible-big">08월</span></th>
-	                <th><span class="visible-big">09월</span></th>
-	                <th><span class="visible-big">10월</span></th>
-	                <th><span class="visible-big">11월</span></th>
-	                <th><span class="visible-big">12월</span></th>
-	              </tr>
-	            </thead>
-	            <tbody>
-	              <tr id="salMonth"></tr>
-	            </tbody>
-	          </table>
-	        </div>
-	      </td>
-	    </tr>
-	  </tbody>
-	</table>
-	<div id="detailsModal" class="modal">
-		    <div class="modal-content">
-		    	<h3 class="modal-month"></h3>
-		        <span class="close-button">&times;</span>
-		        <table id="menuDetail" style="border:1px solid;">
-		       		<thead>
-		       			<tr>
-		       				<th>일자</th>
-		       				<th>제품명</th>
-		       				<th>총 수량</th>
-		       				<th>총 합계</th>
-		       			</tr>
-		       		</thead>
-		       		<tbody id="saleDetail" style="z-index: 1"></tbody>
-		       	</table>
-		    </div>
+	<div class="pd-20 card-box mb-30">
+		<div class="col-md-3 col-sm-12 pd-30">
+			<h4 class="text h2">가맹점 매출내역</h4>
 		</div>
+		<div id="grid-list"></div>
+		<div id="grid-month" style="margin-top: 10px"></div>
+	</div>
+
+	<script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 	<script>
-		const salMonthRow = document.querySelector('#salMonth');
-		const modal = document.querySelector('.modal-month');
-		const saleDetail = document.querySelector('#saleDetail');
-		const year =  document.querySelector('h3').innerText; // 연도
-		
-		
-		    
-		// table 메뉴바
-		$(".fold-table tr.view").on("click", function(event) {
-			const companyCd = $(this).find('td:nth-child(4)').text();
-			
-		    if ($(this).hasClass("open")) {
-		        $(this).removeClass("open").next(".fold").removeClass("open");
-		    } else {
-		        $(".fold-table tr.view").removeClass("open")
-		            .next(".fold")
-		            .removeClass("open");
-		
-		        $(this).addClass("open").next(".fold").addClass("open");
-		        
-		        saleMonthAjax(companyCd);
-		    }
-		});
-		
-		// 월 매출 조회
-		function saleMonthAjax(comNo){
-			let url = `/toSalList/Month?comNo=${comNo}`
-			fetch(url,{
-				method: "POST"
-			})
-			.then(res => res.json())
-			.then(data => {	
-				
-				// 저장할 곳
-				let srt = '';
-				
-				// 월 만큼 반복문 돌리기
-		        for (let i = 1; i <= 12; i++) {
-		        	
-		        	//한자리면 앞에 0 붙이기
-		            let monthStr = year + `${(i < 10 ? '0' : '') + i}`;
-		            
-		            // 같은 값 찾기
-					let dataMon = data.find(ele => ele.saleDate == monthStr);
-					
-		            // 값이 없으면 0원
-		            if (dataMon) {
-		                srt += `<td>${dataMon.daySales.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") }원</td>`;
-		            } else {
-		                srt += `<td>0원</td>`;
-		            }
-		        }
-		        salMonthRow.innerHTML = srt;
-		    });
-		}
-		
-		// 일별 상세매출 모달창 
-		document.querySelector('#salMonth').addEventListener('click', function(e){
-			const companyCd = document.querySelector(".view.open > td:nth-child(4)").innerText;
-			if(e.target.tagName === 'TD'){
-				//해당 타겟의 인덱스 값 구하기 (array.from: 배열로바꿈)
-				const tdIdx = Array.from(e.target.parentElement.children).indexOf(e.target);
-				
-				//th 가져오기
-				const ths = e.target.closest('table').querySelector('thead').querySelectorAll('th');
-				let thVal = ths[tdIdx].innerText; // 해당 타겟의 th 값
-				
-				//파라미터로 넘겨줄 값 ex) 20240101
-				let yearMon = year + thVal.substr(0,2);
-				
-				modal.innerHTML = `${year}년 ${thVal}`;
-				
-				openModal();
-				
-				daySaleDetailAjax(companyCd, yearMon);
-			}
-		})
-		
-	    function openModal() {
-	        let modal = document.getElementById("detailsModal");
-	        modal.style.display = "block";
-	    }
-
-	    function closeModal() {
-	        let modal = document.getElementById("detailsModal");
-	        modal.style.display = "none";
-	    }
-
-	    document.querySelector(".close-button").addEventListener("click", closeModal);
-		    window.addEventListener("click", function(event) {
-		        let modal = document.getElementById("detailsModal");
-		        if (event.target === modal) {
-		            closeModal();
-		        }
+	    const gridList = new tui.Grid({
+	        el: document.getElementById('grid-list'),
+	        scrollX: false,
+	        scrollY: true,
+	        header: {
+	            cells: [
+	                { header: '번호', name: 'rownum' },
+	                { header: '지역', name: 'region' },
+	                { header: '코드', name: 'companyNo' },
+	                { header: '가맹점', name: 'companyName' },
+	                { header: '성함', name: 'name' },
+	                { header: '매출(년)', name: 'daySales' },
+	                { header: '비고', name: 'other' }
+	            ]
+	        },
+	        columns: [
+	            { name: 'rownum', header: "번호" },
+	            { name: 'region', header: "지역" },
+	            { name: 'companyNo', header: "코드" },
+	            { name: 'companyName', header: "가맹점" },
+	            { name: 'name', header: "성함" },
+	            { name: 'daySales', align: 'right',
+	                formatter: function (data) {
+	                    return data.value.toLocaleString('ko-KR') + '원';
+	                }, header: "매출(년)" },
+	            { name: 'other', header: "비고" }
+	        ],
+	        data: []
 	    });
 		
-		// 일매출 조회
-		function daySaleDetailAjax(comNo, saleDate){
-			let url = `toSalList/days?comNo=${comNo}&saleDate=${saleDate}`;
-			fetch(url,{
-				method: "POST"
-			})
-			.then(res => res.json())
-			.then(data => {
-				let str = '';
-				data.forEach(ele => {
-					console.log(ele);
-					let node = `<tr>
-									<td>${ele.salesDate}</td>
-									<td>${ele.productName}</td>
-									<td>${ele.quantity}</td>
-									<td>${ele.salePrice}</td>
-								</tr>
-								`
-					str += node;
-				})
-				saleDetail.innerHTML = str;
-			})
-		}
-
-
+	    // 서버에서 데이터 가져오기
+	    fetch('/getOffice', {
+	        method: "POST"
+	    })
+	    .then(res => res.json())
+	    .then(data => {
+	        gridList.resetData(data);
+	    });
+	
+	    const gridMonth = new tui.Grid({
+	        el: document.getElementById('grid-month'),
+	        scrollX: false,
+	        scrollY: true,
+	        header: {
+	            cells: [
+	            	{ header: '매출(월)', name: 'salesDate' },
+	                { header: '매출액', name: 'daySales' }
+	            ]
+	        },
+	        columns: [
+	            { name: 'salesDate', header: "매출(월)" },
+	            { name: 'daySales', header: "매출액" }
+	        ],
+	        data: []
+	    });
+	    
+	    gridList.on('click', (ev) => {
+	        const rowIndex = ev.rowKey;
+	        const companyNo = gridList.getValue(rowIndex, 'companyNo');
+	        fetch(`/toSalList/Month?comNo=${companyNo}`, {
+	            method: "POST"
+	        })
+	        .then(res => res.json())
+	        .then(data => {
+	            gridMonth.resetData(data);
+	        })
+	    });
+	    
 	</script>
+
 </body>
 </html>

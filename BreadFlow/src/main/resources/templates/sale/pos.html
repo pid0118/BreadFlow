@@ -416,7 +416,10 @@
 			        		{ name: 'saleDate', header:"시간", width: 200 },
 			        		{ name: 'productCode', header:"제품명", width: 170 },
 			        		{ name: 'quantity', header:"수량", width: 100 },
-			        		{ name: 'salePrice', header:"금액", width: 150 }
+			        		{ name: 'salePrice', header:"금액", align: 'right',
+			        			formatter: function(data){
+			           		 		return data.value.toLocaleString('ko-KR');
+			           	 		}, width: 150 }
 			        	],
 			        	data: []
 			        });
