@@ -174,7 +174,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="myLargeModalLabel">
-					생산업체 검색
+					공급업체 검색
 				</h4>
 				<button
 					type="button"
@@ -401,7 +401,7 @@ $(document).ready( function () {
     	info: false,
     	paging: false,
     	ajax: {
-   			url: 'getCompanys.do',
+   			url: 'getCompanys.do?div=a2',
    			type: "GET",
    			dataSrc: ''
    		},
@@ -417,7 +417,7 @@ $(document).ready( function () {
     	info: false,
     	paging: false,
     	ajax: {
-   			url: 'getCompanys.do',
+   			url: 'getCompanys.do?div=a4',
    			type: "GET",
    			dataSrc: ''
    		},
@@ -807,6 +807,12 @@ function insertMtrqPlanAjax() {
 		}
 		
 	}
+
+	
+	if($("#updProgressSituation").val() != "작성중") {
+		alert("이미 공유된 자재소요계획입니다.");
+		return false;
+	}
 	
 	
 	if(confirm("자재소요계획을 저장 하시겠습니까?")) {
@@ -818,7 +824,7 @@ function insertMtrqPlanAjax() {
                console.log(data);
                if (data != '')
             	   insertMtrqplanDetailAjax(data);
-               
+               	   location.reload(true);            
            },
            error: function(result){
         	   alert("저장에 실패하였습니다.");

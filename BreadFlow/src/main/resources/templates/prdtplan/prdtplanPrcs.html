@@ -672,7 +672,6 @@ let prdtCd = "";
 let prdUnit = "";
 
 grid.on('click', function (ev) {
-	console.log(ev.columnName);
 	if (ev.columnName == "productName" || ev.columnName == "productCode") {
 		currentTarget = ev;
 		$("#prdtSerachBtn").click();
