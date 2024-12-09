@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title></title>
+<link href="https://uicdn.toast.com/tui-grid/latest/tui-grid.css" rel="stylesheet" />
 <style>
 
 .container {
@@ -316,44 +317,30 @@
 		
 		<!-- 상세내역 모달 -->
 		<div id="detailsModal" class="modal">
-		    <div class="modal-content">
+		    <div class="modal-content" style="width: 680px; height: 600px;">
 		        <span class="close-button">&times;</span>
 		        <h2>상세내역</h2>
-		        <table id="menuDetail" style="border:1px solid;">
-		       		<thead>
-		       			<tr>
-		       				<th>시간</th>
-		       				<th>제품명</th>
-		       				<th>수량</th>
-		       				<th>합계</th>
-		       			</tr>
-		       		</thead>
-		       		<tbody>
-		       			<tr th:each="list : ${dList}">
-		       				<td th:text="${list.saleDate}"></td>
-		       				<td th:text="${list.productCode}"></td>
-		       				<td th:text="${list.quantity}"></td>
-		       				<td th:text="${list.salePrice}"></td>
-		       			</tr>
-		       		</tbody>
-		       	</table>
+		        <div id="menuDetailGrid"></div>
 		    </div>
 		</div>
 		<!-- 상세내역 모달 끝 -->
 	</div>
+	<script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
 		const itemGrid = document.querySelector(".menu-grid");
 		const selectItemList = document.querySelector("#selected-items");
 		const totalPriceElem = document.querySelector(".total-price");
 		const itemCountElem = document.querySelector('.item-count');
-		const tableLeg = document.querySelector('#menuDetail').rows.length;
+		const gridEle = document.getElementById('menuDetailGrid');
+		//const tableLeg = document.querySelector('#tui-grid-body-area').rows.length;
 		const clock = document.querySelector('#colck');
 		let disItemCnt = 0; // 현재 보여지는 아이템 갯수
 		let curPage = 1; // 현재 페이지
 		let itemsPage = 20; // 한 페이지 아이템 수
 		let totalPages = 1; // 전체 페이지 수
 		let menuData = []; // 메뉴데이터
+		let grid = null;
 		
 		// 메뉴 탭 AJAX
 		loadMenu();
@@ -405,22 +392,61 @@
 			
 			// 모달창 열고 닫기
 			document.querySelector(".details-button").addEventListener("click", function() {
-				if(tableLeg > 1){
-			        openModal();				
-				}
-				else{
-					alert("주문 내역이 없습니다.");
-				}
+				openModal();
 		    });				
 
 		    function openModal() {
-		        let modal = document.getElementById("detailsModal");
+		        const modal = document.getElementById("detailsModal");
 		        modal.style.display = "block";
+
+		        if(!grid){
+			        grid = new tui.Grid({
+			        	el: gridEle,
+			        	scrollX: false,
+			        	scrollY: true,
+			        	header: {
+			        		cells: [
+			        			{ header: '시간', name: 'saleDate' },
+			        			{ header: '제품명', name: 'productCode' },
+			        			{ header: '수량', name: 'quantity' },
+			        			{ header: '합계', name: 'salePrice' }
+			        		]
+			        	},
+			        	columns: [
+			        		{ name: 'saleDate', header:"시간", width: 200 },
+			        		{ name: 'productCode', header:"제품명", width: 170 },
+			        		{ name: 'quantity', header:"수량", width: 100 },
+			        		{ name: 'salePrice', header:"금액", width: 150 }
+			        	],
+			        	data: []
+			        });
+			        
+	        		gridEle.style.maxheight = '400px';
+			        gridEle.style.overflowY = 'auto';
+			        
+			        fetch('/getSalesDetails', {
+			        	method: "POST"
+			        })
+			        .then(res => res.json())
+			        .then(data => {
+			        	if(data.length === 0){
+			        		alert("주문한 내역이 없습니다.");
+			        		closeModal();
+			        	}
+			        	else{
+			        		grid.resetData(data);
+			        	}
+			        });
+		        }
 		    }
 
 		    function closeModal() {
 		        let modal = document.getElementById("detailsModal");
 		        modal.style.display = "none";
+		        
+		        if (grid) {
+		            grid.resetData([]); // 데이터 비우기
+		        }
 		    }
 
 		    document.querySelector(".close-button").addEventListener("click", closeModal);
@@ -608,7 +634,7 @@
                 let node = `
                     <div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}" style="font-size:15px">
                         <div class="item-name">${item.productName}</div>
-                        <div class="item-price">${item.salePrice}</div>
+                        <div class="item-price">${item.salePrice.toLocaleString()}원</div>
                     </div>
                 `;
                 itemGrid.insertAdjacentHTML('beforeend', node);
@@ -651,8 +677,7 @@
 		
 		// 마감정산
 		document.getElementById("salesSub").addEventListener('click', function(){
-			if(tableLeg > 1){
-				let url = `/closeSale`
+			let url = `/closeSale`
 				fetch(url,{
 					method: "POST"
 				})
@@ -661,10 +686,6 @@
 					alert("마감정산 완료!");
 					location.reload();
 				})
-			}
-			else{
-				alert("마감 할 내용이 없습니다.");
-			}
 		})
 		
 		// 실시간 시간 보여주기
@@ -675,6 +696,8 @@
 			const s = String(d.getSeconds()).padStart(2, "0");
 			clock.innerText = `${h}시 ${m}분 ${s}초`;
 		}
+	
+		//
 
     </script>
 </body>

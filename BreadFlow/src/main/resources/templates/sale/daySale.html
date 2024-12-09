@@ -7,15 +7,7 @@
 <meta charset="UTF-8">
 <title></title>
     <style>
-		body {
-		    font-family: Arial, sans-serif;
-		    display: flex;
-		    justify-content: center;
-		    align-items: center;
-		    height: 100vh;
-		    margin: 0;
-		    background-color: #f0f0f0;
-		}
+
 		
 		.calendar {
 		    background-color: white;
@@ -35,7 +27,7 @@
 		    margin-bottom: 20px;
 		}
 		
-		button {
+		.calendar-header button {
 		    background-color: #f0f0f0;
 		    border: none;
 		    color: black;
@@ -49,7 +41,7 @@
 		    border-radius: 5px;
 		}
 		
-		table {
+		Table {
 		    border-collapse: collapse;
 		    width: 100%;
 		    height: calc(100% - 60px);
@@ -87,6 +79,7 @@
 		#totalRow td {
 		    text-align: center;
 		    font-weight: bold;
+		    height: 65px;
 		}
     </style>
 </head>
@@ -100,14 +93,14 @@
         <table id="calendarTable">
             <thead>
                 <tr>
-                    <th>일</th>
-                    <th>월</th>
-                    <th>화</th>
-                    <th>수</th>
-                    <th>목</th>
-                    <th>금</th>
-                    <th>토</th>
-                    <th style="width:160px;">계</th>
+                    <th style="width: 12.5%">일</th>
+                    <th style="width: 12.5%">월</th>
+                    <th style="width: 12.5%">화</th>
+                    <th style="width: 12.5%">수</th>
+                    <th style="width: 12.5%">목</th>
+                    <th style="width: 12.5%">금</th>
+                    <th style="width: 12.5%">토</th>
+                    <th style="width: 12.5%">계</th>
                 </tr>
             </thead>
             <tbody id="calendarBody"></tbody>

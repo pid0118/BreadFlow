@@ -17,7 +17,7 @@
 		JOIN company co ON mem.company_no = co.company_no
 		JOIN sa ON co.company_no = sa.company_no
 
-		ORDER BY daySales
+		ORDER BY ROWNUM
 	</select>
 	
 	<select id="selectSaleOffice" resultType="SaleVO" parameterType="String">
@@ -109,6 +109,7 @@
 		
 		WHERE last = '주문'
 		AND company_no = #{companyNo}
+		ORDER BY product_code
 	</select>
 	
 	<select id="selectSaleChart" resultType="PosVO">
@@ -119,6 +120,7 @@
 		FROM  sales
 		
 		WHERE company_no = #{companyNo}
+		ORDER BY sales_date
 	</select>
 	
 	<select id="selectSaleProduct" resultType="PosVO">
@@ -134,6 +136,7 @@
 		FROM sale_detail_history
 		WHERE company_no = #{companyNo}
 		AND   last = '마감'
+		ORDER BY sales_date
 	</select>
 	
 </mapper>
