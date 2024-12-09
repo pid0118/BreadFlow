@@ -19,8 +19,10 @@
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
-			<h2 class="text-black">불량 내역</h2>
+			<h2 class="text-black" style="float: left;">불량 내역</h2>
+			<button type="button" style="float: right;" class="btn btn-primary" id="insertBtn" onclick='location.href = "/inferInsert"'>불량 등록하기</button>
 		</div>
+		<div class="pd-20"></div>
 		<div>
 			<!-- 세션값 저장 시작 -->
 			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
@@ -47,22 +49,26 @@
 		<div class="pd-20">
   			<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="yearlyBtn" data-bs-toggle="dropdown" aria-expanded="false">연도</button>
 			<ul class="dropdown-menu" id="yearlyMenu">
+				<li class="dropdown-item" id="yearAll">전체</li>
 				<li th:each="num : ${#numbers.sequence(localDateTime-10, localDateTime)}">
                     <a class="dropdown-item year">[[ ${num} ]]</a>
                 </li>
 			</ul>
   			<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="monthlyBtn" data-bs-toggle="dropdown" aria-expanded="false">월</button>
 			<ul class="dropdown-menu" id="monthlyMenu">
+				<li class="dropdown-item" id="monthAll">전체</li>
  				<li th:each="num : ${#numbers.sequence(1,12)}"><a class="dropdown-item month">[[ ${num} ]]</a></li>
             </ul>
             <button type="button" class="dropdown btn btn-dark dropdown-toggle" id="confirmCompBtn" data-bs-toggle="dropdown" aria-expanded="false">확인 위치</button>
 			<ul class="dropdown-menu" id="companyMenu">
+				<li class="dropdown-item" id="compAll">전체</li>
  				<li th:each="company : ${companyList}">
                     <a th:attr="data-value=${company.companyNo}" class="dropdown-item company">[[ ${company.companyName} ]]</a>
                 </li>
             </ul>
-            <button type="button" class="dropdown btn btn-dark dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">처분</button>
+            <button type="button" class="dropdown btn btn-dark dropdown-toggle" id="disposalBtn" data-bs-toggle="dropdown" aria-expanded="false">처분 상태</button>
 			<ul class="dropdown-menu" id="disposal">
+				<li class="dropdown-item" id="disposalAll">전체</li>
 				<li class="dropdown-item disposal">처분 대기</li>
  				<li class="dropdown-item disposal" value="i1">반품</li>
  				<li class="dropdown-item disposal" value="i2">폐기</li>
@@ -132,12 +138,13 @@
    		
 		// 페이지 로딩 시 기능 실행
         $(document).ready(function() {
-        	
+
         	// 로그인한 업체 이름 저장
         	companyInput = $("#companyInput").val();
         	
         	// 로그인한 업체 코드 저장
         	div = $("#companyDiv").val();
+        	console.log(div);
 
             // 기본 내역 출력
             changeFilter();
@@ -172,10 +179,15 @@
     			$("#currentPage").text(page + " 페이지");
 	        }
             
-            // 본사로 로그인 시 페이지 내용 변경
+            // 본사로 로그하지 않을 시 페이지 내용 변경
             if (div !== '본사') {
             	$("#confirmCompBtn").css("display", "none");
             	$("#inferHistoryHead").append("<th>답변 일자</th>");
+            }
+            
+         	// 본사로 로그인 시 페이지 내용 변경
+            if (div == '본사') {
+            	$("#insertBtn").hide();
             }
             
             // 전체 내역 버튼 클릭
@@ -218,12 +230,28 @@
                 $("#yearlyBtn").text(year);
                 changeFilter();
             });
+            
+         	// 연도별 필터 전체 클릭
+            $('#yearAll').click(function() {
+            	year = null;
+            	$("#yearlyBtn").text("연도");
+            	pageClear();
+            	changeFilter();
+            });
 
             // 월별 필터 클릭
             $(document).on('click', '.month', function() {
                 month = $(this).text().trim();
                 $("#monthlyBtn").text(month);
                 changeFilter();
+            });
+            
+         	// 월별 필터 전체 클릭
+            $('#monthAll').click(function() {
+            	month = null;
+            	$("#monthlyBtn").text("월");
+            	pageClear();
+            	changeFilter();
             });
             
             // 확인 위치별 필터 클릭
@@ -236,12 +264,28 @@
                 changeFilter();
             });
             
+         	// 확인 위치별 필터 전체 클릭
+            $('#compAll').click(function() {
+            	confirmComp = null;
+            	$("#confirmCompBtn").text("확인 위치");
+            	pageClear();
+            	changeFilter();
+            });
+            
         	// 처분별 필터 클릭
             $(document).on('click', '.disposal', function() {
                 disposal = $(this).attr('value');
 	            pageClear();
 	            changeFilter();
                 $("#disposalBtn").text($(this).text().trim());
+            });
+        	
+         	// 처분별 필터 전체 클릭
+            $('#disposalAll').click(function() {
+            	disposal = null;
+            	$("#disposalBtn").text("처분 상태");
+            	pageClear();
+            	changeFilter();
             });
             
             // 입력시 검색
@@ -284,6 +328,13 @@
                         pageSize},
             	success : function(data) {
             		updateTable(data.list);
+                    
+                    $("tr:not(:first-child)").mouseover(function(){
+                    	   $(this).css("background", "gray");
+                    	  });
+                    	  $("tr").mouseout(function(){
+                    	   $(this).css("background", "white");
+                    	  });
             		let lastPage = Math.ceil(data.count / pageSize);
             		if (page == lastPage) {
             			$("#nextPageBtn").hide();
@@ -319,15 +370,15 @@
                 let row = null;
                 	if (div !== '본사') {
                 		if (item.confirmWhether != '확인') {
-                			row += "<tr onclick='window.location = \"/inferDetailList/" + item.inferNo + "\"'>";
+                			row += "<tr style='cursor: pointer;' onclick='window.location = \"/inferDetailList/" + item.inferNo + "\"'>";
                 		} else {
-                			row += "<tr onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
+                			row += "<tr style='cursor: pointer;' onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
                 		}
                 	} else {
                 		if (item.confirmWhether != '확인') {
-	                		row += "<tr onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
+	                		row += "<tr style='cursor: pointer;' onclick='window.location = \"/inferAnswerInsert/" + item.inferNo + "\"'>";
                 		} else {
-                			row += "<tr onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
+                			row += "<tr style='cursor: pointer;' onclick='window.location = \"/inferDetailAnswer/" + item.inferNo + "\"'>";
                 		}
                 	}
                 	row += "<td style='display:none;'>" + item.inferNo + "</td>";
