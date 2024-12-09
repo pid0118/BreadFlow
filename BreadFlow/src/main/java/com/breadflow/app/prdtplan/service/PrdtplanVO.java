@@ -10,13 +10,13 @@ import lombok.Data;
 public class PrdtplanVO {
 	//== 생산계획(production_plan) 테이블 관련 VO ==//
 	private String 	productionPlanNo;		// 생산 계획 번호
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date	startDate;				// 시작일자
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date	lastDate;				// 마감일자
 	private String	deliveryLocation;		// 납품 위치
 	private String	productionCompany;		// 생산 업체
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date	writeDate;				// 작성 일자
 	private String	writer;					// 작성자
 	

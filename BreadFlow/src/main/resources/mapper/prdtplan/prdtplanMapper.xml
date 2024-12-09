@@ -120,6 +120,7 @@
     LEFT OUTER JOIN matrequired_plan mp
             ON d.production_plan_no = mp.production_plan_no
     WHERE progress_situation = 'c1'
+    ORDER BY p.production_plan_no DESC
 	</select>
 	
 
@@ -166,6 +167,7 @@
 			ON p.production_plan_no = d.production_plan_no
 		WHERE production_company = #{productionCompany}
 		  AND progress_situation != 'c1'
+		ORDER BY p.production_plan_no DESC
 	</select>
 	
 	<update id="updateDetailForProgressToC4" parameterType="PrdtplanVO">

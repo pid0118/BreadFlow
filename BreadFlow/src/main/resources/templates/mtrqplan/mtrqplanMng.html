@@ -555,6 +555,7 @@ const grid2 = new Grid({
 		{
 			header: '계획수량',
 			name: 'planQuantity',
+			align: 'right',
 		},
 		{
 			header: '단위',
@@ -772,10 +773,41 @@ function insertMtrqPlanAjax() {
 		 return false;
 	}
 	
-	if($("#updPrdtComNm").val() == "" || $("#updStartDate").val() == "" || $("#updDlvryLocNm").val() == "" || $("#updLastDate").val() == "") {
+	
+	let updStartDate = $("#updStartDate").val()
+	let updLastDate = $("#updLastDate").val()
+	
+	if($("#updPrdtComNm").val() == "" || updStartDate == "" || $("#updDlvryLocNm").val() == "" || updLastDate == "") {
 		alert("날짜 또는 업체를 선택했는지 확인하세요.");
 		return false;
 	}
+	
+	if(getDateDiff(updStartDate, updLastDate) > 0) {
+		alert("마감일자가 시작일자보다 이릅니다.");
+		return false;
+	}
+	
+	
+	let gridData = grid3.getData()
+	
+	if(gridData.length == 0) {
+		alert("'행 추가'를 통해 제품을 추가했는지 확인하세요.");
+		return false;
+	} else {
+		for(let i = 0; i < gridData.length; i++) {
+			if(gridData[i].productCode == null) {
+				alert("팝업창을 통해 제품을 선택했는지 확인하세요.")
+				return false;
+			};
+			
+			if(gridData[i].planQuantity == null) {
+				alert("계획수량을 반드시 입력하세요.")
+				return false;
+			}
+		}
+		
+	}
+	
 	
 	if(confirm("자재소요계획을 저장 하시겠습니까?")) {
 		$.ajax({
@@ -969,5 +1001,18 @@ function formatDate(dateString) {
 // 날짜 변환함수 끝
 // =======================================================	
 
+	
+	
+// =======================================================	
+// [박진석|241209] 시작일자보다 마감일자가 클 경우 막는 함수
+function getDateDiff (d1, d2) {
+	const date1 = new Date(d1);
+	const date2 = new Date(d2);
+	
+	const diffDate = date1.getTime() - date2.getTime();
+	return diffDate;
+}
+// 일자 유효성 검사 함수 끝
+// =======================================================		
 </script>
 

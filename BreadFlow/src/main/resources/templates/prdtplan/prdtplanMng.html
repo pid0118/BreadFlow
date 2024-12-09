@@ -445,7 +445,7 @@ function getTargetInfo(e) {
 	getPrdtplanInfo(prdtplanNo);
 	getPrdtplanDetailInfo(prdtplanNo);
 	
-	$("#prdtPlan .selected"). removeClass("selected");	// 데이터테이블 행 클릭 이벤트 걸면
+	$("#prdtPlan .selected"). removeClass("selected");	// [241209] 데이터테이블 행 클릭 이벤트 걸면
 	$(e.target).parent().addClass("selected");			// 해당 행 색 바뀌고 유지
 }
 // 행 클릭 이벤트 끝
@@ -734,7 +734,7 @@ function insertOrUpdatePrdPlanAjax() {
 		}
 	
 		if(getDateDiff(updStartDate, updLastDate) > 0) {
-			alert("시작일자가 마감일자보다 이릅니다.");
+			alert("마감일자가 시작일자보다 이릅니다.");
 			return false;
 		}
 		
@@ -771,6 +771,7 @@ function insertOrUpdatePrdPlanAjax() {
 	               if (data != '')
 	               		insertPrdPlanDetailAjax(data);
 	               location.reload(true);
+	               location.reload(true);
 	           },
 	           error: function(result){
 	        	   alert("저장에 실패하였습니다.");
@@ -781,7 +782,7 @@ function insertOrUpdatePrdPlanAjax() {
 			alert("취소하였습니다.");
 		}
 	} else if (mode == "update") {		// 신규작성이 아닌 수정 모드인 경우
-		
+		alert("수정은 지원되지 않습니다.")
 	}
 }
 // 저장 ajax 걸기 끝

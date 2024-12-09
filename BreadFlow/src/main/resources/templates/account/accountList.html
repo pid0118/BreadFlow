@@ -27,6 +27,14 @@
 .parentArea {
 	margin-top: 10px;
 }
+
+/* [241209] 데이터테이블 행 클릭 시 색깔 바뀜 */
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > * {
+	box-shadow: inset 0 0 0 9999px rgba(245, 245, 245);
+}
+
 </style>
 
 
@@ -531,6 +539,10 @@
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
 		document.querySelector("#updPosition").value = parentInfo.querySelector("#parentPosit").innerText;
 		document.querySelector("#updCompanyNo").value = parentInfo.querySelector("#parentComNo").innerText;
+		
+		
+		$(".accounts-table .selected"). removeClass("selected");	// [241209] 데이터테이블 행 클릭 이벤트 걸면
+		$(e.target).parent().addClass("selected");			// 해당 행 색 바뀌고 유지
 	}
 	// 상세정보 출력 코드 끝
 	// =======================================================
