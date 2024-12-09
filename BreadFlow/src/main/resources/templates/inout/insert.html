@@ -26,7 +26,7 @@
 				<!-- 세션값 저장 시작 -->
 				<div class="pd-20 input-group mb-3">
 					<input class="form-control" type="text" name="compName" id="compName" th:value="${session.companyName}" readonly>
-					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.name}" style="display:none;" readonly>
+					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.memNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyAddr" id="companyAddr" th:value="${session.companyAddress}" style="display:none;" readonly>
@@ -52,7 +52,7 @@
 				</div>
 
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="date" id="inOutDate">
+					<input class="form-control" type="text" id="inOutDate">
 				</div>
 
 				<div class="pd-20">
@@ -247,7 +247,8 @@
 		                    instoreDate: $("#inOutDate").val(),
 		                    itemDiv: row.find("td:nth-child(3)").text(),
 		                    itemName: row.find("td:nth-child(4)").text(),
-		                    instoreQuantity: row.find("td:nth-child(6) input").val(),
+		                    quantity: Number(row.find("td:nth-child(5)").text()),
+		                    instoreQuantity: Number(row.find("td:nth-child(6) input").val()),
 		                    companyNo: $("#companyInput").val(),
 		                    instoreManager: $("#manager").val(),
 		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
@@ -256,7 +257,7 @@
 		                    itemCode: row.find("td:nth-child(11)").text(),
 		                    outstoreCompany: row.find("td:nth-child(14)").text()
 		                };
-		                if (data.instoreQuantity == null) {
+		                if (data.instoreQuantity == 0) {
 	            			checkNull = true;
 	            		}
 		                if (data.quantity < data.instoreQuantity) {
@@ -268,7 +269,8 @@
 		                let data = {
 		                	outstoreDate: $("#inOutDate").val(),
 		                	itemName: row.find("td:nth-child(3)").text(),
-		                	outstoreQuantity: row.find("td:nth-child(6) input").val(),
+		                	quantity: Number(row.find("td:nth-child(5)").text()),
+		                	outstoreQuantity: Number(row.find("td:nth-child(6) input").val()),
 		                	outstoreManager: $("#manager").val(),
 		                    instoreNo: row.find("td:nth-child(8)").text(),
 		                	ordersDetailNo: row.find("td:nth-child(9)").text(),
@@ -276,7 +278,7 @@
 		                    instoreCompany: row.find("td:nth-child(13)").text(),
 		                    div: div
 		                };
-		                if (data.outstoreQuantity == null) {
+		                if (data.outstoreQuantity == 0) {
 	            			checkNull = true;
 	            		}
 		                if (data.quantity < data.outstoreQuantity) {
@@ -386,7 +388,7 @@
 	    	let day = objectDate.getDate();
 	    	let month = objectDate.getMonth() + 1;
 	    	let year = objectDate.getFullYear();
-	    	let todayDate = year + "-" + (("00" + month.toString()).slice(-2)) + "-" + (("00" + day.toString()).slice(-2));
+	    	let todayDate = year.toString().slice(-2) + "/" + (("00" + month.toString()).slice(-2)) + "/" + (("00" + day.toString()).slice(-2));
 	 		$("#inOutDate").val(todayDate);
 	 	}
 	 	
