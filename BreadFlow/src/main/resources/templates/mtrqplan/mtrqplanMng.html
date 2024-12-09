@@ -622,6 +622,7 @@ grid1.on('click', function (ev) {
 		selectMtrqplan(prdPlanNo);		
 	} else {
 		selectBom(prdPlanNo);
+		selectMtrqplan(prdPlanNo);
 	}
 	
 })
@@ -972,8 +973,8 @@ function resetInfo() {
 // [박진석|241126] 생산상태 변환 함수
 function formatSituation(value) {
 	let result = "";
-	if(value == "c1") {
-		result = "작성중";
+	if(value == "c5") {
+		result = "완료";
 	} else if(value == "c2") {
 		result = "확인";
 	} else if (value == "c3") {
@@ -981,7 +982,7 @@ function formatSituation(value) {
 	} else if(value == "c4") {
 		result = "진행중";
 	} else {
-		result ="완료";
+		result ="작성중";
 	}
 	
 	return result;
