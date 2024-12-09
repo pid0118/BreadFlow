@@ -74,7 +74,7 @@
 	    $("#compTble").on('click', '.form-check-input', function() {
         	$("#compTble .form-check-input").prop('checked', false);
            	$("#compTble tbody tr").removeClass('selected');
-            if ($(this).is(":checked")) {
+            if (this.checked) {
             	$(this).prop('checked', false);
 	            $(this).closest('tr').removeClass('selected');
             } else {
