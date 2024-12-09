@@ -34,7 +34,7 @@ BACK / IDE / 배포
       <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
     </td>
     <td>
-      <ing src="[https://velog.velcdn.com/images/shinhyocheol/post/1362c283-9f91-41f6-9f2b-d4d1b27a8931/image.jpeg](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FrSdUf%2FbtsISVVLby9%2FDvMnUCwuMfcjfIJQCQCyk0%2Fimg.png)">
+      <ing src="https://velog.velcdn.com/images/shinhyocheol/post/1362c283-9f91-41f6-9f2b-d4d1b27a8931/image.jpeg">
     </td>
   </tr>
   <tr>
