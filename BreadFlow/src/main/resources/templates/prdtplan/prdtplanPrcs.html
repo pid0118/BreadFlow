@@ -30,11 +30,13 @@
 
 </style>
 
-<div class="container">
+<div class="container pd-20 card-box mb-30">
+<div class="clearfix mb-20">
+
 	<div class="parentArea">
 		<div class="insertButtons">
-			<h2>생산 계획 관리</h2>
-			<div>
+			<h2 style="float: left;">생산 계획 관리</h2>
+			<div style="float: right;">
 				<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn" hidden="hideen">날짜 선택</button>
 				<button type="button" class="btn btn-primary btn-sm" id="newPrdtPlanBtn">생산계획 신규 작성</button>			
 			</div>
@@ -151,7 +153,7 @@
 		<div class="updateButtons" style="float: left;">
 				<button type="button" class="btn btn-primary btn-lg" id="planProgressBtn">진행 처리</button>
 				<button type="button" class="btn btn-primary btn-lg" id="planCompleteBtn">완료 처리</button>
-				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn">취소 처리</button>
+				<button type="button" class="btn btn-danger btn-lg" id="planCancelBtn" hidden="hidden">취소 처리</button>
 			</div>
 		</div>
 		
@@ -159,18 +161,19 @@
 			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
 			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
 			<!-- 자식 테이블 시작 -->
-			<div id="grid"></div>
+			<div id="grid" style="margin: 10px;"></div>
 				<!-- 자식 테이블 끝 -->
 			<div style="float: left;" hidden="hidden">
 				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
 			</div>
 		
 			<div class="updateButtons" style="float: right;">
-				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn">취소</button>
+				<button type="button" class="btn btn-danger btn-lg" id="resetFormBtn" hidden="hidden">취소</button>
 				<button type="button" class="btn btn-primary btn-lg" id="udtFormBtn">저장</button>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <button type="button" id="prdtSerachBtn" data-toggle="modal" data-target="#prdt-modal" hidden="hidden">제품모달보기</button>
@@ -452,8 +455,8 @@ function getPrdtplanInfo(no) {
 	    data: {},
 	    success: function(data){
 	        $('#updProductionPlanNo').val(data.productionPlanNo);
-	        $("#updStartDate").val( convertDate(formatDate(data.startDate)) );
-	        $('#updLastDate').val( convertDate(formatDate(data.lastDate)) );
+	        $("#updStartDate").val( formatDate(data.startDate) );
+	        $('#updLastDate').val( formatDate(data.lastDate) );
 	        $('#updPrdtComNm').val(data.productionCompanyNm);
 	        $('#updProductionCompany').val(data.productionCompany)
 	        $('#updDlvryLocNm').val(data.deliveryLocationNm)
@@ -504,12 +507,10 @@ const grid = new Grid({
 		{
 		  header: '제품코드',
 		  name: 'productCode',
-		  editor: 'text',
 		},
 		{
 		  header: '제품명',
 		  name: 'productName',
-		  editor: 'text',
 		},
 		{
 		  header:'계획수량',
@@ -519,7 +520,6 @@ const grid = new Grid({
 		{
 		  header: '단위',
 		  name: 'unit',
-		  editor: 'text',
 		},
 		{
 		  header: '기타사항',
@@ -720,18 +720,32 @@ function insertOrUpdatePrdPlanAjax() {
 			return false;
 		}
 	
-		if(grid.getData().length == 0) {
-			alert("제품을 추가해주세요.")
+		if(getDateDiff(updStartDate, updLastDate) > 0) {
+			alert("마감일자가 시작일자보다 이릅니다.");
 			return false;
 		}
+	
+			
+		let gridData = grid.getData()
 		
-		let prdData = grid.getModifiedRows().createdRows;
-		
-		console.log(prdData);
-		
-		for(let i = 0; i < prdData.length; i++) {
-			console.log("muyaho!");
+		if(gridData.length == 0) {
+			alert("'행 추가'를 통해 제품을 추가했는지 확인하세요.");
+			return false;
+		} else {
+			for(let i = 0; i < gridData.length; i++) {
+				if(gridData[i].productCode == null) {
+					alert("팝업창을 통해 제품을 선택했는지 확인하세요.")
+					return false;
+				};
+				
+				if(gridData[i].planQuantity == null) {
+					alert("계획수량을 반드시 입력하세요.")
+					return false;
+				}
+			}
+			
 		}
+		
 		
 		if(confirm("생산을 저장 하시겠습니까?")) {
 			$.ajax({
@@ -739,7 +753,6 @@ function insertOrUpdatePrdPlanAjax() {
 	           type: "POST",
 	           data:  $('#updatePrdtplanForm').serialize(),
 	           success: function(data){
-	               alert("성공적으로 저장되었습니다.");
 	               console.log(data);
 	               if (data != '')
 	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장
@@ -754,7 +767,7 @@ function insertOrUpdatePrdPlanAjax() {
 			alert("취소하였습니다.");
 		}
 	} else if (mode == "update") {		// 신규작성이 아닌 수정 모드인 경우
-		
+		alert("생산계획 수정은 지원하지 않습니다.");
 	}
 }
 // 저장 ajax 걸기 끝
@@ -854,8 +867,6 @@ function updatePrdtplanSituComplete() {
 		        contentType: "application/json",
 		        data:  JSON.stringify(jsonData),
 		        success: function(data){
-		            alert("성공적으로 저장되었습니다.");
-		            console.log(data);
 		            insertInstoreForPrdtplan(data);
 		            location.reload(true);
 		        },
@@ -879,7 +890,7 @@ function updatePrdtplanSituComplete() {
 // [박진석|241203] 입고(instore)처리 하는 AJAX
 function insertInstoreForPrdtplan(data) {
 	
-	let lastDate = convertDate($("#updLastDate").val());
+	let lastDate = $("#updLastDate").val();
 	let productionCompany = $("#updProductionCompany").val();
 	let productionPlanNo = $("#updProductionPlanNo").val();
 	
@@ -899,7 +910,6 @@ function insertInstoreForPrdtplan(data) {
         success: function(data){
             alert("성공적으로 저장되었습니다.");
             console.log(data);
-            location.reload(true);
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
@@ -937,54 +947,32 @@ function formatSituation(value) {
 	
 	
 // =======================================================	
-// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 11 September 2025 )
+// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 2025-07-12 )
 function formatDate(dateString) {
-  const date = new Date(dateString);
+    const date = new Date(dateString);
 
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
-  ];
+    date.setDate(date.getDate());
 
-  const day = date.getUTCDate(); // UTC 기준 일
-  const month = monthNames[date.getUTCMonth()]; // 월 이름
-  const year = date.getUTCFullYear(); // 연도
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
 
-  return `${day} ${month} ${year}`;
-}
-
-// 날짜 변환함수 끝
-// =======================================================	
-	
-	
-	
-// =======================================================	
-// [박진석|241203] 날짜 변환 함수 (11 September 2025 => 2025-07-11)
-function convertDate(dateString) {
-  const months = {
-    'January': '01',
-    'February': '02',
-    'March': '03',
-    'April': '04',
-    'May': '05',
-    'June': '06',
-    'July': '07',
-    'August': '08',
-    'September': '09',
-    'October': '10',
-    'November': '11',
-    'December': '12'
-  };
-
-  const parts = dateString.split(' ');
-
-  const day = parts[0].padStart(2, '0');
-  const month = months[parts[1]];
-  const year = parts[2];
-
-  return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`;
 }
 // 날짜 변환함수 끝
 // =======================================================	
+
 	
+	
+// =======================================================	
+// [박진석|241209] 시작일자보다 마감일자가 클 경우 막는 함수
+function getDateDiff (d1, d2) {
+	const date1 = new Date(d1);
+	const date2 = new Date(d2);
+	
+	const diffDate = date1.getTime() - date2.getTime();
+	return diffDate;
+}
+// 일자 유효성 검사 함수 끝
+// =======================================================		
 </script>

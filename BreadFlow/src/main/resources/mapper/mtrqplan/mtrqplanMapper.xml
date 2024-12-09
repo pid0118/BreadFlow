@@ -29,7 +29,7 @@
 	        , m.last_date
 	        , MIN(d.progress_situation) AS progress_situation
 	FROM matrequired_plan m JOIN matrequired_plan_detail d
-	            ON m.matrequired_plan_no = d.matrequired_plan_no
+	                          ON m.matrequired_plan_no = d.matrequired_plan_no
 	WHERE m.production_plan_no = #{productionPlanNo}        
 	GROUP BY m.matrequired_plan_no
 	        , m.supply_company
@@ -226,4 +226,23 @@
 		)
 </insert>
 
+
+
+<select id="selectBom" parameterType="String">
+    WITH bo AS (   
+     SELECT
+            b.ingredient_code,
+            SUM(b.consumption) AS consumption 
+     FROM production_plan_detail p
+     JOIN bom b ON p.product_code = b.product_code
+     WHERE production_plan_no = #{productionPlanNo}
+     GROUP BY b.ingredient_code)
+  SELECT     i.ingredient_code AS  product_code
+	        ,  i.ingredient_name  AS product_name
+	        , consumption AS plan_quantity
+	        , FIND_CD(i.unit) AS unit
+	        , '' other 
+ FROM ingredient i JOIN bo
+                    ON bo.ingredient_code = i.ingredient_code  
+</select>
 </mapper>

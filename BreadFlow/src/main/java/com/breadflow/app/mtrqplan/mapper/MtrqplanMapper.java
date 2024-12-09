@@ -41,4 +41,7 @@ public interface MtrqplanMapper {
 	// 자재소요계획이 완료됨에 따라 다음 프로세스(입고) 진행을 위해 instore 테이블 INSERT
 	public int insertInstoreForMtrqplan(MtrqplanVO mtrqplanVO);
 
+	// BOM 리스트에서 재료를 가져와 조회
+	public List<MtrqplanVO> selectBom(String productionPlanNo);
+
 }

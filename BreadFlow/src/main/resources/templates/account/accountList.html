@@ -23,24 +23,31 @@
 .form-control.date-picker[readonly] {
     background-color: #ffffff;
 }
+
+.parentArea {
+	margin-top: 10px;
+}
+
+/* [241209] 데이터테이블 행 클릭 시 색깔 바뀜 */
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > * {
+	box-shadow: inset 0 0 0 9999px rgba(245, 245, 245);
+}
+
 </style>
 
-<div class="container">
+
+
+
+<div class="container pd-20 card-box mb-30">
+	<h2>계정 관리</h2>
 	<div class="parentArea">
 		<div class="insertButtons" style="float:left;">
 			<button type="button" class="btn btn-primary btn-sm" id="managerInsertFormBtn">담당자 계정(업체) 생성</button>
 			<button type="button" class="btn btn-primary btn-sm" id="employeeInsertBtn">사원 계정 생성</button>
 		</div>
-		
-		<!--  
-		<div style="float:right;">
-			<form>
-				<input type="radio" value="">전체
-				<input type="radio" name="div" th:each="code, sts : ${code0A}" th:value="${code.codeRule}" th:text="${code.codeVal}">
-				<button type="submit">검색</button>
-			</form>
-		</div>
-		-->
+
 		<div style="float:right;">
 			<form>
 			
@@ -60,7 +67,6 @@
 		
 		
 			<!-- 회원 테이블 시작 -->
-			<div class="card-box mb-30">
 				<div class="pb-20">
 					<table id="accounts" class="accounts-table table stripe hover nowrap">
 						<thead>
@@ -100,12 +106,10 @@
 						</tbody>
 					</table>
 				</div>
-			</div>
 			<!-- 회원 테이블 끝 -->
 		</div>
 
 	</div>
-	<hr>
 	<div class="childArea">
 		<!-- 기본 상세보기 폼 시작 -->
 		<div class="updateAccounts" style="display: block;">	<!-- 기본 block -->
@@ -185,12 +189,9 @@
 						</div>
 					</div>
 					<div class="updateButtons">
-						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">선택한
-							계정/업체 삭제</button>
-						<button type="button" class="btn btn-primary btn-lg"
-							id="udtAccBtn">수정사항 저장</button>
-						<button type="button" class="btn btn-warning btn-lg"
-							id="resetPwBtn">비밀번호 초기화</button>
+						<button type="button" class="btn btn-danger btn-lg" id="delAccBtn">삭제</button>
+						<button type="button" class="btn btn-primary btn-lg" id="udtAccBtn">저장</button>
+						<button type="button" class="btn btn-warning btn-lg" id="resetPwBtn">비밀번호 초기화</button>
 					</div>
 				</div>
 			</form>
@@ -252,7 +253,7 @@
 				</div>
 				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
-						<label>주소</label> <input type="text" class="form-control" name="companyAddress">
+						<label>주소</label><b class="required"> *</b> <input type="text" class="form-control" name="companyAddress">
 					</div>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -273,7 +274,7 @@
 				</div>
 				
 				<div class="updateButtons">
-					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn" onclick="brnChk = 0;">취소</button>
+					<button type="reset" class="btn btn-warning btn-lg" id="resetMngBtn" onclick="brnChk = 0;" hidden="hiddden">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertMngBtn">확인</button>
 				</div>
 			</div>
@@ -345,7 +346,7 @@
 				</div>
 				
 				<div class="updateButtons">
-					<button type="reset" class="btn btn-warning btn-lg" id="resetEmployeeBtn">취소</button>
+					<button type="reset" class="btn btn-warning btn-lg" id="resetEmployeeBtn" hidden="hidden">취소</button>
 					<button type="button" class="btn btn-primary btn-lg" id="insertEmployeeBtn">확인</button>
 				</div>
 			</div>
@@ -398,8 +399,8 @@
 					<input id="selectedComNm" class="form-control" readonly>
 				</div>
 				<div>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="comModalConfirm()">확인</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
 				</div>
 			</div>
 		</div>
@@ -538,6 +539,10 @@
 		document.querySelector("#updId").value = parentInfo.querySelector("#parentId").innerText;
 		document.querySelector("#updPosition").value = parentInfo.querySelector("#parentPosit").innerText;
 		document.querySelector("#updCompanyNo").value = parentInfo.querySelector("#parentComNo").innerText;
+		
+		
+		$(".accounts-table .selected"). removeClass("selected");	// [241209] 데이터테이블 행 클릭 이벤트 걸면
+		$(e.target).parent().addClass("selected");			// 해당 행 색 바뀌고 유지
 	}
 	// 상세정보 출력 코드 끝
 	// =======================================================
@@ -679,9 +684,15 @@
 		let nameVal = document.querySelector("#insertMngAccountFrm input[name='name']");
 		let comNmVal = document.querySelector("#insertMngAccountFrm input[name='companyName']");
 		let comTelVal = document.querySelector("#insertMngAccountFrm input[name='companyTel']");
+		let addressVal = document.querySelector("#insertMngAccountFrm input[name='companyAddress']");
 		
-		if(nameVal.value == "" || comNmVal.value == "" || comTelVal.value == "") {
+		if(nameVal.value == "" || comNmVal.value == "" || comTelVal.value == "" || addressVal.value == "") {
 			alert("필수값을 입력해주세요.");
+			return false;
+		}
+		
+		if(comTelVal.value.length < 11) {
+			alert("전화번호 형식이 올바른지 확인해주세요.");
 			return false;
 		}
 		
@@ -855,11 +866,12 @@
 		
 		
 	// =======================================================
-	// 전화번호 유효성 검사 함수 시작
+	// [박진석|241206] 전화번호 유효성 검사 함수 시작
+	// [참고] https://gurtn.tistory.com/86
 	const autoHyphen = (target) => {
 	 target.value = target.value
-	   .replace(/[^0-9]/g, '')
-	  .replace(/^(\d{0,3})(\d{0,4})(\d{0,4})$/g, "$1-$2-$3").replace(/(\-{1,2})$/g, "");
+	 	.replace(/[^0-9]/g, '')
+	 	.replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 	}
 	// 전화번호 검사 끝
 	// =======================================================
