@@ -28,10 +28,15 @@ public class SaleController {
 	// 본사 가맹점 정보 / 매출 조회
     @GetMapping("/toSalList")
     public String totalSale(Model model) {
-		List<SaleVO> list = saleService.selectSaleList();
-		model.addAttribute("SList", list);
 		return "sale/toSalList";
     }
+    
+    @PostMapping("/getOffice")
+    @ResponseBody
+    public List<SaleVO> saleAjaxList(){
+    	return saleService.selectSaleList();
+    }
+    
     // 월별 매출조회
     @PostMapping("/toSalList/Month")
     @ResponseBody
