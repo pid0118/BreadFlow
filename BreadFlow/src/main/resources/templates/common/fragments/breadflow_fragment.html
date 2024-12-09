@@ -7,40 +7,38 @@
 }
 </style>
 <th:block th:fragment="HeaderFrag">
-	<div class="header">
-		<div class="header-left">
-			<div class="menu-icon bi bi-list"></div>
-			<div
-				class="search-toggle-icon bi bi-search"
-				data-toggle="header_search"
-			></div>
-			
-		</div>
-		<div class="header-right">
-			<div class="user-info-dropdown" style="margin-top: 17px;">
-				<span class="user-name" th:text="${session.name}"></span>
-				<span th:text="${session.div}"></span>
-				<span th:text="${session.position}"></span>
-				<th:block th:if="${session.memNo == null}">
-					<span>비회원</span>
-				</th:block>
-				<span class="user-name">님 환영합니다</span>
+	<th:block th:if="${session.memNo != null}">
+		<div class="header">
+			<div class="header-left">
+				<div class="menu-icon bi bi-list"></div>
+				<div
+					class="search-toggle-icon bi bi-search"
+					data-toggle="header_search"
+				></div>
+				
 			</div>
-			<th:block th:if="${session.memNo != null}">
-				<div style="margin-top: 12px; margin-right: 10px">
-					<button type="button" class="btn btn-secondary btm-sm" id="logoutBtn">로그아웃</button>
+			<div class="header-right">
+				<div class="user-info-dropdown" style="margin-top: 17px;">
+					<span class="user-name" th:text="${session.name}"></span>
+					<span th:text="${session.div}"></span>
+					<span th:text="${session.position}"></span>
+					<span class="user-name">님 환영합니다</span>
 				</div>
-			</th:block>
+				<th:block th:if="${session.memNo != null}">
+					<div style="margin-top: 12px; margin-right: 10px">
+						<button type="button" class="btn btn-dark btm-sm" id="logoutBtn">로그아웃</button>
+					</div>
+				</th:block>
+			</div>
 		</div>
-	</div>
+	</th:block>
 
 	<script>
-	if (document.querySelector("#logoutBtn")){
-		document.querySelector("#logoutBtn").addEventListener('click', function(event) {
-			window.location.href = "/logout.do";
-		});
-	}
-		
+		if (document.querySelector("#logoutBtn")){
+			document.querySelector("#logoutBtn").addEventListener('click', function(event) {
+				window.location.href = "/logout.do";
+			});
+		}
 	</script>
 
 
@@ -54,7 +52,6 @@
 		<script src="../plugins/datatables/js/dataTables.responsive.min.js"></script>
 		<script src="../plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 		
-
 </th:block>
 <th:block th:fragment="NavFrag">
 	<div class="left-side-bar">

@@ -60,6 +60,7 @@
 					<button type="button" class="btn btn-dark" id="finprdBtn">완제품</button>
 					<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
 					<ul class="dropdown-menu" id="itemMenu">
+						<li class="dropdown-item" id="prodAll">전체</li>
 						<li th:each="item : ${items}">
                     		<a class="dropdown-item item">[[ ${item.productName} ]]</a>
                 		</li>
@@ -210,6 +211,14 @@
                 $("#itemBtn").text(item);
                 pageClear();
                 changeFilter();
+            });
+	     	
+         	// 품목별 필터 전체 클릭
+            $('#prodAll').click(function() {
+            	item = null;
+            	$("#itemBtn").text("품목");
+            	pageClear();
+            	changeFilter();
             });
 	        
 	     	// 입력시 검색
