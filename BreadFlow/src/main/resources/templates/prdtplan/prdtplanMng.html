@@ -29,6 +29,20 @@
 }
 
 
+.tui-grid-cell .tui-grid-cell-content {
+	cursor : pointer;
+}
+
+#prdtPlan tbody td {
+	cursor : pointer;
+}
+
+/*[241209] 데이터테이블 행 클릭시 해당 행 색상 바뀌는 코드*/
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > * {
+	box-shadow: inset 0 0 0 9999px rgba(245, 245, 245);
+}
 
 </style>
 
@@ -157,7 +171,7 @@
 			<button type="button" class="btn btn-primary btn-sm" id="childTblDelRow">행 삭제</button>
 			<button type="button" class="btn btn-primary btn-sm" id="childTblNewRow">행 추가</button>
 			<!-- 자식 테이블 시작 -->
-			<div id="grid"></div>
+			<div id="grid" style="margin: 10px;"></div>
 				<!-- 자식 테이블 끝 -->
 			<div style="float: left;">
 				<button type="button" class="btn btn-primary btn-lg" id="sharePrdplanBtn">업체 공유</button>
@@ -430,6 +444,9 @@ function getTargetInfo(e) {
 	prdtplanNo = e.target.parentElement.querySelector('#parentPrdtplanNo').innerText;
 	getPrdtplanInfo(prdtplanNo);
 	getPrdtplanDetailInfo(prdtplanNo);
+	
+	$("#prdtPlan .selected"). removeClass("selected");	// 데이터테이블 행 클릭 이벤트 걸면
+	$(e.target).parent().addClass("selected");			// 해당 행 색 바뀌고 유지
 }
 // 행 클릭 이벤트 끝
 // ========================================================================
@@ -715,6 +732,12 @@ function insertOrUpdatePrdPlanAjax() {
 			alert("날짜 또는 업체를 선택했는지 확인하세요.");
 			return false;
 		}
+	
+		if(getDateDiff(updStartDate, updLastDate) > 0) {
+			alert("시작일자가 마감일자보다 이릅니다.");
+			return false;
+		}
+		
 		
 		let gridData = grid.getData()
 	
@@ -859,27 +882,21 @@ function formatSituation(value) {
 //========================================================================	
 	
 	
-/*	
+
 // =======================================================	
-// [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 11 September 2025 )
-function formatDate(dateString) {
-  const date = new Date(dateString);
-
-  const monthNames = [
-    "January", "February", "March", "April", "May", "June", 
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const day = date.getUTCDate(); // UTC 기준 일
-  const month = monthNames[date.getUTCMonth()]; // 월 이름
-  const year = date.getUTCFullYear(); // 연도
-
-  return `${day} ${month} ${year}`;
+// [박진석|241209] 시작일자보다 마감일자가 클 경우 막는 함수
+function getDateDiff (d1, d2) {
+	const date1 = new Date(d1);
+	const date2 = new Date(d2);
+	
+	const diffDate = date1.getTime() - date2.getTime();
+	
+	return diffDate;
 }
 
-// 날짜 변환함수 끝
+// 일자 유효성 검사 함수 끝
 // =======================================================	
-*/	
+
 	
 // =======================================================	
 // [박진석|241126] 날짜 변환 함수 ( 2025-07-11T15:00:00.000+00:00 => 2025-07-12 )
