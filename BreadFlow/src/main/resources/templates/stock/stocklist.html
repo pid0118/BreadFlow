@@ -146,19 +146,23 @@ function stockList(facilities, major, item){
 	if(div == '본사' || div == '가맹점'){	// 본사일 경우
 		columns = [ {
 			name : 'facilities',
-			header : '시설'
+			header : '시설',
+			align: 'center'
 		}, {
 			name : 'itemCode',
 			hidden: true
 		}, {
 			name : 'major',
-			header : '구분'
+			header : '구분',
+			align: 'center'
 		}, {
 			name : 'sub',
-			header : '카테고리'
+			header : '카테고리',
+			align: 'center'
 		}, {
 			name : 'orderingItem',
 			header : '품목명',
+			align: 'center',
 			formatter: function(data) {
 				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button" style="text-decoration: underline;">
 							${data.value}</a>`;
@@ -166,10 +170,12 @@ function stockList(facilities, major, item){
 			}
 		}, {
 			name : 'standard',
-			header : '규격'
+			header : '규격',
+			align: 'right'
 		}, {
 			name : 'stockQuantity',
 			header : '총 재고',
+			align: 'right',
 			formatter : function(data) {
 				let stock = data.value;
 				return stock.toLocaleString('ko-KR'); // 단위 변환
@@ -184,13 +190,16 @@ function stockList(facilities, major, item){
 			hidden: true
 		}, {
 			name : 'major',
-			header : '구분'
+			header : '구분',
+			align: 'center'
 		}, {
 			name : 'sub',
-			header : '카테고리'
+			header : '카테고리',
+			align: 'center'
 		}, {
 			name : 'orderingItem',
 			header : '품목명',
+			align: 'center',
 			formatter: function(data) {
 				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
 							${data.value}</a>`;
@@ -198,10 +207,12 @@ function stockList(facilities, major, item){
 			}
 		}, {
 			name : 'standard',
-			header : '규격'
+			header : '규격',
+			align: 'right'
 		}, {
 			name : 'stockQuantity',
 			header : '총 재고',
+			align: 'right',
 			formatter : function(data) {
 				let stock = data.value;
 				return stock.toLocaleString('ko-KR'); // 단위 변환
@@ -209,6 +220,7 @@ function stockList(facilities, major, item){
 		}, {
 			name : 'safeStockQuantity',
 			header : '안전 재고',
+			align: 'right',
 			formatter : function(data) {
 				let stock = data.value;
 				return stock.toLocaleString('ko-KR'); // 단위 변환
@@ -303,14 +315,17 @@ function stockDetailList(facilities, itemCode){
 	const columns = [ {
 		name : 'companyName',
 		header : '회사명',
+		align: 'center',
 		rowSpan : true
 	},  {
 		name : 'orderingItem',
 		header : '품목명',
+		align: 'center',
 		rowSpan : true
 	}, {
 		name : 'unit',
 		header : '단위',
+		align: 'right',
 		rowSpan : true
 	}, {
 		name : 'standard',
@@ -319,6 +334,7 @@ function stockDetailList(facilities, itemCode){
 	}, {
 		name : 'stockQuantity',
 		header : '재고량',
+		align: 'right',
 		formatter : function(data) {
 			let stock = data.value;
 			return stock.toLocaleString('ko-KR'); // 단위 변환
@@ -326,6 +342,7 @@ function stockDetailList(facilities, itemCode){
 	}, {
 		name : 'safeStockQuantity',
 		header : '안전재고량',
+		align: 'right',
 		rowSpan : true,
 		formatter : function(data) {
 			let stock = data.value;
@@ -335,6 +352,7 @@ function stockDetailList(facilities, itemCode){
 	}, {
 		name : 'expirationDeadline',
 		header : '유통기한',
+		align: 'center',
 		formatter : function(data) {
 			if(data.value != null){
 				date = data.value.substring(0,10); // 날짜 변환 
