@@ -31,22 +31,54 @@
 	</insert>
 	
 <!-- bom 수정 -->
-	<update	id="updateBom" parameterType="BomVO">
-		UPDATE bom
-		SET	   consumption = #{consumption}
-			 , note = #{note}
-		WHERE bom_code = #{bomCode}
+	<update	id="updateBom" statementType="CALLABLE" parameterType="BomVO">
+		{ CALL
+		DECLARE
+		BEGIN
+			 <!-- bom 업데이트 -->
+	        UPDATE bom
+	        SET consumption = #{consumption},
+	            note = #{note}
+	        WHERE bom_code = #{bomCode};
+		
+	        <!-- ingredientCode 존재 여부 확인 및 bom_situation 상태 변경 -->
+	        <choose>
+	            <when test="ingredientCode == null or ingredientCode == ''">
+	                UPDATE product
+	                SET bom_situation = 'N'
+	                WHERE product_code = #{productCode};
+	            </when>
+	            <otherwise>
+	                UPDATE product
+	                SET bom_situation = 'Y'
+	                WHERE product_code = #{productCode};
+	            </otherwise>
+	        </choose>
+	    END
+	}
 	</update>
 	
 	<!-- bom 원재료 삭제 -->
-	<delete id="deleteBomIngredient" parameterType="BomVO">
+	<delete id="deleteBomIngredient" statementType="CALLABLE" parameterType="BomVO">
+	  { CALL
+	  DECLARE
+	  BEGIN
 		DELETE FROM bom
-		WHERE bom_code = #{bomCode}
+		WHERE bom_code = #{bomCode};
+		
+		 UPDATE product
+         SET bom_situation =  (case when (select count(*)
+         from bom
+         where product_code = #{productCode})  > 0 then 'Y' 
+         else 'N'
+         END)  
+         WHERE product_code = #{productCode};
+	  END }
 	</delete>
 	
 	<select id="selectBomCnt" parameterType="string" resultType="int">
 		SELECT COUNT(*)
 		FROM bom
-		WHERE bom_code = #{bomCode}S
+		WHERE bom_code = #{bomCode}
 	</select>
 </mapper>
