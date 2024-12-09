@@ -98,10 +98,10 @@ public class AccountController {
 	// 담당자 member 및 company 삽입 AJAX
 	@PostMapping("insertAccount.do")
 	@ResponseBody
-	public int mngAccountInsert(AccountVO accountVO) {
-		int result = accountService.insertCompany(accountVO);
-		int result2 = accountService.insertMember(accountVO);
-		return result + result2;
+	public String mngAccountInsert(AccountVO accountVO) {
+		accountService.insertCompany(accountVO);
+		String result2 = accountService.insertMember(accountVO);
+		return result2;
 	}
 	
 	@PostMapping("ResetAccountPw.do")
@@ -143,8 +143,8 @@ public class AccountController {
 	// 사원 신규등록 AJAX
 	@PostMapping("insertEmployeeAccount.do")
 	@ResponseBody
-	public int employeeAccountInsert(AccountVO accountVO) {
-		int result = accountService.insertMember(accountVO);
+	public String employeeAccountInsert(AccountVO accountVO) {
+		String result = accountService.insertMember(accountVO);
 		return result;
 	}
 	
