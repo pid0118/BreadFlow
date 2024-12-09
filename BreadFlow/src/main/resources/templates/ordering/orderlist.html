@@ -11,7 +11,7 @@
 <body>
 <div class="pd-20 card-box mb-30">
 	<div class="clearfix mb-20">
-		<th:block th:if="${session.div == '본사'}">
+		<th:block th:if="${session.div != '공급업체'} and ${session.div != '가맹점'}">
 		<div class="tab">
 			<ul class="nav nav-tabs customtab" role="tablist">
 				<li class="nav-item">
@@ -24,6 +24,7 @@
 		</div>
 		</th:block>
 		<div class="tab-content">
+			<th:block th:if="${session.div != '공급업체'}">
 			<div class="tab-pane fade show active" id="ordering" role="tabpanel">
 				<div class="pd-20">
 					<div class="pull-left">
@@ -83,7 +84,7 @@
 							</thead>
 							<tbody></tbody>
 						</table>
-						<ul class="pagination justify-content-center">
+						<ul class="pagination justify-content-center" id="orderingPagination">
 							<li class="paginate_button page-item previous disabled" id="DataTables_Table_0_previous">
 								<a href="#" aria-controls="DataTables_Table_0" tabindex="0" class="page-link">
 									<i class="ion-chevron-left"></i>
@@ -98,13 +99,30 @@
 					</div>
 				</div>
 			</div>
+			</th:block>
+			<th:block th:if="${session.div != '공급업체'}">
 			<div class="tab-pane fade" id="orders" role="tabpanel">
+			</th:block>
+			<th:block th:if="${session.div == '공급업체'}">
+			<div class="tab-pane fade show active" id="orders" role="tabpanel">
+			</th:block>
 				<div class="pd-20">
 					<div class="pull-left">
 						<h4 class="text h2">주문 현황</h4>
 					</div>
 					<div class="pull-right">
-							
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<label>일자</label>
+								<select class="selectpicker form-control" data-style="btn-outline-dark" id="orderSelect">
+									<option value="none">---- 선택 ----</option>
+									<optgroup label="주문 일자">
+										<option value="odDesc">최신순</option>
+							            <option value="odAsc">오래된순</option>
+						            </optgroup>
+								</select>
+							</div>
+						</div>	
 					</div>
 					<div class="table-responsive">
 						<table class="table">
@@ -117,30 +135,20 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr class="table-light">
-									<td>OR-20241129-001</td>
-									<td>홍길순</td>
-									<td>(주)노랑</td>
-									<td>2024-11-09</td>
-								</tr>
-								<tr class="table-light">
-									<th scope="row">3</th>
-									<td>Larry</td>
-									<td>the Bird</td>
-									<td>
-										<div class="progress mb-20">
-											<div class="progress-bar bg-info" role="progressbar" style="width: 33%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">주문완료</div>
-										</div>
-										<div class="progress mb-20">
-											<div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">출고</div>
-										</div>
-										<div class="progress mb-20">
-											<div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">입고완료</div>
-										</div>
-									</td>
-								</tr>
 							</tbody>
 						</table>
+						<ul class="pagination justify-content-center" id="ordersPagination">
+							<li class="paginate_button page-item previous disabled" id="DataTables_Table_1_previous">
+								<a href="#" aria-controls="DataTables_Table_1" tabindex="0" class="page-link">
+									<i class="ion-chevron-left"></i>
+								</a>
+							</li>
+							<li class="paginate_button page-item next disabled" id="DataTables_Table_1_next">
+								<a href="#" aria-controls="DataTables_Table_1" tabindex="0" class="page-link">
+									<i class="ion-chevron-right"></i>
+								</a>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div><!-- 주문 현황 div -->
@@ -150,7 +158,7 @@
 		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myLargeModalLabel">발주 취소서</h4>
+					<h4 class="modal-title" id="myLargeModalLabel">발주 취소</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				</div>
 				<div class="modal-body">
@@ -193,7 +201,7 @@
 		<div class="modal-dialog modal-lg modal-dialog-centered"  style="max-width: 1200px">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id="myLargeModalLabel">발주 상세정보</h4>
+					<h4 class="modal-title" id="myLargeModalLabel">주문 상세정보</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				</div>
 				<div class="modal-body">
@@ -203,7 +211,6 @@
 		</div>
 	</div>
 	<!-- 주문 상세 모달 끝-->
-	
 </div>		
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>		
 <script>
@@ -212,13 +219,18 @@ let status = 'd3,d4';	// 기본 발주 상태
 let sort = '';	// 기본 정렬 조건
 let page = 1;	// 기본 페이지 수
 orderingList(status, sort, page); // 발주 현황 목록 조회
-ordersList(); // 주문 현황 목록 조회
+let orderPage = 1; // 주문 현황 기본 페이지 수
+let orderSort = 'odAsc'; // 주문 현황 기본 정렬 조건
+ordersList(orderSort, orderPage); // 주문 현황 목록 조회
    
 
 // 정렬 조건에 따라 발주 현황 조회
 $('select').on('change', function() {
 	if($(this).attr("id") == 'statusSel'){ // 발주 상태가 바꼈을 때
 		status = $(this).val();
+		if(status.length == 0){
+			status = 'd3,d4';
+		}
 	} else { // 일자 조건이 바꼈을 때
 		sort = $(this).val();
 	}
@@ -226,14 +238,21 @@ $('select').on('change', function() {
 	orderingList(status, sort, page); // 발주 현황 페이지 재생성
 })
 
-// 페이지 버튼 클릭 이벤트
-$('ul.pagination.justify-content-center').on('click', 'li', function(){
+// 정렬 조건에 따라 주문 현황 조회
+$('#orderSelect').on('change', function() {
+	orderSort = $(this).val();
+	orderPage = 1;
+	ordersList(sort, page); // 주문 현황 페이지 재생성
+})
+
+// 발주 현황 페이지 버튼 클릭 이벤트
+$('ul#orderingPagination.pagination.justify-content-center').on('click', 'li', function(){
 	if(!$(this).hasClass("disabled")){ // 비활성화 된 버튼을 클릭하지 않았을 때
 		if($(this).hasClass("next")){	// > 버튼을 눌렀을때
-			page = Number($('li.paginate_button.page-item.page.active').children().text()) + 1;
+			page = Number($('#orderingPagination li.paginate_button.page-item.page.active').children().text()) + 1;
 		}
 		else if($(this).hasClass("previous")){ // < 버튼을 눌렀을때
-			page = Number($('li.paginate_button.page-item.page.active').children().text()) - 1;
+			page = Number($('#orderingPagination li.paginate_button.page-item.page.active').children().text()) - 1;
 		} else{
 			page = $(this).children().text();
 		}
@@ -241,10 +260,29 @@ $('ul.pagination.justify-content-center').on('click', 'li', function(){
 	}
 })
 
+// 주문 현황 페이지 버튼 클릭 이벤트
+$('ul#ordersPagination.pagination.justify-content-center').on('click', 'li', function(){
+	if(!$(this).hasClass("disabled")){ // 비활성화 된 버튼을 클릭하지 않았을 때
+		if($(this).hasClass("next")){	// > 버튼을 눌렀을때
+			orderPage = Number($('#ordersPagination li.paginate_button.page-item.page.active').children().text()) + 1;
+		}
+		else if($(this).hasClass("previous")){ // < 버튼을 눌렀을때
+			orderPage = Number($('#ordersPagination li.paginate_button.page-item.page.active').children().text()) - 1;
+		} else{
+			orderPage = $(this).children().text();
+		}
+		ordersList(orderSort, orderPage); // 주문 현황 페이지 재생성
+	}
+})
+
 // 발주 취소서 전송 버튼 클릭 이벤트
 $('#cancelBtn').on('click', function() {
 	let no = $('#bd-example-modal-lg input').val(); // 발주 번호
 	let reason = $('#bd-example-modal-lg textarea').val(); // 취소 사유
+	if(reason == ''){
+		alert("취소 사유를 입력해주세요.");
+		return;
+	}
 	$.ajax({
 	    type : 'post',
 	    url : '/ordering/updateOdCancel?no=' + no + '&reason=' + reason, 
@@ -277,10 +315,16 @@ function orderingList(status, sort, page){
 	fetch(`/ordering/list?status=${status}&sort=${sort}&page=${page}`)
 	.then(response => response.json())
 	.then(result => {
-		let totalPage = result.page;
-		let endPage = Math.ceil(totalPage / 10);
-		$('li.paginate_button.page-item.page').remove();
-		for(let i = 0; i < endPage; i++){
+		let totalPage = result.page;	// 총 페이지
+		let perPage = 5;	// 한 페이지당 페이지 수
+		let currentPage = Math.ceil(page / perPage);	// 현재 페이지	수
+		let lastPage = Math.ceil(totalPage / perPage);  // 총 마지막 페이지
+		let startPage = (currentPage - 1) * perPage * 1;	// 시작 페이지
+		let endPage = Math.min(currentPage * perPage, lastPage);	// 마지막 페이지
+		
+		$('#orderingPagination li.paginate_button.page-item.page').remove();
+		
+		for(let i = startPage; i < endPage; i++){
 			let ele;
 			if(page == i+1) { // 현재 페이지일 경우
 				ele = `<li class="paginate_button page-item page active">
@@ -291,21 +335,20 @@ function orderingList(status, sort, page){
 					<a href="#" aria-controls="DataTables_Table_0" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
 				</li>`;
 			}
-			$('ul.pagination.justify-content-center li:last-child').before(ele);
+			$('#orderingPagination.pagination.justify-content-center li:last-child').before(ele);
 		}
-		if(totalPage == endPage || Math.ceil(totalPage/10) == 1) { // 페이지 내용이 없거나 1 페이지만 있을 경우 
-			$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
-			$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
-		} else if(page == 1) { // 페이지가 1일 경우
-			$('ul.pagination.justify-content-center li:first-child').addClass("disabled");
-			$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
-		} else if(page == endPage){ // 페이지가 마지막 페이지일 경우
-			$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
-			$('ul.pagination.justify-content-center li:last-child').addClass("disabled");
-		} else {
-			$('ul.pagination.justify-content-center li:first-child').removeClass("disabled");
-			$('ul.pagination.justify-content-center li:last-child').removeClass("disabled");
-		}
+		
+		if (page == 1) { // 첫 번째 페이지일 경우
+	        $('#orderingPagination.pagination.justify-content-center li:first-child').addClass("disabled");
+	    } else {
+	        $('#orderingPagination.pagination.justify-content-center li:first-child').removeClass("disabled");
+	    }
+
+	    if (page == lastPage) { // 마지막 페이지일 경우
+	        $('#orderingPagination.pagination.justify-content-center li:last-child').addClass("disabled");
+	    } else {
+	        $('#orderingPagination.pagination.justify-content-center li:last-child').removeClass("disabled");
+	    }
 		
 		$('#orderingTable tbody tr').remove(); // 테이블 데이터 삭제
 		result.data.forEach(data => {
@@ -399,7 +442,6 @@ function orderingList(status, sort, page){
 				    url : '/ordering/updateOdAccept?code=' + code, 
 				    dataType : 'text',
 				    success : function(result) {
-				        console.log(result);
 				        window.location.href = '/order/list';
 				    },
 				    error : function(request, status, error) { 
@@ -432,32 +474,93 @@ function orderingList(status, sort, page){
 function makeDetailGrid(datas){
 	const ROW_COUNT = datas.length;
     const data = [];
-    const columns = [
-    	{name: 'orderingDetailCode', header: '발주 상세코드'},
-    	{name: 'itemname', header: '품목명'},
-    	{name: 'unit', header: '단위'},
-    	{name: 'standard', header: '규격'},
-    	{name: 'quantity',
-    	 header: '수량',
-    	 formatter: function(data){
-    		 return data.value.toLocaleString('ko-KR');
-    	 }},
-    	{name: 'price',
-    	 header: '총 금액',
-    	 formatter: function(data){
-    		 return data.value.toLocaleString('ko-KR');
-    	 }}
-    ];
+    let columns;
+    if(div == '본사'){
+    	columns = [
+        	{name: 'orderingDetailCode', header: '발주 상세코드'},
+        	{name: 'itemname', header: '품목명'},
+        	{name: 'unit', header: '단위'},
+        	{name: 'standard', header: '규격'},
+        	{name: 'quantity',
+        	 header: '수량',
+        	 formatter: function(data){
+        		 return data.value.toLocaleString('ko-KR');
+        	 }},
+        	{name: 'price',
+        	 header: '총 금액',
+        	 formatter: function(data){
+        		 return data.value.toLocaleString('ko-KR');
+        	 }}
+        ];
 
-    for (let i = 0; i < ROW_COUNT; i += 1) {
-      const row = { id: i };
-      row['itemname'] = datas[i].itemname;
-      row['orderingDetailCode'] = datas[i].orderingDetailCode;
-      row['price'] = datas[i].price;
-      row['quantity'] = datas[i].quantity;
-      row['standard'] = datas[i].standard;
-      row['unit'] = datas[i].unit;
-      data.push(row);
+        for (let i = 0; i < ROW_COUNT; i += 1) {
+          const row = { id: i };
+          row['itemname'] = datas[i].itemname;
+          row['orderingDetailCode'] = datas[i].orderingDetailCode;
+          row['price'] = datas[i].price;
+          row['quantity'] = datas[i].quantity;
+          row['standard'] = datas[i].standard;
+          row['unit'] = datas[i].unit;
+          data.push(row);
+        }
+    } else {
+    	columns = [
+        	{name: 'orderingDetailCode', header: '발주 상세코드'},
+        	{name: 'itemname', header: '품목명'},
+        	{name: 'unit', header: '단위'},
+        	{name: 'standard', header: '규격'},
+        	{name: 'quantity',
+        	 header: '수량',
+        	 formatter: function(data){
+        		 return data.value.toLocaleString('ko-KR');
+        	 }},
+        	{name: 'price',
+        	 header: '총 금액',
+        	 formatter: function(data){
+        		 return data.value.toLocaleString('ko-KR');
+        	 }},
+        	 {name: 'situation',
+           	  header: '주문 상태',
+           	  formatter: function(data) {
+       		    let ele = '';
+       		    if(data.value == 'none'){
+     		     ele = `<div class="progress">
+			                        <div class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+			                      </div>`;	
+       		    }
+       		    else if(data.value == '주문대기중') {
+      		     ele = `<div class="progress">
+			                        <div class="progress-bar bg-warning" role="progressbar" style="width: 25%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">대기</div>
+			                      </div>`;
+       		    }
+       		    else if (data.value == '주문완료') {
+               	 ele = `<div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">주문완료</div>
+                                  </div>`;
+                } else if (data.value == '출고') {
+               	 ele = `<div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">출고</div>
+                                  </div>`;
+                } else if (data.value == '입고완료') {
+               	 ele = `<div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">입고완료</div>
+                                  </div>`;
+                }
+                return ele;
+      	     }}
+        ];
+
+        for (let i = 0; i < ROW_COUNT; i += 1) {
+          const row = { id: i };
+          row['itemname'] = datas[i].itemname;
+          row['orderingDetailCode'] = datas[i].orderingDetailCode;
+          row['price'] = datas[i].price;
+          row['quantity'] = datas[i].quantity;
+          row['standard'] = datas[i].standard;
+          row['unit'] = datas[i].unit;
+          row['situation'] = datas[i].situation;
+          data.push(row);
+        }
     }
 	
 	const grid = new tui.Grid({
@@ -469,10 +572,45 @@ function makeDetailGrid(datas){
 }
 
 //주문 현황 조회 함수
-function ordersList(){
-	fetch(`/orders/ordersComList`)
+function ordersList(orderSort, orderPage){
+	fetch(`/orders/ordersComList?sort=${orderSort}&page=${orderPage}`)
 	.then(response => response.json())
 	.then(result => {
+		let totalPage = result.page;	// 총 페이지
+		let perPage = 5;	// 한 페이지당 페이지 수
+		let currentPage = Math.ceil(orderPage / perPage);	// 현재 페이지	수
+		let lastPage = Math.ceil(totalPage / perPage);  // 총 마지막 페이지
+		let startPage = (currentPage - 1) * perPage * 1;	// 시작 페이지
+		let endPage = Math.min(currentPage * perPage, lastPage);	// 마지막 페이지
+		
+		$('#ordersPagination li.paginate_button.page-item.page').remove();
+		
+		for(let i = startPage; i < endPage; i++){
+			let ele;
+			if(orderPage == i+1) { // 현재 페이지일 경우
+				ele = `<li class="paginate_button page-item page active">
+					<a href="#" aria-controls="DataTables_Table_1" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+				</li>`;
+			} else {
+				ele = `<li class="paginate_button page-item page">
+					<a href="#" aria-controls="DataTables_Table_1" data-dt-idx="${i+1}" tabindex="0" class="page-link">${i+1}</a>
+				</li>`;
+			}
+			$('#ordersPagination.pagination.justify-content-center li:last-child').before(ele);
+		}
+		
+		if (orderPage == 1) { // 첫 번째 페이지일 경우
+	        $('#ordersPagination.pagination.justify-content-center li:first-child').addClass("disabled");
+	    } else {
+	        $('#ordersPagination.pagination.justify-content-center li:first-child').removeClass("disabled");
+	    }
+
+	    if (orderPage == lastPage) { // 마지막 페이지일 경우
+	        $('#ordersPagination.pagination.justify-content-center li:last-child').addClass("disabled");
+	    } else {
+	        $('#ordersPagination.pagination.justify-content-center li:last-child').removeClass("disabled");
+	    }
+		
 		$('#orders tbody tr').remove(); // 테이블 데이터 삭제
 		result.data.forEach(data => {
 			let ele = `<tr class="table-light">

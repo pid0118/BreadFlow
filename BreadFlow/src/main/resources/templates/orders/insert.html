@@ -12,6 +12,9 @@
 	#grid td:first-child .tui-grid-cell-content {
 		text-decoration: underline;
 	}
+	.tui-grid-rside-area {
+		width: auto;
+	}
 </style>
 </head>
 <body>
@@ -26,7 +29,7 @@
 					<div class="pull-right">
 						<button type="button" class="btn btn-primary btn-sm" id="addOrders">주문 신청</button>
 					</div>
-					<div id="grid"></div>
+					<div id="grid" style="margin-top: 70px"></div>
 				</div>
 			</div>
 		</div>
@@ -183,7 +186,7 @@ const columns = [
 * bodyHeight => 높이 지정
 * column => column 값
 */
-const grid = new tui.Grid({
+let grid = new tui.Grid({
   el: document.getElementById('grid'),
   data: {
     api: {

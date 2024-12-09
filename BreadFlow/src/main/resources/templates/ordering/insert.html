@@ -215,7 +215,7 @@ orderRequest.addEventListener('click', function() {
 	let list = {
 		    "deliveryDesireDate" : new Date($('.date-picker').val()),
 		    "orderingRequestManger": "test",
-		    "totalPrice": Number($('#total td:last-child').text()),
+		    "totalPrice": Number($('#total td:last-child').text().replace(/,/g, '')),
 		    "itemCodes": items,
 		    "approvalWhether": '',
 		};
@@ -335,7 +335,7 @@ function makeItems(data) {
 			<td>${td.itemName}</td>
 			<td>${td.unit}</td>
 			<td>${td.standard}</td>
-			<td>${td.purchasePrice}</td>
+			<td>${td.purchasePrice.toLocaleString('ko-KR')}</td>
 		</tr>`)
 	})
 }

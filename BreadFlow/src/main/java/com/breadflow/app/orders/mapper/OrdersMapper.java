@@ -16,6 +16,7 @@ public interface OrdersMapper {
 	public int insertOrders(String manager, String no); // 주문 등록
 	public int insertOrdersDetail(OrdersResponseVO responseVO, String no); // 주문 상세 등록
 	public String selectOrdersNo(); // 주문 번호 조회
-	public List<OrdersComVO> selectOrdersComList(); // 주문 현황 조회
+	public List<OrdersComVO> selectOrdersComList(String sort, int page, String comNo); // 주문 현황 조회
+	public int selectOrdersComListPage(String sort, String comNo); // 주문 현황 조회 페이지
 	public List<OrdersComDVO> selectOrdersComDList(String no); // 주문 
 }

@@ -15,5 +15,5 @@ public interface OrderingMapper {
 	public String selectOrderingCode(); // 발주코드 조회
 	public int updateOrderingApprovalCancel(Map<String, Object> map); // 발주 취소
 	public int updateOrderingAccept(String orderingCode, String result); // 발주 승인
-	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode); // 발주 상세 정보 조회	 
+	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode, String div); // 발주 상세 정보 조회	 
 }

@@ -113,8 +113,9 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public List<AccountVO> selectCompanyList() {
-		return accountMapper.selectCompanyList();
+	public List<AccountVO> selectCompanyList(String div) {
+		System.out.println(div);
+		return accountMapper.selectCompanyList(div);
 	}
 
 	@Override

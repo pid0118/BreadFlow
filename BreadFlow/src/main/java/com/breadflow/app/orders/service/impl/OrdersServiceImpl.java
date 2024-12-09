@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.breadflow.app.orders.mapper.OrdersMapper;
-import com.breadflow.app.orders.service.OrdersComDVO;
 import com.breadflow.app.orders.service.OrdersComVO;
 import com.breadflow.app.orders.service.OrdersResponseVO;
 import com.breadflow.app.orders.service.OrdersService;
@@ -75,11 +74,16 @@ public class OrdersServiceImpl implements OrdersService {
 	
 	// 주문 현황 조회
 	@Override
-	public Map<String, Object> selectOrdersComList() {
-		//List<String> list = Arrays.asList(status.split(",")); 
-		List<OrdersComVO> oList = ordersMapper.selectOrdersComList();	// 전체 발주 조회
+	public Map<String, Object> selectOrdersComList(String sort, int page, HttpSession session) {
+		//List<String> list = Arrays.asList(status.split(","));
+		String comNo = "";
+		if(!session.getAttribute("div").equals("본사")) {
+			comNo = (String)session.getAttribute("companyNo");
+		}
+		List<OrdersComVO> oList = ordersMapper.selectOrdersComList(sort, page, comNo);	// 전체 발주 조회
 		Map<String, Object> map = new HashMap<>();
 		map.put("data", oList);
+		map.put("page", ordersMapper.selectOrdersComListPage(sort, comNo));
 		return map;
 	}
 	
