@@ -39,7 +39,7 @@ public interface AccountMapper {
 	public AccountVO selectMemberForLogin(AccountVO accountVO);
 
 	// 업체 리스트 조회
-	public List<AccountVO> selectCompanyList();
+	public List<AccountVO> selectCompanyList(String div);
 
 	// 계정 단건 조회
 	public AccountVO selectMember(AccountVO accountVO);

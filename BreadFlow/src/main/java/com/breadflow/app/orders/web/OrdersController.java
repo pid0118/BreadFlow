@@ -58,8 +58,10 @@ public class OrdersController {
 	// 주문 현황 데이터 조회
 	@GetMapping("/orders/ordersComList")
 	@ResponseBody
-	public Map<String, Object> ordersComList(){
-		return ordersService.selectOrdersComList();
+	public Map<String, Object> ordersComList(@RequestParam String sort, 
+											 @RequestParam int page,
+											 HttpSession session){
+		return ordersService.selectOrdersComList(sort, page, session);
 	}
 	
 	// 주문 상세 현황 조회

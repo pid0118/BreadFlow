@@ -76,8 +76,8 @@ public class OrderingController {
 	// 발주 상세 내역 조회
 	@GetMapping("/ordering/detailList")
 	@ResponseBody
-	public List<OrderingDetailsVO> selectOrderingDeatilList(@RequestParam String orderingCode){
-		return orderingService.selectOrderingDetailList(orderingCode);
+	public List<OrderingDetailsVO> selectOrderingDeatilList(@RequestParam String orderingCode, HttpSession session){
+		return orderingService.selectOrderingDetailList(orderingCode, session);
 	}
 	
 }
