@@ -56,16 +56,6 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public int updateProductList(ProductVO productVO) {
 		
-		ProductVO param = productMapper.selectProduct(productVO.getProductCode());
-//		
-//		if (productVO.getAmount() == param.getAmount()) {
-//			return 3;
-//		} else if (productVO.getExpirationDeadline() == param.getExpirationDeadline()) {
-//			return 3;
-//		} else if (productVO.)
-		
-		
-		
 		return productMapper.updateProductList(productVO);
 	}
 	
