@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.account.service.AccountService;
@@ -167,8 +168,9 @@ public class AccountController {
 	// 모달창으로 업체 조회하는 AJAX
 	@GetMapping("getCompanys.do")
 	@ResponseBody
-	public List<AccountVO> getCompanyList(Model model) {
-		List<AccountVO> list = accountService.selectCompanyList();
+	public List<AccountVO> getCompanyList(@RequestParam (name = "div", required = false) String div,
+										  Model model) {
+		List<AccountVO> list = accountService.selectCompanyList(div);
 		model.addAttribute("getCompanys", list);
 		
 		System.out.println("\nlist: " + list + "\n");

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -47,12 +48,17 @@ public class SaleController {
     }
     
     
-    // POS 메인화면 및 상세내역 모달창
+    // POS 메인화면
     @GetMapping("/pos")
-    public String posPage(Model model, HttpSession name) {
-    	List<PosVO> list = saleService.selectDetailSale(name);
-    	model.addAttribute("dList", list);
-        return "sale/pos"; // pos.html을 반환
+    public String posPage() {
+        return "sale/pos";
+    }
+    
+    // Pos 상세내역 모달창
+    @PostMapping("/getSalesDetails")
+    @ResponseBody
+    public List<PosVO> getSalesDetails(HttpSession name){
+    	return saleService.selectDetailSale(name);
     }
 
 	// POS 카테고리 검색(AJAX) - 다른 URL 사용

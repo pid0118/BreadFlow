@@ -81,9 +81,14 @@
 	}
 	table.fold-table > tbody > tr.fold {
 	    display: none;
+	    height: 0;
+	    overflow: hidden;
+	    transition: visibility 0s, height 0.3s ease;
+	    position: relative;
 	}
 	table.fold-table > tbody > tr.fold.open {
 	    display: table-row;
+	    height: auto;
 	}
 	.fold-content {
 	    padding: .5em;
@@ -222,8 +227,8 @@
 	    </tr>
 	    <tr class="fold">
 	      <td colspan="7">
-	        <div class="fold-content">
-	          <table class="small-friendly">
+	        <div class="fold-content fold-grid">
+	          <table class="small-friendly" style="z-index:1;">
 	            <thead>
 	              <tr>
 	                <th><span class="visible-big">01월</span></th>
@@ -262,7 +267,7 @@
 		       				<th>총 합계</th>
 		       			</tr>
 		       		</thead>
-		       		<tbody id="saleDetail"></tbody>
+		       		<tbody id="saleDetail" style="z-index: 1"></tbody>
 		       	</table>
 		    </div>
 		</div>
@@ -275,20 +280,20 @@
 		
 		    
 		// table 메뉴바
-		$(".fold-table tr.view").on("click", function(event){
-			if($(this).hasClass("open")) {
-				$(this).removeClass("open").next(".fold").removeClass("open");
-			} 
-			else {
-				$(".fold-table tr.view").removeClass("open")
-				                        .next(".fold")
-				                        .removeClass("open");
-				$(this).addClass("open").next(".fold").addClass("open");
-				
-				const companyCd = event.target.closest('tr').querySelector('td:nth-child(4)').innerText;
-				
-				saleMonthAjax(companyCd);
-			}
+		$(".fold-table tr.view").on("click", function(event) {
+			const companyCd = $(this).find('td:nth-child(4)').text();
+			
+		    if ($(this).hasClass("open")) {
+		        $(this).removeClass("open").next(".fold").removeClass("open");
+		    } else {
+		        $(".fold-table tr.view").removeClass("open")
+		            .next(".fold")
+		            .removeClass("open");
+		
+		        $(this).addClass("open").next(".fold").addClass("open");
+		        
+		        saleMonthAjax(companyCd);
+		    }
 		});
 		
 		// 월 매출 조회
@@ -375,10 +380,10 @@
 				data.forEach(ele => {
 					console.log(ele);
 					let node = `<tr>
-								<td>${ele.salesDate}</td>
-								<td>${ele.productName}</td>
-								<td>${ele.quantity}</td>
-								<td>${ele.salePrice}</td>
+									<td>${ele.salesDate}</td>
+									<td>${ele.productName}</td>
+									<td>${ele.quantity}</td>
+									<td>${ele.salePrice}</td>
 								</tr>
 								`
 					str += node;

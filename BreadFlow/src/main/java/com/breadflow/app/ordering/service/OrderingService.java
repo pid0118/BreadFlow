@@ -10,5 +10,5 @@ public interface OrderingService {
 	public int insertOrdering(Map<String, Object> ordering, HttpSession session); // 발주 신청
 	public String updateOrderingApprovalCancel(String no, String reason); // 발주 취소
 	public int updateOrderingAccept(String orderingCode); // 발주 승인
-	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode); // 발주 상세 정보 조회
+	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode, HttpSession session); // 발주 상세 정보 조회
 }

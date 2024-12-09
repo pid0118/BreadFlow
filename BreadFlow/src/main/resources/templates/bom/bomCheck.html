@@ -11,6 +11,12 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
 <script src="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.js"></script>
 <style>
+.form-container {
+    background-color: white;
+    height: 100%;
+    padding: 20px;
+    border-radius: 4px;
+}
 .container {
 	display: flex;
 	padding: 20px;
@@ -72,13 +78,6 @@
 	margin-top: 20px;
 }
 
-.btn {
-	padding: 6px 16px;
-	border-radius: 4px;
-	font-size: 14px;
-	cursor: pointer;
-}
-
 .btn-primary {
 	background-color: #0052CC;
 	color: white;
@@ -100,8 +99,8 @@
 </style>
 </head>
 <body>
+	<div class="form-container">
 	<h2 class="page-title">BOM조회</h2>
-
 	<div class="container">
 		<div class="image-section">
 			<div class="image-placeholder" id="imagePreview">
@@ -120,7 +119,7 @@
 			</div>
 		</div>
 	</div>
-
+	</div>
 	<script>
 	    $(document).ready(function () {
 	    	getBomDetail()

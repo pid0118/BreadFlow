@@ -117,8 +117,9 @@ public class OrderingServiceImpl implements OrderingService{
 	
 	// 발주 상세 정보 조회
 	@Override
-	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode) {
-		return orderingMapper.selectOrderingDetailList(orderingCode);
+	public List<OrderingDetailsVO> selectOrderingDetailList(String orderingCode, HttpSession session) {
+		String div = (String)session.getAttribute("div");
+		return orderingMapper.selectOrderingDetailList(orderingCode, div);
 	}
 
 }

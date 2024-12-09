@@ -7,6 +7,13 @@
     <meta charset="UTF-8">
     <title>원/부재료 목록</title>
     <style>
+    	.form-container {
+            background-color: white;
+            height: 100%;
+            padding: 20px;
+            border-radius: 4px;
+        }
+    	
         .clickable {
             cursor: pointer;
             color: #0d6efd;
@@ -60,204 +67,207 @@
 		.tdimgs{
 			width: 40px;
 		}
+
     </style>
 </head>
 <body>
-    <h2 class="mb-4">원/부재료 목록</h2>
-    <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
-        <div class="col-md-3">
-            <div class="form-group">
-                <select id="categorylist"
-                	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm">
-                    <option value="">선택</option>
-                    <th:block th:each="cate : ${category}">
-                    	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
-                    </th:block>
-                </select>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <select id="subList"
-                	class="selectpicker form-control form-control-sm" data-size="5"
-                    data-style="btn-outline-secondary btn-sm" multiple data-max-options="3">
-                </select>
-            </div>
-        </div>
-    </div>
-    
-	<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
-    <div id="dtSearch"></div>
-    <div>
-        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/ingredientInsert}'|">등록</button>
-        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
-    </div>
-	</div>
-    
-    <!-- 데이터 테이블 시작 -->
-    <div class="pb-20">
-        
-        <table class="data-table table stripe hover wrap" id="ingredientTable">
-            <thead>
-                <tr style="text-align : center;">
-                	<th class="datatable">
-	                	<div class="dt-checkbox">
-	                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
-	                            <span class="dt-checkbox-lable"></span>
-	                    </div>
-                	</th>
-                    <th class="table-plus">재료코드</th>
-                    <th class="datatable">재료명</th>
-                    <th class="datatable">대분류</th>
-                    <th class="datatable">소분류</th>
-                    <th class="datatable">원산지</th>
-                    <th class="datatable">단위</th>
-                    <th class="datatable">규격</th>
-                    <th class="datatable">안전재고량</th>
-                    <th class="datatable">이미지</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                <th:block th:each="info : ${ingredients}">
-                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
-                    	<td>
-                    		<div class="dt-checkbox">
-                                <input type="checkbox" id="checkingredientCode" name="checkingredientCode">
-                                <span class="dt-checkbox-lable"></span>
-                        	</div>
-                    	</td>  
-	                    <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientCode}]]</td>
-                        <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientName}]]</td>
-                        <td class="major">[[${info.major}]]</td>
-                        <td class="sub">[[${info.sub}]]</td>
-                        <td>[[${info.origin}]]</td>
-                        <td>[[${info.unitName}]]</td>
-                        <td>[[${info.standard}]]</td>
-                        <td>[[${info.safeStockQuantity}]]</td>
-                        <td>
-                        	<img th:src="|imgs/${info.ingredientImage}|" class="tdimgs">
-				        </td>
-                    </tr>
-                </th:block>
-            </tbody>
-        </table>
-    </div>
+	<div class="form-container">
+	    <h2 class="mb-4">원/부재료 목록</h2>
+	    <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
+	        <div class="col-md-3">
+	            <div class="form-group">
+	                <select id="categorylist"
+	                	class="selectpicker form-control form-control-sm" data-size="5"
+	                    data-style="btn-outline-dark btn-sm">
+	                    <option value="">선택</option>
+	                    <th:block th:each="cate : ${category}">
+	                    	<option th:value="${cate.sub}" th:utext="${cate.sub}"></option>
+	                    </th:block>
+	                </select>
+	            </div>
+	        </div>
+	        <div class="col-md-3">
+	            <div class="form-group">
+	                <select id="subList"
+	                	class="selectpicker form-control form-control-sm" data-size="5"
+	                    data-style="btn-outline-dark btn-sm" multiple data-max-options="3">
+	                </select>
+	            </div>
+	        </div>
+	    </div>
+	    
+		<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
+	    <div id="dtSearch"></div>
+	    <div>
+	        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/ingredientInsert}'|">등록</button>
+	        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
+	    </div>
+		</div>
+	    
+	    <!-- 데이터 테이블 시작 -->
+	    <div class="pb-20">
+	        
+	        <table class="data-table table stripe hover wrap" id="ingredientTable">
+	            <thead>
+	                <tr style="text-align : center;">
+	                	<th class="datatable">
+		                	<div class="dt-checkbox">
+		                            <input type="checkbox" name="select_all" value="1" id="example-select-all">
+		                            <span class="dt-checkbox-lable"></span>
+		                    </div>
+	                	</th>
+	                    <th class="table-plus">재료코드</th>
+	                    <th class="datatable">재료명</th>
+	                    <th class="datatable">대분류</th>
+	                    <th class="datatable">소분류</th>
+	                    <th class="datatable">원산지</th>
+	                    <th class="datatable">단위</th>
+	                    <th class="datatable">규격</th>
+	                    <th class="datatable">안전재고량</th>
+	                    <th class="datatable">이미지</th>
+	                </tr>
+	            </thead>
+	            <tbody>
 	
-    <!-- 제품상세보기 모달창 -->
-	<form>
-		<div class="modal fade" id="ingredientDetailModal" tabindex="-1"
-			role="dialog" aria-labelledby="ingredientDetailModalLabel"
-			aria-hidden="true">
-			<div class="modal-dialog modal-lg modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title" id="ingredientDetailModalLabel">제품
-							상세정보</h4>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">×</button>
-					</div>
-					<div class="modal-body">
-						<div class="row">
-							<div class="col-md-4 text-center mb-3">
-								<div class="image-placeholder" id="imagePreview">
-						            <img th:src="'imgs/' + ${ingredientImage}" id="ingredientImage">
-						        </div>
-						        <input type="file" class="d-none" id="image" accept="image/*">
-							</div>
-							<div class="col-md-8">
-								<div class="row row-cols-4">
-									<div class="col mb-3">
-										<strong>재료코드</strong> 
-										<input type="text"
-											class="form-control form-control-sm" id="ingredientCode"
-											th:value="${ingredientCode}" readonly>
-									</div>
-									<div class="col mb-3">
-										<strong>재료명</strong> <input type="text"
-											class="form-control form-control-sm" id="ingredientName"
-											th:value="${ingredientName}">
-									</div>
-									<div class="col mb-3">
-										<strong>원산지</strong> <input type="text"
-											class="form-control form-control-sm" id="origin"
-											th:value="${origin}">
-									</div>
-									<div class="col mb-3">
-										<strong>규격</strong> <input type="text"
-											class="form-control form-control-sm" id="standard"
-											th:value="${standard}">
-									</div>
-									<div class="col mb-3">
-										<strong>안전재고수량</strong> <input type="text"
-											class="form-control form-control-sm" id="safeStockQuantity"
-											th:value="${safeStockQuantity}">
-									</div>
-									<div class="col mb-3">
-										<strong>소비기한</strong> <input type="text"
-											class="form-control form-control-sm" id="expirationDeadline"
-											th:value="${expirationDeadline}">
-									</div>
-									<div class="col mb-3">
-										<strong>매입가격</strong> <input type="text"
-											class="form-control form-control-sm" id="purchasePrice"
-											th:value="${purchasePrice}">
-									</div>
-									<div class="col mb-3">
-										<strong>용량</strong> <input type="text"
-											class="form-control form-control-sm" id="amount"
-											th:value="${amount}">
-									</div>
-									<div class="col mb-3">
-										<strong>단위</strong> 
-										<select class="form-select form-select-sm" id="unit">
-											<option selected>선택하세요</option>
-											<th:block th:each="code : ${codeVal}">
-												<option th:value="${code.codeRule}"
-													th:text="${code.codeVal}"
-													th:selected="${code.codeRule} == ${unit}"></option>
-											</th:block>
-										</select>
-									</div>
-									<div class="col mb-3">
-										<strong>대분류</strong> 
-										<select class="form-select form-select-sm" id="mainCategory">
-											<option selected>선택하세요</option>
-											<th:block th:each="cate : ${category}">
-												<option th:value="${cate.sub}" th:text="${cate.sub}"
-													th:selected="${cate.sub} == ${major}"></option>
-											</th:block>
-										</select>
-									</div>
-									<div class="col mb-3">
-										<strong>소분류</strong> 
-										<select class="form-select form-select-sm" id="subCategory">
-											<option selected>선택하세요</option>
-											<th:block th:each="sb : ${sub}">
-												<option th:value="${sb.sub}" th:text="${sb.sub}"
-													th:selected="${sb.sub} == ${sub}"></option>
-											</th:block>
-										</select>
-										<input type="hidden" id="ingredientCodes" />
+	                <th:block th:each="info : ${ingredients}">
+	                    <tr th:data-sub="${info.sub}" th:data-major="${info.major}" style="text-align : center;">
+	                    	<td>
+	                    		<div class="dt-checkbox">
+	                                <input type="checkbox" id="checkingredientCode" name="checkingredientCode">
+	                                <span class="dt-checkbox-lable"></span>
+	                        	</div>
+	                    	</td>  
+		                    <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientCode}]]</td>
+	                        <td class="clickable" th:onclick="showingredientDetail([[${info.ingredientCode}]])">[[${info.ingredientName}]]</td>
+	                        <td class="major">[[${info.major}]]</td>
+	                        <td class="sub">[[${info.sub}]]</td>
+	                        <td>[[${info.origin}]]</td>
+	                        <td>[[${info.unitName}]]</td>
+	                        <td>[[${info.standard}]]</td>
+	                        <td>[[${info.safeStockQuantity}]]</td>
+	                        <td>
+	                        	<img th:src="|imgs/${info.ingredientImage}|" class="tdimgs">
+					        </td>
+	                    </tr>
+	                </th:block>
+	            </tbody>
+	        </table>
+	    </div>
+		
+	    <!-- 제품상세보기 모달창 -->
+		<form>
+			<div class="modal fade" id="ingredientDetailModal" tabindex="-1"
+				role="dialog" aria-labelledby="ingredientDetailModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog modal-lg modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title" id="ingredientDetailModalLabel">제품
+								상세정보</h4>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">×</button>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-4 text-center mb-3">
+									<div class="image-placeholder" id="imagePreview">
+							            <img th:src="'imgs/' + ${ingredientImage}" id="ingredientImage">
+							        </div>
+							        <input type="file" class="d-none" id="image" accept="image/*">
+								</div>
+								<div class="col-md-8">
+									<div class="row row-cols-4">
+										<div class="col mb-3">
+											<strong>재료코드</strong> 
+											<input type="text"
+												class="form-control form-control-sm" id="ingredientCode"
+												th:value="${ingredientCode}" readonly>
+										</div>
+										<div class="col mb-3">
+											<strong>재료명</strong> <input type="text"
+												class="form-control form-control-sm" id="ingredientName"
+												th:value="${ingredientName}">
+										</div>
+										<div class="col mb-3">
+											<strong>원산지</strong> <input type="text"
+												class="form-control form-control-sm" id="origin"
+												th:value="${origin}">
+										</div>
+										<div class="col mb-3">
+											<strong>규격</strong> <input type="text"
+												class="form-control form-control-sm" id="standard"
+												th:value="${standard}">
+										</div>
+										<div class="col mb-3">
+											<strong>안전재고수량</strong> <input type="text"
+												class="form-control form-control-sm" id="safeStockQuantity"
+												th:value="${safeStockQuantity}">
+										</div>
+										<div class="col mb-3">
+											<strong>소비기한</strong> <input type="text"
+												class="form-control form-control-sm" id="expirationDeadline"
+												th:value="${expirationDeadline}">
+										</div>
+										<div class="col mb-3">
+											<strong>매입가격</strong> <input type="text"
+												class="form-control form-control-sm" id="purchasePrice"
+												th:value="${purchasePrice}">
+										</div>
+										<div class="col mb-3">
+											<strong>용량</strong> <input type="text"
+												class="form-control form-control-sm" id="amount"
+												th:value="${amount}">
+										</div>
+										<div class="col mb-3">
+											<strong>단위</strong> 
+											<select class="form-select form-select-sm" id="unit">
+												<option selected>선택하세요</option>
+												<th:block th:each="code : ${codeVal}">
+													<option th:value="${code.codeRule}"
+														th:text="${code.codeVal}"
+														th:selected="${code.codeRule} == ${unit}"></option>
+												</th:block>
+											</select>
+										</div>
+										<div class="col mb-3">
+											<strong>대분류</strong> 
+											<select class="form-select form-select-sm" id="mainCategory">
+												<option selected>선택하세요</option>
+												<th:block th:each="cate : ${category}">
+													<option th:value="${cate.sub}" th:text="${cate.sub}"
+														th:selected="${cate.sub} == ${major}"></option>
+												</th:block>
+											</select>
+										</div>
+										<div class="col mb-3">
+											<strong>소분류</strong> 
+											<select class="form-select form-select-sm" id="subCategory">
+												<option selected>선택하세요</option>
+												<th:block th:each="sb : ${sub}">
+													<option th:value="${sb.sub}" th:text="${sb.sub}"
+														th:selected="${sb.sub} == ${sub}"></option>
+												</th:block>
+											</select>
+											<input type="hidden" id="ingredientCodes" />
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary"
-								data-dismiss="modal" onclick="updatePage()">수정</button>
-							<button type="button" class="btn btn-secondary"
-								data-dismiss="modal">닫기</button>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-success"
+									data-dismiss="modal" onclick="updatePage()">수정</button>
+								<button type="button" class="btn btn-secondary"
+									data-dismiss="modal">닫기</button>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</form>
-
+		</form>
+	</div>
 	<script>
-    let sub = ''
+    let sub = '';
+    let mainCategory = '';
     let oldIngredient = {};
     // 현제 모달창에서 수정하기 기능 추가하여 넣기 이미지수정하기 까지 
 		function showingredientDetail(ingredientCode) {
@@ -275,11 +285,12 @@
 		            document.getElementById('safeStockQuantity').value = formatNumber(ingredient.safeStockQuantity);
 		            document.getElementById('expirationDeadline').value = formatNumber(ingredient.expirationDeadline) + "일";
 		            document.getElementById('purchasePrice').value = formatNumber(ingredient.purchasePrice) + "원";
-		            document.getElementById('amount').value = formatNumber(ingredient.amount);
+		            document.getElementById('amount').value = formatNumber(ingredient.amount) + ingredient.unitName;
 		            document.getElementById('unit').value = ingredient.unit;
 		            document.getElementById('mainCategory').value = ingredient.major;
-		            sub = ingredient.sub;     
 		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
+		            sub = ingredient.sub; 
+		            mainCategory = ingredient.major;
 		            
 		            oldIngredient = {
 	                    ingredientCode: $("#ingredientCode").val(),
@@ -348,7 +359,7 @@
 		}
 		
 		function strdel(number){
-		 return number.slice(0, -1);	
+		 return parseInt(number);	
 		}
 	
         let myTable ;
@@ -454,7 +465,9 @@
                     for (let item of response) {
                         subCategory.append(`<option value="${item.sub}">${item.sub}</option>`);
                     }
+                    if(mainCategory == category){
                     document.getElementById('subCategory').value = sub;
+                    }
                 })
                 .catch(error => console.error('Error:', error)); // 오류 처리 
         });
@@ -552,7 +565,7 @@
      			alert("용량를 입력해주세요")
      			return;
      		}
-     		if($("#unit option:selected").val() == '선택하세요'){
+     		if($("#unit").get(0).selectedIndex <= 0){
      			alert("단위를 선택해주세요")
      			return;
      		}
@@ -580,7 +593,7 @@
    		        unit: $("#unit option:selected").val(),
    		        major: $("#mainCategory option:selected").val(),
    		        sub: $("#subCategory option:selected").val(),
-   		        amount: commadel($("#amount").val()),
+   		        amount: strdel(commadel($("#amount").val())),
    		        ingredientImage: $("#ingredientImage").val()
    		    };
      		
@@ -614,7 +627,7 @@
      				"ingredientImage" : $("#ingredientImage").val()
      			}),
      			contentType : 'application/json',
-     			dataType : "json",
+     			dataType : "text",
      			success : function (data) {
      				if (data == 1) {
      					alert("재료 수정에 성공하였습니다.");

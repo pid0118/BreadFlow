@@ -87,17 +87,62 @@
 	</update>
 	
 	<select id="selectOrdersComList">
-		SELECT  DISTINCT o.orders_no,
-                o.orders_date,
-                o.manager,
-                (SELECT company_name
-                 FROM company
-                 WHERE company_no = od.instore_company) in_company
-	    FROM orders o JOIN orders_detail od
-	    ON o.orders_no = od.orders_no
-	    JOIN ordering_detail ord
-	    ON ord.ordering_detail_code = od.ordering_detail_code
-	    WHERE ord.situation_code != 'e1'
+		SELECT b.* 
+		FROM (SELECT rownum rn, a.* 
+		      FROM (SELECT DISTINCT o.orders_no
+		                            , o.orders_date
+		                            , o.manager
+		                            , (SELECT company_name 
+		                               FROM company 
+		                               WHERE company_no = od.instore_company) in_company 
+		            FROM orders o JOIN orders_detail od 
+		            ON o.orders_no = od.orders_no 
+		            JOIN ordering_detail ord 
+		            ON ord.ordering_detail_code = od.ordering_detail_code 
+		            WHERE ord.situation_code != 'e1'
+		            <if test="comNo != ''">
+				    AND od.outstore_company = #{comNo}
+				    </if>
+		            ORDER BY 
+		            <choose>
+						<when test="sort == 'odDesc'">
+							orders_date DESC
+						</when>
+						<when test="sort == 'odAsc'">
+							orders_date ASC
+						</when>
+					</choose>) a
+		      ) b 
+		WHERE b.rn BETWEEN (#{page}-1) * 5 + 1 AND (#{page}-1) * 5 + 5
+	</select>
+	
+	<select id="selectOrdersComListPage">
+		SELECT count(b.rn) 
+		FROM (SELECT rownum rn, a.* 
+		      FROM (SELECT DISTINCT o.orders_no
+		                            , o.orders_date
+		                            , o.manager
+		                            , (SELECT company_name 
+		                               FROM company 
+		                               WHERE company_no = od.instore_company) in_company 
+		            FROM orders o JOIN orders_detail od 
+		            ON o.orders_no = od.orders_no 
+		            JOIN ordering_detail ord 
+		            ON ord.ordering_detail_code = od.ordering_detail_code 
+		            WHERE ord.situation_code != 'e1'
+		            <if test="comNo != ''">
+				    AND od.outstore_company = #{comNo}
+				    </if>
+		            ORDER BY
+		            <choose>
+						<when test="sort == 'odDesc'">
+							orders_date DESC
+						</when>
+						<when test="sort == 'odAsc'">
+							orders_date ASC
+						</when>
+					</choose>) a
+		) b
 	</select>
 	
 	<select id="selectOrdersComDList">

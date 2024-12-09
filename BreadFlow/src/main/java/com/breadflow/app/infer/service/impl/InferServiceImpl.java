@@ -53,6 +53,7 @@ public class InferServiceImpl implements InferService {
 		for (InferDetailVO inferDetailVO : list) {
 			inferDetailVO.setInferNo(inferHistoryVO.getInferNo());
 			result += inferMapper.insertInferDetail(inferDetailVO);
+			result += inferMapper.updateInstoreQuantity(inferDetailVO);
 		}
 		return result;
 	}

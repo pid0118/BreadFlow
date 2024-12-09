@@ -9,7 +9,7 @@
 <!-- 이미지 등록 미리보기 스타일 시작 -->
 <style>
 	.image-placeholder {
-		width: 100%;
+		width: 80%;
 		height: 100%;
 		background-color: #e6e6fa;
 		display: flex;
@@ -20,7 +20,7 @@
 		overflow: hidden;
 	}
 	.image-placeholder img {
-		width: 100%;
+		width: 200px;
 		height: 100%;
 		object-fit: cover;
 	}
@@ -41,22 +41,20 @@
 		<!-- 고정 정보 시작 -->
 		<form>
 			<div class="pd-20 row">
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>불량 일자</label>
 						<input class="form-control" type="text" name="inferDate" id="inferDate" readonly>
 					</div>
 				</div>
-			</div>
-			<div class="pd-20 row">
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<label>확인 위치</label>
 					<div class="input-group">
 						<input class="form-control" type="text" id="companyName" th:value="${session.companyName}" placeholder="업체명을 검색하세요" readonly>
-						<button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button>
+						<!-- <button type="button" class="btn btn-primary" id="coFilterBtn" data-bs-toggle="modal" data-bs-target="#coFilterModal">검색</button> -->
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-12">
+				<div class="col-md-4 col-sm-12">
 					<div class="form-group">
 						<label>담당자</label>
 						<input class="form-control" type="text" name="loginMember" id="loginMember" th:value="${session.name}" readonly>
@@ -89,6 +87,7 @@
 						<th class="datatable-nosort">불량 수량</th>
 						<th class="datatable-nosort">불량 유형</th>
 						<th class="datatable-nosort">이미지 등록</th>
+						<th class="datatable-nosort"></th>
 					</tr>
 				</thead>
 				<tbody id="inferTable">
@@ -98,15 +97,14 @@
 			<div id="noData" style="display: none;">
 				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
 			</div>
-			<div class="pagination-container">
-			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			<div class="pagination-container" style="padding: 20px; text-align: center;">
+			    <button type="button" class="btn btn-outline-dark" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
-			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			    <button type="button" class="btn btn-outline-dark" id="nextPageBtn">다음</button>
 			</div>
+			<button type="button" style="float: right;" class="btn btn-primary" id="submitBtn">등록</button>
 		</div>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="reset" class="btn btn-primary" id="resetBtn">취소</button>
 		</div>
 		<!-- 테이블 끝 -->
 	</div>
@@ -161,15 +159,6 @@
                 let keyword = $("#searchKeyword").val().toLowerCase();
                 searchData(keyword);
             });
-            
-         	// 업체 검색 모달에서 선택 (없어도 될지도)
-            $("#selectCompanyBtn").click(function() {
-                let selectedCompanyName = $("#companyTableBody tr.selected").find("td:nth-child(3)").text();
-                $("#companyName").val(selectedCompanyName);
-                $('#coFilterModal').modal('hide');
-                companyInput = $("#companyTableBody tr.selected").find("td:nth-child(5)").text();
-                changeFilter();
-            });
          	
          	// 이미지 등록 기능
          	function imageSet() {
@@ -182,7 +171,7 @@
 	            $('.image').change(function(event) {
 	            	
 	            	let pi = $(this).closest("td").find(".imagePreview");
-	            	let pri = $(this).closest("td").find(".productImage");
+	            	let pri = $(this).closest("td").find(".inferImage");
 	                const file = event.target.files[0];
 	                if (file) {
 	                    const reader = new FileReader();
@@ -216,7 +205,9 @@
 	     	// 등록 버튼 클릭 시 처리
 	        $("#submitBtn").click(function() {
 	        	let checkNull = false;
+	        	let checkImage = false;
 	        	let checkQuant = false;
+	        	
 	            // 선택된 행 추출
 	            let selectedRows = [];
 	            $("#inferTable tr.selected").each(function() {
@@ -227,13 +218,16 @@
 				        inferQuantity: row.find("td:nth-child(5) .quant").val(),
 				        inferType: row.find("td:nth-child(6) select").val(),
 				        instoreNo: row.find("td:nth-child(7)").text(),
-				        inferImage: $(".productImage").val(),
+				        inferImage: row.find(".inferImage").val(),
 				        confirmLocation: $("#companyInput").val(),
 				        inferManager
 			        };
-					if ((data.inferQuantity == null || data.inferQuantity == '') || (data.inferImage == null || data.inferImage == '')) {
+					if ((data.inferQuantity == null || data.inferQuantity == '')) {
 						checkNull = true;
-					} 
+					}
+					if ((data.inferImage == null || data.inferImage == '')) {
+						checkImage = true;
+					}
 					if (Number(data.inferQuantity) > Number(data.totalQuantity)) {
 						checkQuant = true;
 					}
@@ -243,9 +237,11 @@
 	            console.log(selectedRows);
 	            
 	            if (checkNull) {
-	            	alert("필수 항목이 입력되지 않았습니다.")
+	            	alert("수량이 입력되지 않았습니다.");
+	            } else if (checkImage) {
+	            	alert("이미지가 등록되지 않았습니다.");
 	            } else if (checkQuant) {
-	            	alert("올바른 수량을 입력해주세요.")
+	            	alert("올바른 수량을 입력해주세요.");
 	            } else {
 	            	
 		         	// 불량 내역 등록
@@ -312,6 +308,9 @@
 	            			$("#prevPageBtn").hide();
 	            			$("#currentPage").hide();
 	            			$("#noData").css("display", "block");
+	            		} else {
+	            			$("#currentPage").show();
+	            			$("#noData").css("display", "none");
 	            		}
 	            	},
 	            	error : function() {
@@ -347,23 +346,26 @@
 					            		<span>이미지</span>
 					        		</div>
 					        		<input type="file" class="image" accept="image/*" style="display: none;">
-					        		<input type="hidden" class="productImage">
+					        		<input type="hidden" class="inferImage">
 					        	<td>`;
 		            	row += "</tr>";
-		            tbody.append(row);
+		            if (item.instoreQuantity != 0) {
+			            tbody.append(row);
+		            }
 		        });
 		        
-		        // 이미지 이벤트 설정
+	         	// 이미지 이벤트 설정
 		        imageSet();
+		        
 		    }
 		    
 			// 당일 날짜 가져오기
 		    function loadTodayDate() {
 		    	let objectDate = new Date();
 		    	let day = objectDate.getDate();
-		    	let month = objectDate.getMonth();
+		    	let month = objectDate.getMonth() + 1;
 		    	let year = objectDate.getFullYear();
-		    	let todayDate = year + "/" + (month + 1) + "/" + day;
+		    	let todayDate = year.toString().slice(-2) + "/" + (("00" + month.toString()).slice(-2)) + "/" + (("00" + day.toString()).slice(-2));
 		 		$("#inferDate").val(todayDate);
 		 	}
 		    

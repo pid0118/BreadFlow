@@ -10,13 +10,13 @@
 	<style>
 		@media print {
 		    @page {
-		        size: B4;
+		        size: A4;
 		        margin: 0;
 		    }
 		
 		    #print {
 		        width: 100%;
-		        height: 100%;
+		        height: 99%;
 		        page-break-before: always;
 		        margin: 0;
 		        padding: 10mm;
@@ -55,9 +55,11 @@
 		    }
 		    
 		    body {
+		    	height: 99%;
 		        margin: 0;
 		        padding: 0;
 		        font-size: 12pt;
+		        transform: scale(1.8);
 		    }
 		
 		    .companyTable td, .companyTable th {
@@ -131,17 +133,19 @@
 <body>
 	<div class="card-box mb-30">
 		<div class="pd-20">
-			<h2 class="text-black">입출고 내역</h2>
+			<h2 class="text-black" style="float: left;">입출고 내역</h2>
+			<button type="button" style="float: right;" class="btn btn-primary" id="insertBtn" onclick='location.href = "/inOutInsert"'>입출고 등록하기</button>
 		</div>
+		<div class="pd-20"></div>
 		<!-- 입고 출고 분류 시작 -->
 		<div>
 			<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style=display:none; readonly>
 			<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
 			<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
-				<label class="btn btn-outline-secondary active">
+				<label class="btn btn-outline-dark active">
 					<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
 				</label>
-				<label class="btn btn-outline-secondary">
+				<label class="btn btn-outline-dark">
 					<input type="radio" name="options" id="outstoreBtn" value="출고" autocomplete="off">출고
 				</label>
 			</div>
@@ -154,22 +158,25 @@
 		
 		<!-- 조건 필터 시작 -->
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="rawmatBtn">원재료</button>
-			<button type="button" class="btn btn-primary" id="finprdBtn">완제품</button>
-			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
+			<button type="button" class="btn btn-dark" id="rawmatBtn">원재료</button>
+			<button type="button" class="btn btn-dark" id="finprdBtn">완제품</button>
+			<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
 			<ul class="dropdown-menu" id="itemMenu">
+				<li class="dropdown-item" id="prodAll">전체</li>
 				<li th:each="item : ${items}">
                     <a class="dropdown-item item">[[ ${item.productName} ]]</a>
                 </li>
 			</ul>
-  			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="yearlyBtn" data-bs-toggle="dropdown" aria-expanded="false">연도</button>
+  			<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="yearlyBtn" data-bs-toggle="dropdown" aria-expanded="false">연도</button>
 			<ul class="dropdown-menu" id="yearlyMenu">
+				<li class="dropdown-item" id="yearAll">전체</li>
 				<li th:each="num : ${#numbers.sequence(localDateTime-10, localDateTime)}">
                     <a class="dropdown-item year">[[ ${num} ]]</a>
                 </li>
 			</ul>
-  			<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="monthlyBtn" data-bs-toggle="dropdown" aria-expanded="false">월</button>
+  			<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="monthlyBtn" data-bs-toggle="dropdown" aria-expanded="false">월</button>
 			<ul class="dropdown-menu" id="monthlyMenu">
+				<li class="dropdown-item" id="monthAll">전체</li>
  				<li th:each="num : ${#numbers.sequence(1,12)}"><a class="dropdown-item month">[[ ${num} ]]</a></li>
             </ul>
 		</div>
@@ -205,16 +212,13 @@
 			<div id="noData" style="display: none;">
 				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
 			</div>
-			<div class="pagination-container">
-			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			<div class="pagination-container" style="padding: 20px; text-align: center;">
+			    <button type="button" class="btn btn-outline-primary" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
-			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			    <button type="button" class="btn btn-outline-primary" id="nextPageBtn">다음</button>
 			</div>
 		</div>
 		<!-- 테이블 끝 -->
-		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="insertBtn" onclick='location.href = "/inOutInsert"'>입출고 등록하기</button>
-		</div>
 	</div>
 	
 	<!-- 거래 명세서 발행 모달창 시작 -->
@@ -365,6 +369,11 @@
     			$("#currentPage").text(page + " 페이지");
             }
             
+         	// 본사로 로그인 시 페이지 내용 변경
+	        if (div == '본사') {
+            	$("#insertBtn").hide();
+            }
+            
             // 입고 내역 버튼 클릭
             $("#instoreBtn").click(function() {
             	clear();
@@ -399,6 +408,14 @@
                 $("#yearlyBtn").text(year);
                 changeFilter();
             });
+            
+         	// 연도별 필터 전체 클릭
+            $('#yearAll').click(function() {
+            	year = null;
+            	$("#yearlyBtn").text("연도");
+            	pageClear();
+            	changeFilter();
+            });
 
             // 월별 필터 클릭
             $(document).on('click', '.month', function() {
@@ -407,14 +424,28 @@
                 changeFilter();
             });
             
+         	// 월별 필터 전체 클릭
+            $('#monthAll').click(function() {
+            	month = null;
+            	$("#monthlyBtn").text("월");
+            	pageClear();
+            	changeFilter();
+            });
+            
             // 품목별 필터 클릭
             $(document).on('click', '.item', function() {
                 item = $(this).text().trim();
                 $("#itemBtn").text(item);
-                page = 1;
-    			pageSize = 10;
-    			$("#currentPage").text(page + " 페이지");
+                pageClear();
                 changeFilter();
+            });
+            
+            // 품목별 필터 전체 클릭
+            $('#prodAll').click(function() {
+            	item = null;
+            	$("#itemBtn").text("품목");
+            	pageClear();
+            	changeFilter();
             });
             
             // 입력시 검색
@@ -502,6 +533,9 @@
             			$("#prevPageBtn").hide();
             			$("#currentPage").hide();
             			$("#noData").css("display", "block");
+            		} else {
+            			$("#currentPage").show();
+            			$("#noData").css("display", "none");
             		}
             		console.log(data);
             	},
@@ -525,7 +559,7 @@
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                 	row += "<td style='display: none;'>" + item.instoreGroupNo + "</td>";
-                    row += "<td>" + `<button type="button" class="btn btn-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
+                    row += "<td>" + `<button type="button" class="btn btn-outline-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
                 } else if (type === 'outstore') {
                     row += "<td class='table-plus date'>" + item.outstoreDate + "</td>";
                     row += "<td>" + item.itemName + "</td>";
@@ -534,7 +568,7 @@
                     row += "<td>" + item.outstoreCompany + "</td>";
                     row += "<td>" + item.instoreCompany + "</td>";
                     row += "<td style='display: none;'>" + item.outstoreGroupNo + "</td>";
-                    row += "<td>" + `<button type="button" class="btn btn-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
+                    row += "<td>" + `<button type="button" class="btn btn-outline-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
                 }
                 row += "</tr>";
                 tbody.append(row);
@@ -586,10 +620,10 @@
 	 				row += "<td style='display: none;'>" + item.outstoreCompany + "</td>";
 	            	row += "<td>" + item.date + "</td>";
 	            	row += "<td>" + item.itemName + "</td>";
-	            	row += "<td>" + item.quantity + "</td>";
-	            	row += "<td>" + item.price + "</td>";
-					row += "<td>" + item.purchasePrice + "</td>";
-					row += "<td>" + (Number(item.purchasePrice) / 10) + "</td>";
+	            	row += "<td>" + item.quantity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "</td>";
+	            	row += "<td>" + item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원</td>";
+					row += "<td>" + item.purchasePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원</td>";
+					row += "<td>" + (Number(item.purchasePrice) / 10).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "원</td>";
 	            	row += "</tr>";
 	            	
 	            amount += Number(item.price) + (Number(item.purchasePrice) / 10);
@@ -601,11 +635,11 @@
 		 		tbody.append(row);
 	 		});
 	 		
-	 		$("#amount").html(amount);
-	 		$("#quant").html(quant);
-	 		$("#selling").html(selling);
-	 		$("#toten").html(toten);
-	 		$("#addup").html(addup);
+	 		$("#amount").html(amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	 		$("#quant").html(quant.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	 		$("#selling").html(selling.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	 		$("#toten").html(toten.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+	 		$("#addup").html(addup.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 	 		
 	 		let instoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(1)").text();
 	 		let outstoreCompany = $("#insertedTble").find("tr:nth-child(1)").find("td:nth-child(2)").text();

@@ -142,4 +142,12 @@ public class MtrqplanController {
 		int result = mtrqplanService.insertInstoreForMtrqplan(list, writer, company);
 		return result;
 	}
+	
+	@GetMapping("selectBom")
+	@ResponseBody
+	public List<MtrqplanVO> selectBom(@RequestParam String id) {
+		List<MtrqplanVO> list = mtrqplanService.selectBom(id);
+		return list;
+	}
+	
 }

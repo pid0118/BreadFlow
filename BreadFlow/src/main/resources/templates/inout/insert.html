@@ -26,7 +26,7 @@
 				<!-- 세션값 저장 시작 -->
 				<div class="pd-20 input-group mb-3">
 					<input class="form-control" type="text" name="compName" id="compName" th:value="${session.companyName}" readonly>
-					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.name}" style="display:none;" readonly>
+					<input class="form-control" type="text" name="manager" id="manager" th:value="${session.memNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyInput" id="companyInput" th:value="${session.companyNo}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyDiv" id="companyDiv" th:value="${session.div}" style="display:none;" readonly>
 					<input class="form-control" type="text" name="companyAddr" id="companyAddr" th:value="${session.companyAddress}" style="display:none;" readonly>
@@ -36,10 +36,10 @@
 				
 				<!-- 입고 출고 분류 시작 -->
 				<div class="btn-group btn-group-toggle pd-20" data-toggle="buttons">
-					<label class="btn btn-outline-secondary active" id="instoreBtnLabel">
+					<label class="btn btn-outline-dark active" id="instoreBtnLabel">
 						<input type="radio" name="options" id="instoreBtn" value="입고" autocomplete="off" checked>입고
 					</label>
-					<label class="btn btn-outline-secondary">
+					<label class="btn btn-outline-dark">
 						<input type="radio" name="options" id="outstoreBtn" value="출고" autocomplete="off">출고
 					</label>
 				</div>
@@ -52,14 +52,15 @@
 				</div>
 
 				<div class="pd-20 input-group mb-3">
-					<input class="form-control" type="date" id="inOutDate">
+					<input class="form-control" type="text" id="inOutDate">
 				</div>
 
 				<div class="pd-20">
-					<button type="button" class="btn btn-primary" id="rawmatBtn">원재료</button>
-					<button type="button" class="btn btn-primary" id="finprdBtn">완제품</button>
-					<button type="button" class="dropdown btn btn-primary dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
+					<button type="button" class="btn btn-dark" id="rawmatBtn">원재료</button>
+					<button type="button" class="btn btn-dark" id="finprdBtn">완제품</button>
+					<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
 					<ul class="dropdown-menu" id="itemMenu">
+						<li class="dropdown-item" id="prodAll">전체</li>
 						<li th:each="item : ${items}">
                     		<a class="dropdown-item item">[[ ${item.productName} ]]</a>
                 		</li>
@@ -102,17 +103,15 @@
 			<div id="noData" style="display: none;">
 				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
 			</div>
-			<div class="pagination-container">
-			    <button type="button" class="btn btn-secondary" id="prevPageBtn">이전</button>
+			<div class="pagination-container" style="padding: 20px; text-align: center;">
+			    <button type="button" class="btn btn-outline-primary" id="prevPageBtn">이전</button>
 			    <span id="currentPage">1 페이지</span>
-			    <button type="button" class="btn btn-secondary" id="nextPageBtn">다음</button>
+			    <button type="button" class="btn btn-outline-primary" id="nextPageBtn">다음</button>
 			</div>
 			<!-- 페이징 끝 -->
-			
+			<button type="button" style="float: right;" class="btn btn-primary" id="submitBtn">등록</button>
 		</div>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inOutList"'>취소</button>
 		</div>
 	</div>
 	
@@ -213,6 +212,14 @@
                 pageClear();
                 changeFilter();
             });
+	     	
+         	// 품목별 필터 전체 클릭
+            $('#prodAll').click(function() {
+            	item = null;
+            	$("#itemBtn").text("품목");
+            	pageClear();
+            	changeFilter();
+            });
 	        
 	     	// 입력시 검색
             $("#searchKeyword").on('input', function() {
@@ -249,7 +256,8 @@
 		                    instoreDate: $("#inOutDate").val(),
 		                    itemDiv: row.find("td:nth-child(3)").text(),
 		                    itemName: row.find("td:nth-child(4)").text(),
-		                    instoreQuantity: row.find("td:nth-child(6) input").val(),
+		                    quantity: Number(row.find("td:nth-child(5)").text()),
+		                    instoreQuantity: Number(row.find("td:nth-child(6) input").val()),
 		                    companyNo: $("#companyInput").val(),
 		                    instoreManager: $("#manager").val(),
 		                    orderingDetailCode: row.find("td:nth-child(8)").text(),
@@ -258,7 +266,7 @@
 		                    itemCode: row.find("td:nth-child(11)").text(),
 		                    outstoreCompany: row.find("td:nth-child(14)").text()
 		                };
-		                if (data.instoreQuantity == null) {
+		                if (data.instoreQuantity == 0) {
 	            			checkNull = true;
 	            		}
 		                if (data.quantity < data.instoreQuantity) {
@@ -270,7 +278,8 @@
 		                let data = {
 		                	outstoreDate: $("#inOutDate").val(),
 		                	itemName: row.find("td:nth-child(3)").text(),
-		                	outstoreQuantity: row.find("td:nth-child(6) input").val(),
+		                	quantity: Number(row.find("td:nth-child(5)").text()),
+		                	outstoreQuantity: Number(row.find("td:nth-child(6) input").val()),
 		                	outstoreManager: $("#manager").val(),
 		                    instoreNo: row.find("td:nth-child(8)").text(),
 		                	ordersDetailNo: row.find("td:nth-child(9)").text(),
@@ -278,7 +287,7 @@
 		                    instoreCompany: row.find("td:nth-child(13)").text(),
 		                    div: div
 		                };
-		                if (data.outstoreQuantity == null) {
+		                if (data.outstoreQuantity == 0) {
 	            			checkNull = true;
 	            		}
 		                if (data.quantity < data.outstoreQuantity) {
@@ -371,6 +380,9 @@
             			$("#prevPageBtn").hide();
             			$("#currentPage").hide();
             			$("#noData").css("display", "block");
+            		} else {
+            			$("#currentPage").show();
+            			$("#noData").css("display", "none");
             		}
             	},
             	error : function() {
@@ -383,9 +395,9 @@
 	    function loadTodayDate() {
 	    	let objectDate = new Date();
 	    	let day = objectDate.getDate();
-	    	let month = objectDate.getMonth();
+	    	let month = objectDate.getMonth() + 1;
 	    	let year = objectDate.getFullYear();
-	    	let todayDate = year + "-" + (month + 1) + "-" + day;
+	    	let todayDate = year.toString().slice(-2) + "/" + (("00" + month.toString()).slice(-2)) + "/" + (("00" + day.toString()).slice(-2));
 	 		$("#inOutDate").val(todayDate);
 	 	}
 	 	

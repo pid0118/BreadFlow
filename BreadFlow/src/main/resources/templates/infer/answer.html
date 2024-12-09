@@ -11,37 +11,20 @@
 	<div class="card-box mb-30">
 		<!-- 해당 불량 번호값 시작 -->
 		<div class="pd-20">
-			<h2 class="text-black" th:text="${inferNo}"></h2>
+			<h2 style="float: left;" class="text-black">불량 답변 등록</h2>
+			<button type="button" style="float: right;" class="btn btn-dark" id="backBtn" onclick='location.href = "/inferList"'>목록으로 돌아가기</button> <!-- 불량 내역 조회 페이지로 이동 -->
 		</div>
 		<!-- 해당 불량 번호값 끝 -->
 		
+		<div class="pd-20"></div>
 		<form>
 		<div class="pd-20 row">
 			<div class="col-md-3 col-sm-12">
 				<div class="form-group">
-					<label>불량 일자</label>
+					<label>답변 일자</label>
 					<input class="form-control" type="text" name="todayDate" id="todayDate" readonly>
 				</div>
 			</div>
-			
-			<!-- 처분 선택 시작 -->
-			<div class="col-md-3 col-sm-12">
-				<label>처분</label>
-				<div class="form-group">
-					<div class="btn-group btn-group-toggle" data-toggle="buttons">
-						<label class="btn btn-outline-secondary active">
-							<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
-						</label>
-						<label class="btn btn-outline-secondary">
-							<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
-						</label>
-						<label class="btn btn-outline-secondary">
-							<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
-						</label>
-					</div>
-				</div>
-			</div>
-			<!-- 처분 선택 끝 -->
 			
 			<!-- 세션값 정보 입력 시작 -->
 			<div class="col-md-3 col-sm-12">
@@ -56,6 +39,26 @@
 					<input class="form-control" type="text" name="confirmLocation" id="confirmLocation" th:value="${session.companyNo}" readonly>
 				</div>
 			</div>
+			
+			<!-- 처분 선택 시작 -->
+			<div class="col-md-3 col-sm-12">
+				<label>처분</label>
+				<div class="form-group">
+					<div class="btn-group btn-group-toggle" data-toggle="buttons">
+						<label class="btn btn-outline-dark active">
+							<input type="radio" name="options" value="i1" id="return" autocomplete="off" checked>반품
+						</label>
+						<label class="btn btn-outline-dark">
+							<input type="radio" name="options" value="i2" id="dispose" autocomplete="off">폐기
+						</label>
+						<label class="btn btn-outline-dark">
+							<input type="radio" name="options" value="i3" id="withdraw" autocomplete="off">철회
+						</label>
+					</div>
+				</div>
+			</div>
+			<!-- 처분 선택 끝 -->
+			
 			<div class="form-group">
 				<label>답변자</label>
 				<input class="form-control" type="text" name="name" id="name" th:value="${session.name}" readonly>
@@ -85,7 +88,7 @@
 						<td style="display:none;" th:text="${infer.inferDetailCode}"></td>
 						<td th:text="${infer.inferApplicationDate}"></td>
 						<td th:text="${infer.confirmLocation}"></td>
-						<td><img id="inferImage" th:src="|/imgs${infer.inferImage}|" class="img-fluid" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
+						<td><img id="inferImage" th:src="|/imgs${infer.inferImage}|" class="img-fluid" style="max-width: 200px; max-height: 100%; object-fit: cover;"></td>
 						<td th:text="${infer.inferItem}"></td>
 						<td th:text="${infer.inferQuantity}"></td>
 						<td th:text="${infer.inferType}"></td>
@@ -106,10 +109,9 @@
 			</div>
 			<!-- 답변 입력 textarea 끝 -->
 			
+			<button type="button" style="float: right;" class="btn btn-primary" id="submitBtn">등록</button>
 		</div>
 		<div class="pd-20">
-			<button type="button" class="btn btn-primary" id="submitBtn">등록</button>
-			<button type="button" class="btn btn-primary" id="backBtn" onclick='location.href = "/inferList"'>취소</button> <!-- 불량 내역 조회 페이지로 이동 -->
 		</div>
 		</form>
 	</div>
@@ -136,9 +138,9 @@
 		    function loadTodayDate() {
 		    	let objectDate = new Date();
 		    	let day = objectDate.getDate();
-		    	let month = objectDate.getMonth();
+		    	let month = objectDate.getMonth() + 1;
 		    	let year = objectDate.getFullYear();
-		    	let todayDate = year + "/" + (month + 1) + "/" + day;
+		    	let todayDate = year.toString().slice(-2) + "/" + (("00" + month.toString()).slice(-2)) + "/" + (("00" + day.toString()).slice(-2));
 		 		$("#todayDate").val(todayDate);
 		 	}
 			

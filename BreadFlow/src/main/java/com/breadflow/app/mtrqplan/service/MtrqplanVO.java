@@ -11,11 +11,11 @@ public class MtrqplanVO {
 	//== matrequired_plan 테이블 관련 VO ==//
 	String	matrequiredPlanNo;		// 자재소요 계획 번호
 	String	productionPlanNo;		// 생산 계획 번호
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	Date	writeDate;				// 작성 일자
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	Date	startDate;				// 시작 일자
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	Date	lastDate;				// 마감 일자
 	String	deliveryLocation;		// 납품 위치
 	String	supplyCompany;			// 공급(공유) 업체

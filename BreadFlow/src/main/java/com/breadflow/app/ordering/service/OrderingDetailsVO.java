@@ -10,4 +10,5 @@ public class OrderingDetailsVO {
 	private String unit;				// 단위
 	private String standard;			// 규격
 	private int price;					// 금액
+	private String situation;			// 상태
 }

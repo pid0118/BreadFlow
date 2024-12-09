@@ -20,7 +20,7 @@
 				<th:block th:if="${session.div == '본사'}">
 					<div class="col-4">
 						<select class="selectpicker form-control" data-size="5"
-							data-style="btn-outline-secondary" multiple title="시설 선택" id="facilities">
+							data-style="btn-outline-dark" multiple title="시설 선택" id="facilities">
 							<option>제조공장</option>
 							<option>물류창고</option>
 							<option>가맹점</option>
@@ -29,7 +29,7 @@
 				</th:block>
 				<div class="col-4">
 					<select class="selectpicker form-control" data-size="5"
-						data-style="btn-outline-secondary" multiple title="구분" id="major">
+						data-style="btn-outline-dark" multiple title="구분" id="major">
 						<option value="원재료">원재료</option>
 						<option value="부재료">부재료</option>
 						<option value="생산품">생산품</option>
@@ -40,7 +40,7 @@
 					<input type="text" class="form-control" placeholder="품목명" id="itemForm">
 				</div>
 				<div class="col-1">
-					<button class="btn btn-outline-secondary" type="button"
+					<button class="btn btn-outline-primary" type="button"
 						id="stockSearchBtn">
 						<i class="icon-copy bi bi-search"></i>
 					</button>
@@ -143,15 +143,10 @@ $('#safeStockBtn').on('click', function() {
 // 재고 리스트 생성 함수
 function stockList(facilities, major, item){
 	let columns;
-	if(div == '본사'){	// 본사일 경우
+	if(div == '본사' || div == '가맹점'){	// 본사일 경우
 		columns = [ {
 			name : 'facilities',
-			header : '시설',
-			formatter: function(data) {	// 모달 뜨게 수정
-				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
-							${data.value}</a>`;
-				return ele;
-			}
+			header : '시설'
 		}, {
 			name : 'itemCode',
 			hidden: true
@@ -165,7 +160,7 @@ function stockList(facilities, major, item){
 			name : 'orderingItem',
 			header : '품목명',
 			formatter: function(data) {
-				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
+				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button" style="text-decoration: underline;">
 							${data.value}</a>`;
 				return ele;
 			}

@@ -19,4 +19,6 @@ public interface InferMapper {
 	public List<CompanyVO> selectCompany();
 	
 	public int countInferList(FilterVO filterVO);
+	
+	public int updateInstoreQuantity(InferDetailVO inferDetailVO);
 }
