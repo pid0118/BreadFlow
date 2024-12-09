@@ -56,8 +56,12 @@
 				</div>
 
 				<div class="pd-20">
-					<button type="button" class="btn btn-dark" id="rawmatBtn">원재료</button>
-					<button type="button" class="btn btn-dark" id="finprdBtn">완제품</button>
+					<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="matprdBtn" data-bs-toggle="dropdown" aria-expanded="false">구분</button>
+					<ul class="dropdown-menu" id="matprdBtn">
+						<li class="dropdown-item" id="matprdAll">전체</li>
+						<li class="dropdown-item" id="rawmatBtn">원재료</li>
+						<li class="dropdown-item" id="finprdBtn">완제품</li>
+					</ul>
 					<button type="button" class="dropdown btn btn-dark dropdown-toggle" id="itemBtn" data-bs-toggle="dropdown" aria-expanded="false">품목</button>
 					<ul class="dropdown-menu" id="itemMenu">
 						<li class="dropdown-item" id="prodAll">전체</li>
@@ -104,9 +108,9 @@
 				<p style="text-align: center; padding: 20px; color: gray;">목록의 끝입니다.</p>
 			</div>
 			<div class="pagination-container" style="padding: 20px; text-align: center;">
-			    <button type="button" class="btn btn-outline-primary" id="prevPageBtn">이전</button>
-			    <span id="currentPage">1 페이지</span>
-			    <button type="button" class="btn btn-outline-primary" id="nextPageBtn">다음</button>
+			    <button type="button" class="btn btn-outline-primary" id="prevPageBtn">◀</button>
+			    <span style="margin: 20px;" id="currentPage">1 페이지</span>
+			    <button type="button" class="btn btn-outline-primary" id="nextPageBtn">▶</button>
 			</div>
 			<!-- 페이징 끝 -->
 			<button type="button" style="float: right;" class="btn btn-primary" id="submitBtn">등록</button>
@@ -155,6 +159,8 @@
     			year = null;
     			month = null;
     			$("#companyGet").val(null);
+    			$("#itemBtn").text('품목');
+	        	$("#matprdBtn").text("구분");
     			pageClear();
             }
 	        
@@ -176,7 +182,6 @@
 	        // 입고 내역 버튼 클릭
 	        $("#instoreBtn").click(function() {
 	        	$("#secondQuanTh").text("입고 수량");
-	        	$("#itemBtn").text('품목');
 	        	clear();
             	changeFilter();
 	        });
@@ -184,7 +189,6 @@
 	        // 출고 내역 버튼 클릭
 	        $("#outstoreBtn").click(function() {
 	        	$("#secondQuanTh").text("출고 수량");
-	        	$("#itemBtn").text('품목');
 	        	clear();
             	changeFilter();
 	        });
@@ -193,6 +197,7 @@
 	        $("#rawmatBtn").click(function() {
 	        	prd = null;
             	ing = 'ing';
+            	$("#matprdBtn").text("원재료");
             	pageClear();
             	changeFilter();
 	        });
@@ -201,9 +206,19 @@
 	        $("#finprdBtn").click(function() {
 	        	ing = null;
             	prd = 'prd';
+            	$("#matprdBtn").text("완제품");
             	pageClear();
             	changeFilter();
 	        });
+	        
+	     	// 구분별 필터 전체 클릭
+            $('#matprdAll').click(function() {
+            	ing = null;
+            	prd = null;
+            	$("#matprdBtn").text("구분");
+            	pageClear();
+            	changeFilter();
+            });
 	        
 	     	// 품목별 필터 클릭
             $(document).on('click', '.item', function() {
