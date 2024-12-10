@@ -79,8 +79,8 @@
 		</div>
 		<!-- 검색 및 조건 필터 끝 -->
 				
-		<!-- 테이블 시작 -->
 		<div class="pd-20">
+			<!-- 테이블 시작 -->
 			<table class="table stripe hover multiple-select-row nowrap" id="inOutTble">
 				<thead>
 					<tr>
@@ -95,6 +95,7 @@
 						<th id="firstQuanTh">발주 수량</th>
 						<th id="secondQuanTh">입고 수량</th>
 						<th class="datatable-nosort">규격/단위</th>
+						<th>구분</th>
 					</tr>
 				</thead>
 				<tbody id="inOutTable">
@@ -445,6 +446,7 @@
 	                row += "<td style='display:none;'>" + item.purchasePrice + "</td>";
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreCompany + "</td>";
+	                row += "<td>" + item.gb + "</td>";
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
@@ -472,6 +474,7 @@
 	                row += "<td style='display:none;'>" + item.purchasePrice + "</td>";
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.outstoreCompany + "</td>";
+	                row += "<td>" + item.gb + "</td>";
 	            }
 	            row += "</tr>";
 	            tbody.append(row);
