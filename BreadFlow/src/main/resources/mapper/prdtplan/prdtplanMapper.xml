@@ -186,7 +186,7 @@
 	<!-- 생산계획 상세(production_plan_detail) 단건 여러개 입력 -->
 	<insert id="insertPrdtplanDetailsForSelf" parameterType="PrdtplanVO">
 		<selectKey resultType="string" keyProperty="productionDetailNo" order="BEFORE">
-		    SELECT  'SP' || PLANSEQ('production_plan_detail','production_detail_no') AS production_detail_no
+		    SELECT  'SP' || GETSEQ('production_plan_detail','production_detail_no') AS production_detail_no
 			FROM    dual
 	    </selectKey>
 	    
