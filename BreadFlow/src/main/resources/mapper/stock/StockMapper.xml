@@ -27,6 +27,7 @@
 		<if test="companyNo != ''">
 		AND company_no = #{companyNo}
 		</if>
+		AND NVL(expiration_deadline, sysdate + 1) > sysdate
 		GROUP BY item_code, facilities, major, sub, ordering_item, unit || ' / ' || standard, safe_stock_quantity, price
 	</select>
 	
@@ -46,6 +47,7 @@
 		<if test="companyNo != ''">
 		AND company_no = #{companyNo}
 		</if>
+		AND NVL(expiration_deadline, sysdate + 1) > sysdate
 		GROUP BY company_name , ordering_item , unit , standard , safe_stock_quantity , expiration_deadline
 		ORDER BY company_name, expiration_deadline
 	</select>
