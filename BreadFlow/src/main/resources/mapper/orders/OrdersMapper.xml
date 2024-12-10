@@ -13,6 +13,7 @@
         ON o.ordering_code = od.ordering_code
 		WHERE approval_whether = 'd1'
 		AND situation_code = 'e1'
+		ORDER BY ORDERING_DATE
 	</select>
 	
 	<select id="selectOrdersDetailList">
