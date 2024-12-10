@@ -288,7 +288,7 @@
 												<input type="hidden" id="ingredientCodes" />
 											</div>
 										</th:block>
-										<th:block th:if="${session.div == '본사'}">
+										<th:block th:if="${session.div != '본사'}">
 											<div class="col mb-3">
 												<strong>소분류</strong> 
 												<select class="form-select form-select-sm" id="subCategory" disabled>
@@ -336,7 +336,7 @@
 		            document.getElementById('safeStockQuantity').value = formatNumber(ingredient.safeStockQuantity);
 		            document.getElementById('expirationDeadline').value = formatNumber(ingredient.expirationDeadline) + "일";
 		            document.getElementById('purchasePrice').value = formatNumber(ingredient.purchasePrice) + "원";
-		            document.getElementById('amount').value = formatNumber(ingredient.amount) + ingredient.unitName;
+		            document.getElementById('amount').value = formatNumber(ingredient.amount);
 		            document.getElementById('unit').value = ingredient.unit;
 		            document.getElementById('mainCategory').value = ingredient.major;
 		            document.getElementById('ingredientCodes').value = ingredient.ingredientCode;
