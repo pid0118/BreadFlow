@@ -100,4 +100,9 @@ public class MtrqplanServiceImpl implements MtrqplanService {
 	public List<MtrqplanVO> selectBom(String productionPlanNo) {
 		return mtrqplanMapper.selectBom(productionPlanNo);
 	}
+
+	@Override
+	public List<MtrqplanVO> selectPrdtplanLists() {
+		return mtrqplanMapper.selectPrdtplanLists();
+	}
 }
