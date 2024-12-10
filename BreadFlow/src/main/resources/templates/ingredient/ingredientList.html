@@ -98,7 +98,7 @@
 	    
 		<div class="d-flex justify-content-between align-items-center mb-3" style="margin-right:18px;">
 	    <div id="dtSearch"></div>
-	    <div>
+	    <div th:if="${session.div == '본사'}">
 	        <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/ingredientInsert}'|">등록</button>
 	        <button type="button" class="btn btn-danger btn-sm" onclick="checkBoxDeleteClick()">삭제</button>
 	    </div>
@@ -186,75 +186,126 @@
 										<div class="col mb-3">
 											<strong>재료명</strong> <input type="text"
 												class="form-control form-control-sm" id="ingredientName"
-												th:value="${ingredientName}">
+												th:value="${ingredientName}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>원산지</strong> <input type="text"
 												class="form-control form-control-sm" id="origin"
-												th:value="${origin}">
+												th:value="${origin}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>규격</strong> <input type="text"
 												class="form-control form-control-sm" id="standard"
-												th:value="${standard}">
+												th:value="${standard}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>안전재고수량</strong> <input type="text"
 												class="form-control form-control-sm" id="safeStockQuantity"
-												th:value="${safeStockQuantity}">
+												th:value="${safeStockQuantity}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>소비기한</strong> <input type="text"
 												class="form-control form-control-sm" id="expirationDeadline"
-												th:value="${expirationDeadline}">
+												th:value="${expirationDeadline}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>매입가격</strong> <input type="text"
 												class="form-control form-control-sm" id="purchasePrice"
-												th:value="${purchasePrice}">
+												th:value="${purchasePrice}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
 										<div class="col mb-3">
 											<strong>용량</strong> <input type="text"
 												class="form-control form-control-sm" id="amount"
-												th:value="${amount}">
+												th:value="${amount}"
+												th:attr="readonly=${session.div != '본사' ? 'true' : 'false'}">
 										</div>
-										<div class="col mb-3">
-											<strong>단위</strong> 
-											<select class="form-select form-select-sm" id="unit">
-												<option selected>선택하세요</option>
-												<th:block th:each="code : ${codeVal}">
-													<option th:value="${code.codeRule}"
-														th:text="${code.codeVal}"
-														th:selected="${code.codeRule} == ${unit}"></option>
-												</th:block>
-											</select>
-										</div>
-										<div class="col mb-3">
-											<strong>대분류</strong> 
-											<select class="form-select form-select-sm" id="mainCategory">
-												<option selected>선택하세요</option>
-												<th:block th:each="cate : ${category}">
-													<option th:value="${cate.sub}" th:text="${cate.sub}"
-														th:selected="${cate.sub} == ${major}"></option>
-												</th:block>
-											</select>
-										</div>
-										<div class="col mb-3">
-											<strong>소분류</strong> 
-											<select class="form-select form-select-sm" id="subCategory">
-												<option selected>선택하세요</option>
-												<th:block th:each="sb : ${sub}">
-													<option th:value="${sb.sub}" th:text="${sb.sub}"
-														th:selected="${sb.sub} == ${sub}"></option>
-												</th:block>
-											</select>
-											<input type="hidden" id="ingredientCodes" />
-										</div>
+										<th:block th:if="${session.div == '본사'}">
+											<div class="col mb-3">
+												<strong>단위</strong> 
+												<select class="form-select form-select-sm" id="unit">
+													<option selected>선택하세요</option>
+													<th:block th:each="code : ${codeVal}">
+														<option th:value="${code.codeRule}"
+															th:text="${code.codeVal}"
+															th:selected="${code.codeRule} == ${unit}"></option>
+													</th:block>
+												</select>
+											</div>
+										</th:block>
+										<th:block th:if="${session.div != '본사'}">
+											<div class="col mb-3">
+												<strong>단위</strong> 
+												<select class="form-select form-select-sm" id="unit" disabled>
+													<option selected>선택하세요</option>
+													<th:block th:each="code : ${codeVal}">
+														<option th:value="${code.codeRule}"
+															th:text="${code.codeVal}"
+															th:selected="${code.codeRule} == ${unit}"></option>
+													</th:block>
+												</select>
+											</div>
+										</th:block>
+										<th:block th:if="${session.div == '본사'}">
+											<div class="col mb-3">
+												<strong>대분류</strong> 
+												<select class="form-select form-select-sm" id="mainCategory">
+													<option selected>선택하세요</option>
+													<th:block th:each="cate : ${category}">
+														<option th:value="${cate.sub}" th:text="${cate.sub}"
+															th:selected="${cate.sub} == ${major}"></option>
+													</th:block>
+												</select>
+											</div>
+										</th:block>
+										<th:block th:if="${session.div != '본사'}">
+											<div class="col mb-3">
+												<strong>대분류</strong> 
+												<select class="form-select form-select-sm" id="mainCategory" disabled>
+													<option selected>선택하세요</option>
+													<th:block th:each="cate : ${category}">
+														<option th:value="${cate.sub}" th:text="${cate.sub}"
+															th:selected="${cate.sub} == ${major}"></option>
+													</th:block>
+												</select>
+											</div>
+										</th:block>
+										<th:block th:if="${session.div == '본사'}">
+											<div class="col mb-3">
+												<strong>소분류</strong> 
+												<select class="form-select form-select-sm" id="subCategory">
+													<option selected>선택하세요</option>
+													<th:block th:each="sb : ${sub}">
+														<option th:value="${sb.sub}" th:text="${sb.sub}"
+															th:selected="${sb.sub} == ${sub}"></option>
+													</th:block>
+												</select>
+												<input type="hidden" id="ingredientCodes" />
+											</div>
+										</th:block>
+										<th:block th:if="${session.div == '본사'}">
+											<div class="col mb-3">
+												<strong>소분류</strong> 
+												<select class="form-select form-select-sm" id="subCategory" disabled>
+													<option selected>선택하세요</option>
+													<th:block th:each="sb : ${sub}">
+														<option th:value="${sb.sub}" th:text="${sb.sub}"
+															th:selected="${sb.sub} == ${sub}"></option>
+													</th:block>
+												</select>
+												<input type="hidden" id="ingredientCodes" />
+											</div>
+										</th:block>
 									</div>
 								</div>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-success"
+								<button th:if="${session.div == '본사'}" type="button" class="btn btn-success"
 									data-dismiss="modal" onclick="updatePage()">수정</button>
 								<button type="button" class="btn btn-secondary"
 									data-dismiss="modal">닫기</button>

@@ -93,7 +93,7 @@
                     <th class="datatable">매입가</th>
                     <th class="datatable">판매가</th>
                     <th class="datatable">규격</th>
-                    <th class="datatable">BOM</th>
+                    <th th:if="${session.div == '본사'}" class="datatable">BOM</th>
                 </tr>
             </thead>
             <tbody>
@@ -107,8 +107,8 @@
                         <td class="purchasePrice" th:text="|${#numbers.formatInteger(info.purchasePrice, 0, 'COMMA')}원|">[[${info.purchasePrice}]]</td>
                         <td class="salePrice" th:text="|${#numbers.formatInteger(info.salePrice, 0, 'COMMA')}원|">[[${info.salePrice}]]</td>
                         <td>[[${info.standard}]]</td>
-                        <td th:if="${info.bomSituation == 'N'}"> <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
-                        <td th:if="${info.bomSituation == 'Y'}"> <button type="submit" class="btn btn-success btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">수정</button></td>
+                        <td th:if="${info.bomSituation == 'N' && session.div == '본사'}"> <button type="submit" class="btn btn-primary btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">등록</button></td>
+                        <td th:if="${info.bomSituation == 'Y' && session.div == '본사'}"> <button type="submit" class="btn btn-success btn-sm" th:onclick="|location.href='@{/bomInsert(productCode=${info.productCode})}'|">수정</button></td>
                     </tr>
                 </th:block>
             </tbody>
