@@ -293,7 +293,7 @@
 				<div class="footer-actions">
 					<div class="pagination"></div>
 					<div class="total"></div>
-					<button id="salesSub" class="submit-button">마감 정산</button>
+					<button id="salesSub" class="submit-button btn btn-primary">마감 정산</button>
 				</div>
 			</footer>
 		</div>
@@ -309,8 +309,8 @@
 				총 금액: <span id="total-price">0</span>원
 			</div>
 			<div class="button-container">
-				<button type="submit" id="menuSub" class="submit-button">주문</button>
-				<button class="details-button">상세내역</button>
+				<button type="submit" id="menuSub" class="submit-button btn btn-primary" >주문</button>
+				<button class="details-button btn btn-dark" style="font-weight:600; font-size:15px;">상세내역</button>
 			</div>
 		</div>
 		<!-- 우측 메뉴 끝 -->
@@ -432,13 +432,7 @@
 			        })
 			        .then(res => res.json())
 			        .then(data => {
-			        	if(data.length === 0){
-			        		alert("주문한 내역이 없습니다.");
-			        		closeModal();
-			        	}
-			        	else{
-			        		grid.resetData(data);
-			        	}
+			        	grid.resetData(data);
 			        });
 		        }
 		    }

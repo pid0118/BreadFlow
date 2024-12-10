@@ -83,13 +83,17 @@
 	        scrollY: true,
 	        header: {
 	            cells: [
-	            	{ header: '매출(월)', name: 'salesDate' },
+	            	{ header: '매출(년/월)', name: 'saleDate' },
 	                { header: '매출액', name: 'daySales' }
 	            ]
 	        },
 	        columns: [
-	            { name: 'salesDate', header: "매출(월)" },
-	            { name: 'daySales', header: "매출액" }
+	            { name: 'saleDate', formatter: function(data) {
+	            	return data.value.substr(0,4) + '년' + data.value.substr(4,6) + '월'},header: "매출(년/월)" },
+	            { name: 'daySales', align: 'right',
+	                formatter: function (data) {
+	                    return data.value.toLocaleString('ko-KR') + '원';
+	                }, header: "매출액" }
 	        ],
 	        data: []
 	    });
