@@ -106,38 +106,42 @@ $('#safeStockBtn').on('click', function() {
 		alert("선택된 항목이 없습니다.");
 		return;
 	}
-	let items = []; // 품목
-	let total = 0; // 총 금액
-	let date = new Date();
-	date.setDate(date.getDay() + 3);	// 3일 이후
-	if(checkRows.length != 0){
-		checkRows.forEach(row => {
-			let quantity = row.safeStockQuantity - row.stockQuantity;
-			total += quantity * row.price; 
-			items.push({"itemCode" :row.itemCode, 
-					"itemQuan" :quantity});
+	if(!confirm("안전재고를 신청하시겠습니까?")){
+		return;
+	} else {
+		let items = []; // 품목
+		let total = 0; // 총 금액
+		let date = new Date();
+		date.setDate(date.getDate() + 4);	// 3일 이후
+		if(checkRows.length != 0){
+			checkRows.forEach(row => {
+				let quantity = row.safeStockQuantity - row.stockQuantity;
+				total += quantity * row.price; 
+				items.push({"itemCode" :row.itemCode, 
+						"itemQuan" :quantity});
+			})
+		}
+		let list = {
+		    "deliveryDesireDate" : date,
+		    "totalPrice": total,
+		    "itemCodes": items,
+		    "approvalWhether": 'd4'
+		};
+		
+		fetch('../ordering/insert', {
+			method: "POST",
+		 	headers: {
+		    	"Content-Type": "application/json",
+		  	},
+			body: JSON.stringify(list)
 		})
+		.then(response => response.text())
+		.then(data => {
+			alert("안전재고가 신청되었습니다.");
+			window.location.href = data;
+		})
+		.catch(err => console.log(err));
 	}
-	let list = {
-	    "deliveryDesireDate" : date,
-	    "totalPrice": total,
-	    "itemCodes": items,
-	    "approvalWhether": 'd4'
-	};
-	
-	fetch('../ordering/insert', {
-		method: "POST",
-	 	headers: {
-	    	"Content-Type": "application/json",
-	  	},
-		body: JSON.stringify(list)
-	})
-	.then(response => response.text())
-	.then(data => {
-		alert("안전재고가 신청되었습니다.");
-		window.location.href = data;
-	})
-	.catch(err => console.log(err));
 })
 
 // 재고 리스트 생성 함수
@@ -201,7 +205,7 @@ function stockList(facilities, major, item){
 			header : '품목명',
 			align: 'center',
 			formatter: function(data) {
-				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button">
+				let ele = `<a href="#" class="btn-block" data-toggle="modal" data-target="#stockModal" type="button" style="text-decoration: underline;">
 							${data.value}</a>`;
 				return ele;
 			}
