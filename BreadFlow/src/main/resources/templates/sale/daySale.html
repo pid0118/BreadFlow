@@ -125,7 +125,11 @@
 	        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
 	            "7월", "8월", "9월", "10월", "11월", "12월"];
 	        document.getElementById('currentMonth').textContent = `${currentDate.getFullYear()}-${monthNames[currentDate.getMonth()]}`;
-
+	        // 현재 달의 첫 번째 날 (0일로 시작)
+	        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	        // 현재 달의 마지막 날
+	        const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1 , 0);
+	        
 	        calendarBody.innerHTML = '';
 	
 	        let date = 1;
@@ -141,9 +145,9 @@
                         cell.style.textAlign = "center"; // 정렬
                         cell.style.verticalAlign = "middle"; // 세로 중앙 정렬
 	                } else if (i === 0 && j < firstDay.getDay()) {
-	                    // Empty cell
+	                	cell.textContent = '';
 	                } else if (date > lastDay.getDate()) {
-	                    // Empty cell
+	                	cell.textContent = '';
 	                } else {
 	                    const dateDiv = document.createElement('div');
 	                    dateDiv.textContent = date;
