@@ -37,8 +37,8 @@ BACK / IDE / 배포
       <img src="https://velog.velcdn.com/images/shinhyocheol/post/1362c283-9f91-41f6-9f2b-d4d1b27a8931/image.jpeg" style="width: 100px;">
     </td>
   </tr>
-  <tr>
-    <td style="text-align: center;">
+  <tr style="text-align: center;">
+    <td>
      Java21
     </td>
     <td>
