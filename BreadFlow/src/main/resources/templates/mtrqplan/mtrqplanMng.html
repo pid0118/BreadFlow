@@ -536,7 +536,6 @@ $.ajax({
     },
     error: function(result){
  	   alert("조회에 실패하였습니다.");
- 	   console.log(result);
  	}
 });
 
@@ -612,7 +611,6 @@ grid1.on('click', function (ev) {
 	let prdPlanNo = grid1.getValue(ev.rowKey,"productionPlanNo");
 	let isContainPrtd = grid1.getValue(ev.rowKey,"isContainPrdt");
 	
-	console.log(prdPlanNo);
 	resetInfo();
 	$("#updproductionPlanNo").val(prdPlanNo);
 	
@@ -645,7 +643,6 @@ function selectBom(prdPlanNo) {
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -666,7 +663,6 @@ function selectPrdtplanDetail(prdPlanNo) {
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -689,24 +685,11 @@ function selectMtrqplan(prdPlanNo) {
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }	
 // 상세보기 폼 출력 함수 끝
 //=======================================================================		
-	
-	
-	
-//========================================================================
-// [박진석|241128] grid2 클릭이벤트 설정 및 grid3에 관련 데이터 뿌림
-grid2.on('click', function (ev) {
-	console.log(ev);
-	
-	
-})
-// toast grid 클릭이벤트, 데이터 읽기 끝
-//========================================================================
 	
 
 	
@@ -722,8 +705,6 @@ grid3.on('click', function (ev) {
 	if (ev.columnName == "productName" || ev.columnName == "productCode") {
 		currentTarget = ev;
 		
-		console.log(currentTarget);
-		
 		$("#ingrdntSerachBtn").click();
 		
 		let prdtsTblTrs = document.querySelectorAll("#ingrdnts tr");
@@ -734,7 +715,6 @@ grid3.on('click', function (ev) {
 })
 
 function getingrdntsInfo(e) {
-	console.log(e.target);
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
 	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
@@ -748,7 +728,6 @@ function getingrdntsInfo(e) {
 
 
 function ingrdntModalConfirm() {
-	console.log(currentTarget);
 	grid3.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid3.setValue(currentTarget.rowKey, 'productName', prdtNm);
 	grid3.setValue(currentTarget.rowKey, 'unitName', prdUnitName);
@@ -823,14 +802,12 @@ function insertMtrqPlanAjax() {
            type: "POST",
            data:  $('#updateMtrqplanForm').serialize(),
            success: function(data){
-               console.log(data);
                if (data != '')
             	   insertMtrqplanDetailAjax(data);
                	   location.reload(true);            
            },
            error: function(result){
         	   alert("저장에 실패하였습니다.");
-        	   console.log(result);
         	}
        });
 	} else {
@@ -850,7 +827,6 @@ function insertMtrqplanDetailAjax(matrequiredPlanNo) {
 		jsonData.push({...element, matrequiredPlanNo})
 	})
 	
-	console.log(jsonData);
 	setTimeout(500);
 	
 	$.ajax({
@@ -860,11 +836,9 @@ function insertMtrqplanDetailAjax(matrequiredPlanNo) {
         data:  JSON.stringify(jsonData),
         success: function(data){
             alert("성공적으로 저장되었습니다.");
-            console.log(data);
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
-     	   console.log(result);
      	}
 	});
 }
@@ -898,12 +872,10 @@ function getMtrqplanDetailAjax(mtrqPlanNo) {
         type: "GET",
         data: {},
         success: function(data){
-            console.log(data);
             grid3.appendRows(data);
         },
         error: function(result){
      	   alert("조회에 실패하였습니다.");
-     	   console.log(result);
      	}
 	});
 }
@@ -940,12 +912,10 @@ function updateMtrqplanSituation() {
 	        data:  JSON.stringify(jsonData),
 	        success: function(data){
 	            alert("성공적으로 저장되었습니다.");
-	            console.log(data);
 	            location.reload(true);
 	        },
 	        error: function(result){
 	     	   alert("저장에 실패하였습니다.");
-	     	   console.log(result);
 	     	}
 		});
 
