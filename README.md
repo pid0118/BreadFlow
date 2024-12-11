@@ -38,7 +38,7 @@ BACK / IDE / 배포
     </td>
   </tr>
   <tr>
-    <td>
+    <td style="text-align: center;">
      Java21
     </td>
     <td>
