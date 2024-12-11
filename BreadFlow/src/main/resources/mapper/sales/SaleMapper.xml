@@ -34,7 +34,7 @@
 	</select>
 	
 	<select id="selectSaleDetailOffice" resultType="SaleVO" parameterType="String">
-		SELECT TRUNC(sa.sales_date) AS saleDate
+		SELECT TO_CHAR(sa.sales_date, 'yyyyMM') AS saleDate
 		       p.product_name,
 		       SUM(sa.sale_price) AS salePrice,
 		       SUM(sa.quantity) AS Quantity

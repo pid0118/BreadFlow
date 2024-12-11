@@ -54,4 +54,6 @@ public class InstoreVO {
 	
 	private String companyName;
 	private String companyInput;
+	
+	private String gb;
 }

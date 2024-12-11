@@ -293,7 +293,7 @@
 				<div class="footer-actions">
 					<div class="pagination"></div>
 					<div class="total"></div>
-					<button id="salesSub" class="submit-button">마감 정산</button>
+					<button id="salesSub" class="submit-button btn btn-primary">마감 정산</button>
 				</div>
 			</footer>
 		</div>
@@ -309,8 +309,8 @@
 				총 금액: <span id="total-price">0</span>원
 			</div>
 			<div class="button-container">
-				<button type="submit" id="menuSub" class="submit-button">주문</button>
-				<button class="details-button">상세내역</button>
+				<button type="submit" id="menuSub" class="submit-button btn btn-primary" >주문</button>
+				<button class="details-button btn btn-dark" style="font-weight:600; font-size:15px;">상세내역</button>
 			</div>
 		</div>
 		<!-- 우측 메뉴 끝 -->
@@ -392,74 +392,78 @@
 			
 			// 모달창 열고 닫기
 			document.querySelector(".details-button").addEventListener("click", function() {
-				openModal();
-		    });				
-
-		    function openModal() {
-		        const modal = document.getElementById("detailsModal");
-		        modal.style.display = "block";
-
-		        if(!grid){
+			    openModal();
+			});
+			
+			function openModal() {
+			    const modal = document.getElementById("detailsModal");
+			    modal.style.display = "block";
+			
+			    // 그리드가 아직 초기화되지 않았으면 초기화
+			    if (!grid) {
 			        grid = new tui.Grid({
-			        	el: gridEle,
-			        	scrollX: false,
-			        	scrollY: true,
-			        	header: {
-			        		cells: [
-			        			{ header: '시간', name: 'saleDate' },
-			        			{ header: '제품명', name: 'productCode' },
-			        			{ header: '수량', name: 'quantity' },
-			        			{ header: '합계', name: 'salePrice' }
-			        		]
-			        	},
-			        	columns: [
-			        		{ name: 'saleDate', header:"시간", width: 200 },
-			        		{ name: 'productCode', header:"제품명", width: 170 },
-			        		{ name: 'quantity', header:"수량", width: 100 },
-			        		{ name: 'salePrice', header:"금액", align: 'right',
-			        			formatter: function(data){
-			           		 		return data.value.toLocaleString('ko-KR');
-			           	 		}, width: 150 }
-			        	],
-			        	data: []
+			            el: gridEle,
+			            scrollX: false,
+			            scrollY: true,
+			            header: {
+			                cells: [
+			                    { header: '시간', name: 'saleDate' },
+			                    { header: '제품명', name: 'productCode' },
+			                    { header: '수량', name: 'quantity' },
+			                    { header: '합계', name: 'salePrice' }
+			                ]
+			            },
+			            columns: [
+			                { name: 'saleDate', header: "시간", width: 200 },
+			                { name: 'productCode', header: "제품명", width: 170 },
+			                { name: 'quantity', header: "수량", width: 100 },
+			                { name: 'salePrice', header: "금액", align: 'right', 
+			                    formatter: function(data) {
+			                        return data.value.toLocaleString('ko-KR');
+			                    }, width: 150 }
+			            ],
+			            data: [] // 처음에는 데이터 비워놓기
 			        });
-			        
-	        		gridEle.style.maxheight = '400px';
-			        gridEle.style.overflowY = 'auto';
-			        
+			
+			        // 그리드가 초기화되었으면 데이터를 가져옵니다.
 			        fetch('/getSalesDetails', {
-			        	method: "POST"
+			            method: "POST"
 			        })
 			        .then(res => res.json())
 			        .then(data => {
-			        	if(data.length === 0){
-			        		alert("주문한 내역이 없습니다.");
-			        		closeModal();
-			        	}
-			        	else{
-			        		grid.resetData(data);
-			        	}
+			            grid.resetData(data);  // 새 데이터를 그리드에 로드
+			        })
+			        .catch(error => {
+			            console.error("Error fetching sales details:", error);
 			        });
-		        }
-		    }
-
-		    function closeModal() {
-		        let modal = document.getElementById("detailsModal");
-		        modal.style.display = "none";
-		        
-		        if (grid) {
-		            grid.resetData([]); // 데이터 비우기
-		        }
-		    }
-
-		    document.querySelector(".close-button").addEventListener("click", closeModal);
-			    window.addEventListener("click", function(event) {
-			        let modal = document.getElementById("detailsModal");
-			        if (event.target === modal) {
-			            closeModal();
-			        }
-		    });
+			    } else {
+			        // 이미 그리드가 존재하면 데이터를 리셋하고 새로 불러옴
+			        fetch('/getSalesDetails', {
+			            method: "POST"
+			        })
+			        .then(res => res.json())
+			        .then(data => {
+			            grid.resetData(data);  // 새 데이터를 그리드에 로드
+			        });
+			    }
+			}
 			
+			function closeModal() {
+			    let modal = document.getElementById("detailsModal");
+			    modal.style.display = "none";
+			
+			    if (grid) {
+			        grid.resetData([]); // 데이터 비우기
+			    }
+			}
+			
+			document.querySelector(".close-button").addEventListener("click", closeModal);
+			window.addEventListener("click", function(event) {
+			    let modal = document.getElementById("detailsModal");
+			    if (event.target === modal) {
+			        closeModal();
+			    }
+			});
 			    
 			// 주문 등록 ( 매출 상세 저장 )
 			document.querySelector("#menuSub").addEventListener('click', function(){
@@ -679,17 +683,20 @@
 		}
 		
 		// 마감정산
-		document.getElementById("salesSub").addEventListener('click', function(){
-			let url = `/closeSale`
-				fetch(url,{
-					method: "POST"
-				})
-				.then(res => res.text())
-				.then(data => {
-					alert("마감정산 완료!");
-					location.reload();
-				})
-		})
+		document.getElementById("salesSub").addEventListener('click', function() {
+		
+		
+		    // 그리드 데이터가 비어있으면 경고창 표시
+	        let url = `/closeSale`;
+	        fetch(url, {
+	            method: "POST",
+	        })
+	        .then(res => res.text())
+	        .then(data => {
+	            alert("마감정산 완료!");
+	            location.reload(); // 새로고침
+	        })
+		});
 		
 		// 실시간 시간 보여주기
 		function getClock(){

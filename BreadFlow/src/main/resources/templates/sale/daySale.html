@@ -218,19 +218,19 @@
 		    const totalRow = document.getElementById('totalRow');
 		    totalRow.innerHTML = '';
 		    
-		    const days = ['일요일(합)', '월요일(합)', '화요일(합)', '수요일(합)', '목요일(합)', '금요일(합)', '토요일(합)', '총계'];
+		    const days = ['(합계)', '(합계)', '(합계)', '(합계)', '(합계)', '(합계)', '(합계)', '총계'];
 		    
 		    // 요일별 매출 합계 및 총계
 		    for (let i = 0; i < 7; i++) {
 		        const cell = document.createElement('td');
 		        // 요일별 매출 합계
-		        cell.textContent = `${days[i]}\n${dayTotals[i].toLocaleString()}원`; 
+		        cell.innerHTML = `${days[i]}<br>${dayTotals[i].toLocaleString()}원`; 
 		        totalRow.appendChild(cell);
 		    }
 		    
 		    // 월별 합계
 		    const totalCell = document.createElement('td');
-		    totalCell.textContent = `총계\n${monthlySales.toLocaleString()}원`;
+		    totalCell.innerHTML = `총계<br>${monthlySales.toLocaleString()}원`;
 		    totalRow.appendChild(totalCell);
 		}
 		
