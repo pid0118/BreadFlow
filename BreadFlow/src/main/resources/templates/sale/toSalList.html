@@ -44,7 +44,7 @@
 	        scrollY: true,
 	        header: {
 	            cells: [
-	                { header: '번호', name: 'rownum' },
+	                { header: '날짜', name: 'saleDate' },
 	                { header: '지역', name: 'region' },
 	                { header: '코드', name: 'companyNo' },
 	                { header: '가맹점', name: 'companyName' },
@@ -54,7 +54,10 @@
 	            ]
 	        },
 	        columns: [
-	            { name: 'rownum', header: "번호" },
+	            { name: 'saleDate', header: "날짜", align: 'center', 
+	            	formatter: function (data) {
+                    return data.value + '년';  // 연도만 표시
+                } },
 	            { name: 'region', header: "지역" },
 	            { name: 'companyNo', header: "코드" },
 	            { name: 'companyName', header: "가맹점" },
@@ -88,9 +91,9 @@
 	            ]
 	        },
 	        columns: [
-	            { name: 'saleDate', formatter: function(data) {
+	            { name: 'saleDate', align: 'center', formatter: function(data) {
 	            	return data.value.substr(0,4) + '년' + data.value.substr(4,6) + '월'},header: "매출(년/월)" },
-	            { name: 'daySales', align: 'right',
+	            { name: 'daySales', align: 'center',
 	                formatter: function (data) {
 	                    return data.value.toLocaleString('ko-KR') + '원';
 	                }, header: "매출액" }
@@ -101,15 +104,24 @@
 	    gridList.on('click', (ev) => {
 	        const rowIndex = ev.rowKey;
 	        const companyNo = gridList.getValue(rowIndex, 'companyNo');
+	        const saleDate = gridList.getValue(rowIndex, 'saleDate');  // gridList에서 선택된 saleDate (yyyy)
+
+	        // saleDate에서 'yyyy' 추출
+	        const year = saleDate.split('년')[0];
+
+	        // /toSalList에서 해당 연도의 데이터를 가져오기
 	        fetch(`/toSalList/Month?comNo=${companyNo}`, {
 	            method: "POST"
 	        })
 	        .then(res => res.json())
 	        .then(data => {
-	            gridMonth.resetData(data);
-	        })
+	            // 해당 연도에 맞는 데이터만 필터링
+	            const filteredData = data.filter(item => item.saleDate.substr(0, 4) === year);
+
+	            // 필터링된 데이터로 gridMonth 업데이트
+	            gridMonth.resetData(filteredData);
+	        });
 	    });
-	    
 	</script>
 
 </body>
