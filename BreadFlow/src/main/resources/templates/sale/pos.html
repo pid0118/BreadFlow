@@ -326,6 +326,7 @@
 		<!-- 상세내역 모달 끝 -->
 	</div>
 	<script src="https://uicdn.toast.com/tui-grid/latest/tui-grid.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 		let selectedMenu = []; // 메뉴를 담을 배열
 		const itemGrid = document.querySelector(".menu-grid");
@@ -460,43 +461,62 @@
 			});
 			    
 			// 주문 등록 ( 매출 상세 저장 )
-			document.querySelector("#menuSub").addEventListener('click', function(){
-				
-				let items = document.querySelectorAll("#selected-items .list-group-item");
-				let aryMenu = [];
-				items.forEach(item => {
-						let data = {
-							productCode: item.querySelector(".my-0").innerText,
-							salePrice: item.querySelector(".pri").innerText.replace(/,/g,''),
-							quantity: item.querySelector(".su").innerText.split(" ")[1],
-							name: document.querySelector(".user-name").innerText
-						}
-						aryMenu.push(data);
-				});
-				//AJAX
-				if(selectedMenu.length > 0){
-					
-					fetch("/pos", {
-						method: "POST",
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(aryMenu)
-					})
-					.then(response => response.text())
-					.then(data => {
-						alert("주문완료!");
-						location.reload(); // 새로고침
-					})
-					.catch(error => {
-						console.error(error);
-						alert("주문실패 ㅜㅜ..");
-					});
-				}
-				else{
-					alert("주문 내역이 없습니다.");
-				}				
-			}); //END OF if(selectedMenu.length > 0)
+			document.querySelector("#menuSub").addEventListener('click', function() {
+			    // 주문 항목 가져오기
+			    let items = document.querySelectorAll("#selected-items .list-group-item");
+			    let aryMenu = [];
+			    items.forEach(item => {
+			        let data = {
+			            productCode: item.querySelector(".my-0").innerText,
+			            salePrice: item.querySelector(".pri").innerText.replace(/,/g, ''),
+			            quantity: item.querySelector(".su").innerText.split(" ")[1],
+			            name: document.querySelector(".user-name").innerText
+			        };
+			        aryMenu.push(data);
+			    });
+
+			    // 주문 내역이 있을 경우 확인 창 띄우기
+			    if (aryMenu.length > 0) {
+			        Swal.fire({
+			            title: "주문 하시겠습니까??",
+			            icon: "warning",
+			            showCancelButton: true,
+			            confirmButtonColor: "#3085d6",
+			            cancelButtonColor: "#d33",
+			            confirmButtonText: "Yes"
+			        }).then((result) => {
+			            // 사용자가 'Yes, order it!'을 클릭한 경우
+			            if (result.isConfirmed) {
+			                // AJAX 요청
+			                fetch("/pos", {
+			                    method: "POST",
+			                    headers: {
+			                        'Content-Type': 'application/json'
+			                    },
+			                    body: JSON.stringify(aryMenu)
+			                })
+			                .then(response => response.text())
+			                .then(data => {
+			                    Swal.fire({
+			                        title: "주문 완료!",
+			                        icon: "success",
+		                            confirmButtonColor: "#3085d6",
+		                            confirmButtonText: "OK"
+			                    }).then(() => {
+		                            // "OK" 버튼을 누르면 새로고침
+		                            location.reload(); // 페이지 새로고침
+		                        });
+			                })
+			            } // if(result.isConfirmed) end
+			        }); // then end
+			    } else {
+			        // 주문 내역이 없을 경우
+			        Swal.fire({
+			            title: "주문 내역이 없습니다.",
+			            icon: "warning"
+			        });
+			    } // if(aryMenu.length > 0) end
+			}); // eventListener end
 		}); //END of ("#menuSub").addEventListener('click')
 		
 
@@ -685,28 +705,46 @@
 		    .then(res => res.json())  // JSON 형식으로 응답 받기
 		    .then(data => {
 		        if (data.length === 0) {
-		            // 데이터가 없으면 경고창 띄우기
-		            alert("마감할 내역이 없습니다.");
+		            // 데이터가 없으면 SweetAlert2로 경고창 띄우기
+		            Swal.fire({
+		                title: "마감할 내역이 없습니다.",
+		                icon: "warning",
+		                confirmButtonColor: "#3085d6",
+		                confirmButtonText: "OK"
+		            });
 		        } else {
 		            // 데이터가 있으면 마감정산 처리
-		            fetch('/closeSale', {
-		                method: "POST",
-		            })
-		            .then(res => res.text())
-		            .then(data => {
-		                alert("마감정산 완료!");
-		                location.reload(); // 새로고침
-		            })
-		            .catch(error => {
-		                console.error("마감정산 처리 실패:", error);
+		            Swal.fire({
+		                title: "마감 정산 하시겠습니까??",
+		                icon: "warning",
+		                showCancelButton: true,
+		                confirmButtonColor: "#3085d6",
+		                cancelButtonColor: "#d33",
+		                confirmButtonText: "Yes"
+		            }).then((result) => {
+		                if (result.isConfirmed) {
+		                    // 마감정산 처리
+		                    fetch('/closeSale', {
+		                        method: "POST",
+		                    })
+		                    .then(res => res.text())
+		                    .then(data => {
+		                        Swal.fire({
+		                            title: "정산이 완료되었습니다!",
+		                            icon: "success",
+		                            confirmButtonColor: "#3085d6",
+		                            confirmButtonText: "OK"
+		                        }).then(() => {
+		                            // "OK" 버튼을 누르면 새로고침
+		                            location.reload(); // 페이지 새로고침
+		                        });
+		                    })
+		                }
 		            });
 		        }
 		    })
-		    .catch(error => {
-		        console.error("상세내역 조회 실패:", error);
-		        alert("상세내역 조회에 실패했습니다.");
-		    });
 		});
+
 		
 		// 실시간 시간 보여주기
 		function getClock(){
