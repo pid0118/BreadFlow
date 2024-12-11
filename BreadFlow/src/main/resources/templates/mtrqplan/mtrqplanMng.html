@@ -174,7 +174,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title" id="myLargeModalLabel">
-					생산업체 검색
+					공급업체 검색
 				</h4>
 				<button
 					type="button"
@@ -401,7 +401,7 @@ $(document).ready( function () {
     	info: false,
     	paging: false,
     	ajax: {
-   			url: 'getCompanys.do',
+   			url: 'getCompanys.do?div=a2',
    			type: "GET",
    			dataSrc: ''
    		},
@@ -417,7 +417,7 @@ $(document).ready( function () {
     	info: false,
     	paging: false,
     	ajax: {
-   			url: 'getCompanys.do',
+   			url: 'getCompanys.do?div=a4',
    			type: "GET",
    			dataSrc: ''
    		},
@@ -622,6 +622,8 @@ grid1.on('click', function (ev) {
 		selectMtrqplan(prdPlanNo);		
 	} else {
 		selectBom(prdPlanNo);
+		//selectMtrqplan(prdPlanNo);
+		$("#updProgressSituation").val("작성중");
 	}
 	
 })
@@ -807,6 +809,12 @@ function insertMtrqPlanAjax() {
 		}
 		
 	}
+
+	
+	if($("#updProgressSituation").val() != "작성중") {
+		alert("이미 공유된 자재소요계획입니다.");
+		return false;
+	}
 	
 	
 	if(confirm("자재소요계획을 저장 하시겠습니까?")) {
@@ -818,7 +826,7 @@ function insertMtrqPlanAjax() {
                console.log(data);
                if (data != '')
             	   insertMtrqplanDetailAjax(data);
-               
+               	   location.reload(true);            
            },
            error: function(result){
         	   alert("저장에 실패하였습니다.");
@@ -966,8 +974,8 @@ function resetInfo() {
 // [박진석|241126] 생산상태 변환 함수
 function formatSituation(value) {
 	let result = "";
-	if(value == "c1") {
-		result = "작성중";
+	if(value == "c5") {
+		result = "완료";
 	} else if(value == "c2") {
 		result = "확인";
 	} else if (value == "c3") {
@@ -975,7 +983,7 @@ function formatSituation(value) {
 	} else if(value == "c4") {
 		result = "진행중";
 	} else {
-		result ="완료";
+		result ="작성중";
 	}
 	
 	return result;
@@ -991,11 +999,12 @@ function formatDate(dateString) {
     const date = new Date(dateString);
 
     date.setDate(date.getDate());
-
+    
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
     const day = String(date.getDate()).padStart(2, '0');
 
+    
     return `${year}-${month}-${day}`;
 }
 // 날짜 변환함수 끝

@@ -13,16 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.breadflow.app.mtrqplan.service.MtrqplanService;
 import com.breadflow.app.mtrqplan.service.MtrqplanVO;
-import com.breadflow.app.prdtplan.service.PrdtplanService;
-import com.breadflow.app.prdtplan.service.PrdtplanVO;
-
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MtrqplanController {
-	
-	@Autowired
-	private PrdtplanService prdtplanService;
 	
 	@Autowired
 	private MtrqplanService mtrqplanService;
@@ -36,8 +30,8 @@ public class MtrqplanController {
 	
 	@GetMapping("getPrdtPlanList")
 	@ResponseBody
-	public List<PrdtplanVO> getPrdtPlanList() {
-		List<PrdtplanVO> list = prdtplanService.selectPrdtplanList();
+	public List<MtrqplanVO> getPrdtPlanList() {
+		List<MtrqplanVO> list = mtrqplanService.selectPrdtplanLists();
 		System.out.println("\n[MtrqplanController.java] getPrdtPlanList - list: " + list + "\n");
 		return list;
 	}

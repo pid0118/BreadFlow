@@ -32,10 +32,14 @@
 		let chartAry = [];
 		
 		updateChart();
-		//chart4 데이터 ajax 호출 ( 월별 매출 )
+		// chart4 데이터 ajax 호출 ( 월별 매출 )
 		function sales(){
 			fetch("/saleChart", {
-				method: "POST"
+				method: "POST",
+				body: JSON.stringify({ year: selectedYear }),  // 연도 전달
+				headers: {
+					"Content-Type": "application/json"
+				}
 			})
 			.then(res => res.json())
 			.then(data => {
@@ -85,6 +89,7 @@
 		function updateChart() {
 			selectedYear = document.getElementById("yearSelect").value; // 선택된 연도 가져오기
 			sales(); // 새로운 연도로 차트 업데이트
+			productAjax(); // 제품별 매출 차트 업데이트
 		}
 	    
 		// chart5 데이터 ajax 호출 ( 월별 제품 매출 상세 조회 )
@@ -92,6 +97,10 @@
 			let url = `/saleChart/product`;
 			fetch(url, {
 				method: "POST",
+				body: JSON.stringify({ year: selectedYear }),  // 연도 전달
+				headers: {
+					"Content-Type": "application/json"
+				}
 			})
 			.then(res => res.json())
 			.then(data => {
@@ -99,14 +108,19 @@
 
 				// 데이터를 제품별로 처리하여 매출 합산
 				data.forEach(ele => {
+					let saleDate = ele.saleDate;  // 'yyyyMMdd' 형식
+					let year = saleDate.substring(0, 4);  // 연도 추출
 					let sub = ele.sub; // 소분류 (제품명)
 					let proSales = ele.salePrice; // 제품 매출
 
-					// 제품별 매출 데이터를 합산
-					if (productSalesMap[sub]) {
-						productSalesMap[sub] += proSales;
-					} else {
-						productSalesMap[sub] = proSales;
+					// 선택한 연도와 매칭되는 데이터만 처리
+					if (year === selectedYear.toString()) {
+						// 제품별 매출 데이터를 합산
+						if (productSalesMap[sub]) {
+							productSalesMap[sub] += proSales;
+						} else {
+							productSalesMap[sub] = proSales;
+						}
 					}
 				});
 				
@@ -185,13 +199,6 @@
 		            data: productSalesData
 		        }]
 		    });
-		}
-		
-		// 차트를 업데이트하는 함수
-		function updateChart() {
-		    selectedYear = document.getElementById("yearSelect").value; // 선택된 연도 가져오기
-		    sales(); // 월별 매출 차트 업데이트
-		    productAjax(); // 제품별 매출 차트 업데이트
 		}
 	</script>
   </body>

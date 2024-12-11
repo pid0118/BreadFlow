@@ -30,4 +30,6 @@ public interface MtrqplanService {
 	public int insertInstoreForMtrqplan(List<MtrqplanVO> list, String writer, String company);
 
 	public List<MtrqplanVO> selectBom(String id);
+
+	public List<MtrqplanVO> selectPrdtplanLists();
 }

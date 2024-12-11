@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
 
 	// 회원 신규 입력
 	@Override
-	public int insertMember(AccountVO accountVO){
+	public String insertMember(AccountVO accountVO){
 		// [박진석|241202] 비밀번호 암호화
 		String password = accountVO.getPassword();
 		
@@ -50,7 +50,7 @@ public class AccountServiceImpl implements AccountService {
 		accountVO.setPassword(encryptedPw);
 		
 		int result = accountMapper.insertMember(accountVO);
-		return result;
+		return result == 1 ? accountVO.getId() : "";
 	}
 
 	// 비밀번호를 0000으로 초기화

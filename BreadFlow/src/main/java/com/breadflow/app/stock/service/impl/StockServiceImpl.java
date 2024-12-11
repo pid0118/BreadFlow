@@ -23,7 +23,7 @@ public class StockServiceImpl implements StockService{
 		String[] facStrings = facilities.split(",");	// 시설 목록
 		String[] majors = major.split(",");				// 구분 목록)
 		String companyNo = (String)session.getAttribute("companyNo"); // 회사 번호
-		if(companyNo.equals("CP00008")) {
+		if(companyNo.equals("CP00001")) {
 			companyNo = "";
 		}
 		
@@ -39,7 +39,7 @@ public class StockServiceImpl implements StockService{
 	@Override
 	public Map<String, Object> selectDetailStockList(String facilities, String itemCode, HttpSession session) {
 		String companyNo = (String)session.getAttribute("companyNo"); // 회사 번호
-		if(companyNo.equals("CP00008")) {
+		if(companyNo.equals("CP00001")) {
 			companyNo = "";
 		}
 		

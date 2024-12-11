@@ -245,4 +245,37 @@
  FROM ingredient i JOIN bo
                     ON bo.ingredient_code = i.ingredient_code  
 </select>
+
+<select id="selectPrdtplanLists" resultType="MtrqplanVO">
+	SELECT DISTINCT p.production_plan_no
+	        , ( SELECT product_name
+	            FROM product
+	            WHERE product_code = d.product_code ) AS product_code
+	        , d.plan_quantity
+	        , ( SELECT company_name
+	            FROM company
+	            WHERE company_no = p.production_company ) AS production_company
+	        , FIND_CD(d.progress_situation) AS progress_situation
+	        , p.start_date
+	        , p.last_date
+	        , d.other
+	        ,CASE  WHEN mp.production_plan_no IS NULL THEN 'n'
+                ELSE 'y'
+                END AS is_contain_prdt
+	FROM 	production_plan p
+	JOIN (
+	    SELECT d.production_plan_no, d.production_detail_no, d.product_code, d.plan_quantity, d.unit, d.other, d.progress_situation
+	    FROM (
+	        SELECT d.*, ROW_NUMBER() OVER (PARTITION BY d.production_plan_no ORDER BY d.production_detail_no ASC) AS rn
+	        FROM production_plan_detail d
+	    ) d
+	    WHERE d.rn = 1
+	) d
+	ON p.production_plan_no = d.production_plan_no
+    LEFT OUTER JOIN matrequired_plan mp
+            ON d.production_plan_no = mp.production_plan_no
+    WHERE d.progress_situation = 'c1'
+    ORDER BY p.production_plan_no DESC
+</select>
+
 </mapper>

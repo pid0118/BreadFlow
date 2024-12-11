@@ -41,4 +41,5 @@ public class MtrqplanVO {
 	String 	deliveryLocationNm;		// 납품업체 이름
 	String 	productName;			// 재료명
 	Integer instoreGroupNo;			// 입고할 때의 그룹 번호
+	String  isContainPrdt;			// 생산계획에 연결되어졌냐 아니냐 판단
 }

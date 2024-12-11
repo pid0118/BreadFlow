@@ -4,7 +4,9 @@
 	<select id="selectOrderingList" resultType="OrderingVO">
 		SELECT b.*
 		FROM (SELECT rownum rn, a.*
-		     FROM (SELECT ordering_code , ordering_date , ordering_request_manager , total_price , approval_whether , orderform_no , delivery_desire_date 
+		     FROM (SELECT ordering_code , ordering_date , (SELECT company_name
+                                        				   FROM company
+                                        				   WHERE company_no = o.company_no) ordering_company , total_price , approval_whether , orderform_no , delivery_desire_date 
 				   FROM ordering o JOIN company c ON o.company_no = c.company_no
 				   <if test="div != '본사'">
 				   		WHERE o.company_no = #{companyNo}
@@ -35,7 +37,7 @@
 						</otherwise>
 					</choose>) a
 			  ) b
-		WHERE b.rn BETWEEN (#{page}-1) * 5 + 1 AND (#{page}-1) * 5 + 5
+		WHERE b.rn BETWEEN (#{page}-1) * 10 + 1 AND (#{page}-1) * 10 + 10
 	</select>
 	
 	<select id="selectOrderingPage">

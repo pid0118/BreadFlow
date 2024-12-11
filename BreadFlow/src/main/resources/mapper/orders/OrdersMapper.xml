@@ -13,6 +13,7 @@
         ON o.ordering_code = od.ordering_code
 		WHERE approval_whether = 'd1'
 		AND situation_code = 'e1'
+		ORDER BY ORDERING_DATE
 	</select>
 	
 	<select id="selectOrdersDetailList">
@@ -113,7 +114,7 @@
 						</when>
 					</choose>) a
 		      ) b 
-		WHERE b.rn BETWEEN (#{page}-1) * 5 + 1 AND (#{page}-1) * 5 + 5
+		WHERE b.rn BETWEEN (#{page}-1) * 10 + 1 AND (#{page}-1) * 10 + 10
 	</select>
 	
 	<select id="selectOrdersComListPage">

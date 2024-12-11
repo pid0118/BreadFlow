@@ -841,8 +841,8 @@ function updateMtrqplanSituComplete() {
 		        contentType: "application/json",
 		        data:  JSON.stringify(jsonData),
 		        success: function(data){
-		            console.log(data);
 		            insertInstoreForMtrqplan(data);
+		            alert("생산과 입고처리가 완료되었습니다.");
 		            location.reload(true);
 		        },
 		        error: function(result){
@@ -865,7 +865,7 @@ function updateMtrqplanSituComplete() {
 //========================================================================	
 // [박진석|241203] 생산 완료된 자재건 입고(instore)처리하는 AJAX
 function insertInstoreForMtrqplan() {
-	let lastDate = convertDate($("#updLastDate").val());
+	let lastDate = formatDate($("#updLastDate").val());
 	let matrequiredPlanNo = $("#updProductionPlanNo").val();
 	
 	let jsonData = [];
@@ -881,7 +881,6 @@ function insertInstoreForMtrqplan() {
         contentType: "application/json",
         data:  JSON.stringify(jsonData),
         success: function(data){
-            alert("성공적으로 저장되었습니다.");
             console.log(data);
             location.reload(true);
         },
