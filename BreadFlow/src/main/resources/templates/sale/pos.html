@@ -396,56 +396,50 @@
 			});
 			
 			function openModal() {
-			    const modal = document.getElementById("detailsModal");
-			    modal.style.display = "block";
-			
-			    // 그리드가 아직 초기화되지 않았으면 초기화
-			    if (!grid) {
-			        grid = new tui.Grid({
-			            el: gridEle,
-			            scrollX: false,
-			            scrollY: true,
-			            header: {
-			                cells: [
-			                    { header: '시간', name: 'saleDate' },
-			                    { header: '제품명', name: 'productCode' },
-			                    { header: '수량', name: 'quantity' },
-			                    { header: '합계', name: 'salePrice' }
-			                ]
-			            },
-			            columns: [
-			                { name: 'saleDate', header: "시간", width: 200 },
-			                { name: 'productCode', header: "제품명", width: 170 },
-			                { name: 'quantity', header: "수량", width: 100 },
-			                { name: 'salePrice', header: "금액", align: 'right', 
-			                    formatter: function(data) {
-			                        return data.value.toLocaleString('ko-KR');
-			                    }, width: 150 }
-			            ],
-			            data: [] // 처음에는 데이터 비워놓기
-			        });
-			
-			        // 그리드가 초기화되었으면 데이터를 가져옵니다.
-			        fetch('/getSalesDetails', {
-			            method: "POST"
-			        })
-			        .then(res => res.json())
-			        .then(data => {
+			    // 먼저 데이터를 fetch해서 가져오기
+			    fetch('/getSalesDetails', {
+			        method: "POST"
+			    })
+			    .then(res => res.json())
+			    .then(data => {
+			        // 데이터가 없을 경우 경고창만 띄우고 모달은 열지 않음
+			        if (data.length === 0) {
+			            alert("상세 내역이 없습니다.");
+			        } else {
+			            // 데이터가 있으면 그리드에 로드하고 모달 열기
+			            const modal = document.getElementById("detailsModal");
+			            modal.style.display = "block";
+
+			            // 그리드가 아직 초기화되지 않았으면 초기화
+			            if (!grid) {
+			                grid = new tui.Grid({
+			                    el: gridEle,
+			                    scrollX: false,
+			                    scrollY: true,
+			                    header: {
+			                        cells: [
+			                            { header: '시간', name: 'saleDate' },
+			                            { header: '제품명', name: 'productCode' },
+			                            { header: '수량', name: 'quantity' },
+			                            { header: '합계', name: 'salePrice' }
+			                        ]
+			                    },
+			                    columns: [
+			                        { name: 'saleDate', header: "시간", width: 200 },
+			                        { name: 'productCode', header: "제품명", width: 170 },
+			                        { name: 'quantity', header: "수량", width: 100 },
+			                        { name: 'salePrice', header: "금액", align: 'right', 
+			                            formatter: function(data) {
+			                                return data.value.toLocaleString('ko-KR');
+			                            }, width: 150 }
+			                    ],
+			                    data: [] // 처음에는 데이터 비워놓기
+			                });
+			            }
+
 			            grid.resetData(data);  // 새 데이터를 그리드에 로드
-			        })
-			        .catch(error => {
-			            console.error("Error fetching sales details:", error);
-			        });
-			    } else {
-			        // 이미 그리드가 존재하면 데이터를 리셋하고 새로 불러옴
-			        fetch('/getSalesDetails', {
-			            method: "POST"
-			        })
-			        .then(res => res.json())
-			        .then(data => {
-			            grid.resetData(data);  // 새 데이터를 그리드에 로드
-			        });
-			    }
+			        }
+			    })
 			}
 			
 			function closeModal() {
@@ -684,18 +678,34 @@
 		
 		// 마감정산
 		document.getElementById("salesSub").addEventListener('click', function() {
-		
-		
-		    // 그리드 데이터가 비어있으면 경고창 표시
-	        let url = `/closeSale`;
-	        fetch(url, {
-	            method: "POST",
-	        })
-	        .then(res => res.text())
-	        .then(data => {
-	            alert("마감정산 완료!");
-	            location.reload(); // 새로고침
-	        })
+		    // 마감정산 버튼 클릭 시, 상세내역을 조회하고 그 길이를 확인하는 부분
+		    fetch('/getSalesDetails', {
+		        method: "POST"
+		    })
+		    .then(res => res.json())  // JSON 형식으로 응답 받기
+		    .then(data => {
+		        if (data.length === 0) {
+		            // 데이터가 없으면 경고창 띄우기
+		            alert("마감할 내역이 없습니다.");
+		        } else {
+		            // 데이터가 있으면 마감정산 처리
+		            fetch('/closeSale', {
+		                method: "POST",
+		            })
+		            .then(res => res.text())
+		            .then(data => {
+		                alert("마감정산 완료!");
+		                location.reload(); // 새로고침
+		            })
+		            .catch(error => {
+		                console.error("마감정산 처리 실패:", error);
+		            });
+		        }
+		    })
+		    .catch(error => {
+		        console.error("상세내역 조회 실패:", error);
+		        alert("상세내역 조회에 실패했습니다.");
+		    });
 		});
 		
 		// 실시간 시간 보여주기
@@ -707,8 +717,6 @@
 			clock.innerText = `${h}시 ${m}분 ${s}초`;
 		}
 	
-		//
-
     </script>
 </body>
 </html>
