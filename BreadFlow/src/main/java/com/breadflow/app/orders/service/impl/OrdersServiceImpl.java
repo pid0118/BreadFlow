@@ -75,9 +75,8 @@ public class OrdersServiceImpl implements OrdersService {
 	// 주문 현황 조회
 	@Override
 	public Map<String, Object> selectOrdersComList(String sort, int page, HttpSession session) {
-		//List<String> list = Arrays.asList(status.split(","));
-		String comNo = "";
-		if(!session.getAttribute("div").equals("본사")) {
+		String comNo = "";	// 회사 번호
+		if(!session.getAttribute("div").equals("본사")) {	// 본사가 아닐때
 			comNo = (String)session.getAttribute("companyNo");
 		}
 		List<OrdersComVO> oList = ordersMapper.selectOrdersComList(sort, page, comNo);	// 전체 발주 조회
