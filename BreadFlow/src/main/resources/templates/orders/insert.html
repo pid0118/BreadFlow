@@ -302,7 +302,6 @@ $('#addOrders').on('click', function() {
 			// 츨고업체 입력칸 클릭 이벤트
 			newgrid.on('click', function (ev) {
 				if(ev.columnName == 'outCompany' && event.target.tagName != 'TH'){
-					console.log(newgrid.getRow(ev.rowKey).itemCode);
 					eve = ev;
 					ele = newgrid.getElement(ev.rowKey, ev.columnName); // 선택된 요소
 					if(ele != null){
@@ -431,7 +430,6 @@ $('#requestBtn').on('click', function() {
 			break;
 		}
 	}
-	console.log(ordergrid.getData());
 	if(checked == true){
 		$.ajax({
 			type: 'POST',
