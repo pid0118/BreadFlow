@@ -83,6 +83,7 @@
 </head>
 <body>
     <div class="calendar">
+    <h4 class="text h2" style="margin-bottom:10px;">매출 조회</h4>
         <div class="calendar-header">
             <button id="prevMonth">&lt;</button>
             <h2 id="currentMonth"></h2>
@@ -224,7 +225,8 @@
 		    for (let i = 0; i < 7; i++) {
 		        const cell = document.createElement('td');
 		        // 요일별 매출 합계
-		        cell.textContent = `${days[i]}\n${dayTotals[i].toLocaleString()}원`; 
+		        cell.textContent = `${days[i]}
+		        					\n${dayTotals[i].toLocaleString()}원`; 
 		        totalRow.appendChild(cell);
 		    }
 		    
