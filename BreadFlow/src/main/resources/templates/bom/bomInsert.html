@@ -294,7 +294,7 @@
 	        
 	     	// 품목 추가 (발주 신청 테이블)
 			itemAdd.addEventListener('click', function() {
-				let checktd = document.querySelectorAll('table .custom-checkbox input.check:checked');
+				let checktd = document.querySelectorAll('#bd-example-modal-lg table .custom-checkbox input.check:checked');
 				
 				if (checktd.length === 0) {
 			        alert('선택된 품목이 없습니다.');
