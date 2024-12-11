@@ -39,7 +39,7 @@ BACK / IDE / 배포
   </tr>
   <tr style="text-align: center;">
     <td>
-     Java21
+     :Java21:
     </td>
     <td>
       SpringBoot<br>3.2.11
