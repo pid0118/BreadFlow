@@ -7,6 +7,12 @@
     <meta charset="UTF-8">
     <title>제품목록</title>
     <style>
+    	.form-container {
+            background-color: white;
+            height: 100%;
+            padding: 20px;
+            border-radius: 4px;
+        }
         .clickable {
             cursor: pointer;
             color: #0d6efd;
@@ -54,7 +60,8 @@
     </style>
 </head>
 <body>
-    <h2 class="mb-4">BOM제품목록</h2>
+  <div class="form-container">
+    <h2 class="mb-4">BOM관리</h2>
     <div class="d-flex gap-3 mb-3 " style="margin-left: -0.75rem;">
         <div class="col-md-3">
             <div class="form-group">
@@ -114,7 +121,7 @@
             </tbody>
         </table>
     </div>
-    
+  </div> 
   <script>
   
 	  //Initialize DataTable without sorting 데이터테이블 사용 설정
