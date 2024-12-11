@@ -31,8 +31,8 @@ public class OrderingServiceImpl implements OrderingService{
 	@Override
 	public Map<String, Object> selectOrderingList(String status, String sort, int page, HttpSession session) {
 		List<String> list = Arrays.asList(status.split(",")); // 상태 배열 , 기준으로 나누어 list
-		String div = (String)session.getAttribute("div");
-		String cno = (String)session.getAttribute("companyNo");
+		String div = (String)session.getAttribute("div");	// 업체 분류
+		String cno = (String)session.getAttribute("companyNo");	// 회사 번호
 
 		int totalPage = orderingMapper.selectOrderingPage(list, sort, page, div, cno);	// 총 페이지
 		List<OrderingVO> oList = orderingMapper.selectOrderingList(list, sort, page, div, cno);	// 전체 발주 조회
