@@ -169,89 +169,9 @@
 	</select>
 	
 	<select id="selectInstoreListForInsert" resultType="InstoreVO">
-		WITH OUTSTORE_THING AS (
-		SELECT
-            '제품' as gb,
-		    O.ORDERING_DATE,
-		    OD.QUANTITY,
-		    ODS.ORDERING_DETAIL_CODE,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN FIND_CD(PRD.UNIT) ELSE FIND_CD(ING.UNIT) END AS UNIT,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME,
-		    ODS.OUTSTORE_COMPANY,
-		    ODS.INSTORE_COMPANY
-		FROM
-		    	      ORDERING_DETAIL OD
-		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
-		    LEFT JOIN ORDERING 		  O   ON O.ORDERING_CODE = OD.ORDERING_CODE
-		    LEFT JOIN INGREDIENT      ING ON OD.ORDERING_INGREDIENT = ING.INGREDIENT_CODE
-		    LEFT JOIN PRODUCT         PRD ON OD.ORDERING_PRODUCT = PRD.PRODUCT_CODE
-		WHERE
-			ODS.OUTSTORE_COMPANY = #{companyInput}
-			AND OD.SITUATION_CODE = 'e2'
-			<if test="comp != null and comp != ''">
-			AND ODS.INSTORE_COMPANY = #{comp}
-			</if>
-			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
-			</if>
-			<if test="year != null and year != ''">
-			AND EXTRACT(YEAR FROM CAST(ORDERING_DATE AS DATE)) = TO_NUMBER(#{year})
-			</if>
-			<if test="month != null and month != ''">
-			AND EXTRACT(MONTH FROM CAST(ORDERING_DATE AS DATE)) = TO_NUMBER(#{month})
-			</if>
-			<if test="prd != null and prd != ''">
-			AND OD.ORDERING_PRODUCT IS NOT NULL
-			</if>
-			<if test="ing != null and ing != ''">
-			AND OD.ORDERING_INGREDIENT IS NOT NULL
-			</if>
-			
-        UNION ALL
-        
-        SELECT * FROM (
-	        SELECT
-	            '생산' as gb,
-	            I.INSTORE_DATE,
-	            I.INSTORE_QUANTITY,
-	            I.ORDERING_DETAIL_CODE,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN FIND_CD(PRD.UNIT) ELSE FIND_CD(ING.UNIT) END AS UNIT,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PRO_NAME(I.ITEM_CODE) ELSE ING_NAME(I.ITEM_CODE) END AS ITEMNAME,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PP.PRODUCTION_COMPANY ELSE MP.DELIVERY_LOCATION END AS OUTSTORE_COMPANY,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PP.DELIVERY_LOCATION ELSE MP.SUPPLY_COMPANY END AS INSTORE_COMPANY
-	        FROM
-	                      INSTORE I
-	            LEFT JOIN PRODUCTION_PLAN_DETAIL  PPD ON I.ORDERING_DETAIL_CODE = PPD.PRODUCTION_PLAN_NO
-	            LEFT JOIN PRODUCTION_PLAN         PP  ON PPD.PRODUCTION_PLAN_NO = PP.PRODUCTION_PLAN_NO
-	            LEFT JOIN MATREQUIRED_PLAN_DETAIL MPD ON I.ORDERING_DETAIL_CODE = MPD.MATREQUIRED_PLAN_NO
-	            LEFT JOIN MATREQUIRED_PLAN        MP  ON MPD.MATREQUIRED_PLAN_NO = MP.MATREQUIRED_PLAN_NO
-	            LEFT JOIN INGREDIENT              ING ON ING.INGREDIENT_CODE = I.ITEM_CODE
-	            LEFT JOIN PRODUCT                 PRD ON PRD.PRODUCT_CODE = I.ITEM_CODE
-        ) WHERE 
-        	OUTSTORE_COMPANY = #{companyInput}
-			<if test="comp != null and comp != ''">
-			AND INSTORE_COMPANY = #{comp}
-			</if>
-			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
-			</if>
-			<if test="year != null and year != ''">
-			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
-			</if>
-			<if test="month != null and month != ''">
-			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
-			</if>
-		) 
 		SELECT * FROM (SELECT a.*, ROWNUM AS rnum FROM (
 		
-		SELECT * FROM OUTSTORE_THING
-			
-		ORDER BY
-		    ORDERING_DATE DESC
-		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize}
-		<!-- SELECT
+		SELECT
 		    O.ORDERING_DATE,
 		    OD.QUANTITY,
 		    ODS.ORDERING_DETAIL_CODE,
@@ -295,7 +215,7 @@
 		ORDER BY
 		    O.ORDERING_DATE DESC 
 		    
-		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize} -->
+		) a WHERE ROWNUM <![CDATA[ <= ]]> #{page} * #{pageSize} ) a WHERE rnum >= (#{page} - 1) * #{pageSize}
 	</select>
 	
 	<insert id="insertInstoreInfo" parameterType="InstoreVO">
@@ -490,18 +410,7 @@
 	
 	<select id="countInstoreListForInsert" resultType="int">
 	    SELECT COUNT(*)
-	    FROM (
-		SELECT
-            '제품' as gb,
-		    O.ORDERING_DATE,
-		    OD.QUANTITY,
-		    ODS.ORDERING_DETAIL_CODE,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN FIND_CD(PRD.UNIT) ELSE FIND_CD(ING.UNIT) END AS UNIT,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
-		    CASE WHEN OD.ORDERING_INGREDIENT IS NULL THEN PRD.PRODUCT_NAME ELSE ING.INGREDIENT_NAME END AS ITEMNAME,
-		    ODS.OUTSTORE_COMPANY,
-		    ODS.INSTORE_COMPANY
-		FROM
+	    FROM
 		    	      ORDERING_DETAIL OD
 		    LEFT JOIN ORDERS_DETAIL   ODS ON ODS.ORDERING_DETAIL_CODE = OD.ORDERING_DETAIL_CODE
 		    LEFT JOIN ORDERING 		  O   ON O.ORDERING_CODE = OD.ORDERING_CODE
@@ -528,43 +437,6 @@
 			<if test="ing != null and ing != ''">
 			AND OD.ORDERING_INGREDIENT IS NOT NULL
 			</if>
-			
-        UNION ALL
-        
-        SELECT * FROM (
-	        SELECT
-	            '생산' as gb,
-	            I.INSTORE_DATE,
-	            I.INSTORE_QUANTITY,
-	            I.ORDERING_DETAIL_CODE,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN FIND_CD(PRD.UNIT) ELSE FIND_CD(ING.UNIT) END AS UNIT,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PRD.STANDARD ELSE ING.STANDARD END AS STANDARD,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PRO_NAME(I.ITEM_CODE) ELSE ING_NAME(I.ITEM_CODE) END AS ITEMNAME,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PP.PRODUCTION_COMPANY ELSE MP.DELIVERY_LOCATION END AS OUTSTORE_COMPANY,
-	            CASE WHEN SUBSTR(I.ORDERING_DETAIL_CODE, 1, 2) = 'SP' THEN PP.DELIVERY_LOCATION ELSE MP.SUPPLY_COMPANY END AS INSTORE_COMPANY
-	        FROM
-	                      INSTORE I
-	            LEFT JOIN PRODUCTION_PLAN_DETAIL  PPD ON I.ORDERING_DETAIL_CODE = PPD.PRODUCTION_PLAN_NO
-	            LEFT JOIN PRODUCTION_PLAN         PP  ON PPD.PRODUCTION_PLAN_NO = PP.PRODUCTION_PLAN_NO
-	            LEFT JOIN MATREQUIRED_PLAN_DETAIL MPD ON I.ORDERING_DETAIL_CODE = MPD.MATREQUIRED_PLAN_NO
-	            LEFT JOIN MATREQUIRED_PLAN        MP  ON MPD.MATREQUIRED_PLAN_NO = MP.MATREQUIRED_PLAN_NO
-	            LEFT JOIN INGREDIENT              ING ON ING.INGREDIENT_CODE = I.ITEM_CODE
-	            LEFT JOIN PRODUCT                 PRD ON PRD.PRODUCT_CODE = I.ITEM_CODE
-        ) WHERE 
-        	OUTSTORE_COMPANY = #{companyInput}
-			<if test="comp != null and comp != ''">
-			AND INSTORE_COMPANY = #{comp}
-			</if>
-			<if test="item != null and item != ''">
-		    AND (ING.INGREDIENT_NAME LIKE '%'|| #{item} ||'%' OR PRD.PRODUCT_NAME LIKE '%'|| #{item} ||'%')
-			</if>
-			<if test="year != null and year != ''">
-			AND EXTRACT(YEAR FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{year})
-			</if>
-			<if test="month != null and month != ''">
-			AND EXTRACT(MONTH FROM CAST(INSTORE_DATE AS DATE)) = TO_NUMBER(#{month})
-			</if>
-		)
 	</select>
 	
 	<select id="getInstoreLastGroupNo" resultType="Integer">
