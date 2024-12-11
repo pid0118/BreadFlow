@@ -519,7 +519,13 @@ const grid = new Grid({
 		  header: '기타사항',
 		  name: 'other',
 		  editor: 'text',
-		}
+		},
+		{
+		  header: '디테일 번호',
+		  name: 'materialDetailNo',
+		  editor: 'text',
+		  hidden: true,
+		},
 	],
 	data: [
 	],
@@ -719,9 +725,10 @@ function insertOrUpdatePrdPlanAjax() {
 	           type: "POST",
 	           data:  $('#updatePrdtplanForm').serialize(),
 	           success: function(data){
+	               if (data != '') {
+	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장	            	   
+	               }
 	               alert("성공적으로 저장되었습니다.");
-	               if (data != '')
-	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장
 	               location.reload(true);
 	           },
 	           error: function(result){
@@ -755,7 +762,6 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
         contentType: "application/json",
         data:  JSON.stringify(jsonData),
         success: function(data){
-            alert("성공적으로 저장되었습니다.");
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
