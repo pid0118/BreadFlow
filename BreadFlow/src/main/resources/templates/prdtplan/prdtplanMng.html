@@ -472,7 +472,6 @@ function getPrdtplanInfo(no) {
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -484,18 +483,15 @@ function getPrdtplanInfo(no) {
 // ========================================================================
 // [박진석|24.11.26] 디테일 단건조회 AJAX
 function getPrdtplanDetailInfo(no) {
-	console.log(no);
 	$.ajax({
 	    url: "selectPrdtplanDetail?id=" + no,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
-	    	console.log(data);
 	    	grid.appendRows(data);
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -514,12 +510,10 @@ const grid = new Grid({
 		{
 		  header: '제품코드',
 		  name: 'productCode',
-		  editor: 'text',
 		},
 		{
 		  header: '제품명',
 		  name: 'productName',
-		  editor: 'text',
 		},
 		{
 		  header:'계획수량',
@@ -529,7 +523,6 @@ const grid = new Grid({
 		{
 		  header: '단위',
 		  name: 'unit',
-		  editor: 'text',
 		},
 		{
 		  header: '기타사항',
@@ -682,7 +675,6 @@ let prdtCd = "";
 let prdUnit = "";
 
 grid.on('click', function (ev) {
-	console.log(ev.columnName);
 	if (ev.columnName == "productName" || ev.columnName == "productCode") {
 		currentTarget = ev;
 		$("#prdtSerachBtn").click();
@@ -696,8 +688,6 @@ grid.on('click', function (ev) {
 })
 
 function getPrdtInfo(e) {
-	console.log(e);
-	
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
 	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
@@ -708,7 +698,6 @@ function getPrdtInfo(e) {
 }
 
 function prdtModalConfirm() {
-	console.log(currentTarget);
 	grid.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid.setValue(currentTarget.rowKey, 'productName', prdtNm);
 	grid.setValue(currentTarget.rowKey, 'unit', prdUnit);
@@ -767,7 +756,6 @@ function insertOrUpdatePrdPlanAjax() {
 	           type: "POST",
 	           data:  $('#updatePrdtplanForm').serialize(),
 	           success: function(data){
-	               console.log(data);
 	               if (data != '')
 	               		insertPrdPlanDetailAjax(data);
 	               location.reload(true);
@@ -775,7 +763,6 @@ function insertOrUpdatePrdPlanAjax() {
 	           },
 	           error: function(result){
 	        	   alert("저장에 실패하였습니다.");
-	        	   console.log(result);
 	        	}
 	       });
 		} else {
@@ -799,9 +786,6 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 		jsonData.push({...element, productionPlanNo })
 	});
 	
-	console.log(JSON.stringify(jsonData));
-	
-	
 	$.ajax({
 		url: "insertPrdtplanDetails.do",
         type: "post",
@@ -809,11 +793,9 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
         data:  JSON.stringify(jsonData),
         success: function(data){
             alert("성공적으로 저장되었습니다.");
-            console.log(data);
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
-     	   console.log(result);
      	}
 	});
 }	
@@ -842,12 +824,10 @@ function updatePrdtplanSituation() {
 		        data:  JSON.stringify(jsonData),
 		        success: function(data){
 		            alert("성공적으로 저장되었습니다.");
-		            console.log(data);
 		            location.reload(true);
 		        },
 		        error: function(result){
 		     	   alert("저장에 실패하였습니다.");
-		     	   console.log(result);
 		     	}
 			});
 			

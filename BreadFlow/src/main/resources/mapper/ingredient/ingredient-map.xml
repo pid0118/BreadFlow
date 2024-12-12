@@ -119,9 +119,11 @@
 		SELECT ingredient_name
 		FROM ingredient
 		WHERE ingredient_name = #{ingredientName}
+		<if test="ingredientCode != null and ingredientCode != ''">
 		<![CDATA[
 		  AND ingredient_code <> #{ingredientCode}
 		]]>
+		</if>
 	</select>
 	
 </mapper>

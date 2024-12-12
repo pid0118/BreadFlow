@@ -202,7 +202,6 @@
 				<thead>
 					<tr>
 						<th class="table-plus">거래일자</th>
-						<th class="datatable-nosort">구분</th>
 						<th class="datatable-nosort">품목</th>
 						<th>수량</th>
 						<th class="datatable-nosort">규격/단위</th>
@@ -589,7 +588,11 @@
                     row += "<td>" + `<button type="button" class="btn btn-outline-primary getListBtn" data-bs-toggle="modal" data-bs-target="#getListModal">거래 명세서 발행</button>` + "</td>";
                 }
                 row += "</tr>";
-                tbody.append(row);
+		if (item.itemName == null || item.itemName == '') {
+		    'pass'
+		} else {
+		    tbody.append(row);	
+		}
             });
             
          	// 모달 창 버튼 클릭 시 처리

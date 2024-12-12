@@ -162,7 +162,7 @@
 				<div class="modal-dialog modal-lg modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h4 class="modal-title" id="ingredientDetailModalLabel">제품
+							<h4 class="modal-title" id="ingredientDetailModalLabel">재료
 								상세정보</h4>
 							<button type="button" class="close" data-dismiss="modal"
 								aria-hidden="true">×</button>
@@ -698,15 +698,15 @@
 		let sameCheck = true;
     	
     	$("#ingredientName").on('change', function(){
-    		let data = { productName: $('#ingredientName').val(),
-    					 productCode: $('#ingredientCode').val()};
+    		let data = { ingredientName: $('#ingredientName').val(),
+    					 ingredientCode: $('#ingredientCode').val()};
     		
     		$.ajax({
     			url:"/ingredientNameCheck",
     			type: "post",
     			data: data,
     		}).done((res)=> {
-    			sameCheck = true;
+    			sameCheck = res;
     		}).fail((err)=>{
     			alert("이미등록된 재료이거나 재료명이 중복되었습니다")
     			console.log(err);

@@ -36,6 +36,9 @@ BACK / IDE / 배포
     <td>
       <img src="https://velog.velcdn.com/images/shinhyocheol/post/1362c283-9f91-41f6-9f2b-d4d1b27a8931/image.jpeg" style="width: 100px;">
     </td>
+    <td>
+      
+    </td>
   </tr>
   <tr>
     <td>

@@ -460,7 +460,6 @@ function getPrdtplanInfo(no) {
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -472,18 +471,15 @@ function getPrdtplanInfo(no) {
 // ========================================================================
 // [박진석|24.11.26] 디테일 단건조회 AJAX
 function getPrdtplanDetailInfo(no) {
-	console.log(no);
 	$.ajax({
 	    url: "selectMtrqplanDetailForGrid?id=" + no,
 	    type: "GET",
 	    data: {},
 	    success: function(data){
-	    	console.log(data);
 	    	grid.appendRows(data);
 	    },
 	    error: function(result){
 	 	   alert("조회에 실패하였습니다.");
-	 	   console.log(result);
 	 	}
 	});
 }
@@ -523,7 +519,13 @@ const grid = new Grid({
 		  header: '기타사항',
 		  name: 'other',
 		  editor: 'text',
-		}
+		},
+		{
+		  header: '디테일 번호',
+		  name: 'materialDetailNo',
+		  editor: 'text',
+		  hidden: true,
+		},
 	],
 	data: [
 	],
@@ -670,7 +672,6 @@ let prdtCd = "";
 let prdUnit = "";
 
 grid.on('click', function (ev) {
-	console.log(ev.columnName);
 	if (ev.columnName == "productName" || ev.columnName == "productCode") {
 		currentTarget = ev;
 		$("#prdtSerachBtn").click();
@@ -684,8 +685,6 @@ grid.on('click', function (ev) {
 })
 
 function getPrdtInfo(e) {
-	console.log(e);
-	
 	prdtNm = e.target.parentElement.querySelectorAll("td")[3].innerText;
 	prdtCd = e.target.parentElement.querySelectorAll("td")[2].innerText;
 	prdUnit = e.target.parentElement.querySelectorAll("td")[4].innerText;
@@ -696,7 +695,6 @@ function getPrdtInfo(e) {
 }
 
 function prdtModalConfirm() {
-	console.log(currentTarget);
 	grid.setValue(currentTarget.rowKey, 'productCode', prdtCd);
 	grid.setValue(currentTarget.rowKey, 'productName', prdtNm);
 	grid.setValue(currentTarget.rowKey, 'unit', prdUnit);
@@ -727,15 +725,14 @@ function insertOrUpdatePrdPlanAjax() {
 	           type: "POST",
 	           data:  $('#updatePrdtplanForm').serialize(),
 	           success: function(data){
+	               if (data != '') {
+	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장	            	   
+	               }
 	               alert("성공적으로 저장되었습니다.");
-	               console.log(data);
-	               if (data != '')
-	               		insertPrdPlanDetailAjax(data);		// 생산계획 자식테이블(toast grid 데이터) 저장
 	               location.reload(true);
 	           },
 	           error: function(result){
 	        	   alert("저장에 실패하였습니다.");
-	        	   console.log(result);
 	        	}
 	       });
 		} else {
@@ -759,21 +756,15 @@ function insertPrdPlanDetailAjax(productionPlanNo) {
 		jsonData.push({...element, productionPlanNo })
 	});
 	
-	console.log(JSON.stringify(jsonData));
-	
-	
 	$.ajax({
 		url: "insertPrdtplanDetailsForSelf",
         type: "post",
         contentType: "application/json",
         data:  JSON.stringify(jsonData),
         success: function(data){
-            alert("성공적으로 저장되었습니다.");
-            console.log(data);
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
-     	   console.log(result);
      	}
 	});
 }	
@@ -802,12 +793,10 @@ function updateMtrqplanSituProgress() {
 		        data:  JSON.stringify(jsonData),
 		        success: function(data){
 		            alert("성공적으로 저장되었습니다.");
-		            console.log(data);
 		            location.reload(true);
 		        },
 		        error: function(result){
 		     	   alert("저장에 실패하였습니다.");
-		     	   console.log(result);
 		     	}
 			});
 			
@@ -847,7 +836,6 @@ function updateMtrqplanSituComplete() {
 		        },
 		        error: function(result){
 		     	   alert("저장에 실패하였습니다.");
-		     	   console.log(result);
 		     	}
 			});
 			
@@ -873,7 +861,6 @@ function insertInstoreForMtrqplan() {
 		jsonData.push({...element, lastDate, matrequiredPlanNo})
 	});
 	
-	console.log(jsonData);
 	
 	$.ajax({
 		url: "insertInstoreForMtrqplan",
@@ -881,12 +868,10 @@ function insertInstoreForMtrqplan() {
         contentType: "application/json",
         data:  JSON.stringify(jsonData),
         success: function(data){
-            console.log(data);
             location.reload(true);
         },
         error: function(result){
      	   alert("저장에 실패하였습니다.");
-     	   console.log(result);
      	}
 	});
 }

@@ -165,6 +165,7 @@
 	        , plan_quantity
 	        , FIND_CD(unit) AS unit
 	        , other
+	        , material_detail_no
 	FROM    matrequired_plan_detail
 	WHERE   matrequired_plan_no = #{matrequiredPlanNo}
 </select>
@@ -215,7 +216,7 @@
             , 'a2'
             , (SUBSTR(#{productCode}, 1, 2) || (SELECT GETSEQ('instore','lot_no') FROM dual))
             , #{writer}
-            , #{matrequiredPlanNo}
+            , #{materialDetailNo}
             , 'f2'
             , (	SELECT #{lastDate} + (SELECT expiration_deadline
                     				FROM ingredient
