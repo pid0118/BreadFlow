@@ -604,9 +604,21 @@
      			alert("매입가를 입력해주세요")
      			return;
      		}
+     		if(strdel(commadel($("#purchasePrice").val())) <= 0){
+     			alert("값이 올바르지 않습니다")
+     			return
+     		}
      		if($("#safeStockQuantity").val() == ''){
      			alert("안전재고 수량을 입력주세요")
      			return;
+     		}
+     		if(commadel($("#safeStockQuantity").val()) <= 0){
+     			alert("값이 올바르지 않습니다")
+     			return
+     		}
+     		if(strdel(commadel($("#expirationDeadline").val())) <= 0){
+     			alert("값이 올바르지 않습니다")
+     			return
      		}
      		if($("#origin").val() == ''){
      			alert("원산지를 입력해주세요")
@@ -615,6 +627,10 @@
      		if($("#amount").val() == ''){
      			alert("용량를 입력해주세요")
      			return;
+     		}
+     		if(commadel($("#amount").val()) <= 0){
+     			alert("값이 올바르지 않습니다")
+     			return
      		}
      		if($("#unit").get(0).selectedIndex <= 0){
      			alert("단위를 선택해주세요")
