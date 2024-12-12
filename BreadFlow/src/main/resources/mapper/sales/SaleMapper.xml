@@ -111,7 +111,7 @@
 		SELECT NVL(PRO_NAME(product_code), '삭제예정제품') AS productCode
 			  , quantity
 			  , sale_price
-			  , TO_CHAR(sales_date, 'yy') || '년' || TO_CHAR(sales_date, 'MM') || '월' || TO_CHAR(sales_date, 'dd') || '일 ' || TO_CHAR(sales_date, 'HH') || '시' || TO_CHAR(sales_date, 'mi') || '분' || TO_CHAR(sales_date, 'ss') AS saleDate
+			  , TO_CHAR(sales_date, 'yy"년"MM"월"dd"일"HH"시"mi"분"ss') AS saleDate
 			  
 		FROM sale_detail_history
 		
