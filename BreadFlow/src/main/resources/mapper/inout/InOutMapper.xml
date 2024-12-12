@@ -274,14 +274,7 @@
 		            , #{outstoreQuantity}
 		            , #{outstoreManager}
 		            , #{ordersDetailNo}
-		            <choose>
-		            <when test="div.equals('공급업체')">
 		            , NULL
-		            </when>
-		            <otherwise>
-		            , 'IN-20241203-026'
-		            </otherwise>
-		            </choose>
 		            , #{outstoreGroupNo})
 	</insert>
 	
