@@ -25,9 +25,11 @@ public class AjaxUploadController {
 	@PostMapping("uploadFile") //한글이 깨지지 않도록 처리	
 	// ResponseEntity : 업로드한 파일 정보와 Http 상태 코드를 함깨 리턴
 	public ResponseEntity<String> uploadAjax(MultipartFile file) throws Exception{
-		return new ResponseEntity<String>(FileUploadUtil.uploadFile(uploadPath, file.getOriginalFilename(),	file.getBytes()), HttpStatus.OK);
+		return new ResponseEntity<String>
+		(FileUploadUtil.uploadFile(uploadPath, file.getOriginalFilename(),	file.getBytes()), HttpStatus.OK);
 	}
-	
-	
+	//구조는 비동기적인 파일 업로드 기능을 구현할 때 주로 사용됨.
+	//클라이언트 측에서 JavaScript를 사용하여 파일을 업로드, 
+	//서버에서는 이 컨트롤러가 해당 요청을 처리하여 파일을 저장하고 결과를 반환하는 방식으로 동작함
 	
 }
