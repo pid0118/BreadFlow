@@ -85,20 +85,20 @@
 				            <!-- 2번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">소비기한</label>
-				                <input type="number" class="form-control form-control-sm" id="expirationDeadline">
+				                <input type="number" min="1" class="form-control form-control-sm" id="expirationDeadline">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">구매가</label>
-				                <input type="number" step='100' class="form-control form-control-sm" id="purchasePrice">
+				                <input type="number" min="1" step='100' class="form-control form-control-sm" id="purchasePrice">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">판매가</label>
-				                <input type="number" step='100' class="form-control form-control-sm" id="salePrice">
+				                <input type="number" min="1" step='100' class="form-control form-control-sm" id="salePrice">
 				            </div>
 				            <!-- 3번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">안전재고 수량</label>
-				                <input type="number" class="form-control form-control-sm" id="safeStockQuantity">
+				                <input type="number" min="1" class="form-control form-control-sm" id="safeStockQuantity">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">생산지</label>
@@ -106,7 +106,7 @@
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">용량</label>
-				                <input type="number" class="form-control form-control-sm" id="amount">
+				                <input type="number" min="1" class="form-control form-control-sm" id="amount">
 				            </div>
 				            <!-- 4번째 줄 -->
 				            <div class="col-md-4">
@@ -232,13 +232,25 @@
 	     			alert("구매가를 입력해주세요")
 	     			return;
 	     		}
+	     		if($("#purchasePrice").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
+	     		}
 	     		if($("#salePrice").val() == ''){
 	     			alert("판매가를 입력해주세요")
 	     			return;
 	     		}
+	     		if($("#salePrice").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
+	     		}
 	     		if($("#safeStockQuantity").val() == ''){
 	     			alert("안전재고 수량을 입력주세요")
 	     			return;
+	     		}
+	     		if($("#safeStockQuantity").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
 	     		}
 	     		if($("#proplace").val() == ''){
 	     			alert("생산지를 입력해주세요")
@@ -247,6 +259,10 @@
 	     		if($("#amount").val() == ''){
 	     			alert("양를 입력해주세요")
 	     			return;
+	     		}
+	     		if($("#amount").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
 	     		}
 	     		if($("#unit option:selected").val() == '선택하세요'){
 	     			alert("단위를 선택해주세요")

@@ -84,11 +84,11 @@
 				            <!-- 2번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">소비기한</label>
-				                <input type="number" step='1'class="form-control form-control-sm" id="expirationDeadline">
+				                <input type="number" min="1" step='1'class="form-control form-control-sm" id="expirationDeadline">
 				            </div>
 				            <div class="col-md-4">
-				                <label class="form-label">구매가</label>
-				                <input type="number" step='100'class="form-control form-control-sm" id="purchasePrice">
+				                <label class="form-label">매입가격</label>
+				                <input type="number" min="1" step='100'class="form-control form-control-sm" id="purchasePrice">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">원산지</label>
@@ -97,11 +97,11 @@
 				            <!-- 3번째 줄 -->
 				            <div class="col-md-4">
 				                <label class="form-label">안전재고 수량</label>
-				                <input type="number"step='100' class="form-control form-control-sm" id="safeStockQuantity">
+				                <input type="number" min="1" step='100' class="form-control form-control-sm" id="safeStockQuantity">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">용량</label>
-				                <input type="number" step='10' class="form-control form-control-sm" id="amount">
+				                <input type="number" min="1" step='10' class="form-control form-control-sm" id="amount">
 				            </div>
 				            <div class="col-md-4">
 				                <label class="form-label">단위</label>
@@ -231,12 +231,20 @@
 	     			return;
 	     		}
 	     		if($("#purchasePrice").val() == ''){
-	     			alert("구매가를 입력해주세요")
+	     			alert("매입가격을 입력해주세요")
 	     			return;
+	     		}
+	     		if($("#purchasePrice").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
 	     		}
 	     		if($("#safeStockQuantity").val() == ''){
 	     			alert("안전재고 수량을 입력주세요")
 	     			return;
+	     		}
+	     		if($("#safeStockQuantity").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
 	     		}
 	     		if($("#origin").val() == ''){
 	     			alert("원산지를 입력해주세요")
@@ -245,6 +253,14 @@
 	     		if($("#amount").val() == ''){
 	     			alert("양를 입력해주세요")
 	     			return;
+	     		}
+	     		if($("#amount").val() <= 0){
+	     			alert("값이 올바르지 않습니다");
+	     			return
+	     		}
+	     		if($("#amount").val() <= 0){
+	     			alert("값이 올바르지 않습니다")
+	     			return
 	     		}
 	     		if($("#unit option:selected").val() == '선택하세요'){
 	     			alert("단위를 선택해주세요")
@@ -263,7 +279,7 @@
 	     			return;
 	     		}
 	     		
-	     		if (confirm("재료를 등록하시겟습니까?")) {
+	     		if (confirm("재료를 등록하시겠습니까?")) {
 	     			$.ajax({
 		     			url : "/ingredient",
 		     			method : "post",
@@ -320,15 +336,12 @@
         		
         	});
 	     	
-	     	
-	     	
-	     	
-	     	
 	     	 // 취소 버튼 처리
             $('#cancelBtn').click(function() {
                 window.location.href = '/ingredientList';
             });
-	     	
+		
+
     </script>
 </body>
 </html>
