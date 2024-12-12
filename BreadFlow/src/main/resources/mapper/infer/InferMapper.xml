@@ -172,7 +172,7 @@
 		        , #{answer}
 		        , #{manager}
 		        , #{answerer}
-		        , #{answerDate}
+		        , SYSDATE
 		        , #{inferNo}
 		        )
 	</insert>
@@ -192,7 +192,7 @@
 				 		MEMBER
 				 WHERE
 				 		MEMBER_NO = IA.ANSWERER) AS ANSWERER,
-				(TO_CHAR(IA.ANSWER_DATE, 'yy/MM/dd')) AS ANSWER_DATE,
+				(TO_CHAR(IA.ANSWER_DATE, 'YY/MM/DD')) AS ANSWER_DATE,
 				FIND_COMPNAME(IH.CONFIRM_LOCATION) AS CONFIRM_LOCATION
 		FROM	INFER_ANSWER IA LEFT JOIN INFER_HISTORY IH ON IA.INFER_NO = IH.INFER_NO
 		WHERE	IA.INFER_NO = #{inferNo}
