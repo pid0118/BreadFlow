@@ -430,10 +430,10 @@
 	            if (type === 'instore') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "제품" + "</td>";
+	                	row += "<td class='prd'>" + "g1" + "</td>";
 	                	row += "<td class='prd'>" + item.itemName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "재료" + "</td>";
+	                	row += "<td class='ing'>" + "g2" + "</td>";
 	                	row += "<td class='ing'>" + item.itemName + "</td>";
 	                }
 	                row += "<td>" + item.quantity + "</td>";
@@ -448,10 +448,10 @@
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "제품" + "</td>";
+	                	row += "<td class='prd'>" + "g1" + "</td>";
 	                	row += "<td class='prd'>" + item.itemName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "재료" + "</td>";
+	                	row += "<td class='ing'>" + "g2" + "</td>";
 	                	row += "<td class='ing'>" + item.itemName + "</td>";
 	                }
 	                row += "<td>" + item.quantity + "</td>";
