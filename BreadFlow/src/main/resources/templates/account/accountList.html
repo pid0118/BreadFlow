@@ -708,7 +708,10 @@ table.display.dataTable > tbody > tr.selected:hover > * {
 	            data: $('#insertMngAccountFrm').serialize(),
 	            success: function(data){
 	                alert("등록되었습니다.");
-	                alert(`아이디: ${data} | 초기 비밀번호: 0000 \n 로그인 후 비밀번호를 변경해주세요.`);
+	                
+	                let id = getMaxId();
+	                
+	                alert(`아이디: ${id} | 초기 비밀번호: 0000 \n 로그인 후 비밀번호를 변경해주세요.`);
 	                brnChk = 0;
 	                location.reload(true);
 	            },
@@ -719,6 +722,30 @@ table.display.dataTable > tbody > tr.selected:hover > * {
 		}
 	}
 	// 담당자 계정 DB Insert AJAX끝
+	// =======================================================
+	
+		
+	
+	// =======================================================
+	// [박진석|24.12.12] 계정 생성 직후 생성한 아이디 가져오는 ajax 함수
+	function getMaxId() {
+		let idVal;
+		$.ajax({
+			url: "selectMaxId.do",
+		    type: "GET",
+		    async: false,	// 동기식 호출(비동기 X)
+		    data: {},
+		    success: function(data) {
+		    	idVal = data;
+		    },
+		    error: function(result) {
+		    	idVal = "";
+		    }
+		})
+		
+		return idVal;
+	}
+	// 생성한 아이디 가져오는 ajax 끝
 	// =======================================================
 		
 	
@@ -748,9 +775,9 @@ table.display.dataTable > tbody > tr.selected:hover > * {
 	            type: "POST",
 	            data: $('#insertEmpAccountFrm').serialize(),
 	            success: function(data){
-	            	console.log(data);
-	                alert("사원 신규등록 성공");
-	                alert(`아이디: ${data} | 초기 비밀번호: 0000 \n 로그인 후 비밀번호를 변경해주세요.`);
+	                let id = getMaxId();
+	                
+	                alert(`사원 신규등록 성공 \n아이디: ${id}`);
 	            },
 	            error: function(){  alert("사원 신규등록 실패");  }
 	        });

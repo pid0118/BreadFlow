@@ -177,6 +177,11 @@ public class AccountController {
 		return list;
 	}
 	
-	
+	@GetMapping("selectMaxId.do")
+	@ResponseBody
+	public String selectMemberMaxId() {
+		AccountVO aVO = accountService.selectMemberMaxId();
+		return aVO.getId();
+	}
 	
 }
