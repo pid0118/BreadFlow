@@ -446,9 +446,9 @@
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreCompany + "</td>";
 			if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                	row += "<td class='prd' style='display:none;'>" + "g1" + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                	row += "<td class='ing' style='display:none;'>" + "g2" + "</td>";
 	                }
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
@@ -478,9 +478,9 @@
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.outstoreCompany + "</td>";
 			if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                	row += "<td class='prd' style='display:none;'>" + "g1" + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                	row += "<td class='ing' style='display:none;'>" + "g2" + "</td>";
 	                }
 	            }
 	            row += "</tr>";
