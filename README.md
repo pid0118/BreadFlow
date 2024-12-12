@@ -40,7 +40,7 @@ BACK / IDE / 배포
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpjACmZWDnK2UI_vpKRBO4NZXNKlAGpqkECQ&s" style="width: 100px;">
     </td>
     <td>
-      <img src="![다운로드](https://github.com/user-attachments/assets/9531fb73-290f-4d51-9b80-d96be2f973a0)"  style="width: 100px;">
+      <img src=""  style="width: 100px;">
     </td>
     <td>
       
