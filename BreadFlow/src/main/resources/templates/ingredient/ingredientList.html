@@ -698,15 +698,15 @@
 		let sameCheck = true;
     	
     	$("#ingredientName").on('change', function(){
-    		let data = { productName: $('#ingredientName').val(),
-    					 productCode: $('#ingredientCode').val()};
+    		let data = { ingredientName: $('#ingredientName').val(),
+    					 ingredientCode: $('#ingredientCode').val()};
     		
     		$.ajax({
     			url:"/ingredientNameCheck",
     			type: "post",
     			data: data,
     		}).done((res)=> {
-    			sameCheck = true;
+    			sameCheck = res;
     		}).fail((err)=>{
     			alert("이미등록된 재료이거나 재료명이 중복되었습니다")
     			console.log(err);
