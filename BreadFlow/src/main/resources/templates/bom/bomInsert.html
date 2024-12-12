@@ -273,23 +273,28 @@
 	        $('#deleteIngredient').on('click', function () {
 	        	let jsonData = [];
 				jsonData = grid.getCheckedRows();
-				
-				if (jsonData.length == 0) {
-					alert("선택된 원재료가 없습니다.");
-				} else {
-					$.ajax({
-		        		url : "bomIngredientDel",
-		        		method : "delete",
-		        		contentType: "application/json",
-						data: JSON.stringify(jsonData),
-						success : function (data) {
-							if(data >= 1) {
-								alert("등록된 원재료가 삭제되었습니다.");
-								location.reload(true);
-							}
-						}
-		        	})
-				}
+				let checkconfirm = confirm("삭제 하시겠습니까?");
+				if(checkconfirm == false){
+					alert("삭제가 취소되었습니다.");
+				}else{
+					if (jsonData.length == 0) {
+						alert("선택된 원재료가 없습니다.");
+					} 
+					else {
+							$.ajax({
+				        		url : "bomIngredientDel",
+				        		method : "delete",
+				        		contentType: "application/json",
+								data: JSON.stringify(jsonData),
+								success : function (data) {
+										if(data >= 1) {
+											alert("등록된 원재료가 삭제되었습니다.");
+											location.reload(true);
+									}
+								}
+				        	}) // end ajax
+					  } // end 원재료 선택 alert
+				} // end confirm 
 	        });
 	        
 	     	// 품목 추가 (발주 신청 테이블)
