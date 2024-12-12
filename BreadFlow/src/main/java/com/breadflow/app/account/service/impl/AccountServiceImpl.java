@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
 		// [박진석|241202] 비밀번호 암호화
 		String password = accountVO.getPassword();
 		
-		if(password == null || password == "") {
+		if(password == null || password.equals("")) {
 			password = "0000";
 		}
 		
@@ -137,6 +137,11 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		return result;
+	}
+
+	@Override
+	public AccountVO selectMemberMaxId() {
+		return accountMapper.selectMemberMaxId();
 	}
 
 	

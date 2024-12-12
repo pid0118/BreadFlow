@@ -46,4 +46,7 @@ public interface AccountMapper {
 
 	// 회원 단건 수정
 	public int updateMember(AccountVO accountVO);
+
+	// 회원 아이디 가장 큰 값 반환
+	public AccountVO selectMemberMaxId();
 }

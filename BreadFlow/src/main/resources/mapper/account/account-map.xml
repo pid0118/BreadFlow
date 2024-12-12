@@ -190,4 +190,9 @@
 		WHERE	member_no = #{memberNo}	
 	</update>
 
+
+	<select id="selectMemberMaxId">
+		SELECT MAX(id) AS id
+		FROM member 
+	</select>
 </mapper>

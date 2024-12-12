@@ -30,4 +30,6 @@ public interface AccountService {
 	public AccountVO selectMember(AccountVO accountVO);
 
 	public int UpdateMember(AccountVO accountVO);
+
+	public AccountVO selectMemberMaxId();
 }
