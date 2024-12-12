@@ -175,7 +175,8 @@
 		    monthlySales = 0;
 		    
 			const today = $('#currentMonth').text();
-	    	let day = today.substring(5,7).includes('월') ? "0" + today.substring(5,6) : today.substring(5,7);
+	    	let day = today.substring(5,7).includes('월') ? "0" +
+	    						today.substring(5,6) : today.substring(5,7);
 	    	let prev = today.substring(0,4) + day;
 	    	const saDate = prev;
 			let url = `/daySale?saDate=${saDate}`;
@@ -188,7 +189,8 @@
 				let weekTotal = 0;
 				cells.forEach(cel => {
 					const date = cel.dataset.date;
-					const mat = data.find(ele => ele.salesDate == date); // dataSet과 db의 date 비교
+					// dataSet과 db의 date 비교
+					const mat = data.find(ele => ele.salesDate == date); 
 					
 					// dataSet과 db의 date 같을시 등록
 					if(mat){
@@ -198,7 +200,9 @@
 						cel.appendChild(saleDiv);
 						
 						// 일별 매출 합계
-		                const dayOfWeek = new Date(date.substring(0, 4), date.substring(4, 6) - 1, date.substring(6, 8)).getDay();
+		                const dayOfWeek = new Date(date.substring(0, 4)
+		                				, date.substring(4, 6) - 1
+		                				, date.substring(6, 8)).getDay();
 		                dayTotals[dayOfWeek] += sales; // 요일별 매출 추가
 		                
 		             // 주 번호 구하기
