@@ -439,6 +439,8 @@
 			            }
 
 			            grid.resetData(data);  // 새 데이터를 그리드에 로드
+			        }
+			    })
 			}
 			
 			function closeModal() {
@@ -591,7 +593,7 @@
 		            let su = item.querySelector('.su');
 		            let idx = item.querySelector('.delete-button').getAttribute('data-idx');
 		            let selItem = selectedMenu[idx]; // 선택된 메뉴 항목 가져오기
-
+		
 		            // 수량 증가 또는 감소
 		            if (btn.value === "plus") {
 		                selItem.count += 1;  // 수량 증가
