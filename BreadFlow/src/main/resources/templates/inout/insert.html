@@ -269,7 +269,7 @@
 	            		let row = $(this);
 		                let data = {
 		                    instoreDate: $("#inOutDate").val(),
-		                    itemDiv: row.find("td:nth-child(3)").text(),
+		                    itemDiv: row.find("td:nth-child(15)").text(),
 		                    itemName: row.find("td:nth-child(4)").text(),
 		                    quantity: Number(row.find("td:nth-child(5)").text()),
 		                    instoreQuantity: Number(row.find("td:nth-child(6) input").val()),
@@ -430,10 +430,10 @@
 	            if (type === 'instore') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                	row += "<td class='prd'>" + "제품" + "</td>";
 	                	row += "<td class='prd'>" + item.itemName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                	row += "<td class='ing'>" + "재료" + "</td>";
 	                	row += "<td class='ing'>" + item.itemName + "</td>";
 	                }
 	                row += "<td>" + item.quantity + "</td>";
@@ -445,13 +445,18 @@
 	                row += "<td style='display:none;'>" + item.purchasePrice + "</td>";
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.instoreCompany + "</td>";
+			if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                }
 	            } else if (type === 'order') {
 	                row += "<td class='table-plus'>" + item.orderingDate + "</td>";
 	                if (item.orderingProduct != null) {
-	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                	row += "<td class='prd'>" + "제품" + "</td>";
 	                	row += "<td class='prd'>" + item.itemName + "</td>";
 	                } else {
-	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                	row += "<td class='ing'>" + "재료" + "</td>";
 	                	row += "<td class='ing'>" + item.itemName + "</td>";
 	                }
 	                row += "<td>" + item.quantity + "</td>";
@@ -472,6 +477,11 @@
 	                row += "<td style='display:none;'>" + item.purchasePrice + "</td>";
 	                row += "<td style='display:none;'>" + item.price + "</td>";
 	                row += "<td style='display:none;'>" + item.outstoreCompany + "</td>";
+			if (item.orderingProduct != null) {
+	                	row += "<td class='prd'>" + "g1" + "</td>";
+	                } else {
+	                	row += "<td class='ing'>" + "g2" + "</td>";
+	                }
 	            }
 	            row += "</tr>";
 	            tbody.append(row);
