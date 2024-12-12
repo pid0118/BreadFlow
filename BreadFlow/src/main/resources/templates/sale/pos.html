@@ -405,7 +405,9 @@
 			    .then(data => {
 			        // 데이터가 없을 경우 경고창만 띄우고 모달은 열지 않음
 			        if (data.length === 0) {
-			            alert("상세 내역이 없습니다.");
+			        	Swal.fire({
+				            title: "상세 내역이 없습니다.",
+				            icon: "warning"});
 			        } else {
 			            // 데이터가 있으면 그리드에 로드하고 모달 열기
 			            const modal = document.getElementById("detailsModal");
@@ -485,9 +487,7 @@
 			            cancelButtonColor: "#d33",
 			            confirmButtonText: "Yes"
 			        }).then((result) => {
-			            // 사용자가 'Yes, order it!'을 클릭한 경우
 			            if (result.isConfirmed) {
-			                // AJAX 요청
 			                fetch("/pos", {
 			                    method: "POST",
 			                    headers: {
