@@ -39,17 +39,24 @@ BACK / IDE / 배포
     <td>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpjACmZWDnK2UI_vpKRBO4NZXNKlAGpqkECQ&s" style="width: 100px;">
     </td>
+    <td>
+      <img src="![다운로드](https://github.com/user-attachments/assets/9531fb73-290f-4d51-9b80-d96be2f973a0)"  style="width: 100px;">
+    </td>
+    <td>
+      
+    </td>
+    <td>
+      
+    </td>
   </tr>
   <tr>
-    <td>
-     Java21
-    </td>
-    <td>
-      SpringBoot<br>3.2.11
-    </td>
-    <td>
-      Lombok
-    </td>
+    <td>Java21</td>
+    <td>SpringBoot<br>3.2.11</td>
+    <td>Lombok</td>
+    <td>Spring Security</td>
+    <td>mybatis</td>
+    <td>Spring Security</td>
+    <td>Spring Security</td>
   </tr>
   
 </table>
