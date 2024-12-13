@@ -43,11 +43,13 @@ BACK / IDE / 배포
       <img src="https://plugins.jetbrains.com/files/13905/617368/icon/pluginIcon.svg" style="width: 100px;">
     </td>
     <td>
-      
+      <img src="https://static.macupdate.com/products/62455/s/oracle-sql-developer-logo.png?v=1589293180" style="width: 100px;">
     </td>
     <td>
-      
+      <img src="https://img.utdstc.com/icon/3c7/fcf/3c7fcf4930fa9402c22cee35e03fe9fcf9e8e47c9381d6b9e6922d71ee2e067a:200" style="width: 100px;">
     </td>
+      
+
   </tr>
   <tr>
     <td>Java21</td>
