@@ -48,8 +48,9 @@ BACK / IDE / 배포
     <td>
       <img src="https://img.utdstc.com/icon/3c7/fcf/3c7fcf4930fa9402c22cee35e03fe9fcf9e8e47c9381d6b9e6922d71ee2e067a:200" style="width: 100px;">
     </td>
-      
-
+    <td>
+      <img src="https://blog.kakaocdn.net/dn/b7rQmR/btsFUlvQNb7/FiCAirPkkh144BfRCrDGq0/img.png" style="width: 100px; height:100px;">
+    </td>
   </tr>
   <tr>
     <td>Java21</td>
@@ -57,8 +58,9 @@ BACK / IDE / 배포
     <td>Lombok</td>
     <td>Spring Security</td>
     <td>mybatis</td>
-    <td>Spring Security</td>
-    <td>Spring Security</td>
+    <td>SQL Developer</td>
+    <td>Eclipse IDE</td>
+    <td>Amazon EC2</td>
   </tr>
   
 </table>
