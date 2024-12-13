@@ -34,13 +34,13 @@ BACK / IDE / 배포
       <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
     </td>
     <td>
-      <img src="https://velog.velcdn.com/images/shinhyocheol/post/1362c283-9f91-41f6-9f2b-d4d1b27a8931/image.jpeg" style="width: 100px;">
+      <img src="https://www.tomsquest.com/presentation-lombok/logo.png" style="width: 100px;">
     </td>
     <td>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpjACmZWDnK2UI_vpKRBO4NZXNKlAGpqkECQ&s" style="width: 100px;">
+      <img src="https://blog.kakaocdn.net/dn/b5sGlw/btrSI8ZXQDq/NZqsZppkXksKj8BjJEHdhK/img.png" style="width: 100px;">
     </td>
     <td>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdSs-OJ00oYVQRzdZ708RRhABLCRyO8hqfYQ&s"  style="width: 100px;">
+      <img src="https://plugins.jetbrains.com/files/13905/617368/icon/pluginIcon.svg" style="width: 100px;">
     </td>
     <td>
       
