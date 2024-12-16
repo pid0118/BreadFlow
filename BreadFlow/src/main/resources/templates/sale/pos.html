@@ -579,8 +579,6 @@
 			arrayPrint();
 		}
 		
-
-		
 		// 버튼 클릭시 수량 증가/감수
 		function amountBnt() {
 		    // 클래스 이름이 'amount'인 버튼들을 불러오기
@@ -617,85 +615,84 @@
 		function loadMenu(category) {
 		    // category가 없으면 전체 메뉴를 요청
 		    let url = category ? `/pos/menu?category=${category}` : '/pos/menu';
-		    
-		    // /pos/menu로 변경
+		
 		    fetch(url, {
-		    	method: "POST"
+		        method: "POST"
 		    })
-		        .then(response => response.json())
-		        .then(data => {
-		        	menuData = data;
-		        	if(Math.ceil(menuData.length / itemsPage) < 1){
-		        		totalPages = 1;
-		        	}
-		        	else{
-		        		totalPages = Math.ceil(menuData.length / itemsPage);
-		        	}
-		        	// IF문 없이 해보기
-		        	renderMenu();
-		        })
-		        .catch(error => {
-		            console.error("삐용삐용:", error);
-		        });
+		    .then(response => response.json())
+		    .then(data => {
+		        menuData = data;
+		        
+		        // 생지를 제외한 필터링된 데이터로 페이지 계산
+		        let filterMenu = menuData.filter((item) => item.sub !== '생지');
+		        
+		        // totalPages를 필터링된 데이터에 맞게 재계산
+		        totalPages = Math.ceil(filterMenu.length / itemsPage);
+		        
+		        // 페이지를 넘을 경우, 마지막 페이지로 조정
+		        if (curPage > totalPages) {
+		            curPage = totalPages;
+		        }
+		
+		      	//페이지 번호 업데이트
+		        renderMenu(filterMenu);
+		    })
+		    .catch(error => {
+		        console.error("삐용삐용:", error);
+		    });
 		}
 		
-
-		function renderMenu(){
-			// 생지인거 제외
-			let filterMenu = menuData.filter((item) => item.sub !== '생지');
-			
-			let startIndex = (curPage - 1) * itemsPage;
-			let endIndex = startIndex + itemsPage;
-			
-			// 필터링된거 가져오기
-			let itemsToDisplay = filterMenu.slice(startIndex, endIndex);
-			
-			// 내용 초기화
-			itemGrid.innerHTML = '';
-			
-			itemsToDisplay.forEach(item => {
-                let node = `
-                    <div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}" style="font-size:15px">
-                        <div class="item-name">${item.productName}</div>
-                        <div class="item-price">${item.salePrice.toLocaleString()}원</div>
-                    </div>
-                `;
-                itemGrid.insertAdjacentHTML('beforeend', node);
-			});
-			
-			//페이지 번호 업데이트
-			updatePagination();
+		function renderMenu(filterMenu) {
+		    let startIndex = (curPage - 1) * itemsPage;
+		    let endIndex = startIndex + itemsPage;
+		
+		    // 필터링된 메뉴 항목을 가져오기
+		    let itemsToDisplay = filterMenu.slice(startIndex, endIndex);
+		
+		    // 내용 초기화
+		    itemGrid.innerHTML = '';
+		
+		    itemsToDisplay.forEach(item => {
+		        let node = `
+		            <div class="menu-item" data-name="${item.productName}" data-price="${item.salePrice}" data-code="${item.productCode}" style="font-size:15px">
+		                <div class="item-name">${item.productName}</div>
+		                <div class="item-price">${item.salePrice.toLocaleString()}원</div>
+		            </div>
+		        `;
+		        itemGrid.insertAdjacentHTML('beforeend', node);
+		    });
+		
+		    // 페이지 번호 업데이트
+		    updatePagination();
 		}
 		
-		// 페이징 20개씩
-		function updatePagination(){
-			let pagination = document.querySelector('.pagination');
-			pagination.innerHTML = '';
-			
-			let prevBtn = document.createElement('button');
-			prevBtn.textContent = '◀';
-			prevBtn.disabled = curPage == 1;
-			prevBtn.classList.add("action-button");
-			prevBtn.addEventListener('click', () => changePage(curPage -1));
-			pagination.appendChild(prevBtn);
-			
-			let pageNum = document.createElement('span');
-			pageNum.textContent = `${curPage} / ${totalPages}`;				
-			pagination.appendChild(pageNum);
-			
-			let nextBtn = document.createElement('button');
-			nextBtn.textContent = '▶';
-			nextBtn.classList.add("action-button");
-			nextBtn.disabled = curPage == totalPages;
-			nextBtn.addEventListener('click', () => changePage(curPage + 1));
-			pagination.appendChild(nextBtn);
-			
+		function updatePagination() {
+		    let pagination = document.querySelector('.pagination');
+		    pagination.innerHTML = '';
+		
+		    let prevBtn = document.createElement('button');
+		    prevBtn.textContent = '◀';
+		    prevBtn.disabled = curPage == 1;
+		    prevBtn.classList.add("action-button");
+		    prevBtn.addEventListener('click', () => changePage(curPage - 1));
+		    pagination.appendChild(prevBtn);
+		
+		    let pageNum = document.createElement('span');
+		    pageNum.textContent = `${curPage} / ${totalPages}`;
+		    pagination.appendChild(pageNum);
+		
+		    let nextBtn = document.createElement('button');
+		    nextBtn.textContent = '▶';
+		    nextBtn.classList.add("action-button");
+		    nextBtn.disabled = curPage == totalPages;
+		    nextBtn.addEventListener('click', () => changePage(curPage + 1));
+		    pagination.appendChild(nextBtn);
 		}
 		
-		function changePage(page){
-			if(page < 1 || page > totalPages) return;
-			curPage = page;
-			renderMenu();
+		function changePage(page) {
+		    if (page < 1 || page > totalPages) return;
+		    curPage = page;
+		    loadMenu(); // 새로운 페이지 로드
 		}
 		
 		// 마감정산
