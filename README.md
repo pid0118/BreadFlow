@@ -45,12 +45,6 @@ BACK / IDE / 배포
     <td>
       <img src="https://static.macupdate.com/products/62455/s/oracle-sql-developer-logo.png?v=1589293180" style="width: 100px;">
     </td>
-    <td>
-      <img src="https://img.utdstc.com/icon/3c7/fcf/3c7fcf4930fa9402c22cee35e03fe9fcf9e8e47c9381d6b9e6922d71ee2e067a:200" style="width: 100px;">
-    </td>
-    <td>
-      <img src="https://blog.kakaocdn.net/dn/b7rQmR/btsFUlvQNb7/FiCAirPkkh144BfRCrDGq0/img.png" style="width: 100px; height:100px;">
-    </td>
   </tr>
   <tr>
     <td>Java21</td>
@@ -59,8 +53,6 @@ BACK / IDE / 배포
     <td>Spring Security</td>
     <td>mybatis</td>
     <td>SQL Developer</td>
-    <td>Eclipse IDE</td>
-    <td>Amazon EC2</td>
   </tr>
   <tr>
     <td>
@@ -73,13 +65,22 @@ BACK / IDE / 배포
       <img src="https://crispyblog.kr:5000/static/img/postImg/da5a8caf-6ccc-4aa2-b8d1-d673a3f0a4e6_jenkins.png" style="width: 100px;">
     </td>
     <td>
-      <img src="https://miro.medium.com/v2/resize:fit:450/1*kbSGIVukG6lL7JtAa9wiDA.png" style="width: 100px;>
+      <img src="https://miro.medium.com/v2/resize:fit:450/1*kbSGIVukG6lL7JtAa9wiDA.png" style="width: 100px;">
+    </td>
+    <td>
+      <img src="https://img.utdstc.com/icon/3c7/fcf/3c7fcf4930fa9402c22cee35e03fe9fcf9e8e47c9381d6b9e6922d71ee2e067a:200" style="width: 100px;">
+    </td>
+    <td>
+      <img src="https://blog.kakaocdn.net/dn/b7rQmR/btsFUlvQNb7/FiCAirPkkh144BfRCrDGq0/img.png" style="width: 100px; height:100px;">
     </td>
   </tr>
   <tr>
     <td>Visual Studio Code</td>
     <td>docker</td>
     <td>jenkins</td>
+    <td>Maven</td>
+    <td>Eclipse IDE</td>
+    <td>Amazon EC2</td>
   </tr>
 </table>
 
