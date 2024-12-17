@@ -75,7 +75,7 @@ BACK / IDE / 배포
     </td>
   </tr>
   <tr>
-    <td>Visual Studio Code</td>
+    <td>VSCode</td>
     <td>docker</td>
     <td>jenkins</td>
     <td>Maven</td>
