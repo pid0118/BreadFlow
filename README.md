@@ -28,10 +28,10 @@ BACK / IDE / 배포
 <table>
   <tr>
     <td>
-      <img src="https://img.icons8.com/?size=100&id=13679&format=png&color=000000">
+      <img src="https://img.icons8.com/?size=100&id=13679&format=png&color=000000" style="width: 100px;">
     </td>
     <td>
-      <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000">
+      <img src="https://img.icons8.com/?size=100&id=90519&format=png&color=000000" style="width: 100px;">
     </td>
     <td>
       <img src="https://www.tomsquest.com/presentation-lombok/logo.png" style="width: 100px;">
@@ -62,7 +62,25 @@ BACK / IDE / 배포
     <td>Eclipse IDE</td>
     <td>Amazon EC2</td>
   </tr>
-  
+  <tr>
+    <td>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReIC5j4P20T_6XEnleeVimfbpzno1VxYZB1pkTHeu_2mqIY_ov5CrJHg1qBelZxZceWrY&usqp=CAU" style="width: 100px;">
+    </td>
+    <td>
+      <img src="https://miro.medium.com/v2/resize:fit:400/1*OARpkeBkn_Tw3vk8H769OQ.png" style="width: 100px;">
+    </td>
+    <td>
+      <img src="https://crispyblog.kr:5000/static/img/postImg/da5a8caf-6ccc-4aa2-b8d1-d673a3f0a4e6_jenkins.png" style="width: 100px;">
+    </td>
+    <td>
+      <img src="https://miro.medium.com/v2/resize:fit:450/1*kbSGIVukG6lL7JtAa9wiDA.png" style="width: 100px;>
+    </td>
+  </tr>
+  <tr>
+    <td>Visual Studio Code</td>
+    <td>docker</td>
+    <td>jenkins</td>
+  </tr>
 </table>
 
 FRONT / 협업 / 라이브러리
