@@ -56,7 +56,7 @@ BACK / IDE / 배포
   </tr>
   <tr>
     <td>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReIC5j4P20T_6XEnleeVimfbpzno1VxYZB1pkTHeu_2mqIY_ov5CrJHg1qBelZxZceWrY&usqp=CAU" style="width: 100px;">
+      <img src="https://lars-erklaerts.de/wp-content/uploads/logo_vs-code.png" style="width: 100px;">
     </td>
     <td>
       <img src="https://miro.medium.com/v2/resize:fit:400/1*OARpkeBkn_Tw3vk8H769OQ.png" style="width: 100px;">
